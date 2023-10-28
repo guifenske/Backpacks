@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 
 public class BackPack {
     public BackPack(Player player, int index) {
-        // TODO Auto-generated constructor stub
+
     }
 
     private int first_page_size = 0;
