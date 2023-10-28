@@ -1,0 +1,7 @@
+name: Backpacks
+version: '${project.version}'
+main: br.com.Backpacks.Main
+api-version: '1.20'
+
+softdepend:
+  - NBTAPI
