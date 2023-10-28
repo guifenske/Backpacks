@@ -1,10 +1,11 @@
-br/com/Backpacks/menus/backpackConfig.class
 br/com/Backpacks/events/playerEvents$1.class
 br/com/Backpacks/events/blockEvent.class
-br/com/Backpacks/Main.class
 br/com/Backpacks/events/openBackpack.class
-br/com/Backpacks/crafting/recipesUtil.class
 br/com/Backpacks/menus/backpackMenu.class
-br/com/Backpacks/menus/backpackMenu$1.class
 br/com/Backpacks/menus/backpackConfig$1.class
 br/com/Backpacks/events/playerEvents.class
+br/com/Backpacks/menus/backpackConfig.class
+br/com/Backpacks/Main.class
+br/com/Backpacks/crafting/recipesUtil.class
+br/com/Backpacks/BackPack.class
+br/com/Backpacks/menus/backpackMenu$1.class

@@ -3,7 +3,6 @@ package br.com.Backpacks.menus;
 import br.com.Backpacks.Main;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
-import it.unimi.dsi.fastutil.longs.LongBinaryOperator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -218,10 +217,10 @@ public class backpackMenu implements Listener {
 
             itemStack.setAmount(1);
 
-            return itemStack;
+            return itemStack.asOne();
         }
         item.setAmount(1);
-        return item;
+        return item.asOne();
     }
 
     @EventHandler
