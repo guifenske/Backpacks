@@ -23,6 +23,6 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        Bukkit.getConsoleSender().sendMessage("Bye from " + this.getName() + "!");
+        Bukkit.getConsoleSender().sendMessage("Bye from BackPacks");
     }
 }
