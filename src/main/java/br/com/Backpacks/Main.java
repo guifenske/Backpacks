@@ -1,12 +1,12 @@
 package br.com.Backpacks;
 
+import br.com.Backpacks.events.LoginEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Main extends JavaPlugin {
 
     public static Main back;
-
 
     @Override
     public void onEnable() {
@@ -17,6 +17,8 @@ public final class Main extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(this.getName() + " >> NBTAPI is not installed! Disabling plugin...");
             Bukkit.getPluginManager().disablePlugin(this);
         }   else    Bukkit.getConsoleSender().sendMessage(this.getName() + " >> NBTAPI found! Starting up...");
+
+        Bukkit.getPluginManager().registerEvents(new LoginEvent(), this);
     }
 
     @Override
