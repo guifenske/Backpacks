@@ -1,8 +1,14 @@
 package br.com.Backpacks.menus;
 
 import br.com.Backpacks.Main;
+import com.google.common.primitives.Bytes;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.plugin.tests.items.ItemStackConversionTest;
+import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
+import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -84,99 +90,24 @@ public class backpackMenu implements Listener {
             @Override
             public void run() {
                 Player player = (Player) event.getWhoClicked();
+                HashMap<Material, ArrayList<ItemStack>> itemsList = new HashMap<>();
+                HashMap<Material, ArrayList<Integer>> quantity = new HashMap<>();
 
-                HashMap<ItemStack, Integer> quantity = new HashMap<>();
-
-                //itera sobre os itens, faz a soma total de cada item por tipo;
                 for(int i = 0; i < event.getInventory().getSize() - useless_Slots(player); i++) {
                     ItemStack itemStack = event.getInventory().getItem(i);
+                    if (itemStack == null) continue;
 
-                    if(itemStack == null) continue;
-                    int amount = itemStack.getAmount();
-
-                    if(quantity.containsKey(get_itemStack_wtht_lore(itemStack))) {
-                        if(itemStack.getItemMeta().hasLore()) {
-                            quantity.put(get_itemStack_wtht_lore(itemStack), quantity.get(get_itemStack_wtht_lore(itemStack)) + check_lore(itemStack));
-                            event.getWhoClicked().sendMessage("1. " + quantity.get(get_itemStack_wtht_lore(itemStack)).toString());
-                            event.getInventory().setItem(i, null);
-                            continue;
-                        }
-
-                        quantity.put(get_itemStack_wtht_lore(itemStack), quantity.get(get_itemStack_wtht_lore(itemStack)) + amount);
-                        event.getInventory().setItem(i, null);
-                        continue;
+                    if(itemsList.containsKey(itemStack.getType())) {
+                        quantity.get(itemStack.getType()).add(check_lore(itemStack));
+                        itemsList.get(itemStack.getType()).add(itemStack);
+                    } else {
+                        itemsList.put(itemStack.getType(), new ArrayList<>());
+                        itemsList.get(itemStack.getType()).add(itemStack);
+                        quantity.put(itemStack.getType(), new ArrayList<>());
+                        quantity.get(itemStack.getType()).add(check_lore(itemStack));
                     }
-
-                    if(itemStack.getItemMeta().hasLore()) {
-                        quantity.put(get_itemStack_wtht_lore(itemStack), check_lore(itemStack));
-                        event.getInventory().setItem(i, null);
-                        continue;
-                    }
-
-                    quantity.put(get_itemStack_wtht_lore(itemStack), amount);
-                    event.getWhoClicked().sendMessage(quantity.get(get_itemStack_wtht_lore(itemStack)).toString());
-                    event.getInventory().setItem(i, null);
-                }
-
-                HashMap<ItemStack, Integer> times_toApply = new HashMap<>();
-                HashMap<ItemStack, Integer> restoStack = new HashMap<>();
-
-                for(ItemStack item : quantity.keySet()) {
-                    if(quantity.get(item) > item.getMaxStackSize() * currentMultiplier.get(player)) {
-                        times_toApply.put(item, quantity.get(item) / (item.getMaxStackSize() * currentMultiplier.get(player)));
-
-                        int resto = quantity.get(item) % (item.getMaxStackSize() * currentMultiplier.get(player));
-                        if(resto != 0)  restoStack.put(item, resto);
-
-                    }   else times_toApply.put(item, 1);
-                }
-
-                int index = 0;
-
-                for(ItemStack item : times_toApply.keySet()){
-                    int times_to_apply = times_toApply.get(item);
-                    int resto = 0;
-                    if(restoStack.containsKey(item)) resto = restoStack.get(item);
-                    if(item.getItemMeta().hasLore()) {
-                        if(quantity.get(item) <= item.getMaxStackSize() * currentMultiplier.get(player)) item.getItemMeta().getLore().add("Total: " + quantity.get(item));
-                        else item.getItemMeta().getLore().add("Total: " + item.getMaxStackSize() * currentMultiplier.get(player));
-                    }   else{
-                        ItemMeta itemMeta = item.getItemMeta();
-                        List<String> lore = new ArrayList<>();
-                        if(quantity.get(item) <= item.getMaxStackSize() * currentMultiplier.get(player)) lore.add("Total: " + quantity.get(item));
-                        else lore.add("Total: " + item.getMaxStackSize() * currentMultiplier.get(player));
-
-                        itemMeta.setLore(lore);
-                        item.setItemMeta(itemMeta);
-                    }
-
-                    for (int i = 0; i < times_to_apply; i++)   event.getInventory().setItem(index + i, item);
-                    if(resto != 0) {
-                        //o resto pode ser maior que 64, ent adicionar a lore quando necessário
-                        item.setAmount(resto);
-                        if(resto <= item.getMaxStackSize()) event.getInventory().setItem(index + times_to_apply, item);
-                        else{
-                            ItemMeta itemMeta = item.getItemMeta();
-                            List<String> lore = new ArrayList<>();
-
-                            lore.add("Total: " + resto);
-                            event.getWhoClicked().sendMessage("tempo restante: " + resto);
-
-                            itemMeta.setLore(lore);
-                            item.setItemMeta(itemMeta);
-                            event.getInventory().setItem(index + times_to_apply, item);
-                        }
-                        index += times_to_apply + 1;
-                        continue;
-                    }
-
-                    index += times_to_apply;
 
                 }
-
-                quantity.clear();
-                restoStack.clear();
-                times_toApply.clear();
 
             }
         }.runTask(Main.back);
@@ -186,19 +117,23 @@ public class backpackMenu implements Listener {
         int _quantity_lore = 0;
         List<String> lore = itemStack.getItemMeta().getLore();
 
-        for(String s : lore) {
-            if(!s.contains("Total: ")) continue;
+        if(itemStack.getItemMeta().hasLore()) {
+            for(String s : lore) {
+                if(!s.contains("Total: ")) continue;
 
-            String string = s.substring(s.indexOf("Total: "));
-            StringBuilder _quantity_string = new StringBuilder();
+                String string = s.substring(s.indexOf("Total: "));
+                StringBuilder _quantity_string = new StringBuilder();
 
-            for(Character c : string.toCharArray())     if(Character.isDigit(c)) _quantity_string.append(c);
+                for(Character c : string.toCharArray())     if(Character.isDigit(c)) _quantity_string.append(c);
 
-            _quantity_lore = Integer.parseInt(_quantity_string.toString());
-            break;
+                _quantity_lore = Integer.parseInt(_quantity_string.toString());
+                break;
+            }
+
+            return _quantity_lore;
         }
 
-        return _quantity_lore;
+        return itemStack.getAmount();
     }
 
     private ItemStack get_itemStack_wtht_lore(ItemStack item){
