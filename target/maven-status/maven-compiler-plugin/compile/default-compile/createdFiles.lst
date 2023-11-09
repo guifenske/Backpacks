@@ -1,3 +1,6 @@
+br\com\Backpacks\recipes\Recipes.class
 br\com\Backpacks\BackPack.class
+br\com\Backpacks\BackPackManager.class
+br\com\Backpacks\recipes\RecipesUtils.class
 br\com\Backpacks\Main.class
-br\com\Backpacks\events\LoginEvent.class
+br\com\Backpacks\events\backpack_place.class

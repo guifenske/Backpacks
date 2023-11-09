@@ -1,23 +1,21 @@
 package br.com.Backpacks;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicReference;
+import org.bukkit.inventory.ItemStack;
 
 public class BackPack {
-    private Player owner;
+    public int getSize() {
+        return size;
+    }
+
+    private Inventory inventory;
 
     public Inventory getInventory() {
         return inventory;
     }
 
-    private Inventory inventory;
-
-    public int getSize() {
-        return size;
+    public void set_item(int slot, ItemStack item) {
+        inventory.setItem(slot, item);
     }
 
     private int size;
@@ -28,24 +26,10 @@ public class BackPack {
 
     private String name;
 
-    public BackPack(Player player){
-        owner = player;
-    }
-
-    public BackPack(){
-
-    }
-
-    public AtomicReference<HashMap<Player, BackPack>> getBackpacks() {
-        return backpacks;
-    }
-
-    private final AtomicReference<HashMap<Player, BackPack>> backpacks = new AtomicReference<>(new HashMap<>());
-
-    public void create_backpack(int size, String name){
-        this.inventory = Bukkit.createInventory(owner, size, name);
-        this.name = name;
+    public BackPack(int size, String name, Inventory inventory) {
         this.size = size;
-        backpacks.get().put(owner, this);
+        this.name = name;
+        this.inventory = inventory;
+        // Crie a mochila com o tamanho e nome especificados
     }
 }
