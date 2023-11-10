@@ -11,11 +11,35 @@ import java.util.Map;
 public class BackPackManager {
     private Map<Player, List<BackPack>> playerBackPacks = new HashMap<>();
 
-    public void createBackPack(Player player, int size, String name) {
-        // Create a new backpack with the specified size and name
-        BackPack backPack = new BackPack(size, name, Bukkit.createInventory(player, size, name));
+    private Map<Player, BackPack> current_backpack = new HashMap<>();
 
-        // Add the backpack to the player's list of backpacks
+    public Map<Player, List<Integer>> getBackpacks_ids() {
+        return backpacks_ids;
+    }
+
+    private Map<Player, List<Integer>> backpacks_ids = new HashMap<>();
+
+    public void setCurrent_backpack(Player player, BackPack current_backpack) {
+        this.current_backpack.put(player, current_backpack);
+        player.openInventory(current_backpack.getCurrent_page());
+    }
+
+    public BackPack getCurrent_backpack(Player player) {
+        return current_backpack.get(player);
+    }
+
+    public void createBackPack(Player player, int size, String name, int id) {
+        // Create a new backpack with the specified size and name
+
+        if(size > 54){
+            BackPack backPack = new BackPack(name, Bukkit.createInventory(player, 54, name), Bukkit.createInventory(player, size - 54, name), id);
+            current_backpack.put(player, backPack);
+            playerBackPacks.computeIfAbsent(player, k -> new ArrayList<>()).add(backPack);
+            return;
+        }
+
+        BackPack backPack = new BackPack(name, Bukkit.createInventory(player, size, name), id);
+        current_backpack.put(player, backPack);
         playerBackPacks.computeIfAbsent(player, k -> new ArrayList<>()).add(backPack);
     }
 
