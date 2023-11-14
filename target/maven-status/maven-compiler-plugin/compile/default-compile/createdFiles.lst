@@ -1,7 +1,9 @@
 br\com\Backpacks\recipes\Recipes.class
+br\com\Backpacks\events\backpack_related\backpack_place.class
 br\com\Backpacks\BackPack.class
+br\com\Backpacks\yaml\YamlUtils.class
 br\com\Backpacks\BackPackManager.class
+br\com\Backpacks\events\player_leave_join.class
 br\com\Backpacks\recipes\RecipesUtils.class
 br\com\Backpacks\events\craft_backpack.class
 br\com\Backpacks\Main.class
-br\com\Backpacks\events\backpack_place.class

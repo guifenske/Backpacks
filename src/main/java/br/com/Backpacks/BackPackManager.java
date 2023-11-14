@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 public class BackPackManager {
+    public void setPlayerBackPacks(Player player, List<BackPack> backPacks) {
+        playerBackPacks.put(player, backPacks);
+    }
+
     private Map<Player, List<BackPack>> playerBackPacks = new HashMap<>();
 
     private Map<Player, BackPack> current_backpack = new HashMap<>();

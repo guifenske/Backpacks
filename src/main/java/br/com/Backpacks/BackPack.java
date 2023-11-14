@@ -1,9 +1,17 @@
 package br.com.Backpacks;
 
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class BackPack {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+public class BackPack implements Serializable {
 
     public Inventory getSecond_page() {
         return second_page;
@@ -63,6 +71,10 @@ public class BackPack {
         // Cria a mochila com uma página e seus atributos
     }
 
+    public BackPack() {
+        //apenas para serialização
+    }
+
     public BackPack(String name, Inventory first_page, Inventory second_page, int id) {
         this.first_page_size = first_page.getSize();
         this.second_page_size = second_page.getSize();
@@ -72,5 +84,51 @@ public class BackPack {
         this.first_page = first_page;
         this.backpack_id = id;
         // Cria a mochila com duas páginas e seus atributos
+    }
+    public List<String> serialize() {
+        List<String> data = new ArrayList<>();
+
+        data.add(String.valueOf(first_page_size));
+        data.add(name);
+        data.add(String.valueOf(backpack_id));
+        if(second_page_size > 0) {
+            data.add(String.valueOf(second_page_size));
+        }
+
+        return data;
+    }
+
+    public List<ItemStack[]> serialize_contents() {
+        List<ItemStack[]> itemStacks = new ArrayList<>();
+        itemStacks.add(first_page.getContents());
+
+        if(second_page_size > 0) {
+            itemStacks.add(second_page.getContents());
+        }
+
+        return itemStacks;
+    }
+
+    public BackPack deserialize(YamlConfiguration config, Player player) {
+
+        Set<String> keys = config.getKeys(false);
+
+        for(String s : keys){
+            List<ItemStack[]> itemStacks = (List<ItemStack[]>) config.getList(s + ".c");
+            List<String> components = (List<String>) config.getList(s);
+
+            first_page_size = Integer.parseInt(components.get(0));
+            name = components.get(1);
+            backpack_id = Integer.parseInt(components.get(2));
+
+            first_page = Bukkit.createInventory(player, first_page_size, name);
+            first_page.setStorageContents(itemStacks.get(0));
+            if(itemStacks.size() > 1){
+                second_page = Bukkit.createInventory(player, second_page_size, name);
+                second_page_size = Integer.parseInt(components.get(3));
+                second_page.setStorageContents(itemStacks.get(1));
+            }
+        }
+        return this;
     }
 }
