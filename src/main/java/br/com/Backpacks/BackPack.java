@@ -30,6 +30,14 @@ public class BackPack implements Serializable {
 
     private int backpack_id;
 
+    public void setSecond_page(Inventory second_page) {
+        this.second_page = second_page;
+    }
+
+    public void setFirst_page(Inventory first_page) {
+        this.first_page = first_page;
+    }
+
     private Inventory first_page;
 
     private Inventory current_page;

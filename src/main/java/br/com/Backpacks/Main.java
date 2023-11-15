@@ -21,6 +21,12 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new craft_backpack(), this);
         Bukkit.getPluginManager().registerEvents(new player_leave_join(), this);
         Bukkit.addRecipe(new Recipes().leather_backpack_recipe());
+        Bukkit.addRecipe(new Recipes().iron_backpack_recipe());
+        Bukkit.addRecipe(new Recipes().diamond_backpack_recipe());
+        Bukkit.addRecipe(new Recipes().netherite_backpack_recipe());
+        Bukkit.addRecipe(new Recipes().gold_backpack_recipe());
+        Bukkit.addRecipe(new Recipes().amethyst_backpack_recipe());
+        Bukkit.addRecipe(new Recipes().lapis_backpack_recipe());
     }
 
     @Override

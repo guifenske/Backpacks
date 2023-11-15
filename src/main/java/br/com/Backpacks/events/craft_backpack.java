@@ -1,5 +1,6 @@
 package br.com.Backpacks.events;
 
+import br.com.Backpacks.BackpackType;
 import br.com.Backpacks.Main;
 import br.com.Backpacks.recipes.Recipes;
 import org.bukkit.entity.Player;
@@ -40,86 +41,114 @@ public class craft_backpack implements Listener {
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_IRON_BACKPACK())){
+            int old_id = 0;
             for(ItemStack itemStack : event.getInventory().getMatrix()){
                 if(itemStack == null) continue;
                 if(itemStack.getType().equals(org.bukkit.Material.CHEST) && !itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_LEATHER_BACKPACK())){
                     event.setCancelled(true);
                     return;
                 }
+
+                if(itemStack.getType().equals(org.bukkit.Material.CHEST) && itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_LEATHER_BACKPACK())){
+                    old_id = itemStack.getItemMeta().getPersistentDataContainer().get(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
+                }
             }
-            int id = generate_id(((Player) event.getWhoClicked()));
-            Main.back.backPackManager.createBackPack((Player) event.getWhoClicked(), 27, "Iron Backpack", id);
-            update_result(event, id);
+
+            Main.back.backPackManager.upgrade_backpack((Player) event.getWhoClicked(), BackpackType.LEATHER, old_id);
+
+            update_result(event, old_id);
             return;
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_GOLD_BACKPACK())){
+            int old_id = 0;
             for(ItemStack itemStack : event.getInventory().getMatrix()){
                 if(itemStack == null) continue;
                 if(itemStack.getType().equals(org.bukkit.Material.CHEST) && !itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_IRON_BACKPACK())){
                     event.setCancelled(true);
                     return;
                 }
+
+                if(itemStack.getType().equals(org.bukkit.Material.CHEST) && itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_IRON_BACKPACK())){
+                    old_id = itemStack.getItemMeta().getPersistentDataContainer().get(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
+                }
             }
-            int id = generate_id(((Player) event.getWhoClicked()));
-            Main.back.backPackManager.createBackPack((Player) event.getWhoClicked(), 36, "Gold Backpack", id);
-            update_result(event, id);
+            Main.back.backPackManager.upgrade_backpack((Player) event.getWhoClicked(), BackpackType.IRON, old_id);
+            update_result(event, old_id);
             return;
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_LAPIS_BACKPACK())){
+            int old_id = 0;
             for(ItemStack itemStack : event.getInventory().getMatrix()){
                 if(itemStack == null) continue;
                 if(itemStack.getType().equals(org.bukkit.Material.CHEST) && !itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_GOLD_BACKPACK())){
                     event.setCancelled(true);
                     return;
                 }
+
+                if(itemStack.getType().equals(org.bukkit.Material.CHEST) && itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_GOLD_BACKPACK())){
+                    old_id = itemStack.getItemMeta().getPersistentDataContainer().get(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
+                }
             }
-            int id = generate_id(((Player) event.getWhoClicked()));
-            Main.back.backPackManager.createBackPack((Player) event.getWhoClicked(), 45, "Lapis Backpack", id);
-            update_result(event, id);
+            Main.back.backPackManager.upgrade_backpack((Player) event.getWhoClicked(), BackpackType.GOLD, old_id);
+            update_result(event, old_id);
             return;
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_AMETHYST_BACKPACK())){
+            int old_id = 0;
             for(ItemStack itemStack : event.getInventory().getMatrix()){
                 if(itemStack == null) continue;
                 if(itemStack.getType().equals(org.bukkit.Material.CHEST) && !itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_LAPIS_BACKPACK())){
                     event.setCancelled(true);
                     return;
                 }
+
+                if(itemStack.getType().equals(org.bukkit.Material.CHEST) && itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_LAPIS_BACKPACK())){
+                    old_id = itemStack.getItemMeta().getPersistentDataContainer().get(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
+                }
             }
-            int id = generate_id(((Player) event.getWhoClicked()));
-            Main.back.backPackManager.createBackPack((Player) event.getWhoClicked(), 54, "Amethyst Backpack", id);
-            update_result(event, id);
+
+            Main.back.backPackManager.upgrade_backpack((Player) event.getWhoClicked(), BackpackType.LAPIS, old_id);
+            update_result(event, old_id);
             return;
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_DIAMOND_BACKPACK())){
+            int old_id = 0;
             for(ItemStack itemStack : event.getInventory().getMatrix()){
                 if(itemStack == null) continue;
                 if(itemStack.getType().equals(org.bukkit.Material.CHEST) && !itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_AMETHYST_BACKPACK())){
                     event.setCancelled(true);
                     return;
                 }
+
+                if(itemStack.getType().equals(org.bukkit.Material.CHEST) && itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_AMETHYST_BACKPACK())){
+                    old_id = itemStack.getItemMeta().getPersistentDataContainer().get(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
+                }
             }
-            int id = generate_id(((Player) event.getWhoClicked()));
-            Main.back.backPackManager.createBackPack((Player) event.getWhoClicked(), 81, "Diamond Backpack", id);
-            update_result(event, id);
+            Main.back.backPackManager.upgrade_backpack((Player) event.getWhoClicked(), BackpackType.AMETHYST, old_id);
+            update_result(event, old_id);
             return;
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_NETHERITE_BACKPACK())){
+            int old_id = 0;
             for(ItemStack itemStack : event.getInventory().getMatrix()){
                 if(itemStack == null) continue;
                 if(itemStack.getType().equals(org.bukkit.Material.CHEST) && !itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_DIAMOND_BACKPACK())){
                     event.setCancelled(true);
                     return;
                 }
+
+                if(itemStack.getType().equals(org.bukkit.Material.CHEST) && itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_DIAMOND_BACKPACK())){
+                    old_id = itemStack.getItemMeta().getPersistentDataContainer().get(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
+                }
             }
-            int id = generate_id(((Player) event.getWhoClicked()));
-            Main.back.backPackManager.createBackPack((Player) event.getWhoClicked(), 108, "Netherite Backpack", id);
-            update_result(event, id);
+
+            Main.back.backPackManager.upgrade_backpack((Player) event.getWhoClicked(), BackpackType.DIAMOND, old_id);
+            update_result(event, old_id);
         }
     }
 
