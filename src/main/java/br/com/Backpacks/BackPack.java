@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -98,36 +99,37 @@ public class BackPack implements Serializable {
         return data;
     }
 
-    public List<ItemStack[]> serialize_contents() {
-        List<ItemStack[]> itemStacks = new ArrayList<>();
-        itemStacks.add(first_page.getContents());
-
-        if(second_page_size > 0) {
-            itemStacks.add(second_page.getContents());
-        }
-
-        return itemStacks;
-    }
-
-    public BackPack deserialize(YamlConfiguration config, Player player) {
+    public BackPack deserialize(@NotNull YamlConfiguration config, Player player) {
 
         Set<String> keys = config.getKeys(false);
 
         for(String s : keys){
-            List<ItemStack[]> itemStacks = (List<ItemStack[]>) config.getList(s + ".c");
-            List<String> components = (List<String>) config.getList(s);
+            List<String> components = (List<String>) config.getList(s + ".i");
+            List<ItemStack> list = new ArrayList<>();
+            List<ItemStack> list2 = new ArrayList<>();
+            if(components.size() > 3){
+                second_page_size = Integer.parseInt(components.get(3));
+                second_page = Bukkit.createInventory(player, second_page_size, name);
+                for(Object item : config.getList(s + ".2")){
+                    list2.add((ItemStack) item);
+                }
+
+                second_page.setStorageContents(list2.toArray(new ItemStack[0]));
+            }
 
             first_page_size = Integer.parseInt(components.get(0));
             name = components.get(1);
             backpack_id = Integer.parseInt(components.get(2));
 
             first_page = Bukkit.createInventory(player, first_page_size, name);
-            first_page.setStorageContents(itemStacks.get(0));
-            if(itemStacks.size() > 1){
-                second_page = Bukkit.createInventory(player, second_page_size, name);
-                second_page_size = Integer.parseInt(components.get(3));
-                second_page.setStorageContents(itemStacks.get(1));
+
+            for(Object item : config.getList(s + ".1")){
+                list.add((ItemStack) item);
             }
+
+            first_page.setStorageContents(list.toArray(new ItemStack[0]));
+
+            current_page = first_page;
         }
         return this;
     }

@@ -15,19 +15,18 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
         back = this;
 
         Bukkit.getPluginManager().registerEvents(new backpack_place(), this);
         Bukkit.getPluginManager().registerEvents(new craft_backpack(), this);
         Bukkit.getPluginManager().registerEvents(new player_leave_join(), this);
         Bukkit.addRecipe(new Recipes().leather_backpack_recipe());
-
-        //ao player entrar, carregar todas as mochilas do arquivo gson
     }
 
     @Override
     public void onDisable() {
         Bukkit.getConsoleSender().sendMessage("Bye from BackPacks");
+
+        //TO-DO save all backpacks in the corresponding file
     }
 }

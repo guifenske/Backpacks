@@ -17,7 +17,7 @@ public class player_leave_join implements Listener {
     }
 
     @EventHandler
-    private void on_join_event(PlayerJoinEvent event) {
+    private void on_join_event(PlayerJoinEvent event) throws IOException {
         Main.back.backPackManager.setPlayerBackPacks(event.getPlayer(), YamlUtils.load_backpacks_yaml(event.getPlayer()));
     }
 
