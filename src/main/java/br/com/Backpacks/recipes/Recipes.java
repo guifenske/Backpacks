@@ -204,11 +204,11 @@ public class Recipes {
 
         meta.setDisplayName("Netherite Backpack");
         meta.getPersistentDataContainer().set(IS_BACKPACK, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(NAMESPACE_DIAMOND_BACKPACK, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(NAMESPACE_NETHERITE_BACKPACK, PersistentDataType.INTEGER, 1);
 
         backpack.setItemMeta(meta);
 
-        ShapedRecipe recipe = new ShapedRecipe(NAMESPACE_DIAMOND_BACKPACK, backpack);
+        ShapedRecipe recipe = new ShapedRecipe(NAMESPACE_NETHERITE_BACKPACK, backpack);
 
         recipe.shape("AAA", "ICI", "AAA");
 
