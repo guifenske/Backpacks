@@ -1,4 +1,4 @@
-package br.com.Backpacks;
+package br.com.Backpacks.backpackUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,9 +15,6 @@ public class BackPackManager {
     }
 
     private Map<Player, List<BackPack>> playerBackPacks = new HashMap<>();
-
-    private Map<Player, BackPack> current_backpack = new HashMap<>();
-
     public Map<Player, List<Integer>> getBackpacks_ids() {
         return backpacks_ids;
     }
@@ -29,13 +26,11 @@ public class BackPackManager {
 
         if(size > 54){
             BackPack backPack = new BackPack(name, Bukkit.createInventory(player, 54, name), Bukkit.createInventory(player, size - 54, name), id);
-            current_backpack.put(player, backPack);
             playerBackPacks.computeIfAbsent(player, k -> new ArrayList<>()).add(backPack);
             return backPack;
         }
 
         BackPack backPack = new BackPack(name, Bukkit.createInventory(player, size, name), id);
-        current_backpack.put(player, backPack);
         playerBackPacks.computeIfAbsent(player, k -> new ArrayList<>()).add(backPack);
         return backPack;
     }
@@ -50,48 +45,54 @@ public class BackPackManager {
     }
 
     public void upgrade_backpack(Player player, BackpackType old_type, int old_id) {
-        Inventory old_first_page = get_backpack_from_id(player, old_id).getFirst_page();
-        Inventory old_second_page = get_backpack_from_id(player, old_id).getSecond_page();
-        Inventory old_current_page = get_backpack_from_id(player, old_id).getCurrent_page();
+        BackPack old_backpack = get_backpack_from_id(player, old_id);
+        if(old_backpack == null){
+            player.sendMessage("§cFailed to upgrade backpack!");
+            return;
+        }
 
-        remove_backpack(player, get_backpack_from_id(player, old_id));
+        Inventory old_first_page = old_backpack.getFirst_page();
+        Inventory old_second_page = old_backpack.getSecond_page();
+
+        remove_backpack(player, old_backpack);
 
         switch (old_type){
             case LEATHER:
                 BackPack ironBackpack = createBackPack(player, 27, "Iron Backpack", old_id);
-                ironBackpack.setFirst_page(old_first_page);
-                ironBackpack.setSecond_page(old_second_page);
-                ironBackpack.setCurrent_page(old_current_page);
+                ironBackpack.getFirst_page().setStorageContents(old_first_page.getStorageContents());
+                ironBackpack.setCurrent_page(ironBackpack.getFirst_page());
+                playerBackPacks.get(player).add(ironBackpack);
                 break;
             case IRON:
                 BackPack goldBackpack = createBackPack(player, 36, "Gold Backpack", old_id);
-                goldBackpack.setFirst_page(old_first_page);
-                goldBackpack.setSecond_page(old_second_page);
-                goldBackpack.setCurrent_page(old_current_page);
+                goldBackpack.getFirst_page().setStorageContents(old_first_page.getStorageContents());
+                goldBackpack.setCurrent_page(goldBackpack.getFirst_page());
+                playerBackPacks.get(player).add(goldBackpack);
                 break;
             case GOLD:
                 BackPack lapisBackpack = createBackPack(player, 45, "Lapis Backpack", old_id);
-                lapisBackpack.setFirst_page(old_first_page);
-                lapisBackpack.setSecond_page(old_second_page);
-                lapisBackpack.setCurrent_page(old_current_page);
+                lapisBackpack.getFirst_page().setStorageContents(old_first_page.getStorageContents());
+                lapisBackpack.setCurrent_page(lapisBackpack.getFirst_page());
+                playerBackPacks.get(player).add(lapisBackpack);
                 break;
             case LAPIS:
                 BackPack amethystBackpack = createBackPack(player, 54, "Amethyst Backpack", old_id);
-                amethystBackpack.setFirst_page(old_first_page);
-                amethystBackpack.setSecond_page(old_second_page);
-                amethystBackpack.setCurrent_page(old_current_page);
+                amethystBackpack.getFirst_page().setStorageContents(old_first_page.getStorageContents());
+                amethystBackpack.setCurrent_page(amethystBackpack.getFirst_page());
+                playerBackPacks.get(player).add(amethystBackpack);
                 break;
             case AMETHYST:
                 BackPack diamondBackpack = createBackPack(player, 81, "Diamond Backpack", old_id);
-                diamondBackpack.setFirst_page(old_first_page);
-                diamondBackpack.setSecond_page(old_second_page);
-                diamondBackpack.setCurrent_page(old_current_page);
+                diamondBackpack.getFirst_page().setStorageContents(old_first_page.getStorageContents());
+                diamondBackpack.setCurrent_page(diamondBackpack.getFirst_page());
+                playerBackPacks.get(player).add(diamondBackpack);
                 break;
             case DIAMOND:
                 BackPack netheriteBackpack = createBackPack(player, 108, "Netherite Backpack", old_id);
-                netheriteBackpack.setFirst_page(old_first_page);
-                netheriteBackpack.setSecond_page(old_second_page);
-                netheriteBackpack.setCurrent_page(old_current_page);
+                netheriteBackpack.getFirst_page().setStorageContents(old_first_page.getStorageContents());
+                netheriteBackpack.getSecond_page().setStorageContents(old_second_page.getStorageContents());
+                netheriteBackpack.setCurrent_page(netheriteBackpack.getFirst_page());
+                playerBackPacks.get(player).add(netheriteBackpack);
                 break;
         }
 

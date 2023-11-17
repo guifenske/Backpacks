@@ -1,7 +1,7 @@
 package br.com.Backpacks.events.backpack_related;
 
-import br.com.Backpacks.BackPack;
 import br.com.Backpacks.Main;
+import br.com.Backpacks.backpackUtils.BackPack;
 import br.com.Backpacks.recipes.Recipes;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,20 +17,21 @@ public class backpack_place implements Listener {
             return;
         }
 
-        if (!event.getItemInHand().getItemMeta().getPersistentDataContainer().has(new Recipes().getIS_BACKPACK()))
-            return;
-
         ItemMeta meta = event.getItemInHand().getItemMeta();
 
         if (meta.getPersistentDataContainer().has(new Recipes().getNAMESPACE_BACKPACK_ID())) {
             int id = meta.getPersistentDataContainer().get(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
             BackPack backPack = Main.back.backPackManager.get_backpack_from_id(event.getPlayer(), id);
 
-            if(backPack == null){
+            for(BackPack backPack1 : Main.back.backPackManager.getPlayerBackPacks(event.getPlayer())){
+                event.getPlayer().openInventory(backPack1.getCurrent_page());
+                event.setCancelled(true);
                 return;
             }
 
-            event.getPlayer().openInventory(backPack.getCurrent_page());
+            if(backPack == null){
+                return;
+            }
 
             event.setCancelled(true);
         }

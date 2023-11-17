@@ -1,7 +1,7 @@
 package br.com.Backpacks.events;
 
-import br.com.Backpacks.BackpackType;
 import br.com.Backpacks.Main;
+import br.com.Backpacks.backpackUtils.BackpackType;
 import br.com.Backpacks.recipes.Recipes;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,7 +30,6 @@ public class craft_backpack implements Listener {
     @EventHandler
     private void craft_backpack_event(CraftItemEvent event){
         if(!event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new Recipes().getIS_BACKPACK())){
-            event.setCancelled(true);
             return;
         }
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_LEATHER_BACKPACK())){
@@ -41,121 +40,135 @@ public class craft_backpack implements Listener {
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_IRON_BACKPACK())){
-            int old_id = 0;
+            int old_id = -1;
             for(ItemStack itemStack : event.getInventory().getMatrix()){
                 if(itemStack == null) continue;
-                if(itemStack.getType().equals(org.bukkit.Material.CHEST) && !itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_LEATHER_BACKPACK())){
-                    event.setCancelled(true);
-                    return;
-                }
 
-                if(itemStack.getType().equals(org.bukkit.Material.CHEST) && itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_LEATHER_BACKPACK())){
+                if(itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_LEATHER_BACKPACK())){
                     old_id = itemStack.getItemMeta().getPersistentDataContainer().get(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
                 }
             }
 
-            Main.back.backPackManager.upgrade_backpack((Player) event.getWhoClicked(), BackpackType.LEATHER, old_id);
+            if(old_id == -1){
+                event.getWhoClicked().sendMessage("It looks that you don't have a backpack to upgrade in the recipe!");
+                event.setCancelled(true);
+                return;
+            }
 
             update_result(event, old_id);
+
+            Main.back.backPackManager.upgrade_backpack((Player) event.getWhoClicked(), BackpackType.LEATHER, old_id);
             return;
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_GOLD_BACKPACK())){
-            int old_id = 0;
+            int old_id = -1;
             for(ItemStack itemStack : event.getInventory().getMatrix()){
                 if(itemStack == null) continue;
-                if(itemStack.getType().equals(org.bukkit.Material.CHEST) && !itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_IRON_BACKPACK())){
-                    event.setCancelled(true);
-                    return;
-                }
 
-                if(itemStack.getType().equals(org.bukkit.Material.CHEST) && itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_IRON_BACKPACK())){
+                if(itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_IRON_BACKPACK())){
                     old_id = itemStack.getItemMeta().getPersistentDataContainer().get(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
                 }
             }
-            Main.back.backPackManager.upgrade_backpack((Player) event.getWhoClicked(), BackpackType.IRON, old_id);
+
+            if(old_id == -1){
+                event.getWhoClicked().sendMessage("It looks that you don't have a backpack to upgrade in the recipe!");
+                event.setCancelled(true);
+                return;
+            }
+
             update_result(event, old_id);
+            Main.back.backPackManager.upgrade_backpack((Player) event.getWhoClicked(), BackpackType.IRON, old_id);
             return;
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_LAPIS_BACKPACK())){
-            int old_id = 0;
+            int old_id = -1;
             for(ItemStack itemStack : event.getInventory().getMatrix()){
                 if(itemStack == null) continue;
-                if(itemStack.getType().equals(org.bukkit.Material.CHEST) && !itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_GOLD_BACKPACK())){
-                    event.setCancelled(true);
-                    return;
-                }
 
-                if(itemStack.getType().equals(org.bukkit.Material.CHEST) && itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_GOLD_BACKPACK())){
+                if(itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_GOLD_BACKPACK())){
                     old_id = itemStack.getItemMeta().getPersistentDataContainer().get(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
                 }
             }
-            Main.back.backPackManager.upgrade_backpack((Player) event.getWhoClicked(), BackpackType.GOLD, old_id);
+
+            if(old_id == -1){
+                event.getWhoClicked().sendMessage("It looks that you don't have a backpack to upgrade in the recipe!");
+                event.setCancelled(true);
+                return;
+            }
+
             update_result(event, old_id);
+            Main.back.backPackManager.upgrade_backpack((Player) event.getWhoClicked(), BackpackType.GOLD, old_id);
             return;
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_AMETHYST_BACKPACK())){
-            int old_id = 0;
+            int old_id = -1;
             for(ItemStack itemStack : event.getInventory().getMatrix()){
                 if(itemStack == null) continue;
-                if(itemStack.getType().equals(org.bukkit.Material.CHEST) && !itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_LAPIS_BACKPACK())){
-                    event.setCancelled(true);
-                    return;
-                }
 
-                if(itemStack.getType().equals(org.bukkit.Material.CHEST) && itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_LAPIS_BACKPACK())){
+                if(itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_LAPIS_BACKPACK())){
                     old_id = itemStack.getItemMeta().getPersistentDataContainer().get(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
                 }
             }
 
-            Main.back.backPackManager.upgrade_backpack((Player) event.getWhoClicked(), BackpackType.LAPIS, old_id);
+            if(old_id == -1){
+                event.getWhoClicked().sendMessage("It looks that you don't have a backpack to upgrade in the recipe!");
+                event.setCancelled(true);
+                return;
+            }
+
             update_result(event, old_id);
+            Main.back.backPackManager.upgrade_backpack((Player) event.getWhoClicked(), BackpackType.LAPIS, old_id);
             return;
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_DIAMOND_BACKPACK())){
-            int old_id = 0;
+            int old_id = -1;
             for(ItemStack itemStack : event.getInventory().getMatrix()){
                 if(itemStack == null) continue;
-                if(itemStack.getType().equals(org.bukkit.Material.CHEST) && !itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_AMETHYST_BACKPACK())){
-                    event.setCancelled(true);
-                    return;
-                }
 
-                if(itemStack.getType().equals(org.bukkit.Material.CHEST) && itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_AMETHYST_BACKPACK())){
+                if(itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_AMETHYST_BACKPACK())){
                     old_id = itemStack.getItemMeta().getPersistentDataContainer().get(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
                 }
             }
-            Main.back.backPackManager.upgrade_backpack((Player) event.getWhoClicked(), BackpackType.AMETHYST, old_id);
+
+            if(old_id == -1){
+                event.getWhoClicked().sendMessage("It looks that you don't have a backpack to upgrade in the recipe!");
+                event.setCancelled(true);
+                return;
+            }
+
             update_result(event, old_id);
+            Main.back.backPackManager.upgrade_backpack((Player) event.getWhoClicked(), BackpackType.AMETHYST, old_id);
             return;
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_NETHERITE_BACKPACK())){
-            int old_id = 0;
+            int old_id = -1;
             for(ItemStack itemStack : event.getInventory().getMatrix()){
                 if(itemStack == null) continue;
-                if(itemStack.getType().equals(org.bukkit.Material.CHEST) && !itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_DIAMOND_BACKPACK())){
-                    event.setCancelled(true);
-                    return;
-                }
 
-                if(itemStack.getType().equals(org.bukkit.Material.CHEST) && itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_DIAMOND_BACKPACK())){
+                if(itemStack.getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_DIAMOND_BACKPACK())){
                     old_id = itemStack.getItemMeta().getPersistentDataContainer().get(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
                 }
             }
 
-            Main.back.backPackManager.upgrade_backpack((Player) event.getWhoClicked(), BackpackType.DIAMOND, old_id);
+            if(old_id == -1){
+                event.getWhoClicked().sendMessage("It looks that you don't have a backpack to upgrade in the recipe!");
+                event.setCancelled(true);
+                return;
+            }
+
             update_result(event, old_id);
+            Main.back.backPackManager.upgrade_backpack((Player) event.getWhoClicked(), BackpackType.DIAMOND, old_id);
         }
     }
 
     private void update_result(CraftItemEvent event, int id) {
         ItemStack itemStack = event.getRecipe().getResult();
         ItemMeta meta = itemStack.getItemMeta();
-
         meta.getPersistentDataContainer().set(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER, id);
         itemStack.setItemMeta(meta);
         event.getInventory().setResult(itemStack);

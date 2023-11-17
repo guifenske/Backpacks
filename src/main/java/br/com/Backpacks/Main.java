@@ -1,5 +1,6 @@
 package br.com.Backpacks;
 
+import br.com.Backpacks.backpackUtils.BackPackManager;
 import br.com.Backpacks.events.backpack_related.backpack_place;
 import br.com.Backpacks.events.craft_backpack;
 import br.com.Backpacks.events.player_leave_join;

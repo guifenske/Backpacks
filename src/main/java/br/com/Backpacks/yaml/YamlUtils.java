@@ -1,8 +1,8 @@
 package br.com.Backpacks.yaml;
 
 
-import br.com.Backpacks.BackPack;
 import br.com.Backpacks.Main;
+import br.com.Backpacks.backpackUtils.BackPack;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 

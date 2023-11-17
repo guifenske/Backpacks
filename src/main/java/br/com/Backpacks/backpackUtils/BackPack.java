@@ -1,4 +1,4 @@
-package br.com.Backpacks;
+package br.com.Backpacks.backpackUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -67,6 +67,10 @@ public class BackPack implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     private String name;
