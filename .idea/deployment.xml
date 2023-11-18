@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="serverplugin[" uploadOnCheckin="5007a311-9029-4cc2-a101-3153099ffe7b" remoteFilesAllowedToDisappearOnAutoupload="false" confirmBeforeUploading="false">
+  <component name="PublishConfigData" serverName="serverplugin[" remoteFilesAllowedToDisappearOnAutoupload="false" confirmBeforeUploading="false">
     <option name="confirmBeforeUploading" value="false" />
     <serverData>
       <paths name="serverplugin[">
@@ -11,6 +11,5 @@
         </serverdata>
       </paths>
     </serverData>
-    <option name="myUploadOnCheckinName" value="serverplugin[" />
   </component>
 </project>

@@ -8,13 +8,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BackPackManager {
     public void setPlayerBackPacks(Player player, List<BackPack> backPacks) {
         playerBackPacks.put(player, backPacks);
     }
 
-    private Map<Player, List<BackPack>> playerBackPacks = new HashMap<>();
+    private Map<Player, List<BackPack>> playerBackPacks = new ConcurrentHashMap<>();
     public Map<Player, List<Integer>> getBackpacks_ids() {
         return backpacks_ids;
     }

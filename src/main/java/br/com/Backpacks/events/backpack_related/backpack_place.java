@@ -23,15 +23,7 @@ public class backpack_place implements Listener {
             int id = meta.getPersistentDataContainer().get(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
             BackPack backPack = Main.back.backPackManager.get_backpack_from_id(event.getPlayer(), id);
 
-            for(BackPack backPack1 : Main.back.backPackManager.getPlayerBackPacks(event.getPlayer())){
-                event.getPlayer().openInventory(backPack1.getCurrent_page());
-                event.setCancelled(true);
-                return;
-            }
-
-            if(backPack == null){
-                return;
-            }
+            event.getPlayer().openInventory(backPack.getCurrent_page());
 
             event.setCancelled(true);
         }

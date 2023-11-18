@@ -14,7 +14,7 @@ import java.util.List;
 public class YamlUtils {
 
     public static void save_backpacks_yaml(Player player) throws IOException {
-        File file = new File(Main.back.getDataFolder().getCanonicalFile().getAbsolutePath() + player.getUniqueId() + ".yml");
+        File file = new File(Main.back.getDataFolder().getCanonicalFile().getAbsolutePath() + "/" + player.getUniqueId() + ".yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
         for(BackPack backPack : Main.back.backPackManager.getPlayerBackPacks(player)){
@@ -30,7 +30,7 @@ public class YamlUtils {
     }
 
     public static List<BackPack> load_backpacks_yaml(Player player) throws IOException {
-        File file = new File(Main.back.getDataFolder().getCanonicalFile().getAbsolutePath() + player.getUniqueId() + ".yml");
+        File file = new File(Main.back.getDataFolder().getCanonicalFile().getAbsolutePath() + "/" + player.getUniqueId() + ".yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
         List<BackPack> backPacks = new ArrayList<>();

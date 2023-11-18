@@ -32,6 +32,7 @@ public class craft_backpack implements Listener {
         if(!event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new Recipes().getIS_BACKPACK())){
             return;
         }
+
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_LEATHER_BACKPACK())){
             int id = generate_id(((Player) event.getWhoClicked()));
             Main.back.backPackManager.createBackPack((Player) event.getWhoClicked(), 18, "Leather Backpack", id);
