@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class BackPack implements Serializable {
 
@@ -111,38 +110,34 @@ public class BackPack implements Serializable {
         return data;
     }
 
-    public BackPack deserialize(@NotNull YamlConfiguration config, Player player) {
+    public BackPack deserialize(@NotNull YamlConfiguration config, Player player, String s) {
+        List<String> components = (List<String>) config.getList(s + ".i");
+        List<ItemStack> list = new ArrayList<>();
+        List<ItemStack> list2 = new ArrayList<>();
+        if(components.size() > 3){
 
-        Set<String> keys = config.getKeys(false);
-
-        for(String s : keys){
-            List<String> components = (List<String>) config.getList(s + ".i");
-            List<ItemStack> list = new ArrayList<>();
-            List<ItemStack> list2 = new ArrayList<>();
-            if(components.size() > 3){
-                second_page_size = Integer.parseInt(components.get(3));
-                second_page = Bukkit.createInventory(player, second_page_size, name);
-                for(Object item : config.getList(s + ".2")){
-                    list2.add((ItemStack) item);
-                }
-
-                second_page.setStorageContents(list2.toArray(new ItemStack[0]));
+            second_page_size = Integer.parseInt(components.get(3));
+            second_page = Bukkit.createInventory(player, second_page_size, name);
+            for(Object item : config.getList(s + ".2")){
+                list2.add((ItemStack) item);
             }
 
-            first_page_size = Integer.parseInt(components.get(0));
-            name = components.get(1);
-            backpack_id = Integer.parseInt(components.get(2));
-
-            first_page = Bukkit.createInventory(player, first_page_size, name);
-
-            for(Object item : config.getList(s + ".1")){
-                list.add((ItemStack) item);
-            }
-
-            first_page.setStorageContents(list.toArray(new ItemStack[0]));
-
-            current_page = first_page;
+            second_page.setStorageContents(list2.toArray(new ItemStack[0]));
         }
+
+        first_page_size = Integer.parseInt(components.get(0));
+        name = components.get(1);
+        backpack_id = Integer.parseInt(components.get(2));
+
+        first_page = Bukkit.createInventory(player, first_page_size, name);
+
+        for(Object item : config.getList(s + ".1")){
+            list.add((ItemStack) item);
+        }
+
+        first_page.setStorageContents(list.toArray(new ItemStack[0]));
+
+        current_page = first_page;
         return this;
     }
 }
