@@ -38,8 +38,6 @@ public class YamlUtils {
             backPacks.add(new BackPack().deserialize(config, player, String.valueOf(i)));
         }
 
-        file.delete();
-
         return backPacks;
     }
 }

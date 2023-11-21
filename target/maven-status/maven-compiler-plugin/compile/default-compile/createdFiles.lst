@@ -10,3 +10,4 @@ br\com\Backpacks\yaml\YamlUtils.class
 br\com\Backpacks\events\player_leave_join.class
 br\com\Backpacks\events\craft_backpack.class
 br\com\Backpacks\Main.class
+br\com\Backpacks\events\backpack_related\backpack_break.class

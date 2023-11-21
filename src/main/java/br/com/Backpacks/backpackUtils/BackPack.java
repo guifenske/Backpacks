@@ -1,5 +1,6 @@
 package br.com.Backpacks.backpackUtils;
 
+import br.com.Backpacks.Main;
 import br.com.Backpacks.recipes.Recipes;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -150,9 +151,9 @@ public class BackPack implements Serializable {
             second_page.setStorageContents(list2.toArray(new ItemStack[0]));
         }
 
-        backpackType = BackpackType.valueOf(components.get(0));
-        first_page_size = Integer.parseInt(components.get(1));
-        name = components.get(2);
+        first_page_size = Integer.parseInt(components.get(0));
+        name = components.get(1);
+        backpackType = BackpackType.valueOf(components.get(2));
         backpack_id = Integer.parseInt(components.get(3));
 
         first_page = Bukkit.createInventory(player, first_page_size, name);
@@ -164,6 +165,10 @@ public class BackPack implements Serializable {
         first_page.setStorageContents(list.toArray(new ItemStack[0]));
 
         current_page = first_page;
+
+        if(!Main.back.backPackManager.getBackpacks_ids().containsKey(player)) Main.back.backPackManager.getBackpacks_ids().put(player, new ArrayList<>());
+        Main.back.backPackManager.getBackpacks_ids().get(player).add(backpack_id);
+
         return this;
     }
 

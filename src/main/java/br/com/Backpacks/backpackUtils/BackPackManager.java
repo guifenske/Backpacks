@@ -1,6 +1,5 @@
 package br.com.Backpacks.backpackUtils;
 
-import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -24,11 +23,15 @@ public class BackPackManager {
 
     private Map<Player, List<Integer>> backpacks_ids = new HashMap<>();
 
-    public Reference2ReferenceOpenHashMap<Location, BackPack> getBackpacks_placed_locations() {
+    public Map<Location, BackPack> getBackpacks_placed_locations() {
         return backpacks_placed_locations;
     }
 
-    private Reference2ReferenceOpenHashMap<Location, BackPack> backpacks_placed_locations = new Reference2ReferenceOpenHashMap<>();
+    public BackPack get_backpack_from_location(Location location) {
+        return backpacks_placed_locations.get(location);
+    }
+
+    private Map<Location, BackPack> backpacks_placed_locations = new HashMap<>();
 
     public BackPack createBackPack(Player player, int size, String name, int id, BackpackType type) {
         // Create a new backpack with the specified size and name
@@ -44,6 +47,7 @@ public class BackPackManager {
         return backPack;
     }
 
+    //TO-DO iterar sobre todos os player invés de receber o player como argumento
     public BackPack get_backpack_from_id(Player player, int id) {
         for(BackPack backPack : playerBackPacks.get(player)){
             if(backPack.getBackpack_id() == id){
