@@ -2,10 +2,11 @@ br\com\Backpacks\events\backpack_related\backpack_place.class
 br\com\Backpacks\backpackUtils\BackPack.class
 br\com\Backpacks\recipes\Recipes.class
 br\com\Backpacks\backpackUtils\BackPackManager$1.class
+br\com\Backpacks\backpackUtils\BackPack$1.class
 br\com\Backpacks\backpackUtils\BackPackManager.class
 br\com\Backpacks\backpackUtils\BackpackType.class
+br\com\Backpacks\events\backpack_related\backpack_interact.class
 br\com\Backpacks\yaml\YamlUtils.class
 br\com\Backpacks\events\player_leave_join.class
-br\com\Backpacks\recipes\RecipesUtils.class
 br\com\Backpacks\events\craft_backpack.class
 br\com\Backpacks\Main.class

@@ -10,5 +10,7 @@ public enum BackpackType {
 
     AMETHYST,
 
-    DIAMOND;
+    DIAMOND,
+
+    NETHERITE;
 }

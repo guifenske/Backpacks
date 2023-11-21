@@ -1,6 +1,7 @@
 package br.com.Backpacks;
 
 import br.com.Backpacks.backpackUtils.BackPackManager;
+import br.com.Backpacks.events.backpack_related.backpack_interact;
 import br.com.Backpacks.events.backpack_related.backpack_place;
 import br.com.Backpacks.events.craft_backpack;
 import br.com.Backpacks.events.player_leave_join;
@@ -18,6 +19,7 @@ public final class Main extends JavaPlugin {
     public void onEnable() {
         back = this;
 
+        Bukkit.getPluginManager().registerEvents(new backpack_interact(), this);
         Bukkit.getPluginManager().registerEvents(new backpack_place(), this);
         Bukkit.getPluginManager().registerEvents(new craft_backpack(), this);
         Bukkit.getPluginManager().registerEvents(new player_leave_join(), this);
