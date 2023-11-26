@@ -8,7 +8,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -136,8 +135,14 @@ public class BackPack implements Serializable {
         return data;
     }
 
-    public BackPack deserialize(@NotNull YamlConfiguration config, Player player, String s) {
+    public BackPack deserialize(YamlConfiguration config, Player player, String s) {
         List<String> components = (List<String>) config.getList(s + ".i");
+
+        if(!config.isSet(s + ".i")){
+            Bukkit.getConsoleSender().sendMessage(s + ".i" + " not found in the config, please report to the devs");
+            return null;
+        }
+
         List<ItemStack> list = new ArrayList<>();
         List<ItemStack> list2 = new ArrayList<>();
         if(components.size() > 4){
@@ -166,8 +171,7 @@ public class BackPack implements Serializable {
 
         current_page = first_page;
 
-        if(!Main.back.backPackManager.getBackpacks_ids().containsKey(player)) Main.back.backPackManager.getBackpacks_ids().put(player, new ArrayList<>());
-        Main.back.backPackManager.getBackpacks_ids().get(player).add(backpack_id);
+        Main.back.backPackManager.getBackpacks_ids().add(backpack_id);
 
         return this;
     }

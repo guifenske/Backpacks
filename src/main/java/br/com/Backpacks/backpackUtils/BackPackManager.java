@@ -17,11 +17,11 @@ public class BackPackManager {
     }
 
     private Map<Player, List<BackPack>> playerBackPacks = new ConcurrentHashMap<>();
-    public Map<Player, List<Integer>> getBackpacks_ids() {
+    public List<Integer> getBackpacks_ids() {
         return backpacks_ids;
     }
 
-    private Map<Player, List<Integer>> backpacks_ids = new HashMap<>();
+    private List<Integer> backpacks_ids = new ArrayList<>();
 
     public Map<Location, BackPack> getBackpacks_placed_locations() {
         return backpacks_placed_locations;
@@ -47,18 +47,19 @@ public class BackPackManager {
         return backPack;
     }
 
-    //TO-DO iterar sobre todos os player invés de receber o player como argumento
-    public BackPack get_backpack_from_id(Player player, int id) {
-        for(BackPack backPack : playerBackPacks.get(player)){
-            if(backPack.getBackpack_id() == id){
-                return backPack;
+    public BackPack get_backpack_from_id(int id) {
+        for(Player p : playerBackPacks.keySet()){
+            for(BackPack backPack : playerBackPacks.get(p)){
+                if(backPack.getBackpack_id() == id){
+                    return backPack;
+                }
             }
         }
         return null;
     }
 
     public void upgrade_backpack(Player player, BackpackType old_type, int old_id) {
-        BackPack old_backpack = get_backpack_from_id(player, old_id);
+        BackPack old_backpack = get_backpack_from_id(old_id);
         if(old_backpack == null){
             player.sendMessage("§cFailed to upgrade backpack!");
             return;

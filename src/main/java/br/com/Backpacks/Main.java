@@ -39,14 +39,17 @@ public final class Main extends JavaPlugin {
         Bukkit.addRecipe(new Recipes().gold_backpack_recipe());
         Bukkit.addRecipe(new Recipes().amethyst_backpack_recipe());
         Bukkit.addRecipe(new Recipes().lapis_backpack_recipe());
+
     }
 
     @Override
     public void onDisable() {
         Bukkit.getConsoleSender().sendMessage("Bye from BackPacks");
-        //TO-DO save all backpacks in the corresponding file
-
-        save_all_backpacks();
+        try {
+            save_all();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         synchronized (lock) {
             while (!save_complete) {
@@ -59,20 +62,25 @@ public final class Main extends JavaPlugin {
         }
     }
 
-    public static void save_all_backpacks(){
-        for(Player player : Main.back.backPackManager.getBackpacks_ids().keySet()){
+    public static void save_all() throws IOException {
+        if(Main.back.backPackManager.getBackpacks_ids().isEmpty()){
+            synchronized (lock) {
+                save_complete = true;
+                lock.notifyAll();
+            }
+            return;
+        }
+
+        for(Player player : Bukkit.getOnlinePlayers()){
             try {
                 YamlUtils.save_backpacks_yaml(player);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-
         synchronized (lock) {
             save_complete = true;
             lock.notifyAll();
         }
-
     }
-
 }

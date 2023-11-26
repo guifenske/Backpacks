@@ -11,20 +11,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
-
 public class craft_backpack implements Listener {
-
-
-    private int generate_id(Player player){
-        if(!Main.back.backPackManager.getBackpacks_ids().containsKey(player)){
-            Main.back.backPackManager.getBackpacks_ids().put(player, new ArrayList<>());
-            Main.back.backPackManager.getBackpacks_ids().get(player).add(0);
-            return 0;
-        }
-
-        Main.back.backPackManager.getBackpacks_ids().get(player).add(Main.back.backPackManager.getBackpacks_ids().get(player).size());
-        return Main.back.backPackManager.getBackpacks_ids().get(player).size() - 1;
+    private int generate_id(){
+        Main.back.backPackManager.getBackpacks_ids().add(Main.back.backPackManager.getBackpacks_ids().size() + 1);
+        return Main.back.backPackManager.getBackpacks_ids().size();
     }
 
     @EventHandler
@@ -34,7 +24,7 @@ public class craft_backpack implements Listener {
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new Recipes().getNAMESPACE_LEATHER_BACKPACK())){
-            int id = generate_id(((Player) event.getWhoClicked()));
+            int id = generate_id();
             Main.back.backPackManager.createBackPack((Player) event.getWhoClicked(), 18, "Leather Backpack", id, BackpackType.LEATHER);
             update_result(event, id);
             return;

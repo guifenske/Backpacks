@@ -32,7 +32,7 @@ public class backpack_interact implements Listener {
         if(event.getPlayer().isSneaking() && event.getAction().equals(RIGHT_CLICK_BLOCK)) return;
         if(!event.getItem().getItemMeta().getPersistentDataContainer().has(new Recipes().getIS_BACKPACK())) return;
 
-        BackPack backPack = Main.back.backPackManager.get_backpack_from_id(event.getPlayer(), event.getItem().getItemMeta().getPersistentDataContainer().get(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+        BackPack backPack = Main.back.backPackManager.get_backpack_from_id(event.getItem().getItemMeta().getPersistentDataContainer().get(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
         if(backPack == null) return;
 
         event.setCancelled(true);
