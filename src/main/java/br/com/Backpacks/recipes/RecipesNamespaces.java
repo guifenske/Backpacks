@@ -3,6 +3,8 @@ package br.com.Backpacks.recipes;
 import br.com.Backpacks.Main;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
@@ -12,7 +14,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Recipes {
+public class RecipesNamespaces {
     public Set<Recipe> get_backpacks_recipes = new HashSet<>();
 
     public NamespacedKey getIS_BACKPACK() {
@@ -24,6 +26,21 @@ public class Recipes {
     }
 
     private final NamespacedKey NAMESPACE_BACKPACK_ID = new NamespacedKey(Main.back, "backpackid");
+
+    private final NamespacedKey NAMESPACE_HAS_BACKPACK = new NamespacedKey(Main.back, "hasbackpack");
+
+    public NamespacedKey getNAMESPACE_HAS_BACKPACK(){
+        return NAMESPACE_HAS_BACKPACK;
+    }
+
+    public Boolean has_backpack(LivingEntity entity){
+        return entity.getPersistentDataContainer().has(NAMESPACE_HAS_BACKPACK, PersistentDataType.INTEGER);
+    }
+
+    public Boolean has_backpack(Player entity){
+        return entity.getPersistentDataContainer().has(NAMESPACE_HAS_BACKPACK, PersistentDataType.INTEGER);
+    }
+
     private final NamespacedKey IS_BACKPACK = new NamespacedKey(Main.back, "isbackpack");
 
     public NamespacedKey getNAMESPACE_LEATHER_BACKPACK() {

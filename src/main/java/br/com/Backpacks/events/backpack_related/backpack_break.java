@@ -2,7 +2,7 @@ package br.com.Backpacks.events.backpack_related;
 
 import br.com.Backpacks.Main;
 import br.com.Backpacks.backpackUtils.BackPack;
-import br.com.Backpacks.recipes.Recipes;
+import br.com.Backpacks.recipes.RecipesNamespaces;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -26,8 +26,8 @@ public class backpack_break implements Listener {
         ItemMeta meta = backpack_item.getItemMeta();
 
         meta.setDisplayName(backPack.getName());
-        meta.getPersistentDataContainer().set(new Recipes().getIS_BACKPACK(), PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER, backPack.getBackpack_id());
+        meta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_BACKPACK(), PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER, backPack.getBackpack_id());
         meta.getPersistentDataContainer().set(backPack.getNamespaceOfBackpackType(), PersistentDataType.INTEGER, 1);
         backpack_item.setItemMeta(meta);
 

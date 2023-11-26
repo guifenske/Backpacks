@@ -1,7 +1,7 @@
 package br.com.Backpacks.backpackUtils;
 
 import br.com.Backpacks.Main;
-import br.com.Backpacks.recipes.Recipes;
+import br.com.Backpacks.recipes.RecipesNamespaces;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -180,25 +180,25 @@ public class BackPack implements Serializable {
 
         switch (getBackpackType()) {
             case LEATHER -> {
-                return new Recipes().getNAMESPACE_LEATHER_BACKPACK();
+                return new RecipesNamespaces().getNAMESPACE_LEATHER_BACKPACK();
             }
             case IRON -> {
-                return new Recipes().getNAMESPACE_IRON_BACKPACK();
+                return new RecipesNamespaces().getNAMESPACE_IRON_BACKPACK();
             }
             case GOLD -> {
-                return new Recipes().getNAMESPACE_GOLD_BACKPACK();
+                return new RecipesNamespaces().getNAMESPACE_GOLD_BACKPACK();
             }
             case LAPIS -> {
-                return new Recipes().getNAMESPACE_LAPIS_BACKPACK();
+                return new RecipesNamespaces().getNAMESPACE_LAPIS_BACKPACK();
             }
             case AMETHYST -> {
-                return new Recipes().getNAMESPACE_AMETHYST_BACKPACK();
+                return new RecipesNamespaces().getNAMESPACE_AMETHYST_BACKPACK();
             }
             case DIAMOND -> {
-                return new Recipes().getNAMESPACE_DIAMOND_BACKPACK();
+                return new RecipesNamespaces().getNAMESPACE_DIAMOND_BACKPACK();
             }
             case NETHERITE -> {
-                return new Recipes().getNAMESPACE_NETHERITE_BACKPACK();
+                return new RecipesNamespaces().getNAMESPACE_NETHERITE_BACKPACK();
             }
         }
 

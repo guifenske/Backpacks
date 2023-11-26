@@ -2,7 +2,7 @@ package br.com.Backpacks.events.backpack_related;
 
 import br.com.Backpacks.Main;
 import br.com.Backpacks.backpackUtils.BackPack;
-import br.com.Backpacks.recipes.Recipes;
+import br.com.Backpacks.recipes.RecipesNamespaces;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,9 +30,9 @@ public class backpack_interact implements Listener {
         if(!event.getAction().equals(RIGHT_CLICK_BLOCK) && !event.getAction().equals(RIGHT_CLICK_AIR)) return;
         if(event.getItem() == null) return;
         if(event.getPlayer().isSneaking() && event.getAction().equals(RIGHT_CLICK_BLOCK)) return;
-        if(!event.getItem().getItemMeta().getPersistentDataContainer().has(new Recipes().getIS_BACKPACK())) return;
+        if(!event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK())) return;
 
-        BackPack backPack = Main.back.backPackManager.get_backpack_from_id(event.getItem().getItemMeta().getPersistentDataContainer().get(new Recipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+        BackPack backPack = Main.back.backPackManager.get_backpack_from_id(event.getItem().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
         if(backPack == null) return;
 
         event.setCancelled(true);
