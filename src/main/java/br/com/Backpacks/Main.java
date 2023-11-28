@@ -5,15 +5,14 @@ import br.com.Backpacks.events.backpack_related.backpack_break;
 import br.com.Backpacks.events.backpack_related.backpack_interact;
 import br.com.Backpacks.events.backpack_related.backpack_place;
 import br.com.Backpacks.events.craft_backpack;
-import br.com.Backpacks.events.equip_backpack;
 import br.com.Backpacks.events.player_leave_join;
 import br.com.Backpacks.recipes.RecipesNamespaces;
 import br.com.Backpacks.yaml.YamlUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public final class Main extends JavaPlugin {
 
@@ -27,21 +26,8 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         back = this;
-
-        Bukkit.getPluginManager().registerEvents(new backpack_interact(), this);
-        Bukkit.getPluginManager().registerEvents(new backpack_break(), this);
-        Bukkit.getPluginManager().registerEvents(new backpack_place(), this);
-        Bukkit.getPluginManager().registerEvents(new craft_backpack(), this);
-        Bukkit.getPluginManager().registerEvents(new player_leave_join(), this);
-        Bukkit.getPluginManager().registerEvents(new equip_backpack(), this);
-        Bukkit.addRecipe(new RecipesNamespaces().leather_backpack_recipe());
-        Bukkit.addRecipe(new RecipesNamespaces().iron_backpack_recipe());
-        Bukkit.addRecipe(new RecipesNamespaces().diamond_backpack_recipe());
-        Bukkit.addRecipe(new RecipesNamespaces().netherite_backpack_recipe());
-        Bukkit.addRecipe(new RecipesNamespaces().gold_backpack_recipe());
-        Bukkit.addRecipe(new RecipesNamespaces().amethyst_backpack_recipe());
-        Bukkit.addRecipe(new RecipesNamespaces().lapis_backpack_recipe());
-
+        registerEvents();
+        registerRecipes();
     }
 
     @Override
@@ -64,7 +50,7 @@ public final class Main extends JavaPlugin {
         }
     }
 
-    public static void save_all() throws IOException {
+    private void save_all() throws IOException {
         if(Main.back.backPackManager.getBackpacks_ids().isEmpty()){
             synchronized (lock) {
                 save_complete = true;
@@ -73,9 +59,9 @@ public final class Main extends JavaPlugin {
             return;
         }
 
-        for(Player player : Bukkit.getOnlinePlayers()){
+        for(UUID uuid : backPackManager.getListPlayersBackPacks().keySet()){
             try {
-                YamlUtils.save_backpacks_yaml(player);
+                YamlUtils.save_backpacks_yaml(uuid);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -85,4 +71,23 @@ public final class Main extends JavaPlugin {
             lock.notifyAll();
         }
     }
+
+    private void registerEvents(){
+        Bukkit.getPluginManager().registerEvents(new backpack_interact(), this);
+        Bukkit.getPluginManager().registerEvents(new backpack_break(), this);
+        Bukkit.getPluginManager().registerEvents(new backpack_place(), this);
+        Bukkit.getPluginManager().registerEvents(new craft_backpack(), this);
+        Bukkit.getPluginManager().registerEvents(new player_leave_join(), this);
+    }
+
+    private void registerRecipes(){
+        Bukkit.addRecipe(new RecipesNamespaces().leather_backpack_recipe());
+        Bukkit.addRecipe(new RecipesNamespaces().iron_backpack_recipe());
+        Bukkit.addRecipe(new RecipesNamespaces().diamond_backpack_recipe());
+        Bukkit.addRecipe(new RecipesNamespaces().netherite_backpack_recipe());
+        Bukkit.addRecipe(new RecipesNamespaces().gold_backpack_recipe());
+        Bukkit.addRecipe(new RecipesNamespaces().amethyst_backpack_recipe());
+        Bukkit.addRecipe(new RecipesNamespaces().lapis_backpack_recipe());
+    }
+
 }

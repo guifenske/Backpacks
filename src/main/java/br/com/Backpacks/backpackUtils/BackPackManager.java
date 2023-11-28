@@ -5,18 +5,20 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
 public class BackPackManager {
-    public void setPlayerBackPacks(Player player, List<BackPack> backPacks) {
-        playerBackPacks.put(player, backPacks);
+    public void setPlayerBackPacks(UUID uuid, List<BackPack> backPacks) {
+        listPlayersBackPacks.put(uuid, backPacks);
     }
 
-    private Map<Player, List<BackPack>> playerBackPacks = new ConcurrentHashMap<>();
+    public Map<Integer, BackPack> getBackpackById() {
+        return backpackById;
+    }
+
+    private Map<Integer, BackPack> backpackById = new HashMap<>();
+
+    private Map<UUID, List<BackPack>> listPlayersBackPacks = new HashMap<>();
     public List<Integer> getBackpacks_ids() {
         return backpacks_ids;
     }
@@ -38,24 +40,19 @@ public class BackPackManager {
 
         if(size > 54){
             BackPack backPack = new BackPack(player, name, Bukkit.createInventory(null, 54, name), Bukkit.createInventory(null, size - 54, name), id, type);
-            playerBackPacks.computeIfAbsent(player, k -> new ArrayList<>()).add(backPack);
+            listPlayersBackPacks.computeIfAbsent(player.getUniqueId(), k -> new ArrayList<>()).add(backPack);
+            backpackById.put(id, backPack);
             return backPack;
         }
 
         BackPack backPack = new BackPack(player, name, Bukkit.createInventory(null, size, name), id, type);
-        playerBackPacks.computeIfAbsent(player, k -> new ArrayList<>()).add(backPack);
+        listPlayersBackPacks.computeIfAbsent(player.getUniqueId(), k -> new ArrayList<>()).add(backPack);
+        backpackById.put(id, backPack);
         return backPack;
     }
 
     public BackPack get_backpack_from_id(int id) {
-        for(Player p : playerBackPacks.keySet()){
-            for(BackPack backPack : playerBackPacks.get(p)){
-                if(backPack.getBackpack_id() == id){
-                    return backPack;
-                }
-            }
-        }
-        return null;
+        return backpackById.get(id);
     }
 
     public void upgrade_backpack(Player player, BackpackType old_type, int old_id) {
@@ -68,63 +65,61 @@ public class BackPackManager {
         Inventory old_first_page = old_backpack.getFirst_page();
         Inventory old_second_page = old_backpack.getSecond_page();
 
-        remove_backpack(old_backpack.getOwner(), old_backpack);
+        remove_backpack(old_backpack.getOwner().getUniqueId(), old_backpack);
 
         switch (old_type){
             case LEATHER:
                 BackPack ironBackpack = createBackPack(player, 27, "Iron Backpack", old_id, BackpackType.IRON);
                 ironBackpack.getFirst_page().setStorageContents(old_first_page.getStorageContents());
-                ironBackpack.setCurrent_page(ironBackpack.getFirst_page());
                 ironBackpack.setOwner(player);
-                playerBackPacks.get(player).add(ironBackpack);
+                listPlayersBackPacks.get(player.getUniqueId()).add(ironBackpack);
                 break;
             case IRON:
                 BackPack goldBackpack = createBackPack(player, 36, "Gold Backpack", old_id, BackpackType.GOLD);
                 goldBackpack.getFirst_page().setStorageContents(old_first_page.getStorageContents());
-                goldBackpack.setCurrent_page(goldBackpack.getFirst_page());
                 goldBackpack.setOwner(player);
-                playerBackPacks.get(player).add(goldBackpack);
+                listPlayersBackPacks.get(player.getUniqueId()).add(goldBackpack);
                 break;
             case GOLD:
                 BackPack lapisBackpack = createBackPack(player, 45, "Lapis Backpack", old_id, BackpackType.LAPIS);
                 lapisBackpack.getFirst_page().setStorageContents(old_first_page.getStorageContents());
-                lapisBackpack.setCurrent_page(lapisBackpack.getFirst_page());
                 lapisBackpack.setOwner(player);
-                playerBackPacks.get(player).add(lapisBackpack);
+                listPlayersBackPacks.get(player.getUniqueId()).add(lapisBackpack);
                 break;
             case LAPIS:
                 BackPack amethystBackpack = createBackPack(player, 54, "Amethyst Backpack", old_id, BackpackType.AMETHYST);
                 amethystBackpack.getFirst_page().setStorageContents(old_first_page.getStorageContents());
-                amethystBackpack.setCurrent_page(amethystBackpack.getFirst_page());
                 amethystBackpack.setOwner(player);
-                playerBackPacks.get(player).add(amethystBackpack);
+                listPlayersBackPacks.get(player.getUniqueId()).add(amethystBackpack);
                 break;
             case AMETHYST:
                 BackPack diamondBackpack = createBackPack(player, 81, "Diamond Backpack", old_id, BackpackType.DIAMOND);
                 diamondBackpack.getFirst_page().setStorageContents(old_first_page.getStorageContents());
-                diamondBackpack.setCurrent_page(diamondBackpack.getFirst_page());
                 diamondBackpack.setOwner(player);
-                playerBackPacks.get(player).add(diamondBackpack);
+                listPlayersBackPacks.get(player.getUniqueId()).add(diamondBackpack);
                 break;
             case DIAMOND:
                 BackPack netheriteBackpack = createBackPack(player, 108, "Netherite Backpack", old_id, BackpackType.NETHERITE);
                 netheriteBackpack.getFirst_page().setStorageContents(old_first_page.getStorageContents());
                 netheriteBackpack.getSecond_page().setStorageContents(old_second_page.getStorageContents());
-                netheriteBackpack.setCurrent_page(netheriteBackpack.getFirst_page());
                 netheriteBackpack.setOwner(player);
-                playerBackPacks.get(player).add(netheriteBackpack);
+                listPlayersBackPacks.get(player.getUniqueId()).add(netheriteBackpack);
                 break;
         }
 
     }
 
-    public void remove_backpack(Player player, BackPack backPack) {
-        playerBackPacks.get(player).remove(backPack);
+    public void remove_backpack(UUID uuid, BackPack backPack) {
+        listPlayersBackPacks.get(uuid).remove(backPack);
     }
 
-    public List<BackPack> getPlayerBackPacks(Player player) {
-        // Obtenha a lista de mochilas do jogador
-        return playerBackPacks.getOrDefault(player, new ArrayList<>());
+    public Map<UUID, List<BackPack>> getListPlayersBackPacks() {
+        // Obtenha a lista de mochilas dos jogadores
+        return listPlayersBackPacks;
+    }
+
+    public List<BackPack> getPlayerBackpacks(UUID uuid){
+        return listPlayersBackPacks.get(uuid);
     }
 }
 

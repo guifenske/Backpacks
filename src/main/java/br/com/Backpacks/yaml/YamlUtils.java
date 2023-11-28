@@ -36,7 +36,9 @@ public class YamlUtils {
 
         List<BackPack> backPacks = new ArrayList<>();
         for(String i : config.getKeys(false)){
-            backPacks.add(new BackPack().deserialize(config, player, i));
+            BackPack backPack = new BackPack().deserialize(config, player, i);
+            backPacks.add(backPack);
+            Main.back.backPackManager.getBackpackById().put(backPack.getBackpack_id(), backPack);
         }
 
         file.delete();

@@ -61,20 +61,6 @@ public class BackPack implements Serializable {
 
     private Inventory first_page;
 
-    private Inventory current_page;
-
-    public void setCurrent_page(Inventory current_page) {
-        this.current_page = current_page;
-    }
-
-    public Inventory getCurrent_page() {
-        return current_page;
-    }
-
-    public void set_item(int slot, ItemStack item) {
-        current_page.setItem(slot, item);
-    }
-
     public int get_First_page_size() {
         return first_page_size;
     }
@@ -100,7 +86,6 @@ public class BackPack implements Serializable {
         this.backpackType = type;
         this.first_page_size = first_page.getSize();
         this.name = name;
-        this.current_page = first_page;
         this.first_page = first_page;
         this.backpack_id = id;
         this.owner = owner;
@@ -115,7 +100,6 @@ public class BackPack implements Serializable {
         this.first_page_size = first_page.getSize();
         this.second_page_size = second_page.getSize();
         this.name = name;
-        this.current_page = first_page;
         this.second_page = second_page;
         this.first_page = first_page;
         this.backpack_id = id;
@@ -169,8 +153,6 @@ public class BackPack implements Serializable {
 
         first_page.setStorageContents(list.toArray(new ItemStack[0]));
 
-        current_page = first_page;
-
         Main.back.backPackManager.getBackpacks_ids().add(backpack_id);
 
         return this;
@@ -206,7 +188,7 @@ public class BackPack implements Serializable {
     }
 
     public void open(Player player){
-        player.openInventory(current_page);
+        player.openInventory(first_page);
     }
 
 }

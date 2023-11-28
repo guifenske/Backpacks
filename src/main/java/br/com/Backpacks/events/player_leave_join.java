@@ -13,12 +13,12 @@ public class player_leave_join implements Listener {
 
     @EventHandler
     private void on_leave_event(PlayerQuitEvent event) throws IOException {
-        YamlUtils.save_backpacks_yaml(event.getPlayer());
+        YamlUtils.save_backpacks_yaml(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
     private void on_join_event(PlayerJoinEvent event) throws IOException {
-        Main.back.backPackManager.setPlayerBackPacks(event.getPlayer(), YamlUtils.load_backpacks_yaml(event.getPlayer()));
+        Main.back.backPackManager.setPlayerBackPacks(event.getPlayer().getUniqueId(), YamlUtils.load_backpacks_yaml(event.getPlayer()));
     }
 
 }

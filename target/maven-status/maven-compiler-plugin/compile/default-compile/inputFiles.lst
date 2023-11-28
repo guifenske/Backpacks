@@ -1,11 +1,12 @@
-C:\Users\Guilherme Melo\Desktop\IdeaProjects\Backpacks\src\main\java\br\com\Backpacks\events\backpack_related\backpack_interact.java
-C:\Users\Guilherme Melo\Desktop\IdeaProjects\Backpacks\src\main\java\br\com\Backpacks\recipes\Recipes.java
-C:\Users\Guilherme Melo\Desktop\IdeaProjects\Backpacks\src\main\java\br\com\Backpacks\yaml\YamlUtils.java
-C:\Users\Guilherme Melo\Desktop\IdeaProjects\Backpacks\src\main\java\br\com\Backpacks\Main.java
-C:\Users\Guilherme Melo\Desktop\IdeaProjects\Backpacks\src\main\java\br\com\Backpacks\backpackUtils\BackPack.java
-C:\Users\Guilherme Melo\Desktop\IdeaProjects\Backpacks\src\main\java\br\com\Backpacks\events\backpack_related\backpack_place.java
-C:\Users\Guilherme Melo\Desktop\IdeaProjects\Backpacks\src\main\java\br\com\Backpacks\backpackUtils\BackPackManager.java
-C:\Users\Guilherme Melo\Desktop\IdeaProjects\Backpacks\src\main\java\br\com\Backpacks\backpackUtils\BackpackType.java
-C:\Users\Guilherme Melo\Desktop\IdeaProjects\Backpacks\src\main\java\br\com\Backpacks\events\craft_backpack.java
-C:\Users\Guilherme Melo\Desktop\IdeaProjects\Backpacks\src\main\java\br\com\Backpacks\events\backpack_related\backpack_break.java
-C:\Users\Guilherme Melo\Desktop\IdeaProjects\Backpacks\src\main\java\br\com\Backpacks\events\player_leave_join.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/Backpacks/events/backpack_related/backpack_interact.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/Backpacks/recipes/RecipesNamespaces.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/Backpacks/backpackUtils/BackpackType.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/Backpacks/events/craft_backpack.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/Backpacks/events/equip_backpack.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/Backpacks/yaml/YamlUtils.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/Backpacks/Main.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/Backpacks/backpackUtils/BackPack.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/Backpacks/backpackUtils/BackPackManager.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/Backpacks/events/backpack_related/backpack_break.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/Backpacks/events/player_leave_join.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/Backpacks/events/backpack_related/backpack_place.java
