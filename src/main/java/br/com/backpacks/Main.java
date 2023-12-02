@@ -1,46 +1,65 @@
-package br.com.Backpacks;
+package br.com.backpacks;
 
-import br.com.Backpacks.backpackUtils.BackPackManager;
-import br.com.Backpacks.events.backpack_related.backpack_break;
-import br.com.Backpacks.events.backpack_related.backpack_interact;
-import br.com.Backpacks.events.backpack_related.backpack_place;
-import br.com.Backpacks.events.craft_backpack;
-import br.com.Backpacks.events.player_leave_join;
-import br.com.Backpacks.recipes.RecipesNamespaces;
-import br.com.Backpacks.yaml.YamlUtils;
+import br.com.backpacks.backpackUtils.BackPackManager;
+import br.com.backpacks.events.CraftBackpack;
+import br.com.backpacks.events.backpack_related.backpack_break;
+import br.com.backpacks.events.backpack_related.backpack_interact;
+import br.com.backpacks.events.backpack_related.backpack_place;
+import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.yaml.YamlUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
-import java.util.UUID;
 
 public final class Main extends JavaPlugin {
 
-    public static Main back;
+    private static Main back;
 
-    public BackPackManager backPackManager = new BackPackManager();
+    public static final BackPackManager backPackManager = new BackPackManager();
 
     private static final Object lock = new Object();
-    private static boolean save_complete = false;
+    private static boolean saveComplete = false;
+
+    public static Main getMain() {
+        return back;
+    }
+
+    private static void setBack(Main back) {
+        Main.back = back;
+    }
 
     @Override
     public void onEnable() {
-        back = this;
+        setBack(this);
         registerEvents();
         registerRecipes();
+
+        try {
+            YamlUtils.loadBackpacksYaml();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            YamlUtils.loadPlacedBackpacks();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
     public void onDisable() {
         Bukkit.getConsoleSender().sendMessage("Bye from BackPacks");
         try {
-            save_all();
+            saveAll();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         synchronized (lock) {
-            while (!save_complete) {
+            while (!saveComplete) {
                 try {
                     lock.wait();
                 } catch (InterruptedException e) {
@@ -50,24 +69,20 @@ public final class Main extends JavaPlugin {
         }
     }
 
-    private void save_all() throws IOException {
-        if(Main.back.backPackManager.getBackpacks_ids().isEmpty()){
+    private void saveAll() throws IOException {
+        if(Main.backPackManager.getBackpacks_ids().isEmpty()){
             synchronized (lock) {
-                save_complete = true;
+                saveComplete = true;
                 lock.notifyAll();
             }
             return;
         }
 
-        for(UUID uuid : backPackManager.getListPlayersBackPacks().keySet()){
-            try {
-                YamlUtils.save_backpacks_yaml(uuid);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        YamlUtils.save_backpacks_yaml();
+        YamlUtils.savePlacedBackpacks();
+
         synchronized (lock) {
-            save_complete = true;
+            saveComplete = true;
             lock.notifyAll();
         }
     }
@@ -76,8 +91,7 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new backpack_interact(), this);
         Bukkit.getPluginManager().registerEvents(new backpack_break(), this);
         Bukkit.getPluginManager().registerEvents(new backpack_place(), this);
-        Bukkit.getPluginManager().registerEvents(new craft_backpack(), this);
-        Bukkit.getPluginManager().registerEvents(new player_leave_join(), this);
+        Bukkit.getPluginManager().registerEvents(new CraftBackpack(), this);
     }
 
     private void registerRecipes(){

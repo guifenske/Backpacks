@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: br.com.Backpacks.Main
-Class-Path: br.com.Backpacks
+Main-Class: br.com.backpacks.Main
+Class-Path: br.com.backpacks
 
