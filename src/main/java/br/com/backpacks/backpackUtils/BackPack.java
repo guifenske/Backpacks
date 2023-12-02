@@ -74,15 +74,8 @@ public class BackPack implements Serializable {
     }
     public List<String> serialize() {
         List<String> data = new ArrayList<>();
-
-        data.add(String.valueOf(first_page_size));
         data.add(name);
         data.add(backpackType.toString());
-        data.add(String.valueOf(backpack_id));
-        if(second_page_size > 0) {
-            data.add(String.valueOf(second_page_size));
-        }
-
         return data;
     }
 
@@ -96,21 +89,12 @@ public class BackPack implements Serializable {
 
         List<ItemStack> list = new ArrayList<>();
         List<ItemStack> list2 = new ArrayList<>();
-        if(components.size() > 4){
 
-            second_page_size = Integer.parseInt(components.get(4));
-            second_page = Bukkit.createInventory(null, second_page_size, name);
-            for(Object item : config.getList(s + ".2")){
-                list2.add((ItemStack) item);
-            }
+        name = components.get(0);
+        backpackType = BackpackType.valueOf(components.get(1));
+        backpack_id = Integer.parseInt(s);
 
-            second_page.setStorageContents(list2.toArray(new ItemStack[0]));
-        }
-
-        first_page_size = Integer.parseInt(components.get(0));
-        name = components.get(1);
-        backpackType = BackpackType.valueOf(components.get(2));
-        backpack_id = Integer.parseInt(components.get(3));
+        updateSizeOfPages(backpackType);
 
         first_page = Bukkit.createInventory(null, first_page_size, name);
 
@@ -119,6 +103,15 @@ public class BackPack implements Serializable {
         }
 
         first_page.setStorageContents(list.toArray(new ItemStack[0]));
+
+        if(second_page_size > 0) {
+            second_page = Bukkit.createInventory(null, second_page_size, name);
+            for (Object item : config.getList(s + ".2")) {
+                list2.add((ItemStack) item);
+            }
+
+            second_page.setStorageContents(list2.toArray(new ItemStack[0]));
+        }
 
         Main.backPackManager.getBackpacks_ids().add(backpack_id);
 
@@ -152,6 +145,24 @@ public class BackPack implements Serializable {
         }
 
         return null;
+    }
+
+    private void updateSizeOfPages(BackpackType type){
+        switch (type){
+            case LEATHER -> first_page_size = 18;
+            case IRON -> first_page_size = 27;
+            case GOLD -> first_page_size = 36;
+            case LAPIS -> first_page_size = 45;
+            case AMETHYST -> first_page_size = 54;
+            case DIAMOND ->{
+                first_page_size = 54;
+                second_page_size = 27;
+            }
+            case NETHERITE ->{
+                first_page_size = 54;
+                second_page_size = 54;
+            }
+        }
     }
 
     public void open(Player player){
