@@ -1,6 +1,5 @@
 package br.com.backpacks.backpackUtils;
 
-import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -112,8 +111,6 @@ public class BackPack implements Serializable {
 
             secondPage.setStorageContents(list2.toArray(new ItemStack[0]));
         }
-
-        Main.backPackManager.getBackpacks_ids().add(id);
 
         return this;
     }
