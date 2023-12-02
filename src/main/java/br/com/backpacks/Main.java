@@ -35,6 +35,8 @@ public final class Main extends JavaPlugin {
         registerEvents();
         registerRecipes();
 
+        Bukkit.getConsoleSender().sendMessage("Hello from BackPacks");
+
         try {
             YamlUtils.loadBackpacksYaml();
         } catch (IOException e) {

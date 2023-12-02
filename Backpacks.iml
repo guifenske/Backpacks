@@ -2,8 +2,7 @@
 <module version="4">
   <component name="AdditionalModuleElements">
     <content url="file://$MODULE_DIR$" dumb="true">
-      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
     </content>
   </component>
   <component name="FacetManager">
@@ -15,8 +14,5 @@
         </autoDetectTypes>
       </configuration>
     </facet>
-  </component>
-  <component name="SonarLintModuleSettings">
-    <option name="uniqueId" value="7dbd99c1-71f2-4754-95a1-d02a8cc0ae01" />
   </component>
 </module>

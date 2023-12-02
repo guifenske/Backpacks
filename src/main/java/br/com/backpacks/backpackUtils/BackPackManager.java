@@ -4,10 +4,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class BackPackManager {
     public Map<Integer, BackPack> getBackpacks() {
@@ -16,11 +16,11 @@ public class BackPackManager {
 
     private Map<Integer, BackPack> backpacks = new HashMap<>();
 
-    public List<Integer> getBackpacks_ids() {
+    public Set<Integer> getBackpacks_ids() {
         return backpacks_ids;
     }
 
-    private List<Integer> backpacks_ids = new ArrayList<>();
+    private Set<Integer> backpacks_ids = new HashSet<>();
 
     public Map<Location, BackPack> getBackpacks_placed_locations() {
         return backpacks_placed_locations;

@@ -1,7 +1,4 @@
 name: Backpacks
 version: '1.0-SNAPSHOT'
-main: br.com.Backpacks.Main
+main: br.com.backpacks.Main
 api-version: '1.20'
-
-softdepend:
-  - NBTAPI

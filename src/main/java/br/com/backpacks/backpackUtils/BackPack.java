@@ -49,11 +49,6 @@ public class BackPack implements Serializable {
     public String getName() {
         return name;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     private String name;
 
     public BackPack(String name, Inventory first_page, int id, BackpackType type) {
@@ -125,7 +120,7 @@ public class BackPack implements Serializable {
 
         first_page.setStorageContents(list.toArray(new ItemStack[0]));
 
-        Main.getMain().backPackManager.getBackpacks_ids().add(backpack_id);
+        Main.backPackManager.getBackpacks_ids().add(backpack_id);
 
         return this;
     }

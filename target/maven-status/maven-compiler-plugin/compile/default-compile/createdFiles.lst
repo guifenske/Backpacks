@@ -1,0 +1,12 @@
+br/com/backpacks/events/backpack_related/backpack_place.class
+br/com/backpacks/backpackUtils/BackPack.class
+br/com/backpacks/backpackUtils/BackPack$1.class
+br/com/backpacks/events/CraftBackpack.class
+br/com/backpacks/events/backpack_related/backpack_interact.class
+br/com/backpacks/backpackUtils/BackpackType.class
+br/com/backpacks/yaml/YamlUtils.class
+br/com/backpacks/events/backpack_related/backpack_break.class
+br/com/backpacks/Main.class
+br/com/backpacks/backpackUtils/BackPackManager$1.class
+br/com/backpacks/backpackUtils/BackPackManager.class
+br/com/backpacks/recipes/RecipesNamespaces.class
