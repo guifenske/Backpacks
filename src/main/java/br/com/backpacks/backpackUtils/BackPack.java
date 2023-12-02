@@ -15,8 +15,8 @@ import java.util.List;
 
 public class BackPack implements Serializable {
 
-    public Inventory getSecond_page() {
-        return second_page;
+    public Inventory getSecondPage() {
+        return secondPage;
     }
 
     public BackpackType getBackpackType() {
@@ -25,52 +25,52 @@ public class BackPack implements Serializable {
 
     private BackpackType backpackType;
 
-    private Inventory second_page;
+    private Inventory secondPage;
 
-    public Inventory getFirst_page() {
-        return first_page;
+    public Inventory getFirstPage() {
+        return firstPage;
     }
 
-    public int getBackpack_id() {
-        return backpack_id;
+    public int getId() {
+        return id;
     }
 
-    private int backpack_id;
+    private int id;
 
-    private Inventory first_page;
+    private Inventory firstPage;
 
-    public int get_Second_page_size() {
-        return second_page_size;
+    public int getSecondPageSize() {
+        return secondPageSize;
     }
 
-    private int first_page_size;
-    private int second_page_size;
+    private int firstPageSize;
+    private int secondPageSize;
 
     public String getName() {
         return name;
     }
     private String name;
 
-    public BackPack(String name, Inventory first_page, int id, BackpackType type) {
+    public BackPack(String name, Inventory firstPage, int id, BackpackType type) {
         this.backpackType = type;
-        this.first_page_size = first_page.getSize();
+        this.firstPageSize = firstPage.getSize();
         this.name = name;
-        this.first_page = first_page;
-        this.backpack_id = id;
+        this.firstPage = firstPage;
+        this.id = id;
     }
 
     public BackPack() {
 
     }
 
-    public BackPack(String name, Inventory first_page, Inventory second_page, int id, BackpackType type) {
+    public BackPack(String name, Inventory firstPage, Inventory secondPage, int id, BackpackType type) {
         this.backpackType = type;
-        this.first_page_size = first_page.getSize();
-        this.second_page_size = second_page.getSize();
+        this.firstPageSize = firstPage.getSize();
+        this.secondPageSize = secondPage.getSize();
         this.name = name;
-        this.second_page = second_page;
-        this.first_page = first_page;
-        this.backpack_id = id;
+        this.secondPage = secondPage;
+        this.firstPage = firstPage;
+        this.id = id;
     }
     public List<String> serialize() {
         List<String> data = new ArrayList<>();
@@ -92,28 +92,28 @@ public class BackPack implements Serializable {
 
         name = components.get(0);
         backpackType = BackpackType.valueOf(components.get(1));
-        backpack_id = Integer.parseInt(s);
+        id = Integer.parseInt(s);
 
         updateSizeOfPages(backpackType);
 
-        first_page = Bukkit.createInventory(null, first_page_size, name);
+        firstPage = Bukkit.createInventory(null, firstPageSize, name);
 
         for(Object item : config.getList(s + ".1")){
             list.add((ItemStack) item);
         }
 
-        first_page.setStorageContents(list.toArray(new ItemStack[0]));
+        firstPage.setStorageContents(list.toArray(new ItemStack[0]));
 
-        if(second_page_size > 0) {
-            second_page = Bukkit.createInventory(null, second_page_size, name);
+        if(secondPageSize > 0) {
+            secondPage = Bukkit.createInventory(null, secondPageSize, name);
             for (Object item : config.getList(s + ".2")) {
                 list2.add((ItemStack) item);
             }
 
-            second_page.setStorageContents(list2.toArray(new ItemStack[0]));
+            secondPage.setStorageContents(list2.toArray(new ItemStack[0]));
         }
 
-        Main.backPackManager.getBackpacks_ids().add(backpack_id);
+        Main.backPackManager.getBackpacks_ids().add(id);
 
         return this;
     }
@@ -149,24 +149,24 @@ public class BackPack implements Serializable {
 
     private void updateSizeOfPages(BackpackType type){
         switch (type){
-            case LEATHER -> first_page_size = 18;
-            case IRON -> first_page_size = 27;
-            case GOLD -> first_page_size = 36;
-            case LAPIS -> first_page_size = 45;
-            case AMETHYST -> first_page_size = 54;
+            case LEATHER -> firstPageSize = 18;
+            case IRON -> firstPageSize = 27;
+            case GOLD -> firstPageSize = 36;
+            case LAPIS -> firstPageSize = 45;
+            case AMETHYST -> firstPageSize = 54;
             case DIAMOND ->{
-                first_page_size = 54;
-                second_page_size = 27;
+                firstPageSize = 54;
+                secondPageSize = 27;
             }
             case NETHERITE ->{
-                first_page_size = 54;
-                second_page_size = 54;
+                firstPageSize = 54;
+                secondPageSize = 54;
             }
         }
     }
 
     public void open(Player player){
-        player.openInventory(first_page);
+        player.openInventory(firstPage);
     }
 
 }

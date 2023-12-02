@@ -2,9 +2,9 @@ package br.com.backpacks;
 
 import br.com.backpacks.backpackUtils.BackPackManager;
 import br.com.backpacks.events.CraftBackpack;
-import br.com.backpacks.events.backpack_related.backpack_break;
-import br.com.backpacks.events.backpack_related.backpack_interact;
-import br.com.backpacks.events.backpack_related.backpack_place;
+import br.com.backpacks.events.backpack_related.BackpackBreak;
+import br.com.backpacks.events.backpack_related.BackpackInteract;
+import br.com.backpacks.events.backpack_related.BackpackPlace;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.yaml.YamlUtils;
 import org.bukkit.Bukkit;
@@ -72,7 +72,7 @@ public final class Main extends JavaPlugin {
     }
 
     private void saveAll() throws IOException {
-        if(Main.backPackManager.getBackpacks_ids().isEmpty()){
+        if(Main.backPackManager.getBackpacks().isEmpty()){
             synchronized (lock) {
                 saveComplete = true;
                 lock.notifyAll();
@@ -90,9 +90,9 @@ public final class Main extends JavaPlugin {
     }
 
     private void registerEvents(){
-        Bukkit.getPluginManager().registerEvents(new backpack_interact(), this);
-        Bukkit.getPluginManager().registerEvents(new backpack_break(), this);
-        Bukkit.getPluginManager().registerEvents(new backpack_place(), this);
+        Bukkit.getPluginManager().registerEvents(new BackpackInteract(), this);
+        Bukkit.getPluginManager().registerEvents(new BackpackBreak(), this);
+        Bukkit.getPluginManager().registerEvents(new BackpackPlace(), this);
         Bukkit.getPluginManager().registerEvents(new CraftBackpack(), this);
     }
 

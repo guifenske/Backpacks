@@ -15,8 +15,7 @@ public class CraftBackpack implements Listener {
     private static final String DONTHAVEBACKPACKMSG = "It looks that you don't have a backpack to upgrade in the recipe!";
 
     private int generateId(){
-        Main.backPackManager.getBackpacks_ids().add(Main.backPackManager.getBackpacks_ids().size() + 1);
-        return Main.backPackManager.getBackpacks_ids().size();
+        return Main.backPackManager.getBackpacks().size();
     }
 
     @EventHandler
@@ -36,7 +35,7 @@ public class CraftBackpack implements Listener {
             checkBackpackInTheMatrix(event, oldId);
             if(checkBackpackInTheMatrix(event, oldId) == -1) return;
             updateResult(event, oldId);
-            Main.backPackManager.upgrade_backpack(BackpackType.LEATHER, oldId);
+            Main.backPackManager.upgradeBackpack(BackpackType.LEATHER, oldId);
             return;
         }
 
@@ -44,7 +43,7 @@ public class CraftBackpack implements Listener {
             checkBackpackInTheMatrix(event, oldId);
             if(checkBackpackInTheMatrix(event, oldId) == -1) return;
             updateResult(event, oldId);
-            Main.backPackManager.upgrade_backpack(BackpackType.IRON, oldId);
+            Main.backPackManager.upgradeBackpack(BackpackType.IRON, oldId);
             return;
         }
 
@@ -52,7 +51,7 @@ public class CraftBackpack implements Listener {
             checkBackpackInTheMatrix(event, oldId);
             if(checkBackpackInTheMatrix(event, oldId) == -1) return;
             updateResult(event, oldId);
-            Main.backPackManager.upgrade_backpack(BackpackType.GOLD, oldId);
+            Main.backPackManager.upgradeBackpack(BackpackType.GOLD, oldId);
             return;
         }
 
@@ -60,7 +59,7 @@ public class CraftBackpack implements Listener {
             checkBackpackInTheMatrix(event, oldId);
             if(checkBackpackInTheMatrix(event, oldId) == -1) return;
             updateResult(event, oldId);
-            Main.backPackManager.upgrade_backpack(BackpackType.LAPIS, oldId);
+            Main.backPackManager.upgradeBackpack(BackpackType.LAPIS, oldId);
             return;
         }
 
@@ -68,7 +67,7 @@ public class CraftBackpack implements Listener {
             checkBackpackInTheMatrix(event, oldId);
             if(checkBackpackInTheMatrix(event, oldId) == -1) return;
             updateResult(event, oldId);
-            Main.backPackManager.upgrade_backpack(BackpackType.AMETHYST, oldId);
+            Main.backPackManager.upgradeBackpack(BackpackType.AMETHYST, oldId);
             return;
         }
 
@@ -76,7 +75,7 @@ public class CraftBackpack implements Listener {
             checkBackpackInTheMatrix(event, oldId);
             if(checkBackpackInTheMatrix(event, oldId) == -1) return;
             updateResult(event, oldId);
-            Main.backPackManager.upgrade_backpack(BackpackType.DIAMOND, oldId);
+            Main.backPackManager.upgradeBackpack(BackpackType.DIAMOND, oldId);
         }
     }
 

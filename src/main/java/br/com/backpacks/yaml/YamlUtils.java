@@ -19,11 +19,11 @@ public final class YamlUtils {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
         for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
-            config.set(backPack.getBackpack_id() + ".i", backPack.serialize());
-            config.set(backPack.getBackpack_id() + ".1", backPack.getFirst_page().getStorageContents());
+            config.set(backPack.getId() + ".i", backPack.serialize());
+            config.set(backPack.getId() + ".1", backPack.getFirstPage().getStorageContents());
 
-            if(backPack.get_Second_page_size() > 0){
-                config.set(backPack.getBackpack_id() + ".2", backPack.getSecond_page().getStorageContents());
+            if(backPack.getSecondPageSize() > 0){
+                config.set(backPack.getId() + ".2", backPack.getSecondPage().getStorageContents());
             }
 
         }
@@ -39,8 +39,7 @@ public final class YamlUtils {
 
         for(String i : config.getKeys(false)){
             BackPack backPack = new BackPack().deserialize(config, i);
-            Main.backPackManager.getBackpacks_ids().add(backPack.getBackpack_id());
-            Main.backPackManager.getBackpacks().put(backPack.getBackpack_id(), backPack);
+            Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
         }
 
         if (!file.delete()) {
@@ -67,20 +66,20 @@ public final class YamlUtils {
     }
 
     public static void savePlacedBackpacks() throws IOException {
-        if(Main.backPackManager.getBackpacks_placed_locations().isEmpty()) return;
+        if(Main.backPackManager.getBackpacksPlacedLocations().isEmpty()) return;
 
         File file = new File(Main.getMain().getDataFolder().getCanonicalFile().getAbsolutePath() + "/cached_backpacks_loc.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        for(Location location : Main.backPackManager.getBackpacks_placed_locations().keySet()){
-            BackPack backPack = Main.backPackManager.getBackpacks_placed_locations().get(location);
+        for(Location location : Main.backPackManager.getBackpacksPlacedLocations().keySet()){
+            BackPack backPack = Main.backPackManager.getBackpacksPlacedLocations().get(location);
             List<String> data = serializeLocation(location);
-            config.set(backPack.getBackpack_id() + ".loc", data);
-            config.set(backPack.getBackpack_id() + ".i", backPack.serialize());
-            config.set(backPack.getBackpack_id() + ".1", backPack.getFirst_page().getStorageContents());
+            config.set(backPack.getId() + ".loc", data);
+            config.set(backPack.getId() + ".i", backPack.serialize());
+            config.set(backPack.getId() + ".1", backPack.getFirstPage().getStorageContents());
 
-            if(backPack.getSecond_page() != null){
-                config.set(backPack.getBackpack_id() + ".2", backPack.getSecond_page().getStorageContents());
+            if(backPack.getSecondPage() != null){
+                config.set(backPack.getId() + ".2", backPack.getSecondPage().getStorageContents());
             }
 
         }
@@ -96,9 +95,8 @@ public final class YamlUtils {
 
         for(String i : config.getKeys(false)){
             BackPack backPack = new BackPack().deserialize(config, i);
-            Main.backPackManager.getBackpacks_ids().add(backPack.getBackpack_id());
             Location location = deserializeLocation((List<String>) config.getList(i + ".loc"));
-            Main.backPackManager.getBackpacks_placed_locations().put(location, backPack);
+            Main.backPackManager.getBackpacksPlacedLocations().put(location, backPack);
         }
 
         if (!file.delete()) {

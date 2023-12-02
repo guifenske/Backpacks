@@ -5,9 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class BackPackManager {
     public Map<Integer, BackPack> getBackpacks() {
@@ -16,21 +14,15 @@ public class BackPackManager {
 
     private Map<Integer, BackPack> backpacks = new HashMap<>();
 
-    public Set<Integer> getBackpacks_ids() {
-        return backpacks_ids;
+    public Map<Location, BackPack> getBackpacksPlacedLocations() {
+        return backpacksPlacedLocations;
     }
 
-    private Set<Integer> backpacks_ids = new HashSet<>();
-
-    public Map<Location, BackPack> getBackpacks_placed_locations() {
-        return backpacks_placed_locations;
+    public BackPack getBackpackFromLocation(Location location) {
+        return backpacksPlacedLocations.get(location);
     }
 
-    public BackPack get_backpack_from_location(Location location) {
-        return backpacks_placed_locations.get(location);
-    }
-
-    private Map<Location, BackPack> backpacks_placed_locations = new HashMap<>();
+    private Map<Location, BackPack> backpacksPlacedLocations = new HashMap<>();
 
     public BackPack createBackPack(int size, String name, int id, BackpackType type) {
         // Create a new backpack with the specified size and name
@@ -46,62 +38,62 @@ public class BackPackManager {
         return backPack;
     }
 
-    public BackPack get_backpack_from_id(int id) {
+    public BackPack getBackpackFromId(int id) {
         return backpacks.get(id);
     }
 
-    public void upgrade_backpack(BackpackType old_type, int old_id) {
-        BackPack old_backpack = get_backpack_from_id(old_id);
+    public void upgradeBackpack(BackpackType oldType, int oldId) {
+        BackPack oldBackpack = getBackpackFromId(oldId);
 
-        Inventory old_first_page = old_backpack.getFirst_page();
-        Inventory old_second_page = old_backpack.getSecond_page();
+        Inventory oldFirstPage = oldBackpack.getFirstPage();
+        Inventory oldSecondPage = oldBackpack.getSecondPage();
 
-        remove_backpack(old_backpack);
+        removeBackpack(oldBackpack);
 
-        switch (old_type){
+        switch (oldType){
             case LEATHER:
-                BackPack ironBackpack = createBackPack(27, "Iron Backpack", old_id, BackpackType.IRON);
-                ironBackpack.getFirst_page().setStorageContents(old_first_page.getStorageContents());
-                backpacks.remove(old_id);
-                backpacks.put(old_id, ironBackpack);
+                BackPack ironBackpack = createBackPack(27, "Iron Backpack", oldId, BackpackType.IRON);
+                ironBackpack.getFirstPage().setStorageContents(oldFirstPage.getStorageContents());
+                backpacks.remove(oldId);
+                backpacks.put(oldId, ironBackpack);
                 break;
             case IRON:
-                BackPack goldBackpack = createBackPack(36, "Gold Backpack", old_id, BackpackType.GOLD);
-                goldBackpack.getFirst_page().setStorageContents(old_first_page.getStorageContents());
-                backpacks.remove(old_id);
-                backpacks.put(old_id, goldBackpack);
+                BackPack goldBackpack = createBackPack(36, "Gold Backpack", oldId, BackpackType.GOLD);
+                goldBackpack.getFirstPage().setStorageContents(oldFirstPage.getStorageContents());
+                backpacks.remove(oldId);
+                backpacks.put(oldId, goldBackpack);
                 break;
             case GOLD:
-                BackPack lapisBackpack = createBackPack(45, "Lapis Backpack", old_id, BackpackType.LAPIS);
-                lapisBackpack.getFirst_page().setStorageContents(old_first_page.getStorageContents());
-                backpacks.remove(old_id);
-                backpacks.put(old_id, lapisBackpack);
+                BackPack lapisBackpack = createBackPack(45, "Lapis Backpack", oldId, BackpackType.LAPIS);
+                lapisBackpack.getFirstPage().setStorageContents(oldFirstPage.getStorageContents());
+                backpacks.remove(oldId);
+                backpacks.put(oldId, lapisBackpack);
                 break;
             case LAPIS:
-                BackPack amethystBackpack = createBackPack(54, "Amethyst Backpack", old_id, BackpackType.AMETHYST);
-                amethystBackpack.getFirst_page().setStorageContents(old_first_page.getStorageContents());
-                backpacks.remove(old_id);
-                backpacks.put(old_id, amethystBackpack);
+                BackPack amethystBackpack = createBackPack(54, "Amethyst Backpack", oldId, BackpackType.AMETHYST);
+                amethystBackpack.getFirstPage().setStorageContents(oldFirstPage.getStorageContents());
+                backpacks.remove(oldId);
+                backpacks.put(oldId, amethystBackpack);
                 break;
             case AMETHYST:
-                BackPack diamondBackpack = createBackPack(81, "Diamond Backpack", old_id, BackpackType.DIAMOND);
-                diamondBackpack.getFirst_page().setStorageContents(old_first_page.getStorageContents());
-                backpacks.remove(old_id);
-                backpacks.put(old_id, diamondBackpack);
+                BackPack diamondBackpack = createBackPack(81, "Diamond Backpack", oldId, BackpackType.DIAMOND);
+                diamondBackpack.getFirstPage().setStorageContents(oldFirstPage.getStorageContents());
+                backpacks.remove(oldId);
+                backpacks.put(oldId, diamondBackpack);
                 break;
             case DIAMOND:
-                BackPack netheriteBackpack = createBackPack(108, "Netherite Backpack", old_id, BackpackType.NETHERITE);
-                netheriteBackpack.getFirst_page().setStorageContents(old_first_page.getStorageContents());
-                netheriteBackpack.getSecond_page().setStorageContents(old_second_page.getStorageContents());
-                backpacks.remove(old_id);
-                backpacks.put(old_id, netheriteBackpack);
+                BackPack netheriteBackpack = createBackPack(108, "Netherite Backpack", oldId, BackpackType.NETHERITE);
+                netheriteBackpack.getFirstPage().setStorageContents(oldFirstPage.getStorageContents());
+                netheriteBackpack.getSecondPage().setStorageContents(oldSecondPage.getStorageContents());
+                backpacks.remove(oldId);
+                backpacks.put(oldId, netheriteBackpack);
                 break;
         }
 
     }
 
-    public void remove_backpack(BackPack backPack) {
-        backpacks.remove(backPack.getBackpack_id());
+    public void removeBackpack(BackPack backPack) {
+        backpacks.remove(backPack.getId());
     }
 }
 

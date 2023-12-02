@@ -13,19 +13,19 @@ import org.bukkit.persistence.PersistentDataType;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
-public class backpack_interact implements Listener {
+public class BackpackInteract implements Listener {
 
     @EventHandler
-    private void general_interaction_event(PlayerInteractEvent event){
+    private void generalInteractionEvent(PlayerInteractEvent event){
 
         Player player = event.getPlayer();
 
         if(event.getAction().equals(RIGHT_CLICK_BLOCK) && event.getClickedBlock().getType().equals(Material.CHEST)){
             if(player.isSneaking()) return;
 
-            if(Main.backPackManager.get_backpack_from_location(event.getClickedBlock().getLocation()) == null) return;
+            if(Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
 
-            BackPack backPack = Main.backPackManager.get_backpack_from_location(event.getClickedBlock().getLocation());
+            BackPack backPack = Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation());
             player.closeInventory();
             event.setCancelled(true);
             backPack.open(player);
@@ -36,7 +36,7 @@ public class backpack_interact implements Listener {
         if(player.isSneaking() && event.getAction().equals(RIGHT_CLICK_BLOCK)) return;
         if(!event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK())) return;
 
-        BackPack backPack = Main.backPackManager.get_backpack_from_id(event.getItem().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+        BackPack backPack = Main.backPackManager.getBackpackFromId(event.getItem().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
         if(backPack == null) return;
 
         event.setCancelled(true);
