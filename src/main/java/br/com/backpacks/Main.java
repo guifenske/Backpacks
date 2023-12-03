@@ -2,9 +2,12 @@ package br.com.backpacks;
 
 import br.com.backpacks.backpackUtils.BackPackManager;
 import br.com.backpacks.events.CraftBackpack;
+import br.com.backpacks.events.RenameBackpackChat;
 import br.com.backpacks.events.backpack_related.BackpackBreak;
 import br.com.backpacks.events.backpack_related.BackpackInteract;
 import br.com.backpacks.events.backpack_related.BackpackPlace;
+import br.com.backpacks.events.inventory.OnClickConfig;
+import br.com.backpacks.events.inventory.OnCloseBackpackConfigMenu;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.yaml.YamlUtils;
 import org.bukkit.Bukkit;
@@ -15,6 +18,8 @@ import java.io.IOException;
 public final class Main extends JavaPlugin {
 
     private static Main back;
+
+    public static String PREFIX = "§8[§6BackPacks§8] §7";
 
     public static final BackPackManager backPackManager = new BackPackManager();
 
@@ -94,6 +99,9 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new BackpackBreak(), this);
         Bukkit.getPluginManager().registerEvents(new BackpackPlace(), this);
         Bukkit.getPluginManager().registerEvents(new CraftBackpack(), this);
+        Bukkit.getPluginManager().registerEvents(new OnClickConfig(), this);
+        Bukkit.getPluginManager().registerEvents(new OnCloseBackpackConfigMenu(), this);
+        Bukkit.getPluginManager().registerEvents(new RenameBackpackChat(), this);
     }
 
     private void registerRecipes(){

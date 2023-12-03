@@ -9,23 +9,31 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class RecipesNamespaces {
-    public Set<Recipe> get_backpacks_recipes = new HashSet<>();
 
     public NamespacedKey getIS_BACKPACK() {
         return IS_BACKPACK;
     }
 
+    private final NamespacedKey IS_BACKPACK = new NamespacedKey(Main.getMain(), "isbackpack");
+
+    private final NamespacedKey BACKPACK_ID = new NamespacedKey(Main.getMain(), "backpackid");
+
     public NamespacedKey getNAMESPACE_BACKPACK_ID() {
-        return NAMESPACE_BACKPACK_ID;
+        return BACKPACK_ID;
     }
 
-    private final NamespacedKey NAMESPACE_BACKPACK_ID = new NamespacedKey(Main.getMain(), "backpackid");
+    public NamespacedKey getHAS_BACKPACK() {
+        return HAS_BACKPACK;
+    }
 
-    private final NamespacedKey IS_BACKPACK = new NamespacedKey(Main.getMain(), "isbackpack");
+    private final NamespacedKey HAS_BACKPACK = new NamespacedKey(Main.getMain(), "hasbackpack");
+
+    public NamespacedKey getIS_CONFIG_ITEM() {
+        return IS_CONFIG_ITEM;
+    }
+
+    private final NamespacedKey IS_CONFIG_ITEM = new NamespacedKey(Main.getMain(), "isconfigitem");
 
     public NamespacedKey getNAMESPACE_LEATHER_BACKPACK() {
         return NAMESPACE_LEATHER_BACKPACK;
@@ -83,9 +91,6 @@ public class RecipesNamespaces {
         recipe.setIngredient('C', Material.CHEST);
         recipe.setIngredient('L', Material.LEATHER);
         recipe.setIngredient('F', Material.FEATHER);
-
-        get_backpacks_recipes.add(recipe);
-
         return recipe;
     }
 
@@ -105,8 +110,6 @@ public class RecipesNamespaces {
 
         recipe.setIngredient('C', Material.CHEST);
         recipe.setIngredient('I', Material.IRON_INGOT);
-
-        get_backpacks_recipes.add(recipe);
 
         return recipe;
     }
@@ -128,8 +131,6 @@ public class RecipesNamespaces {
         recipe.setIngredient('C', Material.CHEST);
         recipe.setIngredient('I', Material.GOLD_INGOT);
 
-        get_backpacks_recipes.add(recipe);
-
         return recipe;
     }
 
@@ -149,8 +150,6 @@ public class RecipesNamespaces {
 
         recipe.setIngredient('C', Material.CHEST);
         recipe.setIngredient('I', Material.LAPIS_LAZULI);
-
-        get_backpacks_recipes.add(recipe);
 
         return recipe;
     }
@@ -172,8 +171,6 @@ public class RecipesNamespaces {
         recipe.setIngredient('C', Material.CHEST);
         recipe.setIngredient('I', Material.AMETHYST_SHARD);
 
-        get_backpacks_recipes.add(recipe);
-
         return recipe;
     }
 
@@ -194,8 +191,6 @@ public class RecipesNamespaces {
         recipe.setIngredient('C', Material.CHEST);
         recipe.setIngredient('I', Material.DIAMOND);
 
-        get_backpacks_recipes.add(recipe);
-
         return recipe;
     }
 
@@ -211,14 +206,11 @@ public class RecipesNamespaces {
 
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACE_NETHERITE_BACKPACK, backpack);
 
-        recipe.shape("AAA", "ICI", "AAA");
+        recipe.shape("AIA", "ICI", "AIA");
 
         recipe.setIngredient('C', Material.CHEST);
         recipe.setIngredient('I', Material.NETHERITE_INGOT);
         recipe.setIngredient('A', Material.AIR);
-
-        get_backpacks_recipes.add(recipe);
-
         return recipe;
     }
 }

@@ -1,18 +1,22 @@
 package br.com.backpacks.backpackUtils;
 
+import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BackPack implements Serializable {
+public class BackPack{
 
     public Inventory getSecondPage() {
         return secondPage;
@@ -48,6 +52,11 @@ public class BackPack implements Serializable {
     public String getName() {
         return name;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     private String name;
 
     public BackPack(String name, Inventory firstPage, int id, BackpackType type) {
@@ -56,10 +65,11 @@ public class BackPack implements Serializable {
         this.name = name;
         this.firstPage = firstPage;
         this.id = id;
+
+        setArrowsAndConfigOptionItems();
     }
 
     public BackPack() {
-
     }
 
     public BackPack(String name, Inventory firstPage, Inventory secondPage, int id, BackpackType type) {
@@ -70,6 +80,8 @@ public class BackPack implements Serializable {
         this.secondPage = secondPage;
         this.firstPage = firstPage;
         this.id = id;
+
+        setArrowsAndConfigOptionItems();
     }
     public List<String> serialize() {
         List<String> data = new ArrayList<>();
@@ -111,6 +123,8 @@ public class BackPack implements Serializable {
 
             secondPage.setStorageContents(list2.toArray(new ItemStack[0]));
         }
+
+        setArrowsAndConfigOptionItems();
 
         return this;
     }
@@ -163,7 +177,45 @@ public class BackPack implements Serializable {
     }
 
     public void open(Player player){
+        Main.backPackManager.isInBackpack.put(player, id);
         player.openInventory(firstPage);
     }
 
+    public void open(HumanEntity player){
+        Main.backPackManager.isInBackpack.put((Player) player, id);
+        player.openInventory(firstPage);
+    }
+
+    public void openSecondPage(Player player){
+        Main.backPackManager.isInBackpack.put(player, id);
+        player.openInventory(secondPage);
+    }
+
+    public void setArrowsAndConfigOptionItems(){
+        ItemStack arrowLeft = new ItemStack(Material.ARROW);
+        ItemMeta arrowLeftMeta = arrowLeft.getItemMeta();
+        arrowLeftMeta.setDisplayName("§cBack");
+        arrowLeftMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 1);
+        arrowLeft.setItemMeta(arrowLeftMeta);
+
+        ItemStack arrowRight = new ItemStack(Material.ARROW);
+        ItemMeta arrowRightMeta = arrowRight.getItemMeta();
+        arrowRightMeta.setDisplayName("§aNext");
+        arrowRightMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 1);
+        arrowRight.setItemMeta(arrowRightMeta);
+
+        ItemStack config = new ItemStack(Material.NETHER_STAR);
+        ItemMeta configMeta = config.getItemMeta();
+        configMeta.setDisplayName("§6Config");
+        configMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 1);
+        config.setItemMeta(configMeta);
+
+        firstPage.setItem(firstPageSize - 1, config);
+
+        if(secondPageSize > 0){
+            firstPage.setItem(firstPageSize - 2, arrowRight);
+            secondPage.setItem(secondPageSize - 2, arrowLeft);
+            secondPage.setItem(firstPageSize - 1, config);
+        }
+    }
 }

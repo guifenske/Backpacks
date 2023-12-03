@@ -2,6 +2,7 @@ package br.com.backpacks.backpackUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import java.util.HashMap;
@@ -13,6 +14,10 @@ public class BackPackManager {
     }
 
     private Map<Integer, BackPack> backpacks = new HashMap<>();
+
+    public HashMap<Player, Integer> isInBackpack = new HashMap<>();
+    public HashMap<Player, Integer> isRenaming = new HashMap<>();
+    public HashMap<Player, Integer> isInBackpackConfig = new HashMap<>();
 
     public Map<Location, BackPack> getBackpacksPlacedLocations() {
         return backpacksPlacedLocations;

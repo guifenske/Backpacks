@@ -102,7 +102,6 @@ public final class YamlUtils {
         if (!file.delete()) {
             Main.getMain().getLogger().warning("Failed to delete cached_locs.yml");
         }
-
     }
 
 }
