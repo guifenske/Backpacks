@@ -7,6 +7,7 @@ import org.bukkit.inventory.Inventory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BackPackManager {
     public Map<Integer, BackPack> getBackpacks() {
@@ -15,9 +16,9 @@ public class BackPackManager {
 
     private Map<Integer, BackPack> backpacks = new HashMap<>();
 
-    public HashMap<Player, Integer> isInBackpack = new HashMap<>();
-    public HashMap<Player, Integer> isRenaming = new HashMap<>();
-    public HashMap<Player, Integer> isInBackpackConfig = new HashMap<>();
+    public ConcurrentHashMap<Player, Integer> isInBackpack = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<Player, Integer> isRenaming = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<Player, Integer> isInBackpackConfig = new ConcurrentHashMap<>();
 
     public Map<Location, BackPack> getBackpacksPlacedLocations() {
         return backpacksPlacedLocations;

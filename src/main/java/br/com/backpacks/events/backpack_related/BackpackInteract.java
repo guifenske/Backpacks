@@ -4,6 +4,7 @@ import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,6 +30,7 @@ public class BackpackInteract implements Listener {
             player.closeInventory();
             event.setCancelled(true);
             backPack.open(player);
+            player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
             return;
         }
         if(!event.getAction().equals(RIGHT_CLICK_BLOCK) && !event.getAction().equals(RIGHT_CLICK_AIR)) return;
@@ -41,5 +43,6 @@ public class BackpackInteract implements Listener {
 
         event.setCancelled(true);
         backPack.open(player);
+        player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
     }
 }

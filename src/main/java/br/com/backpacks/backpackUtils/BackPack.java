@@ -55,6 +55,17 @@ public class BackPack{
 
     public void setName(String name) {
         this.name = name;
+        Inventory newFirstPage = Bukkit.createInventory(null, firstPageSize, name);
+        newFirstPage.setStorageContents(firstPage.getStorageContents());
+
+
+        firstPage = newFirstPage;
+
+        if(secondPageSize > 0){
+            Inventory newSecondPage = Bukkit.createInventory(null, secondPageSize, name);
+            newSecondPage.setStorageContents(secondPage.getStorageContents());
+            secondPage = newSecondPage;
+        }
     }
 
     private String name;
@@ -190,6 +201,31 @@ public class BackPack{
         Main.backPackManager.isInBackpack.put(player, id);
         player.openInventory(secondPage);
     }
+
+    public ItemStack[] getStorageContentsFirstPage() {
+        ItemStack[] array = firstPage.getStorageContents();
+        int length = array.length;
+
+        if (secondPageSize > 0) {
+            ItemStack[] list = new ItemStack[length - 2];
+            System.arraycopy(array, 0, list, 0, length - 2);
+            return list;
+        }
+
+        ItemStack[] list = new ItemStack[length - 1];
+        System.arraycopy(array, 0, list, 0, length - 1);
+        return list;
+    }
+
+    public ItemStack[] getStorageContentsSecondPage() {
+        ItemStack[] array = firstPage.getStorageContents();
+        int length = array.length;
+        ItemStack[] list = new ItemStack[length - 2];
+
+        System.arraycopy(array, 0, list, 0, length - 2);
+        return list;
+    }
+
 
     public void setArrowsAndConfigOptionItems(){
         ItemStack arrowLeft = new ItemStack(Material.ARROW);

@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class OnClickInConfigMenu implements Listener {
 
@@ -20,25 +21,31 @@ public class OnClickInConfigMenu implements Listener {
         if(!event.getClickedInventory().getType().equals(InventoryType.CHEST)) return;
 
         Player player = (Player) event.getWhoClicked();
+        event.setCancelled(true);
+
+        Main.getMain().getLogger().warning("Clicked in config");
 
         switch (event.getRawSlot()){
             //go back to the previous page
             case 45:
-                event.setCancelled(true);
                 BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.isInBackpackConfig.get(player));
                 Main.backPackManager.isInBackpackConfig.remove(player);
                 backPack.open(player);
                 break;
             case 53:
-                event.setCancelled(true);
-                if(player.getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK())){
-                    player.getPersistentDataContainer().remove(new RecipesNamespaces().getIS_BACKPACK());
-                }   else player.getPersistentDataContainer().set(new RecipesNamespaces().getIS_BACKPACK(), PersistentDataType.INTEGER, 1);
+                if(player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())){
+                    player.getPersistentDataContainer().remove(new RecipesNamespaces().getHAS_BACKPACK());
+                }   else player.getPersistentDataContainer().set(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER, 1);
 
-                InventoryBuilder.updateInv(player);
+                BukkitRunnable runnable = new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        InventoryBuilder.updateInv(player, event.getClickedInventory());
+                    }
+                };
+                runnable.runTaskLater(Main.getMain(), 1);
                 break;
             case 52:
-                event.setCancelled(true);
                 Main.backPackManager.isRenaming.put(player, Main.backPackManager.isInBackpackConfig.get(player));
                 Main.backPackManager.isInBackpackConfig.remove(player);
                 player.sendMessage(Main.PREFIX + "§eType the new name of the backpack");

@@ -50,8 +50,22 @@ public class InventoryBuilder extends BackPack {
         return inv;
     }
 
-    public static void updateInv(Player player){
-        player.openInventory(InventoryBuilder.configInv(player));
+    public static void updateInv(Player player, Inventory inventory){
+        ItemStack equipBackpack = new ItemStack(Material.CHEST);
+        ItemMeta equipBackpackMeta = equipBackpack.getItemMeta();
+        equipBackpackMeta.setDisplayName("Equip Backpack");
+        equipBackpackMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 2);
+        equipBackpack.setItemMeta(equipBackpackMeta);
+
+        ItemStack unequipBackpack = new ItemStack(Material.ENDER_CHEST);
+        ItemMeta unequipBackpackMeta = unequipBackpack.getItemMeta();
+        unequipBackpackMeta.setDisplayName("Un-equip Backpack");
+        unequipBackpackMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 3);
+        unequipBackpack.setItemMeta(unequipBackpackMeta);
+
+        if(player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())){
+            inventory.setItem(53, unequipBackpack);
+        }   else inventory.setItem(53, equipBackpack);
     }
 
 }
