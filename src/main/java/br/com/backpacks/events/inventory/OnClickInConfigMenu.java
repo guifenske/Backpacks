@@ -2,7 +2,6 @@ package br.com.backpacks.events.inventory;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
-import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.Utils;
 import org.bukkit.entity.Player;
@@ -10,7 +9,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class OnClickInConfigMenu implements Listener {
 
@@ -43,13 +41,9 @@ public class OnClickInConfigMenu implements Listener {
                     player.getPersistentDataContainer().set(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER, Main.backPackManager.isInBackpackConfig.get(player.getUniqueId()));
                 }
 
-                BukkitRunnable runnable = new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        InventoryBuilder.updateInv(player, event.getClickedInventory());
-                    }
-                };
-                runnable.runTaskLater(Main.getMain(), 1);
+                Main.backPackManager.isInBackpackConfig.remove(player.getUniqueId());
+                player.closeInventory();
+
                 break;
             //rename backpack
             case 52:
