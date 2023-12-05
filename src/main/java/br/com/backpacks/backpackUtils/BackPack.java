@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -198,17 +197,12 @@ public class BackPack{
     }
 
     public void open(Player player){
-        Main.backPackManager.isInBackpack.put(player, id);
-        player.openInventory(firstPage);
-    }
-
-    public void open(HumanEntity player){
-        Main.backPackManager.isInBackpack.put((Player) player, id);
+        Main.backPackManager.isInBackpack.put(player.getUniqueId(), id);
         player.openInventory(firstPage);
     }
 
     public void openSecondPage(Player player){
-        Main.backPackManager.isInBackpack.put(player, id);
+        Main.backPackManager.isInBackpack.put(player.getUniqueId(), id);
         player.openInventory(secondPage);
     }
 

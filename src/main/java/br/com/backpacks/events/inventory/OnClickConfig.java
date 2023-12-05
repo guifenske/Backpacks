@@ -12,12 +12,12 @@ public class OnClickConfig implements Listener {
     @EventHandler
     private void onClick(InventoryClickEvent event){
         if(event.getClickedInventory() == null) return;
-        if(!Main.backPackManager.isInBackpack.containsKey((Player) event.getWhoClicked())) return;
+        if(!Main.backPackManager.isInBackpack.containsKey(event.getWhoClicked().getUniqueId())) return;
         if(event.getSlot() != event.getClickedInventory().getSize() - 1) return;
 
         event.setCancelled(true);
-        Main.backPackManager.isInBackpackConfig.put((Player) event.getWhoClicked(), Main.backPackManager.isInBackpack.get((Player) event.getWhoClicked()));
+        Main.backPackManager.isInBackpackConfig.put(event.getWhoClicked().getUniqueId(), Main.backPackManager.isInBackpack.get(event.getWhoClicked().getUniqueId()));
         event.getWhoClicked().openInventory(InventoryBuilder.configInv((Player) event.getWhoClicked()));
-        Main.backPackManager.isInBackpack.remove((Player) event.getWhoClicked());
+        Main.backPackManager.isInBackpack.remove(event.getWhoClicked().getUniqueId());
     }
 }

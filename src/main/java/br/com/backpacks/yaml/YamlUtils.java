@@ -39,6 +39,7 @@ public final class YamlUtils {
 
         for(String i : config.getKeys(false)){
             BackPack backPack = new BackPack().deserialize(config, i);
+            backPack.setIsBlock(false);
             Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
         }
 

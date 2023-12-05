@@ -2,12 +2,11 @@ package br.com.backpacks.backpackUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BackPackManager {
@@ -17,11 +16,9 @@ public class BackPackManager {
 
     private Map<Integer, BackPack> backpacks = new HashMap<>();
 
-    public HashMap<Player, ItemStack> itemOfSwap = new HashMap<>();
-
-    public ConcurrentHashMap<Player, Integer> isInBackpack = new ConcurrentHashMap<>();
-    public ConcurrentHashMap<Player, Integer> isRenaming = new ConcurrentHashMap<>();
-    public ConcurrentHashMap<Player, Integer> isInBackpackConfig = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<UUID, Integer> isInBackpack = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<UUID, Integer> isRenaming = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<UUID, Integer> isInBackpackConfig = new ConcurrentHashMap<>();
 
     public Map<Location, BackPack> getBackpacksPlacedLocations() {
         return backpacksPlacedLocations;
@@ -98,7 +95,6 @@ public class BackPackManager {
                 backpacks.put(oldId, netheriteBackpack);
                 break;
         }
-
     }
 
     public void removeBackpack(BackPack backPack) {

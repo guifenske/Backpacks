@@ -42,10 +42,9 @@ public class BackpackInteract implements Listener {
         BackPack backPack = Main.backPackManager.getBackpackFromId(event.getItem().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
         if(backPack == null) return;
 
-        Main.backPackManager.itemOfSwap.put(player, event.getItem());
-
         event.setCancelled(true);
         backPack.setIsBlock(false);
+
         backPack.open(player);
         player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
     }

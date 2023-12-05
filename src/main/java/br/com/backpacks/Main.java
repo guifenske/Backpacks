@@ -2,11 +2,7 @@ package br.com.backpacks;
 
 import br.com.backpacks.backpackUtils.BackPackManager;
 import br.com.backpacks.events.CraftBackpack;
-import br.com.backpacks.events.OpenBackpackOfTheBack;
-import br.com.backpacks.events.RenameBackpackChat;
-import br.com.backpacks.events.backpack_related.BackpackBreak;
-import br.com.backpacks.events.backpack_related.BackpackInteract;
-import br.com.backpacks.events.backpack_related.BackpackPlace;
+import br.com.backpacks.events.backpack_related.*;
 import br.com.backpacks.events.inventory.OnClickConfig;
 import br.com.backpacks.events.inventory.OnClickInConfigMenu;
 import br.com.backpacks.events.inventory.OnCloseBackpack;
@@ -26,6 +22,12 @@ public final class Main extends JavaPlugin {
 
     public static final BackPackManager backPackManager = new BackPackManager();
 
+    public ThreadBackpacks getThreadBackpacks() {
+        return threadBackpacks;
+    }
+
+    private final ThreadBackpacks threadBackpacks = new ThreadBackpacks();
+
     private static final Object lock = new Object();
     private static boolean saveComplete = false;
 
@@ -42,8 +44,7 @@ public final class Main extends JavaPlugin {
         setBack(this);
         registerEvents();
         registerRecipes();
-
-        Bukkit.getConsoleSender().sendMessage("Hello from BackPacks");
+        Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Hello from BackPacks");
 
         try {
             YamlUtils.loadBackpacksYaml();
@@ -90,6 +91,8 @@ public final class Main extends JavaPlugin {
 
         YamlUtils.save_backpacks_yaml();
         YamlUtils.savePlacedBackpacks();
+
+        threadBackpacks.encerrar();
 
         synchronized (lock) {
             saveComplete = true;

@@ -40,7 +40,7 @@ public class InventoryBuilder extends BackPack {
         renameMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 5);
         rename.setItemMeta(renameMeta);
 
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.isInBackpackConfig.get(player));
+        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.isInBackpackConfig.get(player.getUniqueId()));
 
         if(!backPack.getIsBlock()) {
             if (player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) {
