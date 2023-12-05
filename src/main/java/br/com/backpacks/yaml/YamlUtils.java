@@ -95,6 +95,7 @@ public final class YamlUtils {
 
         for(String i : config.getKeys(false)){
             BackPack backPack = new BackPack().deserialize(config, i);
+            backPack.setIsBlock(true);
             Location location = deserializeLocation((List<String>) config.getList(i + ".loc"));
             Main.backPackManager.getBackpacksPlacedLocations().put(location, backPack);
         }

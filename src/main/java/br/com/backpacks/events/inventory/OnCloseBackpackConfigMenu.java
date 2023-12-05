@@ -12,6 +12,7 @@ public class OnCloseBackpackConfigMenu implements Listener {
     @EventHandler
     private void onClose(InventoryCloseEvent event){
         if(!Main.backPackManager.isInBackpackConfig.containsKey((Player) event.getPlayer())) return;
+        if(Main.backPackManager.isInBackpack.containsKey((Player) event.getPlayer())) return;
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.isInBackpackConfig.get((Player) event.getPlayer()));
         if(backPack == null) return;
 

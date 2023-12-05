@@ -30,6 +30,16 @@ public class BackPack{
 
     private Inventory secondPage;
 
+    public Boolean getIsBlock() {
+        return isBlock;
+    }
+
+    public void setIsBlock(Boolean block) {
+        isBlock = block;
+    }
+
+    private Boolean isBlock = false;
+
     public Inventory getFirstPage() {
         return firstPage;
     }

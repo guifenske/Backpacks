@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +16,8 @@ public class BackPackManager {
     }
 
     private Map<Integer, BackPack> backpacks = new HashMap<>();
+
+    public HashMap<Player, ItemStack> itemOfSwap = new HashMap<>();
 
     public ConcurrentHashMap<Player, Integer> isInBackpack = new ConcurrentHashMap<>();
     public ConcurrentHashMap<Player, Integer> isRenaming = new ConcurrentHashMap<>();

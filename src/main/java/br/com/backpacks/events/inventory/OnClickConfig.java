@@ -15,11 +15,9 @@ public class OnClickConfig implements Listener {
         if(!Main.backPackManager.isInBackpack.containsKey((Player) event.getWhoClicked())) return;
         if(event.getSlot() != event.getClickedInventory().getSize() - 1) return;
 
-        Main.getMain().getLogger().warning("Clicked in config menu");
-
         event.setCancelled(true);
-        event.getWhoClicked().openInventory(InventoryBuilder.configInv((Player) event.getWhoClicked()));
         Main.backPackManager.isInBackpackConfig.put((Player) event.getWhoClicked(), Main.backPackManager.isInBackpack.get((Player) event.getWhoClicked()));
+        event.getWhoClicked().openInventory(InventoryBuilder.configInv((Player) event.getWhoClicked()));
         Main.backPackManager.isInBackpack.remove((Player) event.getWhoClicked());
     }
 }

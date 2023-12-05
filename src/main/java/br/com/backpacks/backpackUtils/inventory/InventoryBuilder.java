@@ -1,5 +1,6 @@
 package br.com.backpacks.backpackUtils.inventory;
 
+import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import org.bukkit.Bukkit;
@@ -39,9 +40,13 @@ public class InventoryBuilder extends BackPack {
         renameMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 5);
         rename.setItemMeta(renameMeta);
 
-        if(player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())){
-            inv.setItem(53, unequipBackpack);
-        }   else inv.setItem(53, equipBackpack);
+        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.isInBackpackConfig.get(player));
+
+        if(!backPack.getIsBlock()) {
+            if (player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) {
+                inv.setItem(53, unequipBackpack);
+            } else inv.setItem(53, equipBackpack);
+        }
 
         inv.setItem(52, rename);
 

@@ -20,6 +20,8 @@ public class BackpackPlace implements Listener {
         BackPack backPack = Main.backPackManager.getBackpackFromId(event.getItemInHand().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
         if(backPack == null) return;
 
+        backPack.setIsBlock(true);
+
         Main.backPackManager.getBackpacksPlacedLocations().put(event.getBlockPlaced().getLocation(), backPack);
     }
 

@@ -2,12 +2,14 @@ package br.com.backpacks;
 
 import br.com.backpacks.backpackUtils.BackPackManager;
 import br.com.backpacks.events.CraftBackpack;
+import br.com.backpacks.events.OpenBackpackOfTheBack;
 import br.com.backpacks.events.RenameBackpackChat;
 import br.com.backpacks.events.backpack_related.BackpackBreak;
 import br.com.backpacks.events.backpack_related.BackpackInteract;
 import br.com.backpacks.events.backpack_related.BackpackPlace;
 import br.com.backpacks.events.inventory.OnClickConfig;
 import br.com.backpacks.events.inventory.OnClickInConfigMenu;
+import br.com.backpacks.events.inventory.OnCloseBackpack;
 import br.com.backpacks.events.inventory.OnCloseBackpackConfigMenu;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.yaml.YamlUtils;
@@ -104,6 +106,8 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new OnClickInConfigMenu(), this);
         Bukkit.getPluginManager().registerEvents(new OnCloseBackpackConfigMenu(), this);
         Bukkit.getPluginManager().registerEvents(new RenameBackpackChat(), this);
+        Bukkit.getPluginManager().registerEvents(new OpenBackpackOfTheBack(), this);
+        Bukkit.getPluginManager().registerEvents(new OnCloseBackpack(), this);
     }
 
     private void registerRecipes(){
