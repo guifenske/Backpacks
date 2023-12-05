@@ -1,8 +1,5 @@
 package br.com.backpacks;
 
-import br.com.backpacks.recipes.RecipesNamespaces;
-import org.bukkit.entity.Player;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -30,19 +27,6 @@ public class ThreadBackpacks {
         }
         */
 
-    }
-
-    public void updateDiscoveredRecipes(Player player){
-        Future<Void> future = executor.submit(() -> {
-            player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_LEATHER_BACKPACK());
-            player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_IRON_BACKPACK());
-            player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_GOLD_BACKPACK());
-            player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_DIAMOND_BACKPACK());
-            player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_NETHERITE_BACKPACK());
-            player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_AMETHYST_BACKPACK());
-            player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_LAPIS_BACKPACK());
-            return null;
-        });
     }
 
 

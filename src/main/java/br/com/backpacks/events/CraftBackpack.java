@@ -3,8 +3,6 @@ package br.com.backpacks.events;
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackpackType;
 import br.com.backpacks.recipes.RecipesNamespaces;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
@@ -22,13 +20,7 @@ public class CraftBackpack implements Listener {
 
     @EventHandler
     private void craftBackpackEvent(CraftItemEvent event){
-
-        if(!event.getRecipe().getResult().getType().equals(Material.CHEST)) return;
-
-        if(!event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK())){
-            Main.getMain().getThreadBackpacks().updateDiscoveredRecipes((Player) event.getWhoClicked());
-            return;
-        }
+        if(!event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK())) return;
 
         int oldId = -1;
 

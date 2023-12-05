@@ -17,7 +17,7 @@ public class OnClickConfig implements Listener {
 
         event.setCancelled(true);
         Main.backPackManager.isInBackpackConfig.put(event.getWhoClicked().getUniqueId(), Main.backPackManager.isInBackpack.get(event.getWhoClicked().getUniqueId()));
-        event.getWhoClicked().openInventory(InventoryBuilder.configInv((Player) event.getWhoClicked()));
+        event.getWhoClicked().openInventory(InventoryBuilder.mainConfigInv((Player) event.getWhoClicked()));
         Main.backPackManager.isInBackpack.remove(event.getWhoClicked().getUniqueId());
     }
 }

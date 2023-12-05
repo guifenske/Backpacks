@@ -21,7 +21,7 @@ public class BackPack{
         return secondPage;
     }
 
-    public BackpackType getBackpackType() {
+    public BackpackType getType() {
         return backpackType;
     }
 
@@ -29,15 +29,15 @@ public class BackPack{
 
     private Inventory secondPage;
 
-    public Boolean getIsBlock() {
-        return isBlock;
+    public Boolean isBlock() {
+        return block;
     }
 
     public void setIsBlock(Boolean block) {
-        isBlock = block;
+        this.block = block;
     }
 
-    private Boolean isBlock = false;
+    private Boolean block = false;
 
     public Inventory getFirstPage() {
         return firstPage;
@@ -151,7 +151,7 @@ public class BackPack{
 
     public NamespacedKey getNamespaceOfBackpackType() {
 
-        switch (getBackpackType()) {
+        switch (getType()) {
             case LEATHER -> {
                 return new RecipesNamespaces().getNAMESPACE_LEATHER_BACKPACK();
             }

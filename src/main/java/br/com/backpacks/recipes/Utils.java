@@ -9,7 +9,7 @@ import org.bukkit.persistence.PersistentDataType;
 public class Utils {
 
     public static ItemStack getItemFromBackpack(BackPack backPack) {
-        switch (backPack.getBackpackType()) {
+        switch (backPack.getType()) {
             case LEATHER -> {
                 ItemStack leatherBackpack = new ItemStack(Material.CHEST);
                 ItemMeta leatherMeta = leatherBackpack.getItemMeta();

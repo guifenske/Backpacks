@@ -2,6 +2,7 @@ package br.com.backpacks.backpackUtils.inventory;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
+import br.com.backpacks.backpackUtils.BackpackType;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -13,7 +14,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class InventoryBuilder extends BackPack {
 
-    public static Inventory configInv(Player player){
+    public static Inventory mainConfigInv(Player player){
         Inventory inv = Bukkit.createInventory(player, 54, "Backpack Config");
 
         ItemStack equipBackpack = new ItemStack(Material.CHEST);
@@ -34,6 +35,12 @@ public class InventoryBuilder extends BackPack {
         closeMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 4);
         close.setItemMeta(closeMeta);
 
+        ItemStack loremIpsum = new ItemStack(Material.CYAN_STAINED_GLASS_PANE);
+        ItemMeta loremIpsumMeta = loremIpsum.getItemMeta();
+        loremIpsumMeta.setDisplayName("Lorem Ipsum");
+        loremIpsumMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 6);
+        loremIpsum.setItemMeta(loremIpsumMeta);
+
         ItemStack rename = new ItemStack(Material.NAME_TAG);
         ItemMeta renameMeta = rename.getItemMeta();
         renameMeta.setDisplayName("Rename Backpack");
@@ -42,10 +49,14 @@ public class InventoryBuilder extends BackPack {
 
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.isInBackpackConfig.get(player.getUniqueId()));
 
-        if(!backPack.getIsBlock()) {
+        if(!backPack.isBlock()) {
             if (player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) {
                 inv.setItem(53, unequipBackpack);
             } else inv.setItem(53, equipBackpack);
+        }
+
+        for(int i = getFreeInitialSlots(backPack.getType()); i < 54; i++){
+            inv.setItem(i, loremIpsum);
         }
 
         inv.setItem(52, rename);
@@ -53,6 +64,20 @@ public class InventoryBuilder extends BackPack {
         inv.setItem(45, close);
 
         return inv;
+    }
+
+    private static int getFreeInitialSlots(BackpackType type){
+        switch (type){
+            case LEATHER: return 2;
+            case IRON: return 3;
+            case GOLD: return 4;
+            case LAPIS: return 5;
+            case AMETHYST: return 6;
+            case DIAMOND: return 7;
+            case NETHERITE: return 9;
+        }
+
+        return 0;
     }
 
 }

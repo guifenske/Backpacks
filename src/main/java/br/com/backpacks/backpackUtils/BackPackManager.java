@@ -10,11 +10,11 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BackPackManager {
-    public Map<Integer, BackPack> getBackpacks() {
+    public HashMap<Integer, BackPack> getBackpacks() {
         return backpacks;
     }
 
-    private Map<Integer, BackPack> backpacks = new HashMap<>();
+    private HashMap<Integer, BackPack> backpacks = new HashMap<>();
 
     public ConcurrentHashMap<UUID, Integer> isInBackpack = new ConcurrentHashMap<>();
     public ConcurrentHashMap<UUID, Integer> isRenaming = new ConcurrentHashMap<>();
@@ -99,6 +99,10 @@ public class BackPackManager {
 
     public void removeBackpack(BackPack backPack) {
         backpacks.remove(backPack.getId());
+    }
+
+    public void removeBackpackFromId(int id) {
+        backpacks.remove(id);
     }
 }
 
