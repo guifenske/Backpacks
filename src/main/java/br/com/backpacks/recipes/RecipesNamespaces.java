@@ -230,9 +230,10 @@ public class RecipesNamespaces {
         ItemStack driedBackpack = new ItemStack(org.bukkit.Material.CHEST);
         ItemMeta meta = driedBackpack.getItemMeta();
 
-        meta.setDisplayName("Strange Dried Backpack");
+        meta.setDisplayName("Unknown Backpack");
         meta.getPersistentDataContainer().set(IS_BACKPACK, PersistentDataType.INTEGER, 1);
         meta.getPersistentDataContainer().set(NAMESPACE_DRIED_BACKPACK, PersistentDataType.INTEGER, 1);
+        driedBackpack.setItemMeta(meta);
 
         ItemStack wetBackpack = new ItemStack(Material.CHEST);
         ItemMeta wetBackpackMeta = wetBackpack.getItemMeta();

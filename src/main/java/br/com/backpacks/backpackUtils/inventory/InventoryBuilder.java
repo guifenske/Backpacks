@@ -35,9 +35,9 @@ public class InventoryBuilder extends BackPack {
         closeMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 4);
         close.setItemMeta(closeMeta);
 
-        ItemStack loremIpsum = new ItemStack(Material.CYAN_STAINED_GLASS_PANE);
+        ItemStack loremIpsum = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta loremIpsumMeta = loremIpsum.getItemMeta();
-        loremIpsumMeta.setDisplayName("Lorem Ipsum");
+        loremIpsumMeta.setDisplayName(" ");
         loremIpsumMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 6);
         loremIpsum.setItemMeta(loremIpsumMeta);
 
@@ -49,14 +49,14 @@ public class InventoryBuilder extends BackPack {
 
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.isInBackpackConfig.get(player.getUniqueId()));
 
+        for(int i = getFreeInitialSlots(backPack.getType()); i < 54; i++){
+            inv.setItem(i, loremIpsum);
+        }
+
         if(!backPack.isBlock()) {
             if (player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) {
                 inv.setItem(53, unequipBackpack);
             } else inv.setItem(53, equipBackpack);
-        }
-
-        for(int i = getFreeInitialSlots(backPack.getType()); i < 54; i++){
-            inv.setItem(i, loremIpsum);
         }
 
         inv.setItem(52, rename);

@@ -17,10 +17,6 @@ public class RandomBackpack {
     private int id;
     private String name;
     private BackpackType type;
-
-    public BackpackType getType() {
-        return type;
-    }
     public RandomBackpack(String name, int id) {
         this.name = name;
         this.id = id;
@@ -30,11 +26,13 @@ public class RandomBackpack {
         generateBackpackType();
         if(Main.backPackManager.getSizeSecondPageFromBackpackType(type) == 0){
             BackPack backPack = new BackPack(name, generateFistPage(), id, type);
+            backPack.setIsBlock(false);
             Main.backPackManager.getBackpacks().put(id, backPack);
             return backPack;
         }
 
         BackPack backPack = new BackPack(name, generateFistPage(), generateSecondPage(), id, type);
+        backPack.setIsBlock(false);
         Main.backPackManager.getBackpacks().put(id, backPack);
         return backPack;
     }
