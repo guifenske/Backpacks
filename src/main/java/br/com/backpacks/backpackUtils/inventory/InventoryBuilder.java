@@ -79,5 +79,4 @@ public class InventoryBuilder extends BackPack {
 
         return 0;
     }
-
 }

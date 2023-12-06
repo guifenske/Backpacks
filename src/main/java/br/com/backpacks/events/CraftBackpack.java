@@ -14,7 +14,7 @@ public class CraftBackpack implements Listener {
 
     private static final String DONTHAVEBACKPACKMSG = "It looks that you don't have a backpack to upgrade in the recipe!";
 
-    private int generateId(){
+    public int generateId(){
         return Main.backPackManager.getBackpacks().size();
     }
 

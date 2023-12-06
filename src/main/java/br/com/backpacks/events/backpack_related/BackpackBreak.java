@@ -35,5 +35,4 @@ public class BackpackBreak implements Listener {
         Main.backPackManager.getBackpacksPlacedLocations().remove(location);
         event.getPlayer().getWorld().dropItemNaturally(location, backpack_item);
     }
-
 }

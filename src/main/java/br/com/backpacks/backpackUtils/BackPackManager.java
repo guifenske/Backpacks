@@ -97,6 +97,29 @@ public class BackPackManager {
         }
     }
 
+    public int getSizeFirstPageFromBackpackType(BackpackType type){
+        switch (type){
+            case LEATHER: return 18;
+            case IRON: return 27;
+            case GOLD: return 36;
+            case LAPIS: return 45;
+            case AMETHYST: return 54;
+            case DIAMOND: return 54;
+            case NETHERITE: return 54;
+        }
+
+        return 0;
+    }
+
+    public int getSizeSecondPageFromBackpackType(BackpackType type){
+        switch (type){
+            case DIAMOND: return 27;
+            case NETHERITE: return 54;
+        }
+
+        return 0;
+    }
+
     public void removeBackpack(BackPack backPack) {
         backpacks.remove(backPack.getId());
     }

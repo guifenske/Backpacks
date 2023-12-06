@@ -3,11 +3,11 @@ package br.com.backpacks.recipes;
 import br.com.backpacks.Main;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.Arrays;
 
 public class RecipesNamespaces {
 
@@ -50,6 +50,18 @@ public class RecipesNamespaces {
     private final NamespacedKey NAMESPACE_LAPIS_BACKPACK = new NamespacedKey(Main.getMain(), "lapisbackpack");
     private final NamespacedKey NAMESPACE_AMETHYST_BACKPACK = new NamespacedKey(Main.getMain(), "amethystbackpack");
 
+    public NamespacedKey getNAMESPACE_DRIED_BACKPACK() {
+        return NAMESPACE_DRIED_BACKPACK;
+    }
+
+    private final NamespacedKey NAMESPACE_DRIED_BACKPACK = new NamespacedKey(Main.getMain(), "driedbackpack");
+
+    public NamespacedKey getNAMESPACE_WET_BACKPACK() {
+        return NAMESPACE_WET_BACKPACK;
+    }
+
+    private final NamespacedKey NAMESPACE_WET_BACKPACK = new NamespacedKey(Main.getMain(), "wetbackpack");
+
     public NamespacedKey getNAMESPACE_GOLD_BACKPACK() {
         return NAMESPACE_GOLD_BACKPACK;
     }
@@ -74,7 +86,7 @@ public class RecipesNamespaces {
 
     private final NamespacedKey NAMESPACE_NETHERITE_BACKPACK = new NamespacedKey(Main.getMain(), "netheritebackpack");
 
-    public Recipe leather_backpack_recipe(){
+    public Recipe leather_backpack_recipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.CHEST);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -94,7 +106,7 @@ public class RecipesNamespaces {
         return recipe;
     }
 
-    public Recipe iron_backpack_recipe(){
+    public Recipe iron_backpack_recipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.CHEST);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -114,7 +126,7 @@ public class RecipesNamespaces {
         return recipe;
     }
 
-    public Recipe gold_backpack_recipe(){
+    public Recipe gold_backpack_recipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.CHEST);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -134,7 +146,7 @@ public class RecipesNamespaces {
         return recipe;
     }
 
-    public Recipe lapis_backpack_recipe(){
+    public Recipe lapis_backpack_recipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.CHEST);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -154,7 +166,7 @@ public class RecipesNamespaces {
         return recipe;
     }
 
-    public Recipe amethyst_backpack_recipe(){
+    public Recipe amethyst_backpack_recipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.CHEST);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -174,7 +186,7 @@ public class RecipesNamespaces {
         return recipe;
     }
 
-    public Recipe diamond_backpack_recipe(){
+    public Recipe diamond_backpack_recipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.CHEST);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -194,7 +206,7 @@ public class RecipesNamespaces {
         return recipe;
     }
 
-    public Recipe netherite_backpack_recipe(){
+    public Recipe netherite_backpack_recipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.CHEST);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -211,6 +223,27 @@ public class RecipesNamespaces {
         recipe.setIngredient('C', Material.CHEST);
         recipe.setIngredient('I', Material.NETHERITE_INGOT);
         recipe.setIngredient('A', Material.AIR);
+        return recipe;
+    }
+
+    public FurnaceRecipe driedBackpackRecipe() {
+        ItemStack driedBackpack = new ItemStack(org.bukkit.Material.CHEST);
+        ItemMeta meta = driedBackpack.getItemMeta();
+
+        meta.setDisplayName("Strange Dried Backpack");
+        meta.getPersistentDataContainer().set(IS_BACKPACK, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(NAMESPACE_DRIED_BACKPACK, PersistentDataType.INTEGER, 1);
+
+        ItemStack wetBackpack = new ItemStack(Material.CHEST);
+        ItemMeta wetBackpackMeta = wetBackpack.getItemMeta();
+        wetBackpackMeta.setDisplayName("Wet Backpack");
+        wetBackpackMeta.setLore(Arrays.asList("Uhh, it looks really WET and unusable..", "Humm, what i could do with it?"));
+        wetBackpackMeta.getPersistentDataContainer().set(IS_BACKPACK, PersistentDataType.INTEGER, 1);
+        wetBackpackMeta.getPersistentDataContainer().set(NAMESPACE_WET_BACKPACK, PersistentDataType.INTEGER, 1);
+        wetBackpack.setItemMeta(wetBackpackMeta);
+
+        //200 game ticks
+        FurnaceRecipe recipe = new FurnaceRecipe(NAMESPACE_DRIED_BACKPACK, driedBackpack, new RecipeChoice.ExactChoice(wetBackpack), 10, 200);
         return recipe;
     }
 }

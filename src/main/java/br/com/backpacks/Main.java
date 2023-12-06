@@ -2,6 +2,8 @@ package br.com.backpacks;
 
 import br.com.backpacks.backpackUtils.BackPackManager;
 import br.com.backpacks.events.CraftBackpack;
+import br.com.backpacks.events.FinishedSmelting;
+import br.com.backpacks.events.Fishing;
 import br.com.backpacks.events.backpack_related.*;
 import br.com.backpacks.events.inventory.OnClickConfig;
 import br.com.backpacks.events.inventory.OnClickInConfigMenu;
@@ -111,6 +113,8 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new RenameBackpackChat(), this);
         Bukkit.getPluginManager().registerEvents(new OpenBackpackOfTheBack(), this);
         Bukkit.getPluginManager().registerEvents(new OnCloseBackpack(), this);
+        Bukkit.getPluginManager().registerEvents(new Fishing(), this);
+        Bukkit.getPluginManager().registerEvents(new FinishedSmelting(), this);
     }
 
     private void registerRecipes(){
@@ -121,6 +125,7 @@ public final class Main extends JavaPlugin {
         Bukkit.addRecipe(new RecipesNamespaces().gold_backpack_recipe());
         Bukkit.addRecipe(new RecipesNamespaces().amethyst_backpack_recipe());
         Bukkit.addRecipe(new RecipesNamespaces().lapis_backpack_recipe());
+        Bukkit.addRecipe(new RecipesNamespaces().driedBackpackRecipe());
     }
 
 }
