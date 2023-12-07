@@ -1,5 +1,8 @@
 package br.com.backpacks.events;
 
+import br.com.backpacks.Main;
+import br.com.backpacks.advancements.BackpacksAdvancements;
+import br.com.backpacks.advancements.NamespacesAdvacements;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
@@ -18,7 +21,7 @@ public class Fishing implements Listener {
     @EventHandler
     private void onFishing(PlayerFishEvent event){
        if(event.getCaught() instanceof Item){
-           if(ThreadLocalRandom.current().nextInt(1, 90) == 89){
+           if(Main.debugMode || ThreadLocalRandom.current().nextInt(1, 90) == 89){
                event.setExpToDrop(20);
                Item item = (Item) event.getCaught();
                ItemStack wetbackpack = new ItemStack(Material.CHEST);
@@ -29,6 +32,7 @@ public class Fishing implements Listener {
                meta.getPersistentDataContainer().set(new RecipesNamespaces().getNAMESPACE_WET_BACKPACK(), PersistentDataType.INTEGER, 1);
                wetbackpack.setItemMeta(meta);
                item.setItemStack(wetbackpack);
+               BackpacksAdvancements.displayTo(event.getPlayer(), wetbackpack.getType().toString(), "Wow, thats a huge 'fish'", BackpacksAdvancements.Style.TASK, NamespacesAdvacements.getCAUGHT_A_BACKPACK());
            }
        }
     }

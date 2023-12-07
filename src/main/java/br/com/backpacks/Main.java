@@ -1,6 +1,9 @@
 package br.com.backpacks;
 
+import br.com.backpacks.advancements.BackpacksAdvancements;
+import br.com.backpacks.advancements.NamespacesAdvacements;
 import br.com.backpacks.backpackUtils.BackPackManager;
+import br.com.backpacks.commands.Bdebug;
 import br.com.backpacks.events.CraftBackpack;
 import br.com.backpacks.events.FinishedSmelting;
 import br.com.backpacks.events.Fishing;
@@ -19,6 +22,8 @@ import java.io.IOException;
 public final class Main extends JavaPlugin {
 
     private static Main back;
+
+    public static Boolean debugMode = false;
 
     public static String PREFIX = "§8[§6BackPacks§8] §7";
 
@@ -46,6 +51,8 @@ public final class Main extends JavaPlugin {
         setBack(this);
         registerEvents();
         registerRecipes();
+        registerAdvancements();
+        getCommand("Bdebug").setExecutor(new Bdebug());
         Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Hello from BackPacks");
 
         try {
@@ -126,6 +133,10 @@ public final class Main extends JavaPlugin {
         Bukkit.addRecipe(new RecipesNamespaces().amethyst_backpack_recipe());
         Bukkit.addRecipe(new RecipesNamespaces().lapis_backpack_recipe());
         Bukkit.addRecipe(new RecipesNamespaces().driedBackpackRecipe());
+    }
+
+    private void registerAdvancements(){
+        BackpacksAdvancements.createAdvancement(NamespacesAdvacements.getCAUGHT_A_BACKPACK(), "chest", "Wow, thats a huge 'fish'", BackpacksAdvancements.Style.TASK);
     }
 
 }
