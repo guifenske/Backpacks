@@ -24,6 +24,7 @@ public class BackpacksAdvancements {
 
 
     public static void createAdvancement(NamespacedKey key, String icon, String message, Style style){
+        if(Bukkit.getAdvancement(key) != null) return;
         Bukkit.getUnsafe().loadAdvancement(key, "{\n" +
                 "    \"criteria\": {\n" +
                 "        \"trigger\": {\n" +
