@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class TrashCan implements Listener {
 
@@ -21,6 +22,17 @@ public class TrashCan implements Listener {
         if(backPack == null) return;
         if(!backPack.containsUpgrade(Upgrade.TRASH)) return;
 
-        event.setCurrentItem(null);
+        ItemStack currentItem = event.getCurrentItem();
+        ItemStack newItem = event.getWhoClicked().getItemOnCursor();
+
+        if (currentItem != null) {
+            event.getWhoClicked().setItemOnCursor(null);
+            event.setCurrentItem(null);
+            if (newItem.isEmpty()) {
+                event.getWhoClicked().getInventory().addItem(currentItem);
+                return;
+            }
+            event.setCurrentItem(newItem);
+        }
     }
 }
