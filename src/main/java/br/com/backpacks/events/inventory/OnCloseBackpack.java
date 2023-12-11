@@ -14,6 +14,7 @@ public class OnCloseBackpack implements Listener {
         if(!BackpackAction.getAction((Player) event.getPlayer()).equals(BackpackAction.Action.OPENED)) return;
         BackpackAction.setAction((Player) event.getPlayer(), BackpackAction.Action.NOTHING);
 
+        Main.backPackManager.getCurrentPage().remove(event.getPlayer().getUniqueId());
         Main.backPackManager.getCurrentBackpackId().remove(event.getPlayer().getUniqueId());
     }
 }

@@ -90,6 +90,7 @@ public class BackPack{
         this.firstPage = firstPage;
         this.id = id;
 
+        updateSizeOfPages();
         setArrowsAndConfigOptionItems();
     }
 
@@ -105,6 +106,7 @@ public class BackPack{
         this.firstPage = firstPage;
         this.id = id;
 
+        updateSizeOfPages();
         setArrowsAndConfigOptionItems();
     }
     public List<String> serialize() {
@@ -135,8 +137,8 @@ public class BackPack{
             List<String> upgradesStr = (List<String>) config.getList(s + ".u");
 
             List<Upgrade> upgrades = new ArrayList<>();
-            for(int i = 0; i < upgradesStr.size(); i++){
-                upgrades.add(Upgrade.valueOf(upgradesStr.get(i)));
+            for (String string : upgradesStr) {
+                upgrades.add(Upgrade.valueOf(string));
             }
 
             setUpgrades(upgrades);
@@ -149,7 +151,7 @@ public class BackPack{
         backpackType = BackpackType.valueOf(components.get(1));
         id = Integer.parseInt(s);
 
-        updateSizeOfPages(backpackType);
+        updateSizeOfPages();
 
         firstPage = Bukkit.createInventory(null, firstPageSize, name);
 
@@ -160,7 +162,6 @@ public class BackPack{
         firstPage.setStorageContents(list.toArray(new ItemStack[0]));
 
         if(secondPageSize > 0) {
-            Main.getMain().getLogger().info("Second page size: " + secondPageSize);
             secondPage = Bukkit.createInventory(null, secondPageSize, name);
             for (Object item : config.getList(s + ".2")) {
                 list2.add((ItemStack) item);
@@ -203,8 +204,8 @@ public class BackPack{
         return null;
     }
 
-    private void updateSizeOfPages(BackpackType type){
-        switch (type){
+    private void updateSizeOfPages(){
+        switch (getType()){
             case LEATHER -> firstPageSize = 18;
             case IRON -> firstPageSize = 27;
             case GOLD -> firstPageSize = 36;
@@ -225,9 +226,25 @@ public class BackPack{
         BukkitTask task = new BukkitRunnable() {
         @Override
         public void run() {
+            Main.backPackManager.getCurrentPage().remove(player.getUniqueId());
+            Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 1);
             BackpackAction.setAction(player, BackpackAction.Action.OPENED);
             Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
-            player.openInventory(firstPage);            }
+            player.openInventory(firstPage);
+        }
+        }.runTaskLater(Main.getMain(), 1L);
+    }
+
+    public void openSecondPage(Player player){
+        BukkitTask task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                Main.backPackManager.getCurrentPage().remove(player.getUniqueId());
+                Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 2);
+                BackpackAction.setAction(player, BackpackAction.Action.OPENED);
+                Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
+                player.openInventory(secondPage);
+            }
         }.runTaskLater(Main.getMain(), 1L);
     }
 

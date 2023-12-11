@@ -12,7 +12,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class CraftBackpack implements Listener {
 
-    private static final String DONTHAVEBACKPACKMSG = "It looks that you don't have a backpack to upgrade in the recipe!";
+    private static final String DONTHAVEBACKPACKMSG =  Main.PREFIX + "§cIt looks that you don't have a backpack to upgrade in the recipe!";
 
     public int generateId(){
         return Main.backPackManager.getBackpacks().size() + 1;
@@ -32,48 +32,42 @@ public class CraftBackpack implements Listener {
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_IRON_BACKPACK())){
-            checkBackpackInTheMatrix(event, oldId);
-            if(checkBackpackInTheMatrix(event, oldId) == -1) return;
+            oldId = checkBackpackInTheMatrix(event, oldId);
             updateResult(event, oldId);
             Main.backPackManager.upgradeBackpack(BackpackType.LEATHER, oldId);
             return;
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_GOLD_BACKPACK())){
-            checkBackpackInTheMatrix(event, oldId);
-            if(checkBackpackInTheMatrix(event, oldId) == -1) return;
+            oldId = checkBackpackInTheMatrix(event, oldId);
             updateResult(event, oldId);
             Main.backPackManager.upgradeBackpack(BackpackType.IRON, oldId);
             return;
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_LAPIS_BACKPACK())){
-            checkBackpackInTheMatrix(event, oldId);
-            if(checkBackpackInTheMatrix(event, oldId) == -1) return;
+            oldId = checkBackpackInTheMatrix(event, oldId);
             updateResult(event, oldId);
             Main.backPackManager.upgradeBackpack(BackpackType.GOLD, oldId);
             return;
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_AMETHYST_BACKPACK())){
-            checkBackpackInTheMatrix(event, oldId);
-            if(checkBackpackInTheMatrix(event, oldId) == -1) return;
+            oldId = checkBackpackInTheMatrix(event, oldId);
             updateResult(event, oldId);
             Main.backPackManager.upgradeBackpack(BackpackType.LAPIS, oldId);
             return;
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_DIAMOND_BACKPACK())){
-            checkBackpackInTheMatrix(event, oldId);
-            if(checkBackpackInTheMatrix(event, oldId) == -1) return;
+            oldId = checkBackpackInTheMatrix(event, oldId);
             updateResult(event, oldId);
             Main.backPackManager.upgradeBackpack(BackpackType.AMETHYST, oldId);
             return;
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_NETHERITE_BACKPACK())){
-            checkBackpackInTheMatrix(event, oldId);
-            if(checkBackpackInTheMatrix(event, oldId) == -1) return;
+            oldId = checkBackpackInTheMatrix(event, oldId);
             updateResult(event, oldId);
             Main.backPackManager.upgradeBackpack(BackpackType.DIAMOND, oldId);
         }
@@ -83,8 +77,9 @@ public class CraftBackpack implements Listener {
         for(ItemStack itemStack : event.getInventory().getMatrix()){
             if(itemStack == null) continue;
 
-            if(itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_DIAMOND_BACKPACK())){
+            if(itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK())){
                 oldId = itemStack.getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
+                break;
             }
         }
 
