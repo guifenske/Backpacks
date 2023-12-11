@@ -160,6 +160,7 @@ public class BackPack{
         firstPage.setStorageContents(list.toArray(new ItemStack[0]));
 
         if(secondPageSize > 0) {
+            Main.getMain().getLogger().info("Second page size: " + secondPageSize);
             secondPage = Bukkit.createInventory(null, secondPageSize, name);
             for (Object item : config.getList(s + ".2")) {
                 list2.add((ItemStack) item);
@@ -246,7 +247,7 @@ public class BackPack{
     }
 
     public ItemStack[] getStorageContentsSecondPage() {
-        ItemStack[] array = firstPage.getStorageContents();
+        ItemStack[] array = secondPage.getStorageContents();
         int length = array.length;
         ItemStack[] list = new ItemStack[length - 2];
 
