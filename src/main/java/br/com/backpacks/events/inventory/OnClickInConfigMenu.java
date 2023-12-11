@@ -2,12 +2,16 @@ package br.com.backpacks.events.inventory;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
+import br.com.backpacks.backpackUtils.BackpackAction;
+import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 public class OnClickInConfigMenu implements Listener {
@@ -15,45 +19,62 @@ public class OnClickInConfigMenu implements Listener {
     @EventHandler
     private void onClick(InventoryClickEvent event){
         if(event.getClickedInventory() == null) return;
-        if(!Main.backPackManager.isInBackpackConfig.containsKey(event.getWhoClicked().getUniqueId())) return;
+        if(!BackpackAction.getAction((Player) event.getWhoClicked()).equals(BackpackAction.Action.CONFIGMENU)) return;
+
+        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
+        if(backPack == null) return;
+
+        //just cancel the necessary clicks/events
+        if(event.getRawSlot() >= InventoryBuilder.getFreeInitialSlots(backPack.getType()) && event.getRawSlot() < event.getInventory().getSize()) event.setCancelled(true);
+
+        //cancel the upgrade if it's not an upgrade
+        if(shouldCancelUpgrade(event.getInventory(), backPack)) event.setCancelled(true);
+
 
         Player player = (Player) event.getWhoClicked();
-        event.setCancelled(true);
 
-        switch (event.getRawSlot()){
+        switch (event.getRawSlot()) {
             //go back to the previous page
-            case 45:
-                BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.isInBackpackConfig.get(player.getUniqueId()));
-                Main.backPackManager.isInBackpackConfig.remove(player.getUniqueId());
-                backPack.open(player);
-                break;
+            case 45 -> player.closeInventory();
             //equip or un-equip backpack in the back
-            case 53:
-                if(event.getClickedInventory().getItem(53) == null) return;
+            case 53 -> {
+                if (event.getClickedInventory().getItem(53) == null) return;
 
-                BackPack backPack1 = Main.backPackManager.getBackpackFromId(Main.backPackManager.isInBackpackConfig.get(player.getUniqueId()));
-
-                if(player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())){
-                    player.getInventory().addItem(Utils.getItemFromBackpack(backPack1));
+                if (player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) {
+                    player.getInventory().addItem(Utils.getItemFromBackpack(backPack));
                     player.getPersistentDataContainer().remove(new RecipesNamespaces().getHAS_BACKPACK());
-                }   else{
-                    player.getInventory().remove(Utils.getItemFromBackpack(backPack1));
-                    player.getPersistentDataContainer().set(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER, Main.backPackManager.isInBackpackConfig.get(player.getUniqueId()));
+                } else {
+                    player.getInventory().remove(Utils.getItemFromBackpack(backPack));
+                    player.getPersistentDataContainer().set(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER, Main.backPackManager.getCurrentBackpackId().get(player.getUniqueId()));
                 }
 
-                Main.backPackManager.isInBackpackConfig.remove(player.getUniqueId());
                 player.closeInventory();
-
-                break;
+        }
             //rename backpack
-            case 52:
-                Main.backPackManager.isRenaming.put(player.getUniqueId(), Main.backPackManager.isInBackpackConfig.get(player.getUniqueId()));
-                Main.backPackManager.isInBackpackConfig.remove(player.getUniqueId());
+            case 52 -> {
+                BackpackAction.setAction(player, BackpackAction.Action.RENAMING);
                 player.sendMessage(Main.PREFIX + "§eType the new name of the backpack");
                 player.closeInventory();
+            }
+        }
+    }
+
+    private boolean checkIfIsUpgradeItem(ItemStack itemStack){
+        return Utils.getUpgradeFromItem(itemStack) != null;
+    }
+
+    private boolean shouldCancelUpgrade(Inventory inv, BackPack backPack){
+        boolean shouldCancel = false;
+        for(int i = 0; i < InventoryBuilder.getFreeInitialSlots(backPack.getType()); ++i){
+            if(inv.getItem(i) == null) continue;
+            if(!checkIfIsUpgradeItem(inv.getItem(i))) {
+                shouldCancel = true;
                 break;
+            }
         }
 
-
+          return shouldCancel;
     }
+
 }
+

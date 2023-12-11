@@ -12,7 +12,9 @@ import br.com.backpacks.events.inventory.OnClickConfig;
 import br.com.backpacks.events.inventory.OnClickInConfigMenu;
 import br.com.backpacks.events.inventory.OnCloseBackpack;
 import br.com.backpacks.events.inventory.OnCloseBackpackConfigMenu;
+import br.com.backpacks.events.upgrades_related.TrashCan;
 import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
 import br.com.backpacks.yaml.YamlUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -122,9 +124,11 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new OnCloseBackpack(), this);
         Bukkit.getPluginManager().registerEvents(new Fishing(), this);
         Bukkit.getPluginManager().registerEvents(new FinishedSmelting(), this);
+        Bukkit.getPluginManager().registerEvents(new TrashCan(), this);
     }
 
     private void registerRecipes(){
+        //Backpacks
         Bukkit.addRecipe(new RecipesNamespaces().leather_backpack_recipe());
         Bukkit.addRecipe(new RecipesNamespaces().iron_backpack_recipe());
         Bukkit.addRecipe(new RecipesNamespaces().diamond_backpack_recipe());
@@ -133,6 +137,10 @@ public final class Main extends JavaPlugin {
         Bukkit.addRecipe(new RecipesNamespaces().amethyst_backpack_recipe());
         Bukkit.addRecipe(new RecipesNamespaces().lapis_backpack_recipe());
         Bukkit.addRecipe(new RecipesNamespaces().driedBackpackRecipe());
+
+
+        //Upgrades
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeTrashCan());
     }
 
     private void registerAdvancements(){

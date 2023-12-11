@@ -11,6 +11,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,8 @@ public class BackPack{
     }
 
     private BackpackType backpackType;
+
+    private List<Upgrade> upgrades;
 
     private Inventory secondPage;
 
@@ -110,12 +114,32 @@ public class BackPack{
         return data;
     }
 
-    public BackPack deserialize(YamlConfiguration config, String s) {
-        List<String> components = (List<String>) config.getList(s + ".i");
+    public List<String> serializeUpgrades(){
+        List<String> list = new ArrayList<>();
+        for(Upgrade upgrade : upgrades){
+            list.add(upgrade.toString());
+        }
 
+        return list;
+    }
+
+    public BackPack deserialize(YamlConfiguration config, String s) {
         if(!config.isSet(s + ".i")){
             Bukkit.getConsoleSender().sendMessage(s + ".i" + " not found in the config, please report to the devs");
             return null;
+        }
+
+        List<String> components = (List<String>) config.getList(s + ".i");
+
+        if(config.isSet(s + ".u")){
+            List<String> upgradesStr = (List<String>) config.getList(s + ".u");
+
+            List<Upgrade> upgrades = new ArrayList<>();
+            for(int i = 0; i < upgradesStr.size(); i++){
+                upgrades.add(Upgrade.valueOf(upgradesStr.get(i)));
+            }
+
+            setUpgrades(upgrades);
         }
 
         List<ItemStack> list = new ArrayList<>();
@@ -197,13 +221,13 @@ public class BackPack{
     }
 
     public void open(Player player){
-        Main.backPackManager.isInBackpack.put(player.getUniqueId(), id);
-        player.openInventory(firstPage);
-    }
-
-    public void openSecondPage(Player player){
-        Main.backPackManager.isInBackpack.put(player.getUniqueId(), id);
-        player.openInventory(secondPage);
+        BukkitTask task = new BukkitRunnable() {
+        @Override
+        public void run() {
+            BackpackAction.setAction(player, BackpackAction.Action.OPENED);
+            Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
+            player.openInventory(firstPage);            }
+        }.runTaskLater(Main.getMain(), 1L);
     }
 
     public ItemStack[] getStorageContentsFirstPage() {
@@ -255,7 +279,19 @@ public class BackPack{
         if(secondPageSize > 0){
             firstPage.setItem(firstPageSize - 2, arrowRight);
             secondPage.setItem(secondPageSize - 2, arrowLeft);
-            secondPage.setItem(firstPageSize - 1, config);
+            secondPage.setItem(secondPageSize - 1, config);
         }
+    }
+
+    public List<Upgrade> getUpgrades() {
+        return upgrades;
+    }
+
+    public void setUpgrades(List<Upgrade> upgrades) {
+        this.upgrades = upgrades;
+    }
+
+    public Boolean containsUpgrade(Upgrade upgrade) {
+        return this.upgrades.contains(upgrade);
     }
 }

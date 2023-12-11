@@ -9,6 +9,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.loot.LootContext;
 import org.bukkit.loot.LootTable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -55,7 +58,7 @@ public class RandomBackpack {
         ItemStack[] loot = lootTable.populateLoot(new Random(), lootContext).toArray(new ItemStack[0]);
 
         // Add the loot to the first page inventory
-        firstPage.setStorageContents(loot);
+        firstPage.setStorageContents(applyRandomOrderToLoot(Arrays.asList(loot), firstPage));
 
         return firstPage;
     }
@@ -65,6 +68,22 @@ public class RandomBackpack {
     }
 
 
+    //organize the loot to be in random order inside the inventory, with random spaces between the items too
+    private ItemStack[] applyRandomOrderToLoot(List<ItemStack> loot, Inventory inventory){
+
+        List<ItemStack> newLoot = new ArrayList<>();
+        for(int i = 0; i < inventory.getSize() - 3; i++){
+            newLoot.add(null);
+        }
+        for(ItemStack item : loot){
+            int randomIndex = ThreadLocalRandom.current().nextInt(inventory.getSize() - 3);
+            while(newLoot.get(randomIndex) != null){
+                randomIndex = ThreadLocalRandom.current().nextInt(inventory.getSize() - 3);
+            }
+            newLoot.set(randomIndex, item);
+        }
+        return newLoot.toArray(new ItemStack[0]);
+    }
 
 
 }

@@ -1,6 +1,6 @@
 package br.com.backpacks.events.inventory;
 
-import br.com.backpacks.Main;
+import br.com.backpacks.backpackUtils.BackpackAction;
 import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,12 +12,11 @@ public class OnClickConfig implements Listener {
     @EventHandler
     private void onClick(InventoryClickEvent event){
         if(event.getClickedInventory() == null) return;
-        if(!Main.backPackManager.isInBackpack.containsKey(event.getWhoClicked().getUniqueId())) return;
-        if(event.getSlot() != event.getClickedInventory().getSize() - 1) return;
+        if(!BackpackAction.getAction((Player) event.getWhoClicked()).equals(BackpackAction.Action.OPENED)) return;
+        if(event.getRawSlot() != event.getInventory().getSize() - 1) return;
 
         event.setCancelled(true);
-        Main.backPackManager.isInBackpackConfig.put(event.getWhoClicked().getUniqueId(), Main.backPackManager.isInBackpack.get(event.getWhoClicked().getUniqueId()));
+        BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.CONFIGMENU);
         event.getWhoClicked().openInventory(InventoryBuilder.mainConfigInv((Player) event.getWhoClicked()));
-        Main.backPackManager.isInBackpack.remove(event.getWhoClicked().getUniqueId());
     }
 }

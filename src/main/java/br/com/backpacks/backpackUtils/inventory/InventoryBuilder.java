@@ -3,7 +3,9 @@ package br.com.backpacks.backpackUtils.inventory;
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackType;
+import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.recipes.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -11,6 +13,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.List;
 
 public class InventoryBuilder extends BackPack {
 
@@ -47,10 +51,21 @@ public class InventoryBuilder extends BackPack {
         renameMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 5);
         rename.setItemMeta(renameMeta);
 
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.isInBackpackConfig.get(player.getUniqueId()));
+        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(player.getUniqueId()));
 
         for(int i = getFreeInitialSlots(backPack.getType()); i < 54; i++){
             inv.setItem(i, loremIpsum);
+        }
+
+
+        if(backPack.getUpgrades() != null) {
+            if(!backPack.getUpgrades().isEmpty()) {
+                List<Upgrade> upgrades = backPack.getUpgrades();
+
+                for (int i = 0; i < upgrades.size(); i++) {
+                    inv.setItem(i, Utils.getItemFromUpgrade(upgrades.get(i)));
+                }
+            }
         }
 
         if(!backPack.isBlock()) {
@@ -66,7 +81,7 @@ public class InventoryBuilder extends BackPack {
         return inv;
     }
 
-    private static int getFreeInitialSlots(BackpackType type){
+    public static int getFreeInitialSlots(BackpackType type){
         switch (type){
             case LEATHER: return 2;
             case IRON: return 3;

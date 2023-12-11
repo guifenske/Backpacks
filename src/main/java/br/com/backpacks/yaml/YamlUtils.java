@@ -21,6 +21,7 @@ public final class YamlUtils {
         for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
             config.set(backPack.getId() + ".i", backPack.serialize());
             config.set(backPack.getId() + ".1", backPack.getStorageContentsFirstPage());
+            if(backPack.getUpgrades() != null)  config.set(backPack.getId() + ".u", backPack.serializeUpgrades());
 
             if(backPack.getSecondPageSize() > 0){
                 config.set(backPack.getId() + ".2", backPack.getStorageContentsSecondPage());
@@ -78,6 +79,7 @@ public final class YamlUtils {
             config.set(backPack.getId() + ".loc", data);
             config.set(backPack.getId() + ".i", backPack.serialize());
             config.set(backPack.getId() + ".1", backPack.getStorageContentsFirstPage());
+            if(backPack.getUpgrades() != null)  config.set(backPack.getId() + ".u", backPack.serializeUpgrades());
 
             if(backPack.getSecondPage() != null){
                 config.set(backPack.getId() + ".2", backPack.getStorageContentsSecondPage());

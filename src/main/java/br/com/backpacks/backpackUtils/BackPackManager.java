@@ -7,7 +7,6 @@ import org.bukkit.inventory.Inventory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class BackPackManager {
     public HashMap<Integer, BackPack> getBackpacks() {
@@ -16,9 +15,7 @@ public class BackPackManager {
 
     private HashMap<Integer, BackPack> backpacks = new HashMap<>();
 
-    public ConcurrentHashMap<UUID, Integer> isInBackpack = new ConcurrentHashMap<>();
-    public ConcurrentHashMap<UUID, Integer> isRenaming = new ConcurrentHashMap<>();
-    public ConcurrentHashMap<UUID, Integer> isInBackpackConfig = new ConcurrentHashMap<>();
+    private Map<UUID, Integer> currentBackpackId = new HashMap<>();
 
     public Map<Location, BackPack> getBackpacksPlacedLocations() {
         return backpacksPlacedLocations;
@@ -42,6 +39,10 @@ public class BackPackManager {
         BackPack backPack = new BackPack(name, Bukkit.createInventory(null, size, name), id, type);
         backpacks.put(id, backPack);
         return backPack;
+    }
+
+    public Map<UUID, Integer> getCurrentBackpackId() {
+        return currentBackpackId;
     }
 
     public BackPack getBackpackFromId(int id) {
