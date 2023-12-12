@@ -27,6 +27,16 @@ public class BackPack{
 
     private BackpackType backpackType;
 
+    private boolean locked;
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
     private List<Upgrade> upgrades;
 
     private Inventory secondPage;

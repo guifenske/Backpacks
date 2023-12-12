@@ -7,6 +7,7 @@ import br.com.backpacks.commands.Bdebug;
 import br.com.backpacks.events.CraftBackpack;
 import br.com.backpacks.events.FinishedSmelting;
 import br.com.backpacks.events.Fishing;
+import br.com.backpacks.events.InteractOtherPlayerBackpack;
 import br.com.backpacks.events.backpack_related.*;
 import br.com.backpacks.events.inventory.OnClickBackpack;
 import br.com.backpacks.events.inventory.OnClickInConfigMenu;
@@ -127,6 +128,7 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new Fishing(), this);
         Bukkit.getPluginManager().registerEvents(new FinishedSmelting(), this);
         Bukkit.getPluginManager().registerEvents(new TrashCan(), this);
+        Bukkit.getPluginManager().registerEvents(new InteractOtherPlayerBackpack(), this);
     }
 
     private void registerRecipes(){

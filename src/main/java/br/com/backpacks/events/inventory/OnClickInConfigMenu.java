@@ -50,6 +50,15 @@ public class OnClickInConfigMenu implements Listener {
                 player.sendMessage(Main.PREFIX + "§eType the new name of the backpack");
                 player.closeInventory();
             }
+
+            case 51 -> {
+                if (event.getClickedInventory().getItem(53) == null) return;
+
+                if(backPack.isLocked()) backPack.setLocked(false);
+                else backPack.setLocked(true);
+
+                player.closeInventory();
+            }
         }
     }
 

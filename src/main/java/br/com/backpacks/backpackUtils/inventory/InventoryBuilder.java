@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class InventoryBuilder extends BackPack {
@@ -51,6 +52,20 @@ public class InventoryBuilder extends BackPack {
         renameMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 5);
         rename.setItemMeta(renameMeta);
 
+        ItemStack lock = new ItemStack(Material.WRITABLE_BOOK);
+        ItemMeta lockMeta = lock.getItemMeta();
+        lockMeta.setDisplayName("Lock Backpack");
+        lockMeta.setLore(Arrays.asList("§7§Lock the access to this backpack", "§7§n from other players when in your back."));
+        lockMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 7);
+        lock.setItemMeta(lockMeta);
+
+        ItemStack unlock = new ItemStack(Material.WRITTEN_BOOK);
+        ItemMeta unlockMeta = unlock.getItemMeta();
+        unlockMeta.setDisplayName("Unlock Backpack");
+        unlockMeta.setLore(Arrays.asList("§7§Unlock the access to this backpack", "§7§n from other players when in your back."));
+        unlockMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 8);
+        unlock.setItemMeta(unlockMeta);
+
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(player.getUniqueId()));
 
         for(int i = getFreeInitialSlots(backPack.getType()); i < 54; i++){
@@ -70,8 +85,15 @@ public class InventoryBuilder extends BackPack {
 
         if(!backPack.isBlock()) {
             if (player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) {
+                if(backPack.isLocked()) {
+                    inv.setItem(51, unlock);
+                } else {
+                    inv.setItem(51, lock);
+                }
                 inv.setItem(53, unequipBackpack);
-            } else inv.setItem(53, equipBackpack);
+            } else{
+                inv.setItem(53, equipBackpack);
+            }
         }
 
         inv.setItem(52, rename);
