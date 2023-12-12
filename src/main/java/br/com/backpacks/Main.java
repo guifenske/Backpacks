@@ -103,6 +103,8 @@ public final class Main extends JavaPlugin {
         YamlUtils.save_backpacks_yaml();
         YamlUtils.savePlacedBackpacks();
 
+        Main.getMain().getLogger().info(Main.PREFIX + "All backpacks saved!");
+
         threadBackpacks.encerrar();
 
         synchronized (lock) {

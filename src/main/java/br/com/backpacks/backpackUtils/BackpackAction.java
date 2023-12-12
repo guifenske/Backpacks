@@ -3,7 +3,6 @@ package br.com.backpacks.backpackUtils;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class BackpackAction {
@@ -18,7 +17,7 @@ public class BackpackAction {
         OPENED;
     }
 
-    private static Map<UUID, Action> playerAction = new HashMap<>();
+    private static HashMap<UUID, Action> playerAction = new HashMap<>();
 
     public static void setAction(Player player, Action action){
         playerAction.put(player.getUniqueId(), action);

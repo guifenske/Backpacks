@@ -218,11 +218,10 @@ public class RecipesNamespaces {
 
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACE_NETHERITE_BACKPACK, backpack);
 
-        recipe.shape("AIA", "ICI", "AIA");
+        recipe.shape(" I ", "ICI", " I ");
 
         recipe.setIngredient('C', Material.CHEST);
         recipe.setIngredient('I', Material.NETHERITE_INGOT);
-        recipe.setIngredient('A', Material.AIR);
         return recipe;
     }
 
