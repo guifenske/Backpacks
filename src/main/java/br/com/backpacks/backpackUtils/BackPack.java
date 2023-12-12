@@ -11,8 +11,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -223,29 +221,19 @@ public class BackPack{
     }
 
     public void open(Player player){
-        BukkitTask task = new BukkitRunnable() {
-        @Override
-        public void run() {
-            Main.backPackManager.getCurrentPage().remove(player.getUniqueId());
-            Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 1);
-            BackpackAction.setAction(player, BackpackAction.Action.OPENED);
-            Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
-            player.openInventory(firstPage);
-        }
-        }.runTaskLater(Main.getMain(), 1L);
+        Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 1);
+        Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
+        BackpackAction.setAction(player, BackpackAction.Action.NOTHING);
+        player.openInventory(firstPage);
+        BackpackAction.setAction(player, BackpackAction.Action.OPENED);
     }
 
     public void openSecondPage(Player player){
-        BukkitTask task = new BukkitRunnable() {
-            @Override
-            public void run() {
-                Main.backPackManager.getCurrentPage().remove(player.getUniqueId());
-                Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 2);
-                BackpackAction.setAction(player, BackpackAction.Action.OPENED);
-                Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
-                player.openInventory(secondPage);
-            }
-        }.runTaskLater(Main.getMain(), 1L);
+        Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 2);
+        Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
+        BackpackAction.setAction(player, BackpackAction.Action.NOTHING);
+        player.openInventory(secondPage);
+        BackpackAction.setAction(player, BackpackAction.Action.OPENED);
     }
 
     public ItemStack[] getStorageContentsFirstPage() {

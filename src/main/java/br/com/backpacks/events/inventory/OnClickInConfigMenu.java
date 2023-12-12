@@ -10,8 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 public class OnClickInConfigMenu implements Listener {
@@ -26,10 +24,6 @@ public class OnClickInConfigMenu implements Listener {
 
         //just cancel the necessary clicks/events
         if(event.getRawSlot() >= InventoryBuilder.getFreeInitialSlots(backPack.getType()) && event.getRawSlot() < event.getInventory().getSize()) event.setCancelled(true);
-
-        //cancel the upgrade if it's not an upgrade
-        if(shouldCancelUpgrade(event.getInventory(), backPack)) event.setCancelled(true);
-
 
         Player player = (Player) event.getWhoClicked();
 
@@ -57,23 +51,6 @@ public class OnClickInConfigMenu implements Listener {
                 player.closeInventory();
             }
         }
-    }
-
-    private boolean checkIfIsUpgradeItem(ItemStack itemStack){
-        return Utils.getUpgradeFromItem(itemStack) != null;
-    }
-
-    private boolean shouldCancelUpgrade(Inventory inv, BackPack backPack){
-        boolean shouldCancel = false;
-        for(int i = 0; i < InventoryBuilder.getFreeInitialSlots(backPack.getType()); ++i){
-            if(inv.getItem(i) == null) continue;
-            if(!checkIfIsUpgradeItem(inv.getItem(i))) {
-                shouldCancel = true;
-                break;
-            }
-        }
-
-          return shouldCancel;
     }
 
 }

@@ -87,7 +87,6 @@ public class BackPackManager {
             case AMETHYST:
                 BackPack diamondBackpack = new BackPack("Diamond Backpack", Bukkit.createInventory(null, 54, "Diamond Backpack"), Bukkit.createInventory(null, 27, "Diamond Backpack"), oldId, BackpackType.DIAMOND);
                 diamondBackpack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
-                diamondBackpack.getSecondPage().setStorageContents(oldBackpack.getStorageContentsSecondPage());
                 diamondBackpack.setArrowsAndConfigOptionItems();
                 backpacks.put(oldId, diamondBackpack);
                 break;
