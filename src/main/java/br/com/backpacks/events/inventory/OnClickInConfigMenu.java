@@ -3,7 +3,9 @@ package br.com.backpacks.events.inventory;
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackAction;
+import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
+import br.com.backpacks.backpackUtils.inventory.UpgradeMenu;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.Utils;
 import org.bukkit.entity.Player;
@@ -11,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class OnClickInConfigMenu implements Listener {
 
@@ -22,8 +25,26 @@ public class OnClickInConfigMenu implements Listener {
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
         if(backPack == null) return;
 
-        //just cancel the necessary clicks/events
-        if(event.getRawSlot() >= InventoryBuilder.getFreeInitialSlots(backPack.getType()) && event.getRawSlot() < event.getInventory().getSize()) event.setCancelled(true);
+        event.setCancelled(true);
+
+        if(event.getRawSlot() < InventoryBuilder.getFreeInitialSlots(backPack.getType())){
+            if(event.getCurrentItem() == null) return;
+            Upgrade upgrade = Utils.getUpgradeFromItem(event.getCurrentItem());
+            if(upgrade == null) return;
+
+            BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
+
+            switch (upgrade){
+                case CRAFTING -> new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        event.getWhoClicked().openWorkbench(null, true);
+                        BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGCRAFTINGGRID);
+                        event.setCancelled(true);
+                    }
+                }.runTaskLater(Main.getMain(), 1L);
+            }
+        }
 
         Player player = (Player) event.getWhoClicked();
 
@@ -58,6 +79,20 @@ public class OnClickInConfigMenu implements Listener {
                 else backPack.setLocked(true);
 
                 player.closeInventory();
+            }
+
+            case 36 ->{
+
+                BackpackAction.setAction(player, BackpackAction.Action.NOTHING);
+
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        player.openInventory(UpgradeMenu.editUpgrades(player));
+                        BackpackAction.setAction(player, BackpackAction.Action.UPGMENU);
+                        event.setCancelled(true);
+                    }
+                }.runTaskLater(Main.getMain(), 1L);
             }
         }
     }

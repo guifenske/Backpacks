@@ -15,6 +15,12 @@ public class BackPackManager {
 
     private HashMap<UUID, Integer> currentBackpackId = new HashMap<>();
 
+    private HashMap<UUID, Upgrade> currentUpgradeMenu = new HashMap<>();
+
+    public HashMap<UUID, Upgrade> getCurrentUpgradeMenu() {
+        return currentUpgradeMenu;
+    }
+
     public HashMap<Location, BackPack> getBackpacksPlacedLocations() {
         return backpacksPlacedLocations;
     }

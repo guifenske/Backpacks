@@ -1,4 +1,4 @@
-package br.com.backpacks.events.inventory;
+package br.com.backpacks.events.upgrades_related;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
@@ -7,18 +7,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-public class OnCloseBackpackConfigMenu implements Listener {
+public class CraftingGrid implements Listener {
 
     @EventHandler
     private void onClose(InventoryCloseEvent event){
-        if(!BackpackAction.getAction((Player) event.getPlayer()).equals(BackpackAction.Action.CONFIGMENU)) return;
+        if(!event.getInventory().getType().equals(InventoryType.WORKBENCH)) return;
+        if(BackpackAction.getAction((Player) event.getPlayer()) != BackpackAction.Action.UPGCRAFTINGGRID) return;
+
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
         if(backPack == null) return;
 
-        BackpackAction.setAction((Player) event.getPlayer(), BackpackAction.Action.NOTHING);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

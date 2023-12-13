@@ -1,19 +1,6 @@
 package br.com.backpacks;
 
-import br.com.backpacks.advancements.BackpacksAdvancements;
-import br.com.backpacks.advancements.NamespacesAdvacements;
 import br.com.backpacks.backpackUtils.BackPackManager;
-import br.com.backpacks.commands.Bdebug;
-import br.com.backpacks.events.CraftBackpack;
-import br.com.backpacks.events.FinishedSmelting;
-import br.com.backpacks.events.Fishing;
-import br.com.backpacks.events.InteractOtherPlayerBackpack;
-import br.com.backpacks.events.backpack_related.*;
-import br.com.backpacks.events.inventory.OnClickBackpack;
-import br.com.backpacks.events.inventory.OnClickInConfigMenu;
-import br.com.backpacks.events.inventory.OnCloseBackpack;
-import br.com.backpacks.events.inventory.OnCloseBackpackConfigMenu;
-import br.com.backpacks.events.upgrades_related.TrashCan;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
 import br.com.backpacks.yaml.YamlUtils;
@@ -38,8 +25,8 @@ public final class Main extends JavaPlugin {
 
     private final ThreadBackpacks threadBackpacks = new ThreadBackpacks();
 
-    private static final Object lock = new Object();
-    private static boolean saveComplete = false;
+    public static final Object lock = new Object();
+    public static boolean saveComplete = false;
 
     public static Main getMain() {
         return back;
@@ -52,10 +39,8 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         setBack(this);
-        registerEvents();
+        threadBackpacks.registerAll();
         registerRecipes();
-        registerAdvancements();
-        getCommand("Bdebug").setExecutor(new Bdebug());
         Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Hello from BackPacks");
 
         try {
@@ -104,31 +89,12 @@ public final class Main extends JavaPlugin {
         YamlUtils.save_backpacks_yaml();
         YamlUtils.savePlacedBackpacks();
 
-        Main.getMain().getLogger().info(Main.PREFIX + "All backpacks saved!");
-
-        threadBackpacks.encerrar();
-
+        threadBackpacks.shutdown();
+        Main.getMain().getLogger().info("All backpacks saved!");
         synchronized (lock) {
             saveComplete = true;
             lock.notifyAll();
         }
-    }
-
-    private void registerEvents(){
-        Bukkit.getPluginManager().registerEvents(new BackpackInteract(), this);
-        Bukkit.getPluginManager().registerEvents(new BackpackBreak(), this);
-        Bukkit.getPluginManager().registerEvents(new BackpackPlace(), this);
-        Bukkit.getPluginManager().registerEvents(new CraftBackpack(), this);
-        Bukkit.getPluginManager().registerEvents(new OnClickBackpack(), this);
-        Bukkit.getPluginManager().registerEvents(new OnClickInConfigMenu(), this);
-        Bukkit.getPluginManager().registerEvents(new OnCloseBackpackConfigMenu(), this);
-        Bukkit.getPluginManager().registerEvents(new RenameBackpackChat(), this);
-        Bukkit.getPluginManager().registerEvents(new OpenBackpackOfTheBack(), this);
-        Bukkit.getPluginManager().registerEvents(new OnCloseBackpack(), this);
-        Bukkit.getPluginManager().registerEvents(new Fishing(), this);
-        Bukkit.getPluginManager().registerEvents(new FinishedSmelting(), this);
-        Bukkit.getPluginManager().registerEvents(new TrashCan(), this);
-        Bukkit.getPluginManager().registerEvents(new InteractOtherPlayerBackpack(), this);
     }
 
     private void registerRecipes(){
@@ -145,10 +111,13 @@ public final class Main extends JavaPlugin {
 
         //Upgrades
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeTrashCan());
-    }
-
-    private void registerAdvancements(){
-        BackpacksAdvancements.createAdvancement(NamespacesAdvacements.getCAUGHT_A_BACKPACK(), "chest", "Wow, thats a huge 'fish'", BackpacksAdvancements.Style.TASK);
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeAutoFill());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeAutoFood());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeJukebox());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeFurnaceGrid());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeCraftingGrid());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeEmeraldBlock());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeLiquidTank());
     }
 
 }

@@ -17,16 +17,13 @@ public final class YamlUtils {
     public static void save_backpacks_yaml() throws IOException {
         File file = new File(Main.getMain().getDataFolder().getCanonicalFile().getAbsolutePath() + "/stored_backpacks.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-
         for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
             config.set(backPack.getId() + ".i", backPack.serialize());
             config.set(backPack.getId() + ".1", backPack.getStorageContentsFirstPage());
             if(backPack.getUpgrades() != null)  config.set(backPack.getId() + ".u", backPack.serializeUpgrades());
-
             if(backPack.getSecondPageSize() > 0){
                 config.set(backPack.getId() + ".2", backPack.getStorageContentsSecondPage());
             }
-
         }
         config.save(file);
     }

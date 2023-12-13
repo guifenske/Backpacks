@@ -55,16 +55,22 @@ public class InventoryBuilder extends BackPack {
         ItemStack lock = new ItemStack(Material.WRITABLE_BOOK);
         ItemMeta lockMeta = lock.getItemMeta();
         lockMeta.setDisplayName("Lock Backpack");
-        lockMeta.setLore(Arrays.asList("§7§Lock the access to this backpack", "§7§n from other players when in your back."));
+        lockMeta.setLore(Arrays.asList("§7§nLock the access to this backpack", "§7§n from other players when in your back."));
         lockMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 7);
         lock.setItemMeta(lockMeta);
 
         ItemStack unlock = new ItemStack(Material.WRITTEN_BOOK);
         ItemMeta unlockMeta = unlock.getItemMeta();
         unlockMeta.setDisplayName("Unlock Backpack");
-        unlockMeta.setLore(Arrays.asList("§7§Unlock the access to this backpack", "§7§n from other players when in your back."));
+        unlockMeta.setLore(Arrays.asList("§7§nUnlock the access to this backpack", "§7§n from other players when in your back."));
         unlockMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 8);
         unlock.setItemMeta(unlockMeta);
+
+        ItemStack editUpgrades = new ItemStack(Material.EMERALD_BLOCK);
+        ItemMeta editUpgradesMeta = editUpgrades.getItemMeta();
+        editUpgradesMeta.setDisplayName("Edit Upgrades");
+        editUpgradesMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 9);
+        editUpgrades.setItemMeta(editUpgradesMeta);
 
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(player.getUniqueId()));
 
@@ -96,10 +102,9 @@ public class InventoryBuilder extends BackPack {
             }
         }
 
+        inv.setItem(36, editUpgrades);
         inv.setItem(52, rename);
-
         inv.setItem(45, close);
-
         return inv;
     }
 

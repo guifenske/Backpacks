@@ -14,6 +14,10 @@ public class BackpackAction {
 
         RENAMING,
 
+        UPGCRAFTINGGRID,
+
+        UPGMENU,
+
         OPENED;
     }
 

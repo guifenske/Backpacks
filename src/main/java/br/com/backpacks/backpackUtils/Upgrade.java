@@ -16,6 +16,8 @@ public enum Upgrade {
 
     TRASH,
 
+    LIQUIDTANK,
+
     STACKUPGRADE2X,
 
     STACKUPGRADE4X,
