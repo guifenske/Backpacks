@@ -5,13 +5,14 @@ import org.bukkit.Location;
 
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BackPackManager {
-    public HashMap<Integer, BackPack> getBackpacks() {
+    public ConcurrentHashMap<Integer, BackPack> getBackpacks() {
         return backpacks;
     }
 
-    private HashMap<Integer, BackPack> backpacks = new HashMap<>();
+    private ConcurrentHashMap<Integer, BackPack> backpacks = new ConcurrentHashMap<>();
 
     private HashMap<UUID, Integer> currentBackpackId = new HashMap<>();
 
@@ -21,7 +22,7 @@ public class BackPackManager {
         return currentUpgradeMenu;
     }
 
-    public HashMap<Location, BackPack> getBackpacksPlacedLocations() {
+    public ConcurrentHashMap<Location, BackPack> getBackpacksPlacedLocations() {
         return backpacksPlacedLocations;
     }
 
@@ -29,7 +30,7 @@ public class BackPackManager {
         return backpacksPlacedLocations.get(location);
     }
 
-    private HashMap<Location, BackPack> backpacksPlacedLocations = new HashMap<>();
+    private ConcurrentHashMap<Location, BackPack> backpacksPlacedLocations = new ConcurrentHashMap<>();
 
     public BackPack createBackPack(int size, String name, int id, BackpackType type) {
         // Create a new backpack with the specified size and name

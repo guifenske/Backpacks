@@ -3,11 +3,8 @@ package br.com.backpacks;
 import br.com.backpacks.backpackUtils.BackPackManager;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
-import br.com.backpacks.yaml.YamlUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.IOException;
 
 public final class Main extends JavaPlugin {
 
@@ -43,28 +40,15 @@ public final class Main extends JavaPlugin {
         registerRecipes();
         Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Hello from BackPacks");
 
-        try {
-            YamlUtils.loadBackpacksYaml();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            YamlUtils.loadPlacedBackpacks();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+       threadBackpacks.loadAll();
 
     }
 
     @Override
     public void onDisable() {
         Bukkit.getConsoleSender().sendMessage("Bye from BackPacks");
-        try {
-            saveAll();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
+        threadBackpacks.saveAll();
 
         synchronized (lock) {
             while (!saveComplete) {
@@ -74,26 +58,6 @@ public final class Main extends JavaPlugin {
                     throw new RuntimeException(e);
                 }
             }
-        }
-    }
-
-    private void saveAll() throws IOException {
-        if(Main.backPackManager.getBackpacks().isEmpty()){
-            synchronized (lock) {
-                saveComplete = true;
-                lock.notifyAll();
-            }
-            return;
-        }
-
-        YamlUtils.save_backpacks_yaml();
-        YamlUtils.savePlacedBackpacks();
-
-        threadBackpacks.shutdown();
-        Main.getMain().getLogger().info("All backpacks saved!");
-        synchronized (lock) {
-            saveComplete = true;
-            lock.notifyAll();
         }
     }
 

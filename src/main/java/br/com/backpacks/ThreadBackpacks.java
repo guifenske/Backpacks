@@ -11,6 +11,7 @@ import br.com.backpacks.events.backpack_related.*;
 import br.com.backpacks.events.inventory.*;
 import br.com.backpacks.events.upgrades_related.CraftingGrid;
 import br.com.backpacks.events.upgrades_related.TrashCan;
+import br.com.backpacks.yaml.YamlUtils;
 import org.bukkit.Bukkit;
 
 import java.util.concurrent.ExecutorService;
@@ -21,13 +22,12 @@ public class ThreadBackpacks {
     private ExecutorService executor;
 
     public ThreadBackpacks() {
-        // Cria um ExecutorService com uma única thread
         executor = Executors.newCachedThreadPool();
     }
 
     //example for now
     public void registerAll() {
-        Future<Void> future = executor.submit(() -> {
+        executor.submit(() -> {
 
             Bukkit.getPluginManager().registerEvents(new BackpackInteract(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new BackpackBreak(), Main.getMain());
@@ -54,20 +54,44 @@ public class ThreadBackpacks {
             Main.getMain().getCommand("Bdebug").setExecutor(new Bdebug());
             return null;
         });
+    }
 
-        /* Tratamento de exceções, se necessário
+    public void saveAll() {
+
+        Future<Void> future = executor.submit(() -> {
+
+            YamlUtils.save_backpacks_yaml();
+            YamlUtils.savePlacedBackpacks();
+
+            return null;
+        });
+
         try {
-            future.get(); // Aguarda a conclusão da tarefa
-        } catch (InterruptedException | ExecutionException e) {
-            // Tratar a exceção de acordo com sua lógica
+            future.get();
+        } catch (Exception ignored) {
         }
-        */
 
+        Main.saveComplete = true;
+        synchronized (Main.lock){
+            Main.lock.notifyAll();
+        }
+
+        shutdown();
+
+    }
+
+    public void loadAll(){
+        executor.submit(() -> {
+
+            YamlUtils.loadBackpacksYaml();
+            YamlUtils.loadPlacedBackpacks();
+
+            return null;
+        });
     }
 
 
     public void shutdown() {
-        // Encerra o executor quando não precisar mais
         executor.shutdown();
     }
 }
