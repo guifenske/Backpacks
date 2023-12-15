@@ -39,7 +39,7 @@ public class Utils {
 
     public static String getNameItemFromUpgrade(Upgrade upgrade){
         switch (upgrade){
-            case FURNACE: return "Furnace";
+            case FURNACE: return "Furnace Grid";
             case CRAFTING: return "Crafting Grid";
             case JUKEBOX: return "Jukebox";
             case EMERALDBLOCK: return "Emerald Block";
@@ -169,6 +169,8 @@ public class Utils {
             case JUKEBOX -> {
                 return Arrays.asList("§7Jukebox", "§7§nAllows you to play music disks in the backpack.");
             }
+
+            case FURNACE -> Arrays.asList("§7Furnace Grid", "§7§nAllows you to cook items in the backpack.");
         }
 
         return null;

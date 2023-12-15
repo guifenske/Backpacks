@@ -226,11 +226,10 @@ public class UpgradesRecipesNamespaces {
 
         ShapedRecipe recipe = new ShapedRecipe(LIQUIDTANK, liquidTank);
 
-        recipe.shape("III", "RFR", "III");
+        recipe.shape("BGB", "BGB", "BGB");
 
-        recipe.setIngredient('F', Material.FURNACE);
-        recipe.setIngredient('I', Material.IRON_INGOT);
-        recipe.setIngredient('R', Material.REDSTONE);
+        recipe.setIngredient('B', Material.BUCKET);
+        recipe.setIngredient('G', Material.GLASS_PANE);
 
         return recipe;
     }

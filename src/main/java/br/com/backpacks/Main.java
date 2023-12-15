@@ -4,15 +4,26 @@ import br.com.backpacks.backpackUtils.BackPackManager;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public final class Main extends JavaPlugin {
 
     private static Main back;
 
+    private final List<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
+    public List<FurnaceRecipe> getFurnaceRecipes() {
+        return furnaceRecipes;
+    }
+
     public static Boolean debugMode = false;
 
-    public static String PREFIX = "§8[§6BackPacks§8] §7";
+    public static String PREFIX = "§8[§6BackPacks§8]";
 
     public static final BackPackManager backPackManager = new BackPackManager();
 
@@ -29,13 +40,13 @@ public final class Main extends JavaPlugin {
         return back;
     }
 
-    private static void setBack(Main back) {
+    private static void setMain(Main back) {
         Main.back = back;
     }
 
     @Override
     public void onEnable() {
-        setBack(this);
+        setMain(this);
         threadBackpacks.registerAll();
         registerRecipes();
         Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Hello from BackPacks");
@@ -46,7 +57,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        Bukkit.getConsoleSender().sendMessage("Bye from BackPacks");
+        Main.getMain().getLogger().info("Saving backpacks.");
 
         threadBackpacks.saveAll();
 
@@ -82,6 +93,14 @@ public final class Main extends JavaPlugin {
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeCraftingGrid());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeEmeraldBlock());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeLiquidTank());
+
+        Iterator<Recipe> iterator = Bukkit.recipeIterator();
+
+        while (iterator.hasNext()){
+            Recipe recipe = iterator.next();
+            if(!(recipe instanceof FurnaceRecipe)) continue;
+            furnaceRecipes.add((FurnaceRecipe) recipe);
+        }
     }
 
 }

@@ -6,6 +6,7 @@ import br.com.backpacks.backpackUtils.BackpackAction;
 import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import br.com.backpacks.backpackUtils.inventory.UpgradeMenu;
+import br.com.backpacks.events.upgrades_related.FurnaceGrid;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.Utils;
 import org.bukkit.entity.Player;
@@ -32,14 +33,23 @@ public class OnClickInConfigMenu implements Listener {
             Upgrade upgrade = Utils.getUpgradeFromItem(event.getCurrentItem());
             if(upgrade == null) return;
 
-            BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
-
             switch (upgrade){
                 case CRAFTING -> new BukkitRunnable() {
                     @Override
                     public void run() {
+                        BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
                         event.getWhoClicked().openWorkbench(null, true);
                         BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGCRAFTINGGRID);
+                        event.setCancelled(true);
+                    }
+                }.runTaskLater(Main.getMain(), 1L);
+
+                case FURNACE -> new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
+                        event.getWhoClicked().openInventory(new FurnaceGrid().inventory((Player) event.getWhoClicked(), backPack));
+                        BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGFURNACE);
                         event.setCancelled(true);
                     }
                 }.runTaskLater(Main.getMain(), 1L);

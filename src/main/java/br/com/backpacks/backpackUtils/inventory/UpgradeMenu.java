@@ -34,9 +34,13 @@ public class UpgradeMenu {
 
         int i = 0;
         List<Upgrade> upgrades = backPack.getUpgrades();
-        for (Upgrade upgrade : upgrades) {
-            inv.setItem(i, Utils.getItemFromUpgrade(upgrade));
-            i++;
+        if(backPack.getUpgrades() != null) {
+            if (!backPack.getUpgrades().isEmpty()) {
+                for (Upgrade upgrade : upgrades) {
+                    inv.setItem(i, Utils.getItemFromUpgrade(upgrade));
+                    i++;
+                }
+            }
         }
 
         return inv;

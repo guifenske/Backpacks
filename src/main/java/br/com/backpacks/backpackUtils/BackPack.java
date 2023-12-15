@@ -2,6 +2,7 @@ package br.com.backpacks.backpackUtils;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.upgrades.GetFurnaceUpgradeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -15,7 +16,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BackPack{
+public class BackPack extends GetFurnaceUpgradeUtils {
 
     public Inventory getSecondPage() {
         return secondPage;
