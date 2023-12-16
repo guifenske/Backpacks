@@ -3,6 +3,7 @@ package br.com.backpacks.yaml;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
+import br.com.backpacks.backpackUtils.Upgrade;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -20,7 +21,14 @@ public final class YamlUtils {
         for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
             config.set(backPack.getId() + ".i", backPack.serialize());
             config.set(backPack.getId() + ".1", backPack.getStorageContentsFirstPage());
-            if(backPack.getUpgrades() != null)  config.set(backPack.getId() + ".u", backPack.serializeUpgrades());
+            if(backPack.getUpgrades() != null){
+                config.set(backPack.getId() + ".u", backPack.serializeUpgrades());
+                if(backPack.containsUpgrade(Upgrade.FURNACE)){
+                    config.set(backPack.getId() + ".furnace.f", backPack.getFuel());
+                    config.set(backPack.getId() + ".furnace.s", backPack.getSmelting());
+                    config.set(backPack.getId() + ".furnace.r", backPack.getResult());
+                }
+            }
             if(backPack.getSecondPageSize() > 0){
                 config.set(backPack.getId() + ".2", backPack.getStorageContentsSecondPage());
             }
@@ -76,8 +84,14 @@ public final class YamlUtils {
             config.set(backPack.getId() + ".loc", data);
             config.set(backPack.getId() + ".i", backPack.serialize());
             config.set(backPack.getId() + ".1", backPack.getStorageContentsFirstPage());
-            if(backPack.getUpgrades() != null)  config.set(backPack.getId() + ".u", backPack.serializeUpgrades());
-
+            if(backPack.getUpgrades() != null){
+                if(backPack.containsUpgrade(Upgrade.FURNACE)){
+                    config.set(backPack.getId() + ".furnace.f", backPack.getFuel());
+                    config.set(backPack.getId() + ".furnace.s", backPack.getSmelting());
+                    config.set(backPack.getId() + ".furnace.r", backPack.getResult());
+                }
+                config.set(backPack.getId() + ".u", backPack.serializeUpgrades());
+            }
             if(backPack.getSecondPage() != null){
                 config.set(backPack.getId() + ".2", backPack.getStorageContentsSecondPage());
             }

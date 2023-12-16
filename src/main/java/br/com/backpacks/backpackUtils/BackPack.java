@@ -134,6 +134,14 @@ public class BackPack extends GetFurnaceUpgradeUtils {
         return list;
     }
 
+    private void deserializeUpgrades(YamlConfiguration config, String s){
+        if(containsUpgrade(Upgrade.FURNACE)){
+            setFuel(config.getItemStack(s + ".furnace.f"));
+            setSmelting(config.getItemStack(s + ".furnace.s"));
+            setResult(config.getItemStack(s + ".furnace.r"));
+        }
+    }
+
     public BackPack deserialize(YamlConfiguration config, String s) {
         if(!config.isSet(s + ".i")){
             Bukkit.getConsoleSender().sendMessage(s + ".i" + " not found in the config, please report to the devs");
@@ -151,6 +159,8 @@ public class BackPack extends GetFurnaceUpgradeUtils {
             }
 
             setUpgrades(upgrades);
+
+            deserializeUpgrades(config, s);
         }
 
         List<ItemStack> list = new ArrayList<>();
