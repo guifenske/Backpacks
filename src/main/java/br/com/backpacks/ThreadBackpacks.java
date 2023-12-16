@@ -82,7 +82,7 @@ public class ThreadBackpacks {
 
     }
 
-    public void loadAll(){
+    public void loadAll() {
         executor.submit(() -> {
 
             YamlUtils.loadBackpacksYaml();

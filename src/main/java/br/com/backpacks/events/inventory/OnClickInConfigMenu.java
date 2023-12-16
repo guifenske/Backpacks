@@ -48,7 +48,7 @@ public class OnClickInConfigMenu implements Listener {
                     @Override
                     public void run() {
                         BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
-                        event.getWhoClicked().openInventory(new FurnaceGrid().inventory((Player) event.getWhoClicked(), backPack));
+                        event.getWhoClicked().openInventory(FurnaceGrid.inventory((Player) event.getWhoClicked(), backPack));
                         BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGFURNACE);
                         event.setCancelled(true);
                     }

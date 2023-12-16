@@ -14,24 +14,34 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 public class FurnaceGrid implements Listener {
 
-    public Inventory inventory(Player player, BackPack backPack){
+    private static final Set<UUID> firstSave = new HashSet<>();
+
+    public static Inventory inventory(Player player, BackPack backPack){
         Inventory inventory = Bukkit.createInventory(player, InventoryType.FURNACE);
 
         inventory.setItem(1, backPack.getFuel());
         inventory.setItem(0, backPack.getSmelting());
         inventory.setItem(2, backPack.getResult());
 
-        updateFurnace(backPack, player);
+        if(!firstSave.contains(player.getUniqueId())){
+            Main.getMain().getLogger().info("first time");
+            updateFurnace(backPack, player);
+        }
 
         return inventory;
     }
-    private void updateFurnace(BackPack backPack, Player player){
+    private static void updateFurnace(BackPack backPack, Player player){
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
                 if(backPack.getSmelting() == null) return;
+                if(backPack.getFuel() == null) return;
 
                 if(backPack.getResult() != null){
                     if(backPack.getResult().getAmount() == backPack.getResult().getMaxStackSize()) return;
@@ -39,47 +49,55 @@ public class FurnaceGrid implements Listener {
 
                 for(FurnaceRecipe recipe : Main.getMain().getFurnaceRecipes()){
                     if(!recipe.getInputChoice().test(backPack.getSmelting())) continue;
-                    backPack.setSmelting(backPack.getSmelting().subtract());
 
                     if(backPack.getResult() == null){
+                        backPack.setSmelting(backPack.getSmelting().subtract());
                         backPack.setResult(recipe.getResult());
-                        if(BackpackAction.getAction(player) == BackpackAction.Action.UPGFURNACE){
-                            BackpackAction.setAction(player, BackpackAction.Action.NOTHING);
-                            player.openInventory(new FurnaceGrid().inventory(player, backPack));
-                            BackpackAction.setAction(player, BackpackAction.Action.UPGFURNACE);
-                            this.cancel();
-                        }
-                        break;
+                        checkOpenInv(backPack, player);
+                        Main.getMain().getLogger().info(String.valueOf(backPack.getResult().getAmount()));
+                        return;
                     }
 
                     if(!backPack.getResult().isSimilar(recipe.getResult())) return;
 
+                    backPack.setSmelting(backPack.getSmelting().subtract());
                     backPack.setResult(backPack.getResult().add());
-                    BackpackAction.setAction(player, BackpackAction.Action.NOTHING);
-                    player.openInventory(new FurnaceGrid().inventory(player, backPack));
-                    BackpackAction.setAction(player, BackpackAction.Action.UPGFURNACE);
-                    this.cancel();
-                    break;
+                    checkOpenInv(backPack, player);
+                    Main.getMain().getLogger().info(String.valueOf(backPack.getResult().getAmount()));
+                    return;
                 }
             }
-        }.runTaskTimer(Main.getMain(), 40L, 200L); //run every 200 ticks to mimic the furnace logic
+        }.runTaskTimer(Main.getMain(), 1L, 200L);
+    }
+
+    private static void checkOpenInv(BackPack backPack, Player player){
+        if(BackpackAction.getAction(player) == BackpackAction.Action.UPGFURNACE){
+            player.getOpenInventory().getTopInventory().setItem(2, backPack.getResult());
+            player.getOpenInventory().getTopInventory().setItem(1, backPack.getFuel());
+            player.getOpenInventory().getTopInventory().setItem(0, backPack.getSmelting());
+        }
     }
 
     @EventHandler
     private void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction((Player) event.getPlayer()).equals(BackpackAction.Action.UPGFURNACE)) return;
+
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
-        Player player = (Player) event.getPlayer();
 
-        backPack.setFuel(event.getInventory().getItem(1));
-        backPack.setSmelting(event.getInventory().getItem(0));
-        backPack.setResult(event.getInventory().getItem(2));
 
+        if(!firstSave.contains(event.getPlayer().getUniqueId())){
+            firstSave.add(event.getPlayer().getUniqueId());
+            backPack.setFuel(event.getInventory().getItem(1));
+            backPack.setSmelting(event.getInventory().getItem(0));
+            backPack.setResult(event.getInventory().getItem(2));
+        }
+
+        BackpackAction.setAction((Player) event.getPlayer(), BackpackAction.Action.NOTHING);
         new BukkitRunnable() {
             @Override
             public void run() {
-                backPack.open(player);
+                backPack.open((Player) event.getPlayer());
             }
-        }.runTaskLater(Main.getMain(), 1L);
+        }.runTask(Main.getMain());
     }
 }

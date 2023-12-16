@@ -23,7 +23,7 @@ public final class Main extends JavaPlugin {
 
     public static Boolean debugMode = false;
 
-    public static String PREFIX = "§8[§6BackPacks§8]";
+    public static String PREFIX = "§8[§6BackPacks§8] ";
 
     public static final BackPackManager backPackManager = new BackPackManager();
 
@@ -51,8 +51,7 @@ public final class Main extends JavaPlugin {
         registerRecipes();
         Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Hello from BackPacks");
 
-       threadBackpacks.loadAll();
-
+        threadBackpacks.loadAll();
     }
 
     @Override
