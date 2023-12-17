@@ -33,16 +33,21 @@ public class FurnaceGrid implements Listener {
         inventory.setItem(2, backPack.getResult());
 
         if(!firstSave.contains(backPack.getId())){
-            updateFurnace(backPack, player);
+            updateFurnace(backPack.getId(), player);
         }
 
         return inventory;
     }
-    private static void updateFurnace(BackPack backPack, Player player){
+    private static void updateFurnace(int id, Player player){
         BukkitTask task = new BukkitRunnable() {
             final Int2IntOpenHashMap operation = new Int2IntOpenHashMap();
             @Override
             public void run() {
+                BackPack backPack = Main.backPackManager.getBackpackFromId(id);
+                if(backPack == null){
+                    cancel();
+                    return;
+                }
 
                 if(backPack.getSmelting() == null){
                     operation.remove(backPack.getId());
@@ -83,17 +88,21 @@ public class FurnaceGrid implements Listener {
                     if(backPack.getResult() == null){
                         if(!operation.containsKey(backPack.getId())){
                             if(maxOperation != 1)    operation.put(backPack.getId(), 1);
-                            else operation.put(backPack.getId(), 0);
                             if(maxOperation == 100) backPack.setFuel(new ItemStack(Material.BUCKET));
-                            else backPack.setFuel(backPack.getFuel().subtract());
+                            else{
+                                if(backPack.getFuel().getAmount() == 1) backPack.setFuel(null);
+                                else    backPack.setFuel(backPack.getFuel().subtract());
+                            }
                         }
                         else{
-                            if(operation.get(backPack.getId()) == maxOperation - 1){
+                            if(operation.get(backPack.getId()) >= maxOperation - 1){
                                 operation.put(backPack.getId(), 0);
                                 if(maxOperation == 100) backPack.setFuel(new ItemStack(Material.BUCKET));
-                                else backPack.setFuel(backPack.getFuel().subtract());
-                            }
-                            operation.put(backPack.getId(), operation.get(backPack.getId()) + 1);
+                                else{
+                                    if(backPack.getFuel().getAmount() == 1) backPack.setFuel(null);
+                                    else    backPack.setFuel(backPack.getFuel().subtract());
+                                }
+                            }   else operation.put(backPack.getId(), operation.get(backPack.getId()) + 1);
                         }
                         backPack.setSmelting(backPack.getSmelting().subtract());
                         backPack.setResult(recipe.getResult());
@@ -105,17 +114,21 @@ public class FurnaceGrid implements Listener {
 
                     if(!operation.containsKey(backPack.getId())){
                         if(maxOperation != 1)    operation.put(backPack.getId(), 1);
-                        else operation.put(backPack.getId(), 0);
                         if(maxOperation == 100) backPack.setFuel(new ItemStack(Material.BUCKET));
-                        else backPack.setFuel(backPack.getFuel().subtract());
+                        else{
+                            if(backPack.getFuel().getAmount() == 1) backPack.setFuel(null);
+                            else    backPack.setFuel(backPack.getFuel().subtract());
+                        }
                     }
                     else{
-                        if(operation.get(backPack.getId()) == maxOperation - 1){
+                        if(operation.get(backPack.getId()) >= maxOperation - 1){
                             operation.put(backPack.getId(), 0);
                             if(maxOperation == 100) backPack.setFuel(new ItemStack(Material.BUCKET));
-                            else backPack.setFuel(backPack.getFuel().subtract());
-                        }
-                        operation.put(backPack.getId(), operation.get(backPack.getId()) + 1);
+                            else{
+                                if(backPack.getFuel().getAmount() == 1) backPack.setFuel(null);
+                                else    backPack.setFuel(backPack.getFuel().subtract());
+                            }
+                        }   else operation.put(backPack.getId(), operation.get(backPack.getId()) + 1);
                     }
 
                     backPack.setSmelting(backPack.getSmelting().subtract());
@@ -124,7 +137,7 @@ public class FurnaceGrid implements Listener {
                     return;
                 }
             }
-        }.runTaskTimerAsynchronously(Main.getMain(), 1L, 200L);
+        }.runTaskTimer(Main.getMain(), 1L, 200L);
     }
 
     private static void updateOpenInv(BackPack backPack, Player player){
@@ -148,7 +161,7 @@ public class FurnaceGrid implements Listener {
                 backPack.setSmelting(event.getInventory().getItem(0));
                 backPack.setResult(event.getInventory().getItem(2));
             }
-        }.runTaskLaterAsynchronously(Main.getMain(), 1L);
+        }.runTaskLater(Main.getMain(), 1L);
     }
 
     @EventHandler
