@@ -7,6 +7,48 @@ public class GetFurnaceUpgradeUtils{
 
     private ItemStack result;
 
+    private int operation;
+
+    private int lastMaxOperation;
+
+    public long getCurrentTime() {
+        return currentTime;
+    }
+
+    public void setCurrentTime(long currentTime) {
+        this.currentTime = currentTime;
+    }
+
+    private long currentTime;
+
+    public long getLastTime() {
+        return lastTime;
+    }
+
+    public void setLastTime(long lastTime) {
+        this.lastTime = lastTime;
+    }
+
+    private long lastTime;
+
+
+
+    public int getOperation() {
+        return operation;
+    }
+
+    public void setOperation(int operation) {
+        this.operation = operation;
+    }
+
+    public int getLastMaxOperation() {
+        return lastMaxOperation;
+    }
+
+    public void setLastMaxOperation(int lastMaxOperation) {
+        this.lastMaxOperation = lastMaxOperation;
+    }
+
     public ItemStack getResult() {
         return result;
     }
@@ -32,5 +74,7 @@ public class GetFurnaceUpgradeUtils{
     public void setSmelting(ItemStack smelting) {
         this.smelting = smelting;
     }
+
+
 
 }

@@ -15,6 +15,8 @@ import br.com.backpacks.events.upgrades_related.TrashCan;
 import br.com.backpacks.yaml.YamlUtils;
 import org.bukkit.Bukkit;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -22,8 +24,19 @@ import java.util.concurrent.Future;
 public class ThreadBackpacks {
     private ExecutorService executor;
 
-    public ThreadBackpacks() {
-        executor = Executors.newCachedThreadPool();
+    public ThreadBackpacks() throws IOException {
+        File file = new File(Main.getMain().getDataFolder().getCanonicalFile().getAbsolutePath() + "/config.yml");
+        executor = Executors.newFixedThreadPool(1);
+
+        if(file.exists()){
+            if(Main.getMain().getConfig().getInt("maxThreads") == 0){
+                executor = Executors.newFixedThreadPool(1);
+                return;
+            }
+            executor = Executors.newFixedThreadPool(Main.getMain().getConfig().getInt("maxThreads"));
+        }   else{
+            executor = Executors.newFixedThreadPool(1);
+        }
     }
 
     //example for now
