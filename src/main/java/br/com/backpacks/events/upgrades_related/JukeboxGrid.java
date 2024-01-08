@@ -47,7 +47,7 @@ public class JukeboxGrid implements Listener {
 
         inventory.setItem(10, play);
         inventory.setItem(11, stop);
-        inventory.setItem(13, backPack.getCurrentDisk());
+        inventory.setItem(13, backPack.getPlaying());
 
         return inventory;
     }

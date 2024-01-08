@@ -15,7 +15,4 @@ public interface GetFurnace {
     ItemStack getSmelting();
 
     void setSmelting(ItemStack smelting);
-
-
-
 }

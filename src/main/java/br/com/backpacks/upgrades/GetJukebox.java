@@ -15,8 +15,4 @@ public interface GetJukebox {
     Boolean isPlaying();
 
     void setIsPlaying(Boolean playing);
-
-
-
-
 }

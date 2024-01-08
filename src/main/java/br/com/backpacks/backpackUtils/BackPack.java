@@ -4,10 +4,10 @@ import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.upgrades.GetFurnace;
 import br.com.backpacks.upgrades.GetJukebox;
+import de.leonhard.storage.Json;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -152,23 +152,23 @@ public class BackPack implements GetFurnace, GetJukebox{
         return list;
     }
 
-    private void deserializeUpgrades(YamlConfiguration config, String s){
+    private void deserializeUpgrades(Json config, String s){
         if(containsUpgrade(Upgrade.FURNACE)){
-            setFuel(config.getItemStack(s + ".furnace.f"));
-            setSmelting(config.getItemStack(s + ".furnace.s"));
-            setResult(config.getItemStack(s + ".furnace.r"));
+            setFuel((ItemStack) config.get(s + ".furnace.f"));
+            setSmelting((ItemStack) config.get(s + ".furnace.s"));
+            setResult((ItemStack) config.get(s + ".furnace.r"));
         }
     }
 
-    public BackPack deserialize(YamlConfiguration config, String s) {
-        if(!config.isSet(s + ".i")){
+    public BackPack deserialize(Json config, String s) {
+        if(!config.getFileData().containsKey(s + ".i")){
             Bukkit.getConsoleSender().sendMessage(s + ".i" + " not found in the config, please report to the devs");
             return null;
         }
 
         List<String> components = (List<String>) config.getList(s + ".i");
 
-        if(config.isSet(s + ".u")){
+        if(config.contains(s + ".u")){
             List<String> upgradesStr = (List<String>) config.getList(s + ".u");
 
             List<Upgrade> upgrades = new ArrayList<>();
