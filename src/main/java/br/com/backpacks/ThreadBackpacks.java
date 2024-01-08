@@ -17,29 +17,29 @@ import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.Arrays;
+import java.util.concurrent.*;
 
 public class ThreadBackpacks {
     private ExecutorService executor;
 
+    private ScheduledExecutorService tickExecutor;
+
+    private int maxThreads = 1;
+
     public ThreadBackpacks() throws IOException {
         File file = new File(Main.getMain().getDataFolder().getCanonicalFile().getAbsolutePath() + "/config.yml");
-        executor = Executors.newFixedThreadPool(1);
+        executor = Executors.newSingleThreadExecutor();
 
         if(file.exists()){
             if(Main.getMain().getConfig().getInt("maxThreads") == 0){
-                executor = Executors.newFixedThreadPool(1);
                 return;
             }
             executor = Executors.newFixedThreadPool(Main.getMain().getConfig().getInt("maxThreads"));
-        }   else{
-            executor = Executors.newFixedThreadPool(1);
+            maxThreads = Main.getMain().getConfig().getInt("maxThreads");
         }
     }
 
-    //example for now
     public void registerAll() {
         executor.submit(() -> {
 
@@ -71,7 +71,7 @@ public class ThreadBackpacks {
         });
     }
 
-    public void saveAll() {
+    public void saveAll() throws IOException {
 
         Future<Void> future = executor.submit(() -> {
 
@@ -82,17 +82,24 @@ public class ThreadBackpacks {
         });
 
         try {
-            future.get();
-        } catch (Exception ignored) {
+            future.get(15, TimeUnit.SECONDS);
+        } catch (TimeoutException | InterruptedException | ExecutionException e) {
+            shutdown();
+            Main.getMain().getLogger().warning("Something went wrong!");
+            Main.getMain().getLogger().severe(Arrays.toString(e.getStackTrace()));
+            Main.getMain().getLogger().info("Trying to save data again..");
+
+            YamlUtils.save_backpacks_yaml();
+            YamlUtils.savePlacedBackpacks();
+
+            Main.getMain().getLogger().info("Done!");
+        } finally {
+            shutdown();
+            Main.saveComplete = true;
+            synchronized (Main.lock){
+                Main.lock.notifyAll();
+            }
         }
-
-        Main.saveComplete = true;
-        synchronized (Main.lock){
-            Main.lock.notifyAll();
-        }
-
-        shutdown();
-
     }
 
     public void loadAll() {
@@ -103,10 +110,12 @@ public class ThreadBackpacks {
 
             return null;
         });
+
+        shutdown();
+        tickExecutor = Executors.newScheduledThreadPool(maxThreads);
     }
 
-
     public void shutdown() {
-        executor.shutdown();
+        executor.shutdownNow();
     }
 }

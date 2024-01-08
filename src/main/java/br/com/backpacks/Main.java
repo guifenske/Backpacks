@@ -68,7 +68,11 @@ public final class Main extends JavaPlugin {
     public void onDisable() {
         Main.getMain().getLogger().info("Saving backpacks.");
 
-        threadBackpacks.saveAll();
+        try {
+            threadBackpacks.saveAll();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         synchronized (lock) {
             while (!saveComplete) {

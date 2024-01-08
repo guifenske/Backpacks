@@ -20,7 +20,7 @@ public final class YamlUtils {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
             config.set(backPack.getId() + ".i", backPack.serialize());
-            config.set(backPack.getId() + ".1", backPack.getStorageContentsFirstPage());
+            config.set(backPack.getId() + ".1", backPack.serializeStorageContents(1));
             if(backPack.getUpgrades() != null){
                 config.set(backPack.getId() + ".u", backPack.serializeUpgrades());
                 if(backPack.containsUpgrade(Upgrade.FURNACE)){
@@ -30,7 +30,7 @@ public final class YamlUtils {
                 }
             }
             if(backPack.getSecondPageSize() > 0){
-                config.set(backPack.getId() + ".2", backPack.getStorageContentsSecondPage());
+                config.set(backPack.getId() + ".2", backPack.serializeStorageContents(2));
             }
         }
         config.save(file);
@@ -83,7 +83,7 @@ public final class YamlUtils {
             List<String> data = serializeLocation(location);
             config.set(backPack.getId() + ".loc", data);
             config.set(backPack.getId() + ".i", backPack.serialize());
-            config.set(backPack.getId() + ".1", backPack.getStorageContentsFirstPage());
+            config.set(backPack.getId() + ".1", backPack.serializeStorageContents(1));
             if(backPack.getUpgrades() != null){
                 if(backPack.containsUpgrade(Upgrade.FURNACE)){
                     config.set(backPack.getId() + ".furnace.f", backPack.getFuel());
@@ -93,7 +93,7 @@ public final class YamlUtils {
                 config.set(backPack.getId() + ".u", backPack.serializeUpgrades());
             }
             if(backPack.getSecondPage() != null){
-                config.set(backPack.getId() + ".2", backPack.getStorageContentsSecondPage());
+                config.set(backPack.getId() + ".2", backPack.serializeStorageContents(2));
             }
 
         }

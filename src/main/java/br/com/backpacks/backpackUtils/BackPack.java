@@ -2,7 +2,8 @@ package br.com.backpacks.backpackUtils;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesNamespaces;
-import br.com.backpacks.upgrades.GetFurnaceUpgradeUtils;
+import br.com.backpacks.upgrades.GetFurnace;
+import br.com.backpacks.upgrades.GetJukebox;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -16,7 +17,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BackPack extends GetFurnaceUpgradeUtils {
+public class BackPack implements GetFurnace, GetJukebox{
 
     public Inventory getSecondPage() {
         return secondPage;
@@ -129,6 +130,23 @@ public class BackPack extends GetFurnaceUpgradeUtils {
         List<String> list = new ArrayList<>();
         for(Upgrade upgrade : upgrades){
             list.add(upgrade.toString());
+        }
+
+        return list;
+    }
+
+    public List<ItemStack> serializeStorageContents(int page){
+        List<ItemStack> list = new ArrayList<>();
+        if(page == 1){
+            for(ItemStack item : firstPage.getStorageContents()){
+                if(item == null) continue;
+                list.add(item);
+            }
+        }else{
+            for(ItemStack item : secondPage.getStorageContents()){
+                if(item == null) continue;
+                list.add(item);
+            }
         }
 
         return list;
@@ -321,4 +339,76 @@ public class BackPack extends GetFurnaceUpgradeUtils {
     public Boolean containsUpgrade(Upgrade upgrade) {
         return this.upgrades.contains(upgrade);
     }
+
+
+    //Upgrades methods
+
+    private ItemStack playing;
+
+    private Boolean isPlaying;
+
+    private ItemStack[] disks;
+
+    @Override
+    public ItemStack getPlaying() {
+        return playing;
+    }
+
+    @Override
+    public void setPlaying(ItemStack currentDisk) {
+        this.playing = currentDisk;
+    }
+
+    @Override
+    public Boolean isPlaying() {
+        return isPlaying;
+    }
+
+    @Override
+    public void setIsPlaying(Boolean playing) {
+        this.isPlaying = playing;
+    }
+
+    @Override
+    public ItemStack[] getDisks() {
+        return disks;
+    }
+
+    @Override
+    public void setDisks(ItemStack[] disks) {
+        this.disks = disks;
+    }
+    private ItemStack fuel;
+    private ItemStack smelting;
+    private ItemStack result;
+
+    @Override
+    public ItemStack getFuel() {
+        return fuel;
+    }
+
+    @Override
+    public void setFuel(ItemStack fuel) {
+        this.fuel = fuel;
+    }
+
+    @Override
+    public ItemStack getSmelting() {
+        return smelting;
+    }
+
+    public void setSmelting(ItemStack smelting) {
+        this.smelting = smelting;
+    }
+
+    @Override
+    public ItemStack getResult() {
+        return result;
+    }
+
+    @Override
+    public void setResult(ItemStack result) {
+        this.result = result;
+    }
+
 }

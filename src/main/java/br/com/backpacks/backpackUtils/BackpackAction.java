@@ -1,5 +1,6 @@
 package br.com.backpacks.backpackUtils;
 
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -20,6 +21,8 @@ public class BackpackAction {
 
         UPGFURNACE,
 
+        UPGJUKEBOX,
+
         OPENED;
     }
 
@@ -30,6 +33,11 @@ public class BackpackAction {
     }
 
     public static Action getAction(Player player){
+        if(!playerAction.containsKey(player.getUniqueId())) return Action.NOTHING;
+        return playerAction.get(player.getUniqueId());
+    }
+
+    public static Action getAction(HumanEntity player) {
         if(!playerAction.containsKey(player.getUniqueId())) return Action.NOTHING;
         return playerAction.get(player.getUniqueId());
     }
