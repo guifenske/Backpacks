@@ -11,22 +11,38 @@ import br.com.backpacks.events.backpack_related.*;
 import br.com.backpacks.events.inventory.*;
 import br.com.backpacks.events.upgrades_related.CraftingGrid;
 import br.com.backpacks.events.upgrades_related.FurnaceGrid;
+import br.com.backpacks.events.upgrades_related.JukeboxGrid;
 import br.com.backpacks.events.upgrades_related.TrashCan;
 import br.com.backpacks.yaml.YamlUtils;
 import org.bukkit.Bukkit;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class ThreadBackpacks {
     private ExecutorService executor;
 
-    public ThreadBackpacks() {
-        executor = Executors.newCachedThreadPool();
+    private ScheduledExecutorService tickExecutor;
+
+    private int maxThreads = 1;
+
+    public ThreadBackpacks() throws IOException {
+        File file = new File(Main.getMain().getDataFolder().getCanonicalFile().getAbsolutePath() + "/config.yml");
+        executor = Executors.newSingleThreadExecutor();
+
+        if(file.exists()){
+            if(Main.getMain().getConfig().getInt("maxThreads") == 0){
+                return;
+            }
+            executor = Executors.newFixedThreadPool(Main.getMain().getConfig().getInt("maxThreads"));
+            maxThreads = Main.getMain().getConfig().getInt("maxThreads");
+        }
     }
 
-    //example for now
     public void registerAll() {
         executor.submit(() -> {
 
@@ -50,6 +66,7 @@ public class ThreadBackpacks {
             //Upgrades
             Bukkit.getPluginManager().registerEvents(new CraftingGrid(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new FurnaceGrid(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new JukeboxGrid(), Main.getMain());
 
             BackpacksAdvancements.createAdvancement(NamespacesAdvacements.getCAUGHT_A_BACKPACK(), "chest", "Wow, thats a huge 'fish'", BackpacksAdvancements.Style.TASK);
 
@@ -58,7 +75,7 @@ public class ThreadBackpacks {
         });
     }
 
-    public void saveAll() {
+    public void saveAll() throws IOException {
 
         Future<Void> future = executor.submit(() -> {
 
@@ -71,15 +88,13 @@ public class ThreadBackpacks {
         try {
             future.get();
         } catch (Exception ignored) {
-        }
 
+        }
+        shutdown();
         Main.saveComplete = true;
         synchronized (Main.lock){
             Main.lock.notifyAll();
         }
-
-        shutdown();
-
     }
 
     public void loadAll() {
@@ -90,10 +105,10 @@ public class ThreadBackpacks {
 
             return null;
         });
+
     }
 
-
     public void shutdown() {
-        executor.shutdown();
+        executor.shutdownNow();
     }
 }

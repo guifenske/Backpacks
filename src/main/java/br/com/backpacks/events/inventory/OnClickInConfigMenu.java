@@ -7,6 +7,7 @@ import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import br.com.backpacks.backpackUtils.inventory.UpgradeMenu;
 import br.com.backpacks.events.upgrades_related.FurnaceGrid;
+import br.com.backpacks.events.upgrades_related.JukeboxGrid;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.Utils;
 import org.bukkit.entity.Player;
@@ -53,6 +54,16 @@ public class OnClickInConfigMenu implements Listener {
                         event.setCancelled(true);
                     }
                 }.runTaskLater(Main.getMain(), 1L);
+
+                case JUKEBOX -> new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
+                        event.getWhoClicked().openInventory(JukeboxGrid.inventory((Player) event.getWhoClicked(), backPack));
+                        BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGJUKEBOX);
+                        event.setCancelled(true);
+                    }
+                }.runTaskLater(Main.getMain(), 1L);
             }
         }
 
@@ -84,7 +95,6 @@ public class OnClickInConfigMenu implements Listener {
 
             case 51 -> {
                 if (event.getClickedInventory().getItem(53) == null) return;
-
                 if(backPack.isLocked()) backPack.setLocked(false);
                 else backPack.setLocked(true);
 
@@ -92,7 +102,6 @@ public class OnClickInConfigMenu implements Listener {
             }
 
             case 36 ->{
-
                 BackpackAction.setAction(player, BackpackAction.Action.NOTHING);
 
                 new BukkitRunnable() {
@@ -106,6 +115,4 @@ public class OnClickInConfigMenu implements Listener {
             }
         }
     }
-
 }
-

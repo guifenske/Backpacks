@@ -167,10 +167,12 @@ public class Utils {
             }
 
             case JUKEBOX -> {
-                return Arrays.asList("§7Jukebox", "§7§nAllows you to play music disks in the backpack.");
+                return Arrays.asList("§7Jukebox", "§7§nAllows you to play music discs in the backpack.");
             }
 
-            case FURNACE -> Arrays.asList("§7Furnace Grid", "§7§nAllows you to cook items in the backpack.");
+            case FURNACE -> {
+                return Arrays.asList("§7Furnace Grid", "§7§nAllows you to cook items in the backpack.");
+            }
         }
 
         return null;

@@ -58,7 +58,7 @@ public class BackPackManager {
 
     public BackPack getBackpackFromId(int id) {
         if(backpacks.containsKey(id)) return backpacks.get(id);
-        throw new IllegalArgumentException("Backpack with id " + id + " not found!");
+        throw new NullPointerException("Backpack with id " + id + " not found");
     }
 
     public void upgradeBackpack(BackpackType oldType, int oldId) {

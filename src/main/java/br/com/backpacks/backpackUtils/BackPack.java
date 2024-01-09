@@ -2,10 +2,12 @@ package br.com.backpacks.backpackUtils;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesNamespaces;
-import br.com.backpacks.upgrades.GetFurnaceUpgradeUtils;
+import br.com.backpacks.upgrades.GetFurnace;
+import br.com.backpacks.upgrades.GetJukebox;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -16,7 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BackPack extends GetFurnaceUpgradeUtils {
+public class BackPack implements GetFurnace, GetJukebox{
 
     public Inventory getSecondPage() {
         return secondPage;
@@ -134,17 +136,37 @@ public class BackPack extends GetFurnaceUpgradeUtils {
         return list;
     }
 
+    public List<String> serializeDiscs(){
+        List<String> list = new ArrayList<>();
+        for(ItemStack itemStack : getDiscs()){
+            if(itemStack == null){
+                list.add(null);
+                continue;
+            }
+            list.add(itemStack.getType().name());
+        }
+        return list;
+    }
+
     private void deserializeUpgrades(YamlConfiguration config, String s){
         if(containsUpgrade(Upgrade.FURNACE)){
             setFuel(config.getItemStack(s + ".furnace.f"));
             setSmelting(config.getItemStack(s + ".furnace.s"));
             setResult(config.getItemStack(s + ".furnace.r"));
         }
+        if(containsUpgrade(Upgrade.JUKEBOX)){
+            List<ItemStack> discs = new ArrayList<>();
+            for(String item : config.getStringList(s + ".jukebox.discs")){
+                discs.add(getSoundFromName(item));
+            }
+            setDiscs(discs);
+            setPlaying(getSoundFromName(config.getString(s + ".jukebox.playing")));
+        }
     }
 
     public BackPack deserialize(YamlConfiguration config, String s) {
         if(!config.isSet(s + ".i")){
-            Bukkit.getConsoleSender().sendMessage(s + ".i" + " not found in the config, please report to the devs");
+            Main.getMain().getLogger().warning("Backpack with id " + s + " not found!");
             return null;
         }
 
@@ -321,4 +343,94 @@ public class BackPack extends GetFurnaceUpgradeUtils {
     public Boolean containsUpgrade(Upgrade upgrade) {
         return this.upgrades.contains(upgrade);
     }
+
+
+    //Upgrades methods
+
+    private ItemStack playing;
+
+    private Boolean isPlaying = false;
+
+    private List<ItemStack> discs;
+
+    private Sound sound;
+
+    @Override
+    public ItemStack getPlaying() {
+        return playing;
+    }
+
+    @Override
+    public void setPlaying(ItemStack currentDisk) {
+        this.playing = currentDisk;
+    }
+
+    @Override
+    public Boolean isPlaying() {
+        return isPlaying;
+    }
+
+    @Override
+    public void setIsPlaying(Boolean playing) {
+        this.isPlaying = playing;
+    }
+
+    @Override
+    public List<ItemStack> getDiscs() {
+        return discs;
+    }
+
+    @Override
+    public void setDiscs(List<ItemStack> discs) {
+        this.discs = discs;
+    }
+
+    @Override
+    public Sound getSound() {
+        return sound;
+    }
+
+    @Override
+    public void setSound(Sound sound) {
+        this.sound = sound;
+    }
+
+    @Override
+    public ItemStack getSoundFromName(String name){
+        return new ItemStack(Material.getMaterial(name));
+    }
+
+    private ItemStack fuel;
+    private ItemStack smelting;
+    private ItemStack result;
+
+    @Override
+    public ItemStack getFuel() {
+        return fuel;
+    }
+
+    @Override
+    public void setFuel(ItemStack fuel) {
+        this.fuel = fuel;
+    }
+
+    @Override
+    public ItemStack getSmelting() {
+        return smelting;
+    }
+
+    public void setSmelting(ItemStack smelting) {
+        this.smelting = smelting;
+    }
+
+    @Override
+    public ItemStack getResult() {
+        return result;
+    }
+
+    @Override
+    public void setResult(ItemStack result) {
+        this.result = result;
+    }
+
 }

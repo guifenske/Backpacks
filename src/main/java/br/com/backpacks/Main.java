@@ -8,6 +8,7 @@ import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +18,10 @@ public final class Main extends JavaPlugin {
     private static Main back;
 
     private final List<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
+
+    public Main() throws IOException {
+    }
+
     public List<FurnaceRecipe> getFurnaceRecipes() {
         return furnaceRecipes;
     }
@@ -31,7 +36,7 @@ public final class Main extends JavaPlugin {
         return threadBackpacks;
     }
 
-    private final ThreadBackpacks threadBackpacks = new ThreadBackpacks();
+    private ThreadBackpacks threadBackpacks;
 
     public static final Object lock = new Object();
     public static boolean saveComplete = false;
@@ -47,6 +52,11 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         setMain(this);
+        try {
+            threadBackpacks = new ThreadBackpacks();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         threadBackpacks.registerAll();
         registerRecipes();
         Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Hello from BackPacks");
@@ -58,7 +68,11 @@ public final class Main extends JavaPlugin {
     public void onDisable() {
         Main.getMain().getLogger().info("Saving backpacks.");
 
-        threadBackpacks.saveAll();
+        try {
+            threadBackpacks.saveAll();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         synchronized (lock) {
             while (!saveComplete) {

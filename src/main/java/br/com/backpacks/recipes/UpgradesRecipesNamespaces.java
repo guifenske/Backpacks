@@ -109,7 +109,7 @@ public class UpgradesRecipesNamespaces {
         ItemMeta meta = jukebox.getItemMeta();
 
         meta.setDisplayName("Jukebox");
-        meta.setLore(Arrays.asList("§7Jukebox", "§7§nAllows you to play music disks in the backpack."));
+        meta.setLore(Arrays.asList("§7Jukebox", "§7§nAllows you to play music discs in the backpack."));
         meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
         meta.getPersistentDataContainer().set(JUKEBOX, PersistentDataType.INTEGER, 1);
         jukebox.setItemMeta(meta);
