@@ -51,12 +51,12 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        setMain(this);
         try {
             threadBackpacks = new ThreadBackpacks();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        setMain(this);
         threadBackpacks.registerAll();
         registerRecipes();
         Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Hello from BackPacks");

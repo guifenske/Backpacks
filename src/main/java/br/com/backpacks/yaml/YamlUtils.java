@@ -3,25 +3,24 @@ package br.com.backpacks.yaml;
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.Upgrade;
-import de.leonhard.storage.Json;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class YamlUtils {
 
-    public static void save_backpacks_yaml() {
-        Json config = new Json("stored_backpacks.json", Main.getMain().getDataFolder().getAbsolutePath());
+    public static void save_backpacks_yaml() throws IOException {
+        File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
         for (BackPack backPack : Main.backPackManager.getBackpacks().values()) {
             config.set(backPack.getId() + ".i", backPack.serialize());
-            config.set(backPack.getId() + ".1", backPack.serializeStorageContents(1));
+            config.set(backPack.getId() + ".1", backPack.getStorageContentsFirstPage());
             if (backPack.getUpgrades() != null) {
                 config.set(backPack.getId() + ".u", backPack.serializeUpgrades());
                 if (backPack.containsUpgrade(Upgrade.FURNACE)) {
@@ -29,19 +28,27 @@ public final class YamlUtils {
                     config.set(backPack.getId() + ".furnace.s", backPack.getSmelting());
                     config.set(backPack.getId() + ".furnace.r", backPack.getResult());
                 }
+                if(backPack.containsUpgrade(Upgrade.JUKEBOX)){
+                    config.set(backPack.getId() + ".jukebox.discs", backPack.serializeDiscs());
+                    config.set(backPack.getId() + ".jukebox.playing", backPack.getPlaying().getType().name());
+                }
             }
             if (backPack.getSecondPageSize() > 0) {
-                config.set(backPack.getId() + ".2", backPack.serializeStorageContents(2));
+                config.set(backPack.getId() + ".2", backPack.getStorageContentsSecondPage());
             }
         }
+
+        config.save(file);
     }
 
     public static void loadBackpacksYaml() {
-        Json config = new Json("stored_backpacks.json", Main.getMain().getDataFolder().getAbsolutePath());
+        File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        for (String i : config.keySet()) {
+        for (String i : config.getKeys(false)) {
             BackPack backPack = new BackPack().deserialize(config, i);
             backPack.setIsBlock(false);
+            Main.getMain().getLogger().info("Loading backpack " + backPack.getName() + " with id " + backPack.getId());
             Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
         }
     }
@@ -64,43 +71,45 @@ public final class YamlUtils {
         return new Location(Bukkit.getServer().getWorld(world), x, y, z);
     }
 
-    public static void savePlacedBackpacks() {
+    public static void savePlacedBackpacks() throws IOException {
         if (Main.backPackManager.getBackpacksPlacedLocations().isEmpty()) {
             return;
         }
 
-        Path filePath = Paths.get(Main.getMain().getDataFolder().getAbsolutePath(), "cached_backpacks_loc.yml");
-        YamlConfiguration config = new YamlConfiguration();
+        File path = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/placed_backpacks.yml");
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(path);
 
         for (Location location : Main.backPackManager.getBackpacksPlacedLocations().keySet()) {
             BackPack backPack = Main.backPackManager.getBackpacksPlacedLocations().get(location);
             List<String> data = serializeLocation(location);
             config.set(backPack.getId() + ".loc", data);
             config.set(backPack.getId() + ".i", backPack.serialize());
-            config.set(backPack.getId() + ".1", backPack.serializeStorageContents(1));
+            config.set(backPack.getId() + ".1", backPack.getStorageContentsFirstPage());
             if (backPack.getUpgrades() != null) {
                 if (backPack.containsUpgrade(Upgrade.FURNACE)) {
                     config.set(backPack.getId() + ".furnace.f", backPack.getFuel());
                     config.set(backPack.getId() + ".furnace.s", backPack.getSmelting());
                     config.set(backPack.getId() + ".furnace.r", backPack.getResult());
                 }
+                if(backPack.containsUpgrade(Upgrade.JUKEBOX)){
+                    config.set(backPack.getId() + ".jukebox.discs", backPack.serializeDiscs());
+                    config.set(backPack.getId() + ".jukebox.playing", backPack.getPlaying().getType().name());
+                }
                 config.set(backPack.getId() + ".u", backPack.serializeUpgrades());
             }
             if (backPack.getSecondPage() != null) {
-                config.set(backPack.getId() + ".2", backPack.serializeStorageContents(2));
+                config.set(backPack.getId() + ".2", backPack.getStorageContentsSecondPage());
             }
         }
-        try {
-            config.save(filePath.toString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
+        config.save(path);
     }
 
-    public static void loadPlacedBackpacks(){
-        Json config = new Json("stored_backpacks.json", Main.getMain().getDataFolder().getAbsolutePath());
+    public static void loadPlacedBackpacks() {
+        File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/cached_backpacks_loc.json");
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        for (String i : config.keySet()) {
+        for (String i : config.getKeys(false)) {
             BackPack backPack = new BackPack().deserialize(config, i);
             backPack.setIsBlock(true);
             Location location = deserializeLocation((List<String>) config.getList(i + ".loc"));

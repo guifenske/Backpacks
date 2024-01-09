@@ -11,14 +11,17 @@ import br.com.backpacks.events.backpack_related.*;
 import br.com.backpacks.events.inventory.*;
 import br.com.backpacks.events.upgrades_related.CraftingGrid;
 import br.com.backpacks.events.upgrades_related.FurnaceGrid;
+import br.com.backpacks.events.upgrades_related.JukeboxGrid;
 import br.com.backpacks.events.upgrades_related.TrashCan;
 import br.com.backpacks.yaml.YamlUtils;
 import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class ThreadBackpacks {
     private ExecutorService executor;
@@ -63,6 +66,7 @@ public class ThreadBackpacks {
             //Upgrades
             Bukkit.getPluginManager().registerEvents(new CraftingGrid(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new FurnaceGrid(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new JukeboxGrid(), Main.getMain());
 
             BackpacksAdvancements.createAdvancement(NamespacesAdvacements.getCAUGHT_A_BACKPACK(), "chest", "Wow, thats a huge 'fish'", BackpacksAdvancements.Style.TASK);
 
@@ -82,23 +86,14 @@ public class ThreadBackpacks {
         });
 
         try {
-            future.get(15, TimeUnit.SECONDS);
-        } catch (TimeoutException | InterruptedException | ExecutionException e) {
-            shutdown();
-            Main.getMain().getLogger().warning("Something went wrong!");
-            Main.getMain().getLogger().severe(Arrays.toString(e.getStackTrace()));
-            Main.getMain().getLogger().info("Trying to save data again..");
+            future.get();
+        } catch (Exception ignored) {
 
-            YamlUtils.save_backpacks_yaml();
-            YamlUtils.savePlacedBackpacks();
-
-            Main.getMain().getLogger().info("Done!");
-        } finally {
-            shutdown();
-            Main.saveComplete = true;
-            synchronized (Main.lock){
-                Main.lock.notifyAll();
-            }
+        }
+        shutdown();
+        Main.saveComplete = true;
+        synchronized (Main.lock){
+            Main.lock.notifyAll();
         }
     }
 
@@ -111,8 +106,6 @@ public class ThreadBackpacks {
             return null;
         });
 
-        shutdown();
-        tickExecutor = Executors.newScheduledThreadPool(maxThreads);
     }
 
     public void shutdown() {

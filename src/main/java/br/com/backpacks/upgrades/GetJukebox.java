@@ -1,12 +1,15 @@
 package br.com.backpacks.upgrades;
 
+import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public interface GetJukebox {
 
-    ItemStack[] getDisks();
+    List<ItemStack> getDiscs();
 
-    void setDisks(ItemStack[] disks);
+    void setDiscs(List<ItemStack> discs);
 
     ItemStack getPlaying();
 
@@ -15,4 +18,9 @@ public interface GetJukebox {
     Boolean isPlaying();
 
     void setIsPlaying(Boolean playing);
+
+    Sound getSound();
+
+    void setSound(Sound sound);
+    ItemStack getSoundFromName(String name);
 }

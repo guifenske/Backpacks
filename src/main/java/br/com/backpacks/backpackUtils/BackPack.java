@@ -4,10 +4,11 @@ import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.upgrades.GetFurnace;
 import br.com.backpacks.upgrades.GetJukebox;
-import de.leonhard.storage.Json;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -135,40 +136,43 @@ public class BackPack implements GetFurnace, GetJukebox{
         return list;
     }
 
-    public List<ItemStack> serializeStorageContents(int page){
-        List<ItemStack> list = new ArrayList<>();
-        if(page == 1){
-            for(ItemStack item : firstPage.getStorageContents()){
-                if(item == null) continue;
-                list.add(item);
+    public List<String> serializeDiscs(){
+        List<String> list = new ArrayList<>();
+        for(ItemStack itemStack : getDiscs()){
+            if(itemStack == null){
+                list.add(null);
+                continue;
             }
-        }else{
-            for(ItemStack item : secondPage.getStorageContents()){
-                if(item == null) continue;
-                list.add(item);
-            }
+            list.add(itemStack.getType().name());
         }
-
         return list;
     }
 
-    private void deserializeUpgrades(Json config, String s){
+    private void deserializeUpgrades(YamlConfiguration config, String s){
         if(containsUpgrade(Upgrade.FURNACE)){
-            setFuel((ItemStack) config.get(s + ".furnace.f"));
-            setSmelting((ItemStack) config.get(s + ".furnace.s"));
-            setResult((ItemStack) config.get(s + ".furnace.r"));
+            setFuel(config.getItemStack(s + ".furnace.f"));
+            setSmelting(config.getItemStack(s + ".furnace.s"));
+            setResult(config.getItemStack(s + ".furnace.r"));
+        }
+        if(containsUpgrade(Upgrade.JUKEBOX)){
+            List<ItemStack> discs = new ArrayList<>();
+            for(String item : config.getStringList(s + ".jukebox.discs")){
+                discs.add(getSoundFromName(item));
+            }
+            setDiscs(discs);
+            setPlaying(getSoundFromName(config.getString(s + ".jukebox.playing")));
         }
     }
 
-    public BackPack deserialize(Json config, String s) {
-        if(!config.getFileData().containsKey(s + ".i")){
-            Bukkit.getConsoleSender().sendMessage(s + ".i" + " not found in the config, please report to the devs");
+    public BackPack deserialize(YamlConfiguration config, String s) {
+        if(!config.isSet(s + ".i")){
+            Main.getMain().getLogger().warning("Backpack with id " + s + " not found!");
             return null;
         }
 
         List<String> components = (List<String>) config.getList(s + ".i");
 
-        if(config.contains(s + ".u")){
+        if(config.isSet(s + ".u")){
             List<String> upgradesStr = (List<String>) config.getList(s + ".u");
 
             List<Upgrade> upgrades = new ArrayList<>();
@@ -345,9 +349,11 @@ public class BackPack implements GetFurnace, GetJukebox{
 
     private ItemStack playing;
 
-    private Boolean isPlaying;
+    private Boolean isPlaying = false;
 
-    private ItemStack[] disks;
+    private List<ItemStack> discs;
+
+    private Sound sound;
 
     @Override
     public ItemStack getPlaying() {
@@ -370,14 +376,30 @@ public class BackPack implements GetFurnace, GetJukebox{
     }
 
     @Override
-    public ItemStack[] getDisks() {
-        return disks;
+    public List<ItemStack> getDiscs() {
+        return discs;
     }
 
     @Override
-    public void setDisks(ItemStack[] disks) {
-        this.disks = disks;
+    public void setDiscs(List<ItemStack> discs) {
+        this.discs = discs;
     }
+
+    @Override
+    public Sound getSound() {
+        return sound;
+    }
+
+    @Override
+    public void setSound(Sound sound) {
+        this.sound = sound;
+    }
+
+    @Override
+    public ItemStack getSoundFromName(String name){
+        return new ItemStack(Material.getMaterial(name));
+    }
+
     private ItemStack fuel;
     private ItemStack smelting;
     private ItemStack result;

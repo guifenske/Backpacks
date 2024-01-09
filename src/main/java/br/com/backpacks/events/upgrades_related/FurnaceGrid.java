@@ -179,7 +179,7 @@ public class FurnaceGrid implements Listener {
                     return;
                 }
             }
-        }.runTaskTimer(Main.getMain(), 1L, 200L);
+        }.runTaskTimer(Main.getMain(), 0L, 200L);
 
        taskMap.put(id, task);
 
@@ -225,6 +225,7 @@ public class FurnaceGrid implements Listener {
 
         if(backPack.getFuel() == null || backPack.getSmelting() == null){
             taskMap.get(backPack.getId()).cancel();
+            taskMap.remove(backPack.getId());
             firstSave.remove(backPack.getId());
         }
 
