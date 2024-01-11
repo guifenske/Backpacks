@@ -1,6 +1,7 @@
 package br.com.backpacks.backpackUtils;
 
 import br.com.backpacks.Main;
+import br.com.backpacks.backpackUtils.inventory.ItemCreator;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.upgrades.GetFurnace;
 import br.com.backpacks.upgrades.GetJukebox;
@@ -9,8 +10,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -337,23 +336,9 @@ public class BackPack implements GetFurnace, GetJukebox{
 
 
     public void setArrowsAndConfigOptionItems(){
-        ItemStack arrowLeft = new ItemStack(Material.ARROW);
-        ItemMeta arrowLeftMeta = arrowLeft.getItemMeta();
-        arrowLeftMeta.setDisplayName("§cBack");
-        arrowLeftMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 1);
-        arrowLeft.setItemMeta(arrowLeftMeta);
-
-        ItemStack arrowRight = new ItemStack(Material.ARROW);
-        ItemMeta arrowRightMeta = arrowRight.getItemMeta();
-        arrowRightMeta.setDisplayName("§aNext");
-        arrowRightMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 1);
-        arrowRight.setItemMeta(arrowRightMeta);
-
-        ItemStack config = new ItemStack(Material.NETHER_STAR);
-        ItemMeta configMeta = config.getItemMeta();
-        configMeta.setDisplayName("§6Config");
-        configMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 1);
-        config.setItemMeta(configMeta);
+        ItemStack arrowLeft = new ItemCreator(Material.ARROW, "§aPrevious").get();
+        ItemStack arrowRight = new ItemCreator(Material.ARROW, "§aNext").get();
+        ItemStack config = new ItemCreator(Material.NETHER_STAR, "§6Config").get();
 
         firstPage.setItem(firstPageSize - 1, config);
         configItemsSpace = 1;
