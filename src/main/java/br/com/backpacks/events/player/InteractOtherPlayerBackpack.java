@@ -25,7 +25,7 @@ public class InteractOtherPlayerBackpack implements Listener {
         BackPack backPack = Main.backPackManager.getBackpackFromId(clickedEntity.getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER));
         if(backPack == null) return;
 
-        if(!backPack.isBlock()){
+        if(!backPack.isLocked()){
             backPack.open(player);
             player.playSound(player, Sound.BLOCK_CHEST_OPEN, 1, 1);
         }
