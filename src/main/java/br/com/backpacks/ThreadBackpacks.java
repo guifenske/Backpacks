@@ -18,14 +18,9 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
 
 public class ThreadBackpacks {
     private ExecutorService executor;
-
-    private ScheduledExecutorService tickExecutor;
-
-    private int maxThreads = 1;
 
     public ThreadBackpacks() throws IOException {
         File file = new File(Main.getMain().getDataFolder().getCanonicalFile().getAbsolutePath() + "/config.yml");
@@ -36,7 +31,6 @@ public class ThreadBackpacks {
                 return;
             }
             executor = Executors.newFixedThreadPool(Main.getMain().getConfig().getInt("maxThreads"));
-            maxThreads = Main.getMain().getConfig().getInt("maxThreads");
         }
     }
 
@@ -76,10 +70,7 @@ public class ThreadBackpacks {
     public void saveAll() throws IOException {
 
         Future<Void> future = executor.submit(() -> {
-
             YamlUtils.save_backpacks_yaml();
-            YamlUtils.savePlacedBackpacks();
-
             return null;
         });
 
@@ -97,10 +88,7 @@ public class ThreadBackpacks {
 
     public void loadAll() {
         executor.submit(() -> {
-
             YamlUtils.loadBackpacksYaml();
-            YamlUtils.loadPlacedBackpacks();
-
             return null;
         });
 

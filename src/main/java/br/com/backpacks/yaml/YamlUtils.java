@@ -19,6 +19,10 @@ public final class YamlUtils {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
         for (BackPack backPack : Main.backPackManager.getBackpacks().values()) {
+            if(backPack.getLocation() != null){
+                List<String> data = serializeLocation(backPack.getLocation());
+                config.set(backPack.getId() + ".loc", data);
+            }
             config.set(backPack.getId() + ".i", backPack.serialize());
             config.set(backPack.getId() + ".1", backPack.getStorageContentsFirstPage());
             if (backPack.getUpgrades() != null) {
@@ -48,6 +52,10 @@ public final class YamlUtils {
         for (String i : config.getKeys(false)) {
             BackPack backPack = new BackPack().deserialize(config, i);
             backPack.setIsBlock(false);
+            if(config.isSet(i + ".loc")){
+                backPack.setLocation(deserializeLocation(config.getStringList(i + ".loc")));
+                Main.backPackManager.getBackpacksPlacedLocations().put(backPack.getLocation(), backPack.getId());
+            }
             Main.getMain().getLogger().info("Loading backpack " + backPack.getName() + " with id " + backPack.getId());
             Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
         }
@@ -69,51 +77,5 @@ public final class YamlUtils {
         double z = Double.parseDouble(oldData.get(3));
 
         return new Location(Bukkit.getServer().getWorld(world), x, y, z);
-    }
-
-    public static void savePlacedBackpacks() throws IOException {
-        if (Main.backPackManager.getBackpacksPlacedLocations().isEmpty()) {
-            return;
-        }
-
-        File path = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/placed_backpacks.yml");
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(path);
-
-        for (Location location : Main.backPackManager.getBackpacksPlacedLocations().keySet()) {
-            BackPack backPack = Main.backPackManager.getBackpacksPlacedLocations().get(location);
-            List<String> data = serializeLocation(location);
-            config.set(backPack.getId() + ".loc", data);
-            config.set(backPack.getId() + ".i", backPack.serialize());
-            config.set(backPack.getId() + ".1", backPack.getStorageContentsFirstPage());
-            if (backPack.getUpgrades() != null) {
-                if (backPack.containsUpgrade(Upgrade.FURNACE)) {
-                    config.set(backPack.getId() + ".furnace.f", backPack.getFuel());
-                    config.set(backPack.getId() + ".furnace.s", backPack.getSmelting());
-                    config.set(backPack.getId() + ".furnace.r", backPack.getResult());
-                }
-                if(backPack.containsUpgrade(Upgrade.JUKEBOX)){
-                    config.set(backPack.getId() + ".jukebox.discs", backPack.serializeDiscs());
-                    config.set(backPack.getId() + ".jukebox.playing", backPack.getPlaying().getType().name());
-                }
-                config.set(backPack.getId() + ".u", backPack.serializeUpgrades());
-            }
-            if (backPack.getSecondPage() != null) {
-                config.set(backPack.getId() + ".2", backPack.getStorageContentsSecondPage());
-            }
-        }
-
-        config.save(path);
-    }
-
-    public static void loadPlacedBackpacks() {
-        File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/placed_backpacks.yml");
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-
-        for (String i : config.getKeys(false)) {
-            BackPack backPack = new BackPack().deserialize(config, i);
-            backPack.setIsBlock(true);
-            Location location = deserializeLocation((List<String>) config.getList(i + ".loc"));
-            Main.backPackManager.getBackpacksPlacedLocations().put(location, backPack);
-        }
     }
 }

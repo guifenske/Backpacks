@@ -22,15 +22,16 @@ public class BackPackManager {
         return currentUpgradeMenu;
     }
 
-    public ConcurrentHashMap<Location, BackPack> getBackpacksPlacedLocations() {
+    public ConcurrentHashMap<Location, Integer> getBackpacksPlacedLocations() {
         return backpacksPlacedLocations;
     }
 
     public BackPack getBackpackFromLocation(Location location) {
-        return backpacksPlacedLocations.get(location);
+        if(!getBackpacksPlacedLocations().containsKey(location)) return null;
+        return getBackpackFromId(backpacksPlacedLocations.get(location));
     }
 
-    private ConcurrentHashMap<Location, BackPack> backpacksPlacedLocations = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Location, Integer> backpacksPlacedLocations = new ConcurrentHashMap<>();
 
     public BackPack createBackPack(int size, String name, int id, BackpackType type) {
         // Create a new backpack with the specified size and name

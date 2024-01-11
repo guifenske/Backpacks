@@ -4,10 +4,7 @@ import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.upgrades.GetFurnace;
 import br.com.backpacks.upgrades.GetJukebox;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -29,6 +26,22 @@ public class BackPack implements GetFurnace, GetJukebox{
     }
 
     private BackpackType backpackType;
+
+    public int getConfigItemsSpace() {
+        return configItemsSpace;
+    }
+
+    private int configItemsSpace = 0;
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    private Location location;
 
     private boolean locked;
 
@@ -86,23 +99,6 @@ public class BackPack implements GetFurnace, GetJukebox{
     public String getName() {
         return name;
     }
-
-    public ItemStack getFirstItemAvailable(int i){
-        if(i == 1) {
-            for (ItemStack itemStack : firstPage.getStorageContents()) {
-                if (itemStack == null) continue;
-                return itemStack;
-            }
-        }   else{
-            for (ItemStack itemStack : secondPage.getStorageContents()) {
-                if (itemStack == null) continue;
-                return itemStack;
-            }
-        }
-        return null;
-    }
-
-
 
     public void setName(String name) {
         this.name = name;
@@ -306,6 +302,15 @@ public class BackPack implements GetFurnace, GetJukebox{
         BackpackAction.setAction(player, BackpackAction.Action.OPENED);
     }
 
+    public List<ItemStack> getStorageContentsFirstPageWithoutNulls() {
+        List<ItemStack> list = new ArrayList<>();
+        for(ItemStack itemStack : firstPage.getStorageContents()){
+            if(itemStack == null) continue;
+            list.add(itemStack);
+        }
+        return list;
+    }
+
     public ItemStack[] getStorageContentsFirstPage() {
         ItemStack[] array = firstPage.getStorageContents();
         int length = array.length;
@@ -351,11 +356,13 @@ public class BackPack implements GetFurnace, GetJukebox{
         config.setItemMeta(configMeta);
 
         firstPage.setItem(firstPageSize - 1, config);
+        configItemsSpace = 1;
 
         if(secondPageSize > 0){
             firstPage.setItem(firstPageSize - 2, arrowRight);
             secondPage.setItem(secondPageSize - 2, arrowLeft);
             secondPage.setItem(secondPageSize - 1, config);
+            configItemsSpace = 2;
         }
     }
 
