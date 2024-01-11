@@ -70,9 +70,11 @@ public class OnClickInConfigMenu implements Listener {
                 if (player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) {
                     player.getInventory().addItem(Utils.getItemFromBackpack(backPack));
                     player.getPersistentDataContainer().remove(new RecipesNamespaces().getHAS_BACKPACK());
+                    backPack.setBeingWeared(false);
                 } else {
                     player.getInventory().remove(Utils.getItemFromBackpack(backPack));
-                    player.getPersistentDataContainer().set(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER, Main.backPackManager.getCurrentBackpackId().get(player.getUniqueId()));
+                    player.getPersistentDataContainer().set(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER, backPack.getId());
+                    backPack.setBeingWeared(true);
                 }
 
                 player.closeInventory();

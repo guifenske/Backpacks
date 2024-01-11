@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 public class OnCloseBackpackConfigMenu implements Listener {
 
@@ -17,6 +19,11 @@ public class OnCloseBackpackConfigMenu implements Listener {
         if(backPack == null) return;
 
         BackpackAction.setAction((Player) event.getPlayer(), BackpackAction.Action.NOTHING);
-        backPack.open((Player) event.getPlayer());
+        BukkitTask task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                backPack.open((Player) event.getPlayer());
+            }
+        }.runTaskLater(Main.getMain(), 1L);
     }
 }

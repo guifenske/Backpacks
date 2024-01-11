@@ -16,6 +16,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,6 +136,11 @@ public class JukeboxGrid implements Listener {
 
         backPack.setDiscs(disks);
         BackpackAction.setAction((Player) event.getPlayer(), BackpackAction.Action.NOTHING);
-        backPack.open((Player) event.getPlayer());
+        BukkitTask task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                backPack.open((Player) event.getPlayer());
+            }
+        }.runTaskLater(Main.getMain(), 1L);
     }
 }

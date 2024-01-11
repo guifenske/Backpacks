@@ -230,7 +230,12 @@ public class FurnaceGrid implements Listener {
         }
 
         BackpackAction.setAction((Player) event.getPlayer(), BackpackAction.Action.NOTHING);
-        backPack.open((Player) event.getPlayer());
+        BukkitTask task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                backPack.open((Player) event.getPlayer());
+            }
+        }.runTaskLater(Main.getMain(), 1L);
 
     }
 

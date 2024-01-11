@@ -73,6 +73,16 @@ public class BackPack implements GetFurnace, GetJukebox{
     private int firstPageSize;
     private int secondPageSize;
 
+    public boolean isBeingWeared() {
+        return isBeingWeared;
+    }
+
+    public void setBeingWeared(boolean beingWeared) {
+        isBeingWeared = beingWeared;
+    }
+
+    private boolean isBeingWeared = false;
+
     public String getName() {
         return name;
     }
