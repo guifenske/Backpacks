@@ -87,6 +87,23 @@ public class BackPack implements GetFurnace, GetJukebox{
         return name;
     }
 
+    public ItemStack getFirstItemAvailable(int i){
+        if(i == 1) {
+            for (ItemStack itemStack : firstPage.getStorageContents()) {
+                if (itemStack == null) continue;
+                return itemStack;
+            }
+        }   else{
+            for (ItemStack itemStack : secondPage.getStorageContents()) {
+                if (itemStack == null) continue;
+                return itemStack;
+            }
+        }
+        return null;
+    }
+
+
+
     public void setName(String name) {
         this.name = name;
         Inventory newFirstPage = Bukkit.createInventory(null, firstPageSize, name);

@@ -3,10 +3,7 @@ package br.com.backpacks;
 import br.com.backpacks.advancements.BackpacksAdvancements;
 import br.com.backpacks.advancements.NamespacesAdvacements;
 import br.com.backpacks.commands.Bdebug;
-import br.com.backpacks.events.CraftBackpack;
-import br.com.backpacks.events.FinishedSmelting;
-import br.com.backpacks.events.Fishing;
-import br.com.backpacks.events.InteractOtherPlayerBackpack;
+import br.com.backpacks.events.*;
 import br.com.backpacks.events.backpack_related.*;
 import br.com.backpacks.events.inventory.*;
 import br.com.backpacks.events.upgrades_related.CraftingGrid;
@@ -62,6 +59,7 @@ public class ThreadBackpacks {
             Bukkit.getPluginManager().registerEvents(new InteractOtherPlayerBackpack(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new OnCloseUpgradeMenu(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new OnClickUpgradesMenu(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new HopperEvents(), Main.getMain());
 
             //Upgrades
             Bukkit.getPluginManager().registerEvents(new CraftingGrid(), Main.getMain());

@@ -106,7 +106,7 @@ public final class YamlUtils {
     }
 
     public static void loadPlacedBackpacks() {
-        File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/cached_backpacks_loc.json");
+        File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/placed_backpacks.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
         for (String i : config.getKeys(false)) {
