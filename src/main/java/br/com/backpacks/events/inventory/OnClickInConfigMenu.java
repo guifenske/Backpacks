@@ -15,7 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class OnClickInConfigMenu implements Listener {
 
@@ -23,48 +22,40 @@ public class OnClickInConfigMenu implements Listener {
     private void onClick(InventoryClickEvent event){
         if(event.getClickedInventory() == null) return;
         if(!BackpackAction.getAction((Player) event.getWhoClicked()).equals(BackpackAction.Action.CONFIGMENU)) return;
+        event.setCancelled(true);
 
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
         if(backPack == null) return;
-
-        event.setCancelled(true);
 
         if(event.getRawSlot() < InventoryBuilder.getFreeInitialSlots(backPack.getType())){
             if(event.getCurrentItem() == null) return;
             Upgrade upgrade = Utils.getUpgradeFromItem(event.getCurrentItem());
             if(upgrade == null) return;
 
-            switch (upgrade){
-                case CRAFTING -> new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
-                        event.getWhoClicked().openWorkbench(null, true);
-                        BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGCRAFTINGGRID);
-                        event.setCancelled(true);
-                    }
-                }.runTaskLater(Main.getMain(), 1L);
+            switch (upgrade) {
+                case CRAFTING -> {
+                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
+                    event.getWhoClicked().openWorkbench(null, true);
+                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGCRAFTINGGRID);
+                    event.setCancelled(true);
+                }
 
-                case FURNACE -> new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
-                        event.getWhoClicked().openInventory(FurnaceGrid.inventory((Player) event.getWhoClicked(), backPack));
-                        BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGFURNACE);
-                        event.setCancelled(true);
-                    }
-                }.runTaskLater(Main.getMain(), 1L);
+                case FURNACE -> {
+                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
+                    event.getWhoClicked().openInventory(FurnaceGrid.inventory((Player) event.getWhoClicked(), backPack));
+                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGFURNACE);
+                    event.setCancelled(true);
+                }
 
-                case JUKEBOX -> new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
-                        event.getWhoClicked().openInventory(JukeboxGrid.inventory((Player) event.getWhoClicked(), backPack));
-                        BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGJUKEBOX);
-                        event.setCancelled(true);
-                    }
-                }.runTaskLater(Main.getMain(), 1L);
+                case JUKEBOX -> {
+                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
+                    event.getWhoClicked().openInventory(JukeboxGrid.inventory((Player) event.getWhoClicked(), backPack));
+                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGJUKEBOX);
+                    event.setCancelled(true);
+                }
             }
+
+            return;
         }
 
         Player player = (Player) event.getWhoClicked();
@@ -74,7 +65,7 @@ public class OnClickInConfigMenu implements Listener {
             case 45 -> player.closeInventory();
             //equip or un-equip backpack in the back
             case 53 -> {
-                if (event.getClickedInventory().getItem(53) == null) return;
+                if(backPack.isBlock())  return;
 
                 if (player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) {
                     player.getInventory().addItem(Utils.getItemFromBackpack(backPack));
@@ -95,23 +86,15 @@ public class OnClickInConfigMenu implements Listener {
 
             case 51 -> {
                 if (event.getClickedInventory().getItem(53) == null) return;
-                if(backPack.isLocked()) backPack.setLocked(false);
-                else backPack.setLocked(true);
-
+                backPack.setLocked(!backPack.isLocked());
                 player.closeInventory();
             }
 
             case 36 ->{
                 BackpackAction.setAction(player, BackpackAction.Action.NOTHING);
-
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        player.openInventory(UpgradeMenu.editUpgrades(player));
-                        BackpackAction.setAction(player, BackpackAction.Action.UPGMENU);
-                        event.setCancelled(true);
-                    }
-                }.runTaskLater(Main.getMain(), 1L);
+                player.openInventory(UpgradeMenu.editUpgrades(player));
+                BackpackAction.setAction(player, BackpackAction.Action.UPGMENU);
+                event.setCancelled(true);
             }
         }
     }

@@ -8,8 +8,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 public class CraftingGrid implements Listener {
 
@@ -21,11 +19,6 @@ public class CraftingGrid implements Listener {
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
         if(backPack == null) return;
 
-        BukkitTask task = new BukkitRunnable() {
-            @Override
-            public void run() {
-                backPack.open((Player) event.getPlayer());
-            }
-        }.runTaskLater(Main.getMain(), 1L);
+        backPack.open((Player) event.getPlayer());
     }
 }

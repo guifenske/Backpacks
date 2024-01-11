@@ -230,12 +230,8 @@ public class FurnaceGrid implements Listener {
         }
 
         BackpackAction.setAction((Player) event.getPlayer(), BackpackAction.Action.NOTHING);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                backPack.open((Player) event.getPlayer());
-            }
-        }.runTask(Main.getMain());
+        backPack.open((Player) event.getPlayer());
+
     }
 
     public enum Fuel {

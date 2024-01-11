@@ -10,8 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,11 +34,6 @@ public class OnCloseUpgradeMenu implements Listener {
         BackpackAction.setAction((Player) event.getPlayer(), BackpackAction.Action.NOTHING);
 
         backPack.setUpgrades(upgrades);
-        BukkitTask task = new BukkitRunnable() {
-            @Override
-            public void run() {
-                backPack.open((Player) event.getPlayer());
-            }
-        }.runTaskLater(Main.getMain(), 1L);
+        backPack.open((Player) event.getPlayer());
     }
 }
