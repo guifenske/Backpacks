@@ -19,10 +19,6 @@ public class HopperEvents implements Listener {
 
         BackPack backPack = Main.backPackManager.getBackpackFromLocation(event.getSearchBlock().getLocation());
         if(backPack.getSecondPage() != null){
-            if(backPack.getSecondPage().firstEmpty() == -1){
-                event.setInventory(backPack.getFirstPage());
-                return;
-            }
             if(backPack.getStorageContentsFirstPageWithoutNulls().size() > backPack.getConfigItemsSpace()){
                 event.setInventory(backPack.getFirstPage());
             }
