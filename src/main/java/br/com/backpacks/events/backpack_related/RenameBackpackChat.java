@@ -20,12 +20,17 @@ public class RenameBackpackChat implements Listener {
         event.setCancelled(true);
 
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(player.getUniqueId()));
-
-        backPack.setName(newName);
         if(!backPack.isBlock() && !backPack.isBeingWeared()) {
             player.getInventory().remove(Utils.getItemFromBackpack(backPack));
+            backPack.setName(newName);
             player.getInventory().addItem(Utils.getItemFromBackpack(backPack));
+            BackpackAction.setAction(player, BackpackAction.Action.NOTHING);
+            player.sendMessage(Main.PREFIX + "§aRenamed backpack to " + newName);
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+            return;
         }
+
+        backPack.setName(newName);
         BackpackAction.setAction(player, BackpackAction.Action.NOTHING);
         player.sendMessage(Main.PREFIX + "§aRenamed backpack to " + newName);
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
