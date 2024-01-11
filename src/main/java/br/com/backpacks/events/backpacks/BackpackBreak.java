@@ -1,8 +1,8 @@
-package br.com.backpacks.events.backpack_related;
+package br.com.backpacks.events.backpacks;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
-import br.com.backpacks.recipes.Utils;
+import br.com.backpacks.recipes.RecipesUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -22,7 +22,7 @@ public class BackpackBreak implements Listener {
         event.setDropItems(false);
 
         BackPack backPack = Main.backPackManager.getBackpackFromLocation(event.getBlock().getLocation());
-        ItemStack backpack_item = Utils.getItemFromBackpack(backPack);
+        ItemStack backpack_item = RecipesUtils.getItemFromBackpack(backPack);
 
         Location location = event.getBlock().getLocation();
         Main.backPackManager.getBackpacksPlacedLocations().remove(location);
@@ -40,7 +40,7 @@ public class BackpackBreak implements Listener {
             block.setType(Material.AIR);
 
             BackPack backPack = Main.backPackManager.getBackpackFromLocation(block.getLocation());
-            ItemStack backpack_item = Utils.getItemFromBackpack(backPack);
+            ItemStack backpack_item = RecipesUtils.getItemFromBackpack(backPack);
 
             Location location = block.getLocation();
             Main.backPackManager.getBackpacksPlacedLocations().remove(location);

@@ -1,4 +1,4 @@
-package br.com.backpacks.events.upgrades_related;
+package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
@@ -21,7 +21,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.EnumMap;
 import java.util.HashMap;
 
-public class FurnaceGrid implements Listener {
+public class Furnace implements Listener {
 
     private static final HashMap<Integer, BukkitTask> taskMap = new HashMap<>();
 

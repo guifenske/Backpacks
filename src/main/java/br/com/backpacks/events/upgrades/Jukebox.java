@@ -1,12 +1,13 @@
-package br.com.backpacks.events.upgrades_related;
+package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackAction;
-import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.backpackUtils.inventory.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,16 +15,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class JukeboxGrid implements Listener {
+public class Jukebox implements Listener {
 
     protected static Set<Integer> blankSlots = Set.of(0,1,2,3,4,5,9,12,14,18,19,20,21,22,23);
 
@@ -32,23 +29,9 @@ public class JukeboxGrid implements Listener {
     public static Inventory inventory(Player player, BackPack backPack){
         Inventory inventory = Bukkit.createInventory(player, 27, "Jukebox");
 
-        ItemStack play = new ItemStack(Material.PRISMARINE_SHARD);
-        ItemMeta playMeta = play.getItemMeta();
-        playMeta.setDisplayName("Play Music");
-        playMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 1);
-        play.setItemMeta(playMeta);
-
-        ItemStack stop = new ItemStack(Material.BARRIER);
-        ItemMeta stopMeta = stop.getItemMeta();
-        stopMeta.setDisplayName("Stop Music");
-        stopMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 2);
-        stop.setItemMeta(stopMeta);
-
-        ItemStack blank = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta blankMeta = blank.getItemMeta();
-        blankMeta.setDisplayName(" ");
-        blankMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 3);
-        blank.setItemMeta(blankMeta);
+        ItemStack play = new ItemCreator(Material.GREEN_STAINED_GLASS_PANE, "Play Music").get();
+        ItemStack stop = new ItemCreator(Material.RED_STAINED_GLASS_PANE, "Stop Music").get();
+        ItemStack blank = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").get();
 
         for (int i : blankSlots) {
             inventory.setItem(i, blank);
@@ -99,13 +82,13 @@ public class JukeboxGrid implements Listener {
                 if(!checkDisk(event.getInventory().getItem(13))) return;
                 backPack.setIsPlaying(true);
                 backPack.setSound(getSoundFromItem(event.getInventory().getItem(13)));
-                Jukebox.startPlaying(player, backPack.getSound());
+                startPlaying(player, backPack.getSound());
             }
             case 11 -> {
                 event.setCancelled(true);
                 if(!backPack.isPlaying()) return;
                 backPack.setIsPlaying(false);
-                Jukebox.stopPlaying(player);
+                stopPlaying(player);
             }
         }
     }
@@ -142,5 +125,20 @@ public class JukeboxGrid implements Listener {
                 backPack.open((Player) event.getPlayer());
             }
         }.runTaskLater(Main.getMain(), 1L);
+    }
+
+    private final HashMap<UUID, net.kyori.adventure.sound.Sound> playing = new HashMap<>();
+
+    public void startPlaying(Entity entity, Sound sound){                                                                                //apparently this is the max volume
+        net.kyori.adventure.sound.Sound sound1 = net.kyori.adventure.sound.Sound.sound(sound, net.kyori.adventure.sound.Sound.Source.MASTER, 2147483647, 1);
+
+        playing.put(entity.getUniqueId(), sound1);
+        entity.playSound(sound1, net.kyori.adventure.sound.Sound.Emitter.self());
+    }
+
+    public void stopPlaying(Entity entity){
+        if(!playing.containsKey(entity.getUniqueId())) return;
+        entity.stopSound(playing.get(entity.getUniqueId()));
+        playing.remove(entity.getUniqueId());
     }
 }

@@ -4,12 +4,16 @@ import br.com.backpacks.advancements.BackpacksAdvancements;
 import br.com.backpacks.advancements.NamespacesAdvacements;
 import br.com.backpacks.commands.Bdebug;
 import br.com.backpacks.events.*;
-import br.com.backpacks.events.backpack_related.*;
+import br.com.backpacks.events.backpacks.*;
 import br.com.backpacks.events.inventory.*;
-import br.com.backpacks.events.upgrades_related.CraftingGrid;
-import br.com.backpacks.events.upgrades_related.FurnaceGrid;
-import br.com.backpacks.events.upgrades_related.JukeboxGrid;
-import br.com.backpacks.events.upgrades_related.TrashCan;
+import br.com.backpacks.events.player.CraftBackpack;
+import br.com.backpacks.events.player.FinishedSmelting;
+import br.com.backpacks.events.player.Fishing;
+import br.com.backpacks.events.player.InteractOtherPlayerBackpack;
+import br.com.backpacks.events.upgrades.CraftingTable;
+import br.com.backpacks.events.upgrades.Furnace;
+import br.com.backpacks.events.upgrades.Jukebox;
+import br.com.backpacks.events.upgrades.TrashCan;
 import br.com.backpacks.yaml.YamlUtils;
 import org.bukkit.Bukkit;
 
@@ -56,9 +60,9 @@ public class ThreadBackpacks {
             Bukkit.getPluginManager().registerEvents(new HopperEvents(), Main.getMain());
 
             //Upgrades
-            Bukkit.getPluginManager().registerEvents(new CraftingGrid(), Main.getMain());
-            Bukkit.getPluginManager().registerEvents(new FurnaceGrid(), Main.getMain());
-            Bukkit.getPluginManager().registerEvents(new JukeboxGrid(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new CraftingTable(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new Furnace(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new Jukebox(), Main.getMain());
 
             BackpacksAdvancements.createAdvancement(NamespacesAdvacements.getCAUGHT_A_BACKPACK(), "chest", "Wow, thats a huge 'fish'", BackpacksAdvancements.Style.TASK);
 

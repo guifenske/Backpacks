@@ -11,7 +11,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Arrays;
 import java.util.List;
 
-public class Utils {
+public class RecipesUtils {
 
     public static ItemStack getItemFromBackpack(BackPack backPack) {
         ItemStack itemStack = new ItemStack(Material.CHEST);

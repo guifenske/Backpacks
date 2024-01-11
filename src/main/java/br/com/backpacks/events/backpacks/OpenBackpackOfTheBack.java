@@ -1,4 +1,4 @@
-package br.com.backpacks.events.backpack_related;
+package br.com.backpacks.events.backpacks;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;

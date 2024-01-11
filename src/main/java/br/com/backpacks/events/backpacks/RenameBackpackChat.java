@@ -1,9 +1,9 @@
-package br.com.backpacks.events.backpack_related;
+package br.com.backpacks.events.backpacks;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackAction;
-import br.com.backpacks.recipes.Utils;
+import br.com.backpacks.recipes.RecipesUtils;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,9 +21,9 @@ public class RenameBackpackChat implements Listener {
 
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(player.getUniqueId()));
         if(!backPack.isBlock() && !backPack.isBeingWeared()) {
-            player.getInventory().remove(Utils.getItemFromBackpack(backPack));
+            player.getInventory().remove(RecipesUtils.getItemFromBackpack(backPack));
             backPack.setName(newName);
-            player.getInventory().addItem(Utils.getItemFromBackpack(backPack));
+            player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
             BackpackAction.setAction(player, BackpackAction.Action.NOTHING);
             player.sendMessage(Main.PREFIX + "§aRenamed backpack to " + newName);
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
