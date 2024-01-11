@@ -24,7 +24,10 @@ public class BackpackInteract implements Listener {
         if(event.getAction().equals(RIGHT_CLICK_BLOCK) && event.getClickedBlock().getType().equals(Material.CHEST)){
             if(player.isSneaking()) return;
             if(event.getItem() != null){
-                if(event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK())) return;
+                if(event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK())){
+                    event.setCancelled(true);
+                    return;
+                }
             }
 
             if(Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
