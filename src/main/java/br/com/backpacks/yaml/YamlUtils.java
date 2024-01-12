@@ -39,7 +39,7 @@ public final class YamlUtils {
                 }
                 if(backPack.containsUpgrade(Upgrade.AUTOFEED)){
                     config.set(backPack.getId() + ".afeed.enabled", backPack.isAutoFeedEnabled());
-                    config.set(backPack.getId() + ".afeed.items", backPack.getAutoFeedItems());
+                    config.set(backPack.getId() + ".afeed.items", backPack.serializeFoods());
                 }
             }
         }

@@ -6,6 +6,7 @@ import br.com.backpacks.backpackUtils.BackpackAction;
 import br.com.backpacks.backpackUtils.inventory.ItemCreator;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -17,12 +18,15 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class AutoFeed implements Listener {
 
@@ -49,6 +53,7 @@ public class AutoFeed implements Listener {
                     Main.getMain().debugMessage("Auto feed-ed " + player.getName() + ", backpack id " + backPack.getId(), "info");
                     player.setFoodLevel(player.getFoodLevel() + hungerPointsPerFood(itemStack));
                     player.setSaturation(player.getSaturation() + saturationPointsPerFood(itemStack));
+                    applyEffectPerFood(player, itemStack);
                     player.playSound(player, Sound.ENTITY_GENERIC_EAT, 1, 1);
                     return;
                 }
@@ -75,6 +80,11 @@ public class AutoFeed implements Listener {
         int i1 = 0;
         if(backPack.getAutoFeedItems() != null && !backPack.getAutoFeedItems().isEmpty()){
             for(int i : fillSlots){
+                if(i1 >= backPack.getAutoFeedItems().size()) break;
+                if(backPack.getAutoFeedItems().get(i1) == null){
+                    i1++;
+                    continue;
+                }
                 inventory.setItem(i, backPack.getAutoFeedItems().get(i1));
                 i1++;
             }
@@ -118,6 +128,7 @@ public class AutoFeed implements Listener {
             }
             if (!checkFood(itemStack)) {
                 event.getPlayer().getInventory().addItem(itemStack);
+                event.getInventory().remove(itemStack);
                 foods.add(null);
                 continue;
             }
@@ -254,4 +265,50 @@ public class AutoFeed implements Listener {
         return 0.0f;
     }
 
+    private static void applyEffectPerFood(Player player, ItemStack itemStack){
+        switch (itemStack.getType()){
+            case ROTTEN_FLESH -> {
+                if(ThreadLocalRandom.current().nextInt(1, 100) <= 80)   player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 600, 3));
+            }
+
+            case PUFFERFISH -> {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 300, 3));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 1200, 2));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 300, 1));
+            }
+
+            case HONEY_BOTTLE -> {
+                player.removePotionEffect(PotionEffectType.POISON);
+            }
+
+            case POISONOUS_POTATO -> {
+                if(ThreadLocalRandom.current().nextInt(1, 100) <= 60)   player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 100, 1));
+            }
+
+            case CHICKEN -> {
+                if(ThreadLocalRandom.current().nextInt(1, 100) <= 30)   player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 600, 1));
+            }
+
+            case SPIDER_EYE -> {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 100, 1));
+            }
+
+            case ENCHANTED_GOLDEN_APPLE -> {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 2400, 4));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 400, 2));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 6000, 1));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 6000, 1));
+            }
+
+            case GOLDEN_APPLE -> {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 2400, 1));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 2));
+            }
+
+            case CHORUS_FRUIT -> {
+                Location location = player.getLocation().add(ThreadLocalRandom.current().nextInt(-8, 8), 0, ThreadLocalRandom.current().nextInt(-8, 8));
+                player.teleportAsync(player.getWorld().getHighestBlockAt(location).getLocation().add(0, 1, 0));
+            }
+        }
+    }
 }

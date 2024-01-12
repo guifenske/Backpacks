@@ -160,6 +160,17 @@ public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed {
         return list;
     }
 
+    public List<ItemStack> serializeFoods(){
+        List<ItemStack> list = new ArrayList<>();
+        for(ItemStack itemStack : getAutoFeedItems()){
+            if(itemStack == null){
+                continue;
+            }
+            list.add(itemStack);
+        }
+        return list;
+    }
+
     public List<String> serializeDiscs(){
         List<String> list = new ArrayList<>();
         for(ItemStack itemStack : getDiscs()){
