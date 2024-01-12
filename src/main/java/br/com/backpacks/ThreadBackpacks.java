@@ -13,7 +13,6 @@ import br.com.backpacks.events.player.InteractOtherPlayerBackpack;
 import br.com.backpacks.events.upgrades.CraftingTable;
 import br.com.backpacks.events.upgrades.Furnace;
 import br.com.backpacks.events.upgrades.Jukebox;
-import br.com.backpacks.events.upgrades.TrashCan;
 import br.com.backpacks.yaml.YamlUtils;
 import org.bukkit.Bukkit;
 
@@ -53,7 +52,6 @@ public class ThreadBackpacks {
             Bukkit.getPluginManager().registerEvents(new OnCloseBackpack(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new Fishing(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new FinishedSmelting(), Main.getMain());
-            Bukkit.getPluginManager().registerEvents(new TrashCan(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new InteractOtherPlayerBackpack(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new OnCloseUpgradeMenu(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new OnClickUpgradesMenu(), Main.getMain());

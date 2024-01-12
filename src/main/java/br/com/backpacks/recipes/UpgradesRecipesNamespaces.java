@@ -12,8 +12,6 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Arrays;
 
 public class UpgradesRecipesNamespaces {
-
-    private final NamespacedKey TRASHCAN = new NamespacedKey(Main.getMain(), "trashcan");
     private final NamespacedKey CRAFTINGGRID = new NamespacedKey(Main.getMain(), "craftinggrid");
     private final NamespacedKey FURNACEGRID = new NamespacedKey(Main.getMain(), "furnacegrid");
     private final NamespacedKey JUKEBOX = new NamespacedKey(Main.getMain(), "jukebox");
@@ -30,10 +28,6 @@ public class UpgradesRecipesNamespaces {
 
     public NamespacedKey isUpgrade() {
         return NAMESPACEISUPGRADE;
-    }
-
-    public NamespacedKey getTRASHCAN() {
-        return TRASHCAN;
     }
 
     public NamespacedKey getCraftingGrid() {
@@ -62,25 +56,6 @@ public class UpgradesRecipesNamespaces {
 
     public NamespacedKey getLiquidTank() {
         return LIQUIDTANK;
-    }
-
-    public Recipe getRecipeTrashCan() {
-        ItemStack trashCan = new ItemStack(Material.CAULDRON);
-        ItemMeta meta = trashCan.getItemMeta();
-
-        meta.setDisplayName("Trash Can");
-        meta.setLore(Arrays.asList("§7Trash Can", "§7§nRemoves one slot from the backpack, to be used ", "§7§nas an trash slot."));
-        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(TRASHCAN, PersistentDataType.INTEGER, 1);
-        trashCan.setItemMeta(meta);
-
-        ShapedRecipe recipe = new ShapedRecipe(TRASHCAN, trashCan);
-
-        recipe.shape(" I ", "ILI", " I ");
-
-        recipe.setIngredient('I', Material.IRON_INGOT);
-        recipe.setIngredient('L', Material.LAVA_BUCKET);
-        return recipe;
     }
 
     public Recipe getRecipeCraftingGrid() {

@@ -45,7 +45,6 @@ public class RecipesUtils {
             case EMERALDBLOCK: return "Emerald Block";
             case AUTOFILL: return "Auto Fill";
             case AUTOFOOD: return "Auto Food";
-            case TRASH: return "Trash Can";
             case STACKUPGRADE2X: return "Stack Upgrade 2x";
             case STACKUPGRADE4X: return "Stack Upgrade 4x";
             case STACKUPGRADE8X: return "Stack Upgrade 8x";
@@ -57,10 +56,6 @@ public class RecipesUtils {
 
     private static NamespacedKey getNamespaceFromUpgrade(Upgrade upgrade){
         switch (upgrade){
-            case TRASH -> {
-                return new UpgradesRecipesNamespaces().getTRASHCAN();
-            }
-
             case CRAFTING -> {
                 return new UpgradesRecipesNamespaces().getCraftingGrid();
             }
@@ -95,10 +90,6 @@ public class RecipesUtils {
 
     private static Material getMaterialFromUpgrade(Upgrade upgrade){
         switch (upgrade){
-            case TRASH -> {
-                return Material.CAULDRON;
-            }
-
             case CRAFTING -> {
                 return Material.CRAFTING_TABLE;
             }
@@ -134,7 +125,6 @@ public class RecipesUtils {
     public static Upgrade getUpgradeFromItem(ItemStack itemStack){
         if(!itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade(), PersistentDataType.INTEGER)) return null;
 
-        if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getTRASHCAN(), PersistentDataType.INTEGER)) return Upgrade.TRASH;
         if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getAutoFill(), PersistentDataType.INTEGER)) return Upgrade.AUTOFILL;
         if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getAutoFood(), PersistentDataType.INTEGER)) return Upgrade.AUTOFOOD;
         if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getFurnaceGrid(), PersistentDataType.INTEGER)) return Upgrade.FURNACE;
@@ -158,10 +148,6 @@ public class RecipesUtils {
 
     private static List<String> getLore(Upgrade upgrade) {
         switch (upgrade) {
-            case TRASH -> {
-                return Arrays.asList("§7Trash Can", "§7§nRemoves one slot from the backpack, to be used ", "§7§nas an trash slot.");
-            }
-
             case CRAFTING -> {
                 return Arrays.asList("§7Crafting Grid", "§7§nAllows you to craft items in the backpack.");
             }
