@@ -190,7 +190,7 @@ public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed {
 
     public BackPack deserialize(YamlConfiguration config, String s) {
         if(!config.isSet(s + ".i")){
-            Main.getMain().getLogger().warning("Backpack with id " + s + " not found!");
+            Main.getMain().debugMessage("Backpack with id " + s + " not found!", "warning");
             return null;
         }
 

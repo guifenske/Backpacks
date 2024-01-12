@@ -20,10 +20,12 @@ public class Bdebug implements CommandExecutor {
 
         if(!Main.debugMode){
             Main.debugMode = true;
+            Main.getMain().getConfig().set("debug", true);
             return true;
         }
 
         Main.debugMode = false;
+        Main.getMain().getConfig().set("debug", false);
         return true;
     }
 }

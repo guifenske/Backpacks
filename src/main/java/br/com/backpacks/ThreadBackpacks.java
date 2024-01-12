@@ -3,7 +3,7 @@ package br.com.backpacks;
 import br.com.backpacks.advancements.BackpacksAdvancements;
 import br.com.backpacks.advancements.NamespacesAdvacements;
 import br.com.backpacks.commands.Bdebug;
-import br.com.backpacks.events.*;
+import br.com.backpacks.events.HopperEvents;
 import br.com.backpacks.events.backpacks.*;
 import br.com.backpacks.events.inventory.*;
 import br.com.backpacks.events.player.CraftBackpack;
@@ -75,6 +75,7 @@ public class ThreadBackpacks {
 
         Future<Void> future = executor.submit(() -> {
             YamlUtils.save_backpacks_yaml();
+            Main.getMain().saveConfig();
             return null;
         });
 

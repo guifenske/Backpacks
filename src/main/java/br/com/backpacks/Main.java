@@ -50,6 +50,10 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         setMain(this);
+        saveDefaultConfig();
+
+        if(getConfig().getBoolean("debug"))  debugMode = true;
+
         try {
             threadBackpacks = new ThreadBackpacks();
         } catch (IOException e) {
@@ -79,6 +83,16 @@ public final class Main extends JavaPlugin {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
+            }
+        }
+    }
+
+    public void debugMessage(String message, String type){
+        if(debugMode){
+            switch (type){
+                case "info" -> getLogger().info(message);
+                case "warning" -> getLogger().warning(message);
+                case "severe" -> getLogger().severe(message);
             }
         }
     }

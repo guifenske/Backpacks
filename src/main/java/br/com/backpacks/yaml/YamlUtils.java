@@ -54,7 +54,7 @@ public final class YamlUtils {
                 backPack.setLocation(deserializeLocation(config.getStringList(i + ".loc")));
                 Main.backPackManager.getBackpacksPlacedLocations().put(backPack.getLocation(), backPack.getId());
             }
-            Main.getMain().getLogger().info("Loading backpack " + backPack.getName() + " with id " + backPack.getId());
+            Main.getMain().debugMessage("Loading backpack " + backPack.getName() + " with id " + backPack.getId(), "info");
             Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
         }
     }
