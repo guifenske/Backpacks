@@ -48,7 +48,7 @@ public class AutoFeed implements Listener {
 
                     Main.getMain().debugMessage("Auto feed-ed " + player.getName() + ", backpack id " + backPack.getId(), "info");
                     player.setFoodLevel(player.getFoodLevel() + hungerPointsPerFood(itemStack));
-                    player.setSaturation(20);
+                    player.setSaturation(player.getSaturation() + saturationPointsPerFood(itemStack));
                     player.playSound(player, Sound.ENTITY_GENERIC_EAT, 1, 1);
                     return;
                 }
@@ -143,6 +143,7 @@ public class AutoFeed implements Listener {
         return false;
     }
 
+    //according to minecraft wiki
     private static int hungerPointsPerFood(ItemStack itemStack){
         switch (itemStack.getType()){
             case BEETROOT, DRIED_KELP, POTATO, PUFFERFISH, TROPICAL_FISH -> {
@@ -180,6 +181,77 @@ public class AutoFeed implements Listener {
 
         return 0;
 
+    }
+
+    //according to minecraft wiki
+    private static float saturationPointsPerFood(ItemStack itemStack){
+        switch (itemStack.getType()){
+            case PUFFERFISH, TROPICAL_FISH -> {
+                return 0.2f;
+            }
+
+            case COOKIE, GLOW_BERRIES, COD, SALMON, SWEET_BERRIES -> {
+                return 0.4f;
+            }
+
+            case DRIED_KELP, POTATO -> {
+                return 0.6f;
+            }
+
+            case ROTTEN_FLESH -> {
+                return 0.8f;
+            }
+
+            case BEETROOT, HONEY_BOTTLE, MELON_SLICE, POISONOUS_POTATO, CHICKEN, MUTTON -> {
+                return 1.2f;
+            }
+
+            case BEEF, PORKCHOP, RABBIT -> {
+                return 1.8f;
+            }
+
+            case APPLE, CHORUS_FRUIT -> {
+                return 2.4f;
+            }
+
+            case SPIDER_EYE -> {
+                return 3.2f;
+            }
+
+            case CARROT -> {
+                return 3.6f;
+            }
+
+            case PUMPKIN_PIE -> {
+                return 4.8f;
+            }
+
+            case BAKED_POTATO, BREAD, COOKED_COD, COOKED_RABBIT -> {
+                return 6.0f;
+            }
+
+            case BEETROOT_SOUP, COOKED_CHICKEN, MUSHROOM_STEW, SUSPICIOUS_STEW -> {
+                return 7.2f;
+            }
+
+            case COOKED_MUTTON, COOKED_SALMON, ENCHANTED_GOLDEN_APPLE, GOLDEN_APPLE -> {
+                return 9.6f;
+            }
+
+            case RABBIT_STEW -> {
+                return 12.0f;
+            }
+
+            case COOKED_PORKCHOP, COOKED_BEEF -> {
+                return 12.8f;
+            }
+
+            case GOLDEN_CARROT -> {
+                return 14.4f;
+            }
+        }
+
+        return 0.0f;
     }
 
 }
