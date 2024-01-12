@@ -3,6 +3,7 @@ package br.com.backpacks.backpackUtils;
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.inventory.ItemCreator;
 import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.upgrades.GetAutoFeed;
 import br.com.backpacks.upgrades.GetFurnace;
 import br.com.backpacks.upgrades.GetJukebox;
 import org.bukkit.*;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class BackPack implements GetFurnace, GetJukebox{
+public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed {
 
     public Inventory getSecondPage() {
         return secondPage;
@@ -193,10 +194,10 @@ public class BackPack implements GetFurnace, GetJukebox{
             return null;
         }
 
-        List<String> components = (List<String>) config.getList(s + ".i");
+        List<String> components = config.getStringList(s + ".i");
 
         if(config.isSet(s + ".u")){
-            List<String> upgradesStr = (List<String>) config.getList(s + ".u");
+            List<String> upgradesStr = config.getStringList(s + ".u");
 
             List<Upgrade> upgrades = new ArrayList<>();
             for (String string : upgradesStr) {
@@ -208,8 +209,6 @@ public class BackPack implements GetFurnace, GetJukebox{
             deserializeUpgrades(config, s);
         }
 
-        Set<String> keysFirstPage = config.getConfigurationSection(s + ".1").getKeys(false);
-
         name = components.get(0);
         backpackType = BackpackType.valueOf(components.get(1));
         id = Integer.parseInt(s);
@@ -218,13 +217,22 @@ public class BackPack implements GetFurnace, GetJukebox{
 
         firstPage = Bukkit.createInventory(null, firstPageSize, name);
 
-        for(String index : keysFirstPage)   getFirstPage().setItem(Integer.parseInt(index), config.getItemStack(s + ".1." + index));
+        if(config.isSet(s + ".1")){
+            Set<String> keysFirstPage = config.getConfigurationSection(s + ".1").getKeys(false);
+            for(String index : keysFirstPage){
+                getFirstPage().setItem(Integer.parseInt(index), config.getItemStack(s + ".1." + index));
+            }
+        }
 
         if(secondPageSize > 0) {
             Set<String> keysSecondPage = config.getConfigurationSection(s + ".2").getKeys(false);
             secondPage = Bukkit.createInventory(null, secondPageSize, name);
 
-            for(String index : keysSecondPage)   getSecondPage().setItem(Integer.parseInt(index), config.getItemStack(s + ".2." + index));
+            if(config.isSet(s + ".2")){
+                for(String index : keysSecondPage){
+                    getSecondPage().setItem(Integer.parseInt(index), config.getItemStack(s + ".2." + index));
+                }
+            }
         }
 
         setArrowsAndConfigOptionItems();
@@ -358,6 +366,7 @@ public class BackPack implements GetFurnace, GetJukebox{
 
 
     //Upgrades methods
+    //Jukebox
 
     private ItemStack playing;
 
@@ -412,6 +421,8 @@ public class BackPack implements GetFurnace, GetJukebox{
         return new ItemStack(Material.getMaterial(name));
     }
 
+    //furnace
+
     private ItemStack fuel;
     private ItemStack smelting;
     private ItemStack result;
@@ -445,4 +456,28 @@ public class BackPack implements GetFurnace, GetJukebox{
         this.result = result;
     }
 
+    //auto-feed
+
+    private List<ItemStack> autoFeedItems;
+    private Boolean autoFeedEnabled;
+
+    @Override
+    public List<ItemStack> getAutoFeedItems() {
+        return autoFeedItems;
+    }
+
+    @Override
+    public Boolean isAutoFeedEnabled() {
+        return autoFeedEnabled;
+    }
+
+    @Override
+    public void setAutoFeedEnabled(Boolean bool) {
+        this.autoFeedEnabled = bool;
+    }
+
+    @Override
+    public void setAutoFeedItems(List<ItemStack> items) {
+        this.autoFeedItems = items;
+    }
 }

@@ -6,6 +6,7 @@ import br.com.backpacks.backpackUtils.BackpackAction;
 import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import br.com.backpacks.backpackUtils.inventory.UpgradeMenu;
+import br.com.backpacks.events.upgrades.AutoFeed;
 import br.com.backpacks.events.upgrades.Furnace;
 import br.com.backpacks.events.upgrades.Jukebox;
 import br.com.backpacks.recipes.RecipesNamespaces;
@@ -51,6 +52,13 @@ public class OnClickInConfigMenu implements Listener {
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
                     event.getWhoClicked().openInventory(Jukebox.inventory((Player) event.getWhoClicked(), backPack));
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGJUKEBOX);
+                    event.setCancelled(true);
+                }
+
+                case AUTOFOOD -> {
+                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
+                    event.getWhoClicked().openInventory(AutoFeed.inventory((Player) event.getWhoClicked(), backPack));
+                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGAUTOFEED);
                     event.setCancelled(true);
                 }
             }

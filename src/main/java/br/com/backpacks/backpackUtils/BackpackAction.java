@@ -23,6 +23,8 @@ public class BackpackAction {
 
         UPGJUKEBOX,
 
+        UPGAUTOFEED,
+
         OPENED;
     }
 

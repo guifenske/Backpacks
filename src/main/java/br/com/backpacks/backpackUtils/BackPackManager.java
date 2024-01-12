@@ -63,6 +63,8 @@ public class BackPackManager {
     }
 
     public void upgradeBackpack(BackpackType oldType, int oldId) {
+        if(oldId == -1) return;
+
         BackPack oldBackpack = getBackpackFromId(oldId);
 
         backpacks.remove(oldId);

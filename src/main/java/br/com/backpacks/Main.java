@@ -19,8 +19,6 @@ public final class Main extends JavaPlugin {
 
     private final List<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
 
-    public Main() throws IOException {
-    }
 
     public List<FurnaceRecipe> getFurnaceRecipes() {
         return furnaceRecipes;
@@ -99,13 +97,13 @@ public final class Main extends JavaPlugin {
 
         //Upgrades
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeTrashCan());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeAutoFill());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeAutoFood());
+      //  Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeAutoFill());
+      //  Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeAutoFood());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeJukebox());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeFurnaceGrid());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeCraftingGrid());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeEmeraldBlock());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeLiquidTank());
+       // Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeEmeraldBlock());
+        //Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeLiquidTank());
 
         Iterator<Recipe> iterator = Bukkit.recipeIterator();
 

@@ -19,11 +19,11 @@ public class OnClickBackpack implements Listener {
         Player player = (Player) event.getWhoClicked();
 
         if(event.getRawSlot() == event.getInventory().getSize() - 1){
-            event.setCancelled(true);
             BackpackAction.setAction(player, BackpackAction.Action.NOTHING);
-            player.openInventory(InventoryBuilder.mainConfigInv(player));
-            BackpackAction.setAction(player, BackpackAction.Action.CONFIGMENU);
             event.setCancelled(true);
+            player.openInventory(InventoryBuilder.mainConfigInv(player));
+            event.setCancelled(true);
+            BackpackAction.setAction(player, BackpackAction.Action.CONFIGMENU);
         }   else if(event.getRawSlot() == event.getInventory().getSize() - 2){
             event.setCancelled(true);
             BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(player.getUniqueId()));
@@ -33,12 +33,10 @@ public class OnClickBackpack implements Listener {
 
             switch (Main.backPackManager.getCurrentPage().get(player.getUniqueId())) {
                 case 1 ->{
-                    event.setCancelled(true);
                     backPack.openSecondPage(player);
                     event.setCancelled(true);
                 }
                 case 2 -> {
-                    event.setCancelled(true);
                     backPack.open(player);
                     event.setCancelled(true);
                 }
