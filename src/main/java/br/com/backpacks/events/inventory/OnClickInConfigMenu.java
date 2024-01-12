@@ -55,7 +55,7 @@ public class OnClickInConfigMenu implements Listener {
                     event.setCancelled(true);
                 }
 
-                case AUTOFOOD -> {
+                case AUTOFEED -> {
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
                     event.getWhoClicked().openInventory(AutoFeed.inventory((Player) event.getWhoClicked(), backPack));
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGAUTOFEED);

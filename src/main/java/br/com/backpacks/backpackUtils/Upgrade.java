@@ -12,9 +12,7 @@ public enum Upgrade {
 
     AUTOFILL,
 
-    AUTOFOOD,
-
-    TRASH,
+    AUTOFEED,
 
     LIQUIDTANK,
 

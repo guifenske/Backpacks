@@ -180,11 +180,23 @@ public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed {
         }
         if(containsUpgrade(Upgrade.JUKEBOX)){
             List<ItemStack> discs = new ArrayList<>();
-            for(String item : config.getStringList(s + ".jukebox.discs")){
-                discs.add(getSoundFromName(item));
+            if(config.isSet(s + ".jukebox.playing"))    setPlaying(getSoundFromName(config.getString(s + ".jukebox.playing")));
+            if(config.isSet(s + ".jukebox.discs")) {
+                for (String item : config.getStringList(s + ".jukebox.discs")) {
+                    discs.add(getSoundFromName(item));
+                }
             }
             setDiscs(discs);
-            setPlaying(getSoundFromName(config.getString(s + ".jukebox.playing")));
+        }
+        if(containsUpgrade(Upgrade.AUTOFEED)){
+            if(config.isSet(s + ".afeed.enabled"))  setAutoFeedEnabled(config.getBoolean(s + ".afeed.enabled"));
+            List<ItemStack> items = new ArrayList<>();
+            if(config.isSet(s + ".afeed.items")) {
+                for (Object item : config.getList(s + ".afeed.items")) {
+                    items.add((ItemStack) item);
+                }
+            }
+            setAutoFeedItems(items);
         }
     }
 

@@ -111,7 +111,7 @@ public final class Main extends JavaPlugin {
 
         //Upgrades
       //  Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeAutoFill());
-      //  Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeAutoFood());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeAutoFeed());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeJukebox());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeFurnaceGrid());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeCraftingGrid());

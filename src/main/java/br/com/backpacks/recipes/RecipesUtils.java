@@ -44,7 +44,7 @@ public class RecipesUtils {
             case JUKEBOX: return "Jukebox";
             case EMERALDBLOCK: return "Emerald Block";
             case AUTOFILL: return "Auto Fill";
-            case AUTOFOOD: return "Auto Food";
+            case AUTOFEED: return "Auto Food";
             case STACKUPGRADE2X: return "Stack Upgrade 2x";
             case STACKUPGRADE4X: return "Stack Upgrade 4x";
             case STACKUPGRADE8X: return "Stack Upgrade 8x";
@@ -72,8 +72,8 @@ public class RecipesUtils {
                 return new UpgradesRecipesNamespaces().getAutoFill();
             }
 
-            case AUTOFOOD -> {
-                return new UpgradesRecipesNamespaces().getAutoFood();
+            case AUTOFEED -> {
+                return new UpgradesRecipesNamespaces().getAutoFeed();
             }
 
             case FURNACE -> {
@@ -106,8 +106,8 @@ public class RecipesUtils {
                 return Material.DISPENSER;
             }
 
-            case AUTOFOOD -> {
-                return Material.MELON;
+            case AUTOFEED -> {
+                return Material.COOKED_BEEF;
             }
 
             case FURNACE -> {
@@ -126,7 +126,7 @@ public class RecipesUtils {
         if(!itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade(), PersistentDataType.INTEGER)) return null;
 
         if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getAutoFill(), PersistentDataType.INTEGER)) return Upgrade.AUTOFILL;
-        if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getAutoFood(), PersistentDataType.INTEGER)) return Upgrade.AUTOFOOD;
+        if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getAutoFeed(), PersistentDataType.INTEGER)) return Upgrade.AUTOFEED;
         if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getFurnaceGrid(), PersistentDataType.INTEGER)) return Upgrade.FURNACE;
         if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getCraftingGrid(), PersistentDataType.INTEGER)) return Upgrade.CRAFTING;
         if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getJukebox(), PersistentDataType.INTEGER)) return Upgrade.JUKEBOX;

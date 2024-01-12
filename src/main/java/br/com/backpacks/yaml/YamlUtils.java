@@ -37,6 +37,10 @@ public final class YamlUtils {
                     config.set(backPack.getId() + ".jukebox.discs", backPack.serializeDiscs());
                     config.set(backPack.getId() + ".jukebox.playing", backPack.getPlaying().getType().name());
                 }
+                if(backPack.containsUpgrade(Upgrade.AUTOFEED)){
+                    config.set(backPack.getId() + ".afeed.enabled", backPack.isAutoFeedEnabled());
+                    config.set(backPack.getId() + ".afeed.items", backPack.getAutoFeedItems());
+                }
             }
         }
 

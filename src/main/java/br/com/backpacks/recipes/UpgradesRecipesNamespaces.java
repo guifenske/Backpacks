@@ -17,7 +17,7 @@ public class UpgradesRecipesNamespaces {
     private final NamespacedKey JUKEBOX = new NamespacedKey(Main.getMain(), "jukebox");
     private final NamespacedKey EMERALDBLOCK = new NamespacedKey(Main.getMain(), "emeraldblock");
     private final NamespacedKey AUTOFILL = new NamespacedKey(Main.getMain(), "autofill");
-    private final NamespacedKey AUTOFOOD = new NamespacedKey(Main.getMain(), "autofood");
+    private final NamespacedKey AUTOFEED = new NamespacedKey(Main.getMain(), "autofeed");
     private final NamespacedKey LIQUIDTANK = new NamespacedKey(Main.getMain(), "liquidtank");
     private final NamespacedKey STACKUPGRADE2X = new NamespacedKey(Main.getMain(), "stackupgrade2x");
     private final NamespacedKey STACKUPGRADE4X = new NamespacedKey(Main.getMain(), "stackupgrade4x");
@@ -50,8 +50,8 @@ public class UpgradesRecipesNamespaces {
         return AUTOFILL;
     }
 
-    public NamespacedKey getAutoFood() {
-        return AUTOFOOD;
+    public NamespacedKey getAutoFeed() {
+        return AUTOFEED;
     }
 
     public NamespacedKey getLiquidTank() {
@@ -165,25 +165,25 @@ public class UpgradesRecipesNamespaces {
         return recipe;
     }
 
-    public Recipe getRecipeAutoFood(){
-        ItemStack autoFood = new ItemStack(Material.MELON);
+    public Recipe getRecipeAutoFeed(){
+        ItemStack autoFood = new ItemStack(Material.COOKED_BEEF);
         ItemMeta meta = autoFood.getItemMeta();
 
-        meta.setDisplayName("Auto Food");
-        meta.setLore(Arrays.asList("§7Auto Food", "§7§nAllows you to automatically eat the food stored in the backpack."));
+        meta.setDisplayName("Auto Feed");
+        meta.setLore(Arrays.asList("§7Auto Feed", "§7§nAllows the backpack to automatically eat the food stored in the it."));
         meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(AUTOFOOD, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(AUTOFEED, PersistentDataType.INTEGER, 1);
         autoFood.setItemMeta(meta);
 
-        ShapedRecipe recipe = new ShapedRecipe(AUTOFOOD, autoFood);
+        ShapedRecipe recipe = new ShapedRecipe(AUTOFEED, autoFood);
 
         recipe.shape("IRI", "BGC", "IPI");
 
         recipe.setIngredient('R', Material.RABBIT_STEW);
         recipe.setIngredient('G', Material.GLISTERING_MELON_SLICE);
-        recipe.setIngredient('B', Material.BEEF);
+        recipe.setIngredient('B', Material.COOKED_BEEF);
         recipe.setIngredient('C', Material.GOLDEN_CARROT);
-        recipe.setIngredient('P', Material.BAKED_POTATO);
+        recipe.setIngredient('P', Material.POISONOUS_POTATO);
         recipe.setIngredient('I', Material.IRON_INGOT);
 
         return recipe;
