@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class BackPack implements GetFurnace, GetJukebox{
 
@@ -207,8 +208,7 @@ public class BackPack implements GetFurnace, GetJukebox{
             deserializeUpgrades(config, s);
         }
 
-        List<ItemStack> list = new ArrayList<>();
-        List<ItemStack> list2 = new ArrayList<>();
+        Set<String> keysFirstPage = config.getConfigurationSection(s + ".1").getKeys(false);
 
         name = components.get(0);
         backpackType = BackpackType.valueOf(components.get(1));
@@ -218,23 +218,16 @@ public class BackPack implements GetFurnace, GetJukebox{
 
         firstPage = Bukkit.createInventory(null, firstPageSize, name);
 
-        for(Object item : config.getList(s + ".1")){
-            list.add((ItemStack) item);
-        }
-
-        firstPage.setStorageContents(list.toArray(new ItemStack[0]));
+        for(String index : keysFirstPage)   getFirstPage().setItem(Integer.parseInt(index), config.getItemStack(s + ".1." + index));
 
         if(secondPageSize > 0) {
+            Set<String> keysSecondPage = config.getConfigurationSection(s + ".2").getKeys(false);
             secondPage = Bukkit.createInventory(null, secondPageSize, name);
-            for (Object item : config.getList(s + ".2")) {
-                list2.add((ItemStack) item);
-            }
 
-            secondPage.setStorageContents(list2.toArray(new ItemStack[0]));
+            for(String index : keysSecondPage)   getSecondPage().setItem(Integer.parseInt(index), config.getItemStack(s + ".2." + index));
         }
 
         setArrowsAndConfigOptionItems();
-
         return this;
     }
 

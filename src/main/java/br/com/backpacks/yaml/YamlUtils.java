@@ -6,6 +6,7 @@ import br.com.backpacks.backpackUtils.Upgrade;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +25,7 @@ public final class YamlUtils {
                 config.set(backPack.getId() + ".loc", data);
             }
             config.set(backPack.getId() + ".i", backPack.serialize());
-            config.set(backPack.getId() + ".1", backPack.getStorageContentsFirstPage());
+            saveStorageContents(backPack, config);
             if (backPack.getUpgrades() != null) {
                 config.set(backPack.getId() + ".u", backPack.serializeUpgrades());
                 if (backPack.containsUpgrade(Upgrade.FURNACE)) {
@@ -36,9 +37,6 @@ public final class YamlUtils {
                     config.set(backPack.getId() + ".jukebox.discs", backPack.serializeDiscs());
                     config.set(backPack.getId() + ".jukebox.playing", backPack.getPlaying().getType().name());
                 }
-            }
-            if (backPack.getSecondPageSize() > 0) {
-                config.set(backPack.getId() + ".2", backPack.getStorageContentsSecondPage());
             }
         }
 
@@ -78,4 +76,33 @@ public final class YamlUtils {
 
         return new Location(Bukkit.getServer().getWorld(world), x, y, z);
     }
+
+    private static void saveStorageContents(BackPack backPack, YamlConfiguration config){
+        int i = 0;
+        int i1 = 0;
+        config.set(backPack.getId() + ".1", null);
+        for(ItemStack itemStack : backPack.getStorageContentsFirstPage()){
+            if(itemStack == null){
+                i++;
+                continue;
+            }
+
+            config.set(backPack.getId() + ".1." + i, itemStack);
+            i++;
+        }
+
+        if(backPack.getSecondPage() != null){
+            config.set(backPack.getId() + ".2", null);
+            for(ItemStack itemStack : backPack.getStorageContentsSecondPage()){
+                if(itemStack == null){
+                    i1++;
+                    continue;
+                }
+
+                config.set(backPack.getId() + ".2." + i1, itemStack);
+                i1++;
+            }
+        }
+    }
+
 }
