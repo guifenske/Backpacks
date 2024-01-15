@@ -116,6 +116,8 @@ public final class Main extends JavaPlugin {
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeFurnaceGrid());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeCraftingGrid());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeFollowingVillagers());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getEncapsulateRecipe());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getCollectorRecipe());
         //Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeLiquidTank());
 
         Iterator<Recipe> iterator = Bukkit.recipeIterator();

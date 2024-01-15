@@ -41,6 +41,13 @@ public final class YamlUtils {
                     config.set(backPack.getId() + ".afeed.enabled", backPack.isAutoFeedEnabled());
                     config.set(backPack.getId() + ".afeed.items", backPack.serializeFoods());
                 }
+                if(backPack.containsUpgrade(Upgrade.VILLAGERSFOLLOW)){
+                    config.set(backPack.getId() + ".villagers.enabled", backPack.isVillagersEnabled());
+                }
+                if(backPack.containsUpgrade(Upgrade.COLLECTOR)){
+                    config.set(backPack.getId() + ".collector.enabled", backPack.isCollectorEnabled());
+                    config.set(backPack.getId() + ".collector.mode", backPack.getCollectorMode());
+                }
             }
         }
 

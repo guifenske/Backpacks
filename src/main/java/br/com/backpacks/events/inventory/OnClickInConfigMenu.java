@@ -6,10 +6,7 @@ import br.com.backpacks.backpackUtils.BackpackAction;
 import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import br.com.backpacks.backpackUtils.inventory.UpgradeMenu;
-import br.com.backpacks.events.upgrades.AutoFeed;
-import br.com.backpacks.events.upgrades.Furnace;
-import br.com.backpacks.events.upgrades.Jukebox;
-import br.com.backpacks.events.upgrades.VillagersFollow;
+import br.com.backpacks.events.upgrades.*;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.RecipesUtils;
 import org.bukkit.entity.Player;
@@ -67,6 +64,13 @@ public class OnClickInConfigMenu implements Listener {
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
                     event.getWhoClicked().openInventory(VillagersFollow.inventory((Player) event.getWhoClicked(), backPack));
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGVILLAGERSFOLLOW);
+                    event.setCancelled(true);
+                }
+
+                case COLLECTOR -> {
+                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
+                    event.getWhoClicked().openInventory(Collector.inventory((Player) event.getWhoClicked(), backPack));
+                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGCOLLECTOR);
                     event.setCancelled(true);
                 }
             }

@@ -3,13 +3,9 @@ package br.com.backpacks.backpackUtils;
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.inventory.ItemCreator;
 import br.com.backpacks.recipes.RecipesNamespaces;
-import br.com.backpacks.upgrades.GetAutoFeed;
-import br.com.backpacks.upgrades.GetFurnace;
-import br.com.backpacks.upgrades.GetJukebox;
-import br.com.backpacks.upgrades.GetVillagersFollow;
+import br.com.backpacks.upgrades.*;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -18,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed, GetVillagersFollow {
+public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed, GetVillagersFollow, GetCollector {
 
     public Inventory getSecondPage() {
         return secondPage;
@@ -211,6 +207,13 @@ public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed, GetVillage
             }
             setAutoFeedItems(items);
         }
+        if(containsUpgrade(Upgrade.VILLAGERSFOLLOW)){
+            if(config.isSet(s + ".villagers.enabled"))  setVillagersIsEnabled(config.getBoolean(s + ".villagers.enabled"));
+        }
+        if(containsUpgrade(Upgrade.COLLECTOR)){
+            if(config.isSet(s + ".collector.enabled"))  setCollectorIsEnabled(config.getBoolean(s + ".collector.enabled"));
+            if(config.isSet(s + ".collector.mode"))  setCollectorMode(config.getInt(s + ".collector.mode"));
+        }
     }
 
     public BackPack deserialize(YamlConfiguration config, String s) {
@@ -378,6 +381,50 @@ public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed, GetVillage
         }
     }
 
+    public boolean containsItem(ItemStack itemStack){
+        for(ItemStack item : firstPage.getStorageContents()){
+            if(item == null)    continue;
+            if(item.isSimilar(itemStack)) return true;
+        }
+        if(secondPageSize > 0){
+            for(ItemStack item : secondPage.getStorageContents()){
+                if(item == null)    continue;
+                if(item.isSimilar(itemStack)) return true;
+            }
+        }
+        return false;
+    }
+
+    //used in the PickupItemEvent
+    public List<ItemStack> getRemainingItems() {
+        return remainingItems;
+    }
+
+    private List<ItemStack> remainingItems = new ArrayList<>();
+
+    public List<ItemStack> tryAddItem(ItemStack itemStack){
+        List<ItemStack> list = new ArrayList<>();
+        remainingItems = list;
+        if(itemStack == null) return list;
+
+        if(!firstPage.addItem(itemStack).isEmpty()){
+            list.addAll(firstPage.addItem(itemStack).values());
+            if(secondPageSize > 0){
+                List<ItemStack> list2 = new ArrayList<>();
+                for(ItemStack item : list){
+                    if(!secondPage.addItem(item).isEmpty()){
+                        list2.addAll(secondPage.addItem(item).values());
+                    }
+                }
+                remainingItems = list2;
+                return list2;
+            }
+        }
+
+        remainingItems = list;
+        return list;
+    }
+
     public List<Upgrade> getUpgrades() {
         return upgrades;
     }
@@ -509,7 +556,6 @@ public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed, GetVillage
 
     //villagers-follow
     private boolean isEnabled = false;
-    private List<Entity> villagers;
 
     @Override
     public boolean isVillagersEnabled() {
@@ -521,8 +567,28 @@ public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed, GetVillage
         this.isEnabled = isEnabled;
     }
 
+
+    //Collector upgrade
+
+    private boolean isCollectorEnabled = false;
+    private int collectorMode = 0; //mode 0 = only backpack items, mode 1 = every item
     @Override
-    public List<Entity> getVillagers() {
-        return villagers;
+    public boolean isCollectorEnabled() {
+        return isCollectorEnabled;
+    }
+
+    @Override
+    public void setCollectorIsEnabled(boolean isEnabled) {
+        this.isCollectorEnabled = isEnabled;
+    }
+
+    @Override
+    public void setCollectorMode(int mode) {
+        this.collectorMode = mode;
+    }
+
+    @Override
+    public int getCollectorMode() {
+        return collectorMode;
     }
 }

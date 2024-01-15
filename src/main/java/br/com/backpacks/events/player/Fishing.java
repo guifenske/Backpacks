@@ -1,6 +1,5 @@
 package br.com.backpacks.events.player;
 
-import br.com.backpacks.Main;
 import br.com.backpacks.advancements.BackpacksAdvancements;
 import br.com.backpacks.advancements.NamespacesAdvacements;
 import br.com.backpacks.recipes.RecipesNamespaces;
@@ -21,7 +20,7 @@ public class Fishing implements Listener {
     @EventHandler
     private void onFishing(PlayerFishEvent event){
        if(event.getCaught() instanceof Item){
-           if(Main.debugMode || ThreadLocalRandom.current().nextInt(1, 90) == 89){
+           if(ThreadLocalRandom.current().nextInt(1, 90) >= 88){
                event.setExpToDrop(20);
                Item item = (Item) event.getCaught();
                ItemStack wetbackpack = new ItemStack(Material.CHEST);

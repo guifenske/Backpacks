@@ -10,6 +10,10 @@ public enum Upgrade {
 
     VILLAGERSFOLLOW,
 
+    COLLECTOR,
+
+    ENCAPSULATE,
+
     AUTOFILL,
 
     AUTOFEED,

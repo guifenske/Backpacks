@@ -15,7 +15,9 @@ public class UpgradesRecipesNamespaces {
     private final NamespacedKey CRAFTINGGRID = new NamespacedKey(Main.getMain(), "craftinggrid");
     private final NamespacedKey FURNACEGRID = new NamespacedKey(Main.getMain(), "furnacegrid");
     private final NamespacedKey JUKEBOX = new NamespacedKey(Main.getMain(), "jukebox");
-    private final NamespacedKey VILLAGERSFOLLOW = new NamespacedKey(Main.getMain(), "emeraldblock");
+    private final NamespacedKey VILLAGERSFOLLOW = new NamespacedKey(Main.getMain(), "villagerfollow");
+    private final NamespacedKey ENCAPSULATE = new NamespacedKey(Main.getMain(), "encapsulate");
+    private final NamespacedKey COLLECTOR = new NamespacedKey(Main.getMain(), "COLLECTOR");
     private final NamespacedKey AUTOFILL = new NamespacedKey(Main.getMain(), "autofill");
     private final NamespacedKey AUTOFEED = new NamespacedKey(Main.getMain(), "autofeed");
     private final NamespacedKey LIQUIDTANK = new NamespacedKey(Main.getMain(), "liquidtank");
@@ -23,7 +25,6 @@ public class UpgradesRecipesNamespaces {
     private final NamespacedKey STACKUPGRADE4X = new NamespacedKey(Main.getMain(), "stackupgrade4x");
     private final NamespacedKey STACKUPGRADE8X = new NamespacedKey(Main.getMain(), "stackupgrade8x");
     private final NamespacedKey STACKUPGRADE16X = new NamespacedKey(Main.getMain(), "stackupgrade16x");
-
     private final NamespacedKey NAMESPACEISUPGRADE = new NamespacedKey(Main.getMain(), "isupgrade");
 
     public NamespacedKey isUpgrade() {
@@ -56,6 +57,12 @@ public class UpgradesRecipesNamespaces {
 
     public NamespacedKey getLiquidTank() {
         return LIQUIDTANK;
+    }
+    public NamespacedKey getCOLLECTOR() {
+        return COLLECTOR;
+    }
+    public NamespacedKey getENCAPSULATE() {
+        return ENCAPSULATE;
     }
 
     public Recipe getRecipeCraftingGrid() {
@@ -205,6 +212,50 @@ public class UpgradesRecipesNamespaces {
 
         recipe.setIngredient('B', Material.BUCKET);
         recipe.setIngredient('G', Material.GLASS_PANE);
+
+        return recipe;
+    }
+
+    public Recipe getEncapsulateRecipe(){
+        ItemStack encapsulate = new ItemStack(Material.GLASS_BOTTLE);
+        ItemMeta meta = encapsulate.getItemMeta();
+
+        meta.setDisplayName("Encapsulate");
+        meta.setLore(Arrays.asList("§7Encapsulate", "§7§nAllows you to store backpacks inside the backpack."));
+        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(ENCAPSULATE, PersistentDataType.INTEGER, 1);
+        encapsulate.setItemMeta(meta);
+
+        ShapedRecipe recipe = new ShapedRecipe(ENCAPSULATE, encapsulate);
+
+        recipe.shape("GNG", "GSG", "GPG");
+
+        recipe.setIngredient('S', Material.NETHER_STAR);
+        recipe.setIngredient('N', Material.NETHERITE_INGOT);
+        recipe.setIngredient('P', Material.PISTON);
+        recipe.setIngredient('G', Material.GLASS);
+
+        return recipe;
+    }
+
+    public Recipe getCollectorRecipe(){
+        ItemStack collector = new ItemStack(Material.HOPPER);
+        ItemMeta meta = collector.getItemMeta();
+
+        meta.setDisplayName("Collector");
+        meta.setLore(Arrays.asList("§7Collector", "§7§nAllows you to collect items from the ground directly into your backpack."
+                                    , "§7§n§oThis upgrade only work if the backpack is being worn."));
+        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(COLLECTOR, PersistentDataType.INTEGER, 1);
+        collector.setItemMeta(meta);
+
+        ShapedRecipe recipe = new ShapedRecipe(COLLECTOR, collector);
+
+        recipe.shape("RIR", "IMI", "RIR");
+
+        recipe.setIngredient('R', Material.REDSTONE);
+        recipe.setIngredient('M', Material.CHEST_MINECART);
+        recipe.setIngredient('I', Material.IRON_INGOT);
 
         return recipe;
     }

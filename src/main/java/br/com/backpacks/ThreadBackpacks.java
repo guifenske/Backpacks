@@ -3,6 +3,7 @@ package br.com.backpacks;
 import br.com.backpacks.advancements.BackpacksAdvancements;
 import br.com.backpacks.advancements.NamespacesAdvacements;
 import br.com.backpacks.commands.Bdebug;
+import br.com.backpacks.events.ConfigItemsEvents;
 import br.com.backpacks.events.HopperEvents;
 import br.com.backpacks.events.backpacks.*;
 import br.com.backpacks.events.inventory.*;
@@ -26,7 +27,6 @@ public class ThreadBackpacks {
     public ThreadBackpacks() throws IOException {
         File file = new File(Main.getMain().getDataFolder().getCanonicalFile().getAbsolutePath() + "/config.yml");
         executor = Executors.newSingleThreadExecutor();
-
         if(file.exists()){
             if(Main.getMain().getConfig().getInt("maxThreads") == 0){
                 return;
@@ -54,6 +54,7 @@ public class ThreadBackpacks {
             Bukkit.getPluginManager().registerEvents(new OnCloseUpgradeMenu(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new OnClickUpgradesMenu(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new HopperEvents(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new ConfigItemsEvents(), Main.getMain());
 
             //Upgrades
             Bukkit.getPluginManager().registerEvents(new CraftingTable(), Main.getMain());
@@ -61,6 +62,7 @@ public class ThreadBackpacks {
             Bukkit.getPluginManager().registerEvents(new Jukebox(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new AutoFeed(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new VillagersFollow(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new Collector(), Main.getMain());
 
             BackpacksAdvancements.createAdvancement(NamespacesAdvacements.getCAUGHT_A_BACKPACK(), "chest", "Wow, thats a huge 'fish'", BackpacksAdvancements.Style.TASK);
 
@@ -90,11 +92,17 @@ public class ThreadBackpacks {
     }
 
     public void loadAll() {
-        executor.submit(() -> {
+        Future<Void> future = executor.submit(() -> {
             YamlUtils.loadBackpacksYaml();
             return null;
         });
 
+        try {
+            future.get();
+        } catch (Exception ignored) {
+
+        }
+        VillagersFollow.tick();
     }
 
     public void shutdown() {

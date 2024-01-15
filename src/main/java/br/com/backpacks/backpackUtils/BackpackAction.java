@@ -27,6 +27,8 @@ public class BackpackAction {
 
         UPGVILLAGERSFOLLOW,
 
+        UPGCOLLECTOR,
+
         OPENED;
     }
 

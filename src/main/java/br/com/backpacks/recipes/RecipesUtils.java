@@ -43,6 +43,8 @@ public class RecipesUtils {
             case CRAFTING: return "Crafting Grid";
             case JUKEBOX: return "Jukebox";
             case VILLAGERSFOLLOW: return "Following Villagers";
+            case ENCAPSULATE: return "Encapsulate";
+            case COLLECTOR: return "Collector";
             case AUTOFILL: return "Auto Fill";
             case AUTOFEED: return "Auto Food";
             case STACKUPGRADE2X: return "Stack Upgrade 2x";
@@ -83,6 +85,13 @@ public class RecipesUtils {
             case LIQUIDTANK -> {
                 return new UpgradesRecipesNamespaces().getLiquidTank();
             }
+            case ENCAPSULATE -> {
+                return new UpgradesRecipesNamespaces().getENCAPSULATE();
+            }
+
+            case COLLECTOR -> {
+                return new UpgradesRecipesNamespaces().getCOLLECTOR();
+            }
         }
 
         return null;
@@ -117,6 +126,14 @@ public class RecipesUtils {
             case LIQUIDTANK -> {
                 return Material.BUCKET;
             }
+
+            case ENCAPSULATE -> {
+                return Material.GLASS_BOTTLE;
+            }
+
+            case COLLECTOR -> {
+                return Material.HOPPER;
+            }
         }
 
         return Material.NETHERITE_INGOT;
@@ -140,6 +157,10 @@ public class RecipesUtils {
             return Upgrade.VILLAGERSFOLLOW;
         if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getLiquidTank(), PersistentDataType.INTEGER))
             return Upgrade.LIQUIDTANK;
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getENCAPSULATE(), PersistentDataType.INTEGER))
+            return Upgrade.ENCAPSULATE;
+        if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getCOLLECTOR(), PersistentDataType.INTEGER))
+            return Upgrade.COLLECTOR;
 
         return null;
     }
@@ -160,6 +181,15 @@ public class RecipesUtils {
 
             case VILLAGERSFOLLOW -> {
                 return Arrays.asList("§7Emerald Block", "§7§nAllows you to attract villagers when the backpack is equipped and you are holding an emerald block.");
+            }
+
+            case ENCAPSULATE -> {
+                return Arrays.asList("§7Encapsulate", "§7§nAllows you to store backpacks inside the backpack.");
+            }
+
+            case COLLECTOR -> {
+                return Arrays.asList("§7Collector", "§7§nAllows you to collect items from the ground directly into your backpack."
+                        , "§7§n§oThis upgrade only work if the backpack is being worn.");
             }
         }
 
