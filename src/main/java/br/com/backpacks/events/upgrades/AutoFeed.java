@@ -5,10 +5,7 @@ import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackAction;
 import br.com.backpacks.backpackUtils.inventory.ItemCreator;
 import br.com.backpacks.recipes.RecipesNamespaces;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -54,7 +51,7 @@ public class AutoFeed implements Listener {
                     player.setFoodLevel(player.getFoodLevel() + hungerPointsPerFood(itemStack));
                     player.setSaturation(player.getSaturation() + saturationPointsPerFood(itemStack));
                     applyEffectPerFood(player, itemStack);
-                    player.playSound(player, Sound.ENTITY_GENERIC_EAT, 1, 1);
+                    player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, SoundCategory.PLAYERS ,1, 1);
                     return;
                 }
             }
@@ -81,10 +78,6 @@ public class AutoFeed implements Listener {
         if(backPack.getAutoFeedItems() != null && !backPack.getAutoFeedItems().isEmpty()){
             for(int i : fillSlots){
                 if(i1 >= backPack.getAutoFeedItems().size()) break;
-                if(backPack.getAutoFeedItems().get(i1) == null){
-                    i1++;
-                    continue;
-                }
                 inventory.setItem(i, backPack.getAutoFeedItems().get(i1));
                 i1++;
             }
@@ -277,9 +270,7 @@ public class AutoFeed implements Listener {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 300, 1));
             }
 
-            case HONEY_BOTTLE -> {
-                player.removePotionEffect(PotionEffectType.POISON);
-            }
+            case HONEY_BOTTLE -> player.removePotionEffect(PotionEffectType.POISON);
 
             case POISONOUS_POTATO -> {
                 if(ThreadLocalRandom.current().nextInt(1, 100) <= 60)   player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 100, 1));
@@ -289,9 +280,7 @@ public class AutoFeed implements Listener {
                 if(ThreadLocalRandom.current().nextInt(1, 100) <= 30)   player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 600, 1));
             }
 
-            case SPIDER_EYE -> {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 100, 1));
-            }
+            case SPIDER_EYE -> player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 100, 1));
 
             case ENCHANTED_GOLDEN_APPLE -> {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 2400, 4));
@@ -307,7 +296,7 @@ public class AutoFeed implements Listener {
 
             case CHORUS_FRUIT -> {
                 Location location = player.getLocation().add(ThreadLocalRandom.current().nextInt(-8, 8), 0, ThreadLocalRandom.current().nextInt(-8, 8));
-                player.teleportAsync(player.getWorld().getHighestBlockAt(location).getLocation().add(0, 1, 0));
+                player.teleportAsync(player.getWorld().getHighestBlockAt(location).getLocation().add(0, 1, 0)); //add one just to make sure the player don't get suffocated by a block
             }
         }
     }

@@ -10,10 +10,7 @@ import br.com.backpacks.events.player.CraftBackpack;
 import br.com.backpacks.events.player.FinishedSmelting;
 import br.com.backpacks.events.player.Fishing;
 import br.com.backpacks.events.player.InteractOtherPlayerBackpack;
-import br.com.backpacks.events.upgrades.AutoFeed;
-import br.com.backpacks.events.upgrades.CraftingTable;
-import br.com.backpacks.events.upgrades.Furnace;
-import br.com.backpacks.events.upgrades.Jukebox;
+import br.com.backpacks.events.upgrades.*;
 import br.com.backpacks.yaml.YamlUtils;
 import org.bukkit.Bukkit;
 
@@ -63,6 +60,7 @@ public class ThreadBackpacks {
             Bukkit.getPluginManager().registerEvents(new Furnace(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new Jukebox(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new AutoFeed(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new VillagersFollow(), Main.getMain());
 
             BackpacksAdvancements.createAdvancement(NamespacesAdvacements.getCAUGHT_A_BACKPACK(), "chest", "Wow, thats a huge 'fish'", BackpacksAdvancements.Style.TASK);
 

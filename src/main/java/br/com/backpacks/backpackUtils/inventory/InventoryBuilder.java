@@ -30,7 +30,7 @@ public class InventoryBuilder {
         ItemStack unlock = new ItemCreator(Material.WRITTEN_BOOK, "Unlock Backpack", Arrays.asList("§7§nUnlock the access to this backpack", "§7§n from other players when in your back.")).get();
         ItemStack editUpgrades = new ItemCreator(Material.ANVIL, "Edit Upgrades").get();
 
-        for(int i = getFreeInitialSlots(backPack.getType()); i < 54; i++){
+        for(int i = getFreeUpgradesSlots(backPack.getType()); i < 54; i++){
             inv.setItem(i, loremIpsum);
         }
 
@@ -63,7 +63,7 @@ public class InventoryBuilder {
         return inv;
     }
 
-    public static int getFreeInitialSlots(BackpackType type){
+    public static int getFreeUpgradesSlots(BackpackType type){
         switch (type){
             case LEATHER: return 2;
             case IRON: return 3;

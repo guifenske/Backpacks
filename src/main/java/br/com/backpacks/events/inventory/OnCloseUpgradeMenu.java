@@ -27,14 +27,12 @@ public class OnCloseUpgradeMenu implements Listener {
 
         List<Upgrade> upgrades = new ArrayList<>();
 
-        for(int i = 0; i < InventoryBuilder.getFreeInitialSlots(backPack.getType()); i++){
+        for(int i = 0; i < InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i++){
             if(event.getInventory().getItem(i) == null) continue;
             if(RecipesUtils.getUpgradeFromItem(event.getInventory().getItem(i)) != null){
                 upgrades.add(RecipesUtils.getUpgradeFromItem(event.getInventory().getItem(i)));
             }   else event.getPlayer().getInventory().addItem(event.getInventory().getItem(i));
         }
-        BackpackAction.setAction((Player) event.getPlayer(), BackpackAction.Action.NOTHING);
-
         backPack.setUpgrades(upgrades);
         BukkitTask task = new BukkitRunnable() {
             @Override

@@ -8,7 +8,7 @@ public enum Upgrade {
 
     JUKEBOX,
 
-    EMERALDBLOCK,
+    VILLAGERSFOLLOW,
 
     AUTOFILL,
 

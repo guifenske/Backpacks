@@ -20,7 +20,7 @@ public class UpgradeMenu {
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(player.getUniqueId()));
         ItemStack item = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").get();
 
-        for(int i = InventoryBuilder.getFreeInitialSlots(backPack.getType()); i < 9; i++){
+        for(int i = InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i < 9; i++){
             inv.setItem(i, item);
         }
 

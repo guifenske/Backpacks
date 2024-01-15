@@ -20,7 +20,7 @@ public class OnClickUpgradesMenu implements Listener {
 
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(player.getUniqueId()));
 
-        if(event.getRawSlot() >= InventoryBuilder.getFreeInitialSlots(backPack.getType()) && event.getRawSlot() < event.getInventory().getSize()){
+        if(event.getRawSlot() >= InventoryBuilder.getFreeUpgradesSlots(backPack.getType()) && event.getRawSlot() < event.getInventory().getSize()){
             event.setCancelled(true);
         }
     }

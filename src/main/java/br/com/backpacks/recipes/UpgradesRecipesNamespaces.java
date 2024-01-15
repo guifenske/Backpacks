@@ -15,7 +15,7 @@ public class UpgradesRecipesNamespaces {
     private final NamespacedKey CRAFTINGGRID = new NamespacedKey(Main.getMain(), "craftinggrid");
     private final NamespacedKey FURNACEGRID = new NamespacedKey(Main.getMain(), "furnacegrid");
     private final NamespacedKey JUKEBOX = new NamespacedKey(Main.getMain(), "jukebox");
-    private final NamespacedKey EMERALDBLOCK = new NamespacedKey(Main.getMain(), "emeraldblock");
+    private final NamespacedKey VILLAGERSFOLLOW = new NamespacedKey(Main.getMain(), "emeraldblock");
     private final NamespacedKey AUTOFILL = new NamespacedKey(Main.getMain(), "autofill");
     private final NamespacedKey AUTOFEED = new NamespacedKey(Main.getMain(), "autofeed");
     private final NamespacedKey LIQUIDTANK = new NamespacedKey(Main.getMain(), "liquidtank");
@@ -42,8 +42,8 @@ public class UpgradesRecipesNamespaces {
         return JUKEBOX;
     }
 
-    public NamespacedKey getEmeraldBlock() {
-        return EMERALDBLOCK;
+    public NamespacedKey getVillagersFollow() {
+        return VILLAGERSFOLLOW;
     }
 
     public NamespacedKey getAutoFill() {
@@ -102,17 +102,17 @@ public class UpgradesRecipesNamespaces {
         return recipe;
     }
 
-    public Recipe getRecipeEmeraldBlock() {
+    public Recipe getRecipeFollowingVillagers() {
         ItemStack emeraldBlock = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta meta = emeraldBlock.getItemMeta();
 
-        meta.setDisplayName("Emerald Block");
-        meta.setLore(Arrays.asList("§7Emerald Block", "§7§nAllows you to attract villagers when the backpack is equipped."));
+        meta.setDisplayName("Following Villagers");
+        meta.setLore(Arrays.asList("§7Emerald Block", "§7§nAllows you to attract villagers when the backpack is equipped and you are holding an emerald block."));
         meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(EMERALDBLOCK, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(VILLAGERSFOLLOW, PersistentDataType.INTEGER, 1);
         emeraldBlock.setItemMeta(meta);
 
-        ShapedRecipe recipe = new ShapedRecipe(EMERALDBLOCK, emeraldBlock);
+        ShapedRecipe recipe = new ShapedRecipe(VILLAGERSFOLLOW, emeraldBlock);
 
         recipe.shape("EEE", "ETE", "ESE");
 

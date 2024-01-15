@@ -40,6 +40,7 @@ public class Jukebox implements Listener {
         int i1 = 0;
         if(backPack.getDiscs() != null && !backPack.getDiscs().isEmpty()){
             for (int i : discsSlots) {
+                if(i1 >= backPack.getDiscs().size()) break;
                 inventory.setItem(i, backPack.getDiscs().get(i1));
                 i1++;
             }

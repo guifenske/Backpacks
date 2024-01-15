@@ -18,7 +18,6 @@ public class OnCloseBackpackConfigMenu implements Listener {
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
         if(backPack == null) return;
 
-        BackpackAction.setAction((Player) event.getPlayer(), BackpackAction.Action.NOTHING);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

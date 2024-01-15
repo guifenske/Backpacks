@@ -6,8 +6,10 @@ import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.upgrades.GetAutoFeed;
 import br.com.backpacks.upgrades.GetFurnace;
 import br.com.backpacks.upgrades.GetJukebox;
+import br.com.backpacks.upgrades.GetVillagersFollow;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -16,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed {
+public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed, GetVillagersFollow {
 
     public Inventory getSecondPage() {
         return secondPage;
@@ -248,13 +250,14 @@ public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed {
         }
 
         if(secondPageSize > 0) {
-            Set<String> keysSecondPage = config.getConfigurationSection(s + ".2").getKeys(false);
             secondPage = Bukkit.createInventory(null, secondPageSize, name);
+            if(config.isSet(s + ".2")) {
+                Set<String> keysSecondPage = config.getConfigurationSection(s + ".2").getKeys(false);
 
-            if(config.isSet(s + ".2")){
-                for(String index : keysSecondPage){
+                for (String index : keysSecondPage) {
                     getSecondPage().setItem(Integer.parseInt(index), config.getItemStack(s + ".2." + index));
                 }
+
             }
         }
 
@@ -502,5 +505,24 @@ public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed {
     @Override
     public void setAutoFeedItems(List<ItemStack> items) {
         this.autoFeedItems = items;
+    }
+
+    //villagers-follow
+    private boolean isEnabled = false;
+    private List<Entity> villagers;
+
+    @Override
+    public boolean isVillagersEnabled() {
+        return isEnabled;
+    }
+
+    @Override
+    public void setVillagersIsEnabled(boolean isEnabled) {
+        this.isEnabled = isEnabled;
+    }
+
+    @Override
+    public List<Entity> getVillagers() {
+        return villagers;
     }
 }
