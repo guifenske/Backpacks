@@ -3,8 +3,11 @@ package br.com.backpacks.events.upgrades;
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackAction;
+import br.com.backpacks.backpackUtils.Upgrade;
+import br.com.backpacks.backpackUtils.UpgradeType;
 import br.com.backpacks.backpackUtils.inventory.ItemCreator;
 import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.upgrades.VillagersFollowUpgrade;
 import com.destroystokyo.paper.entity.Pathfinder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -22,6 +25,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.List;
+
 public class VillagersFollow implements Listener {
     public static void tick(){
         Bukkit.getScheduler().runTaskTimer(Main.getMain(), () -> {
@@ -31,8 +36,11 @@ public class VillagersFollow implements Listener {
                     continue;
                 }
                 BackPack backpack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+                List<Upgrade> list = backpack.getUpgradesFromType(UpgradeType.VILLAGERSFOLLOW);
+                if(list.isEmpty()) continue;
+                VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) list.get(0);
 
-                if(!backpack.isVillagersEnabled()){
+                if(!upgrade.isEnabled()){
                     continue;
                 }
                 for(Entity entity : player.getNearbyEntities(10, 10, 10)){
@@ -42,12 +50,13 @@ public class VillagersFollow implements Listener {
         }, 0L, 10L);
     }
 
-    public static Inventory inventory(Player player, BackPack backPack){
+    public static Inventory inventory(Player player, BackPack backPack, int upgradeId){
         Inventory inventory = Bukkit.createInventory(player, 27, "§6§lVillagers Follow");
         ItemStack enable = new ItemCreator(Material.GREEN_STAINED_GLASS_PANE, "Enable").get();
         ItemStack disable = new ItemCreator(Material.RED_STAINED_GLASS_PANE, "Disable").get();
+        VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) backPack.getUpgradeFromId(upgradeId);
 
-        if(!backPack.isVillagersEnabled()){
+        if(!upgrade.isEnabled()){
             inventory.setItem(13, enable);
         }   else inventory.setItem(13, disable);
 
@@ -60,10 +69,12 @@ public class VillagersFollow implements Listener {
         event.setCancelled(true);
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
         if(backPack == null) return;
+        List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.VILLAGERSFOLLOW);
+        VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) list.get(0);
 
         if(event.getRawSlot() == 13){
-            backPack.setVillagersIsEnabled(!backPack.isVillagersEnabled());
-            event.getInventory().setItem(13, new ItemCreator(backPack.isVillagersEnabled() ? Material.RED_STAINED_GLASS_PANE : Material.GREEN_STAINED_GLASS_PANE, backPack.isVillagersEnabled() ? "Disable" : "Enable").get());
+            upgrade.setEnabled(!upgrade.isEnabled());
+            event.getInventory().setItem(13, new ItemCreator(upgrade.isEnabled() ? Material.RED_STAINED_GLASS_PANE : Material.GREEN_STAINED_GLASS_PANE, upgrade.isEnabled() ? "Disable" : "Enable").get());
         }
     }
 

@@ -3,7 +3,7 @@ package br.com.backpacks.events.inventory;
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackAction;
-import br.com.backpacks.backpackUtils.Upgrade;
+import br.com.backpacks.backpackUtils.UpgradeType;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,9 +20,6 @@ public class OnCloseBackpack implements Listener {
 
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
         shouldRemoveBackpack(event, backPack);
-        if(backPack.getSecondPage() != null){
-            shouldRemoveBackpack(event, backPack);
-        }
 
         Main.backPackManager.getCurrentPage().remove(event.getPlayer().getUniqueId());
         Main.backPackManager.getCurrentBackpackId().remove(event.getPlayer().getUniqueId());
@@ -31,12 +28,25 @@ public class OnCloseBackpack implements Listener {
     private void shouldRemoveBackpack(InventoryCloseEvent event, BackPack backPack) {
         for(ItemStack itemStack : backPack.getFirstPage()){
             if(itemStack == null) continue;
-            if(itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK()) && !backPack.containsUpgrade(Upgrade.ENCAPSULATE)){
+            if(itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK()) && !backPack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
                 if(!event.getPlayer().getInventory().addItem(itemStack).isEmpty()){
                     event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
                     event.getPlayer().sendMessage("§cYour inventory is full, the backpack was dropped on the ground.");
                 }
                 backPack.getFirstPage().remove(itemStack);
+            }
+        }
+
+        if(backPack.getSecondPage() != null){
+            for(ItemStack itemStack : backPack.getSecondPage()){
+                if(itemStack == null) continue;
+                if(itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK()) && !backPack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
+                    if(!event.getPlayer().getInventory().addItem(itemStack).isEmpty()){
+                        event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
+                        event.getPlayer().sendMessage("§cYour inventory is full, the backpack was dropped on the ground.");
+                    }
+                    backPack.getSecondPage().remove(itemStack);
+                }
             }
         }
     }

@@ -3,6 +3,8 @@ package br.com.backpacks.yaml;
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.Upgrade;
+import br.com.backpacks.backpackUtils.UpgradeType;
+import br.com.backpacks.upgrades.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -26,27 +28,46 @@ public final class YamlUtils {
             }
             config.set(backPack.getId() + ".i", backPack.serialize());
             saveStorageContents(backPack, config);
-            if (backPack.getUpgrades() != null) {
-                config.set(backPack.getId() + ".u", backPack.serializeUpgrades());
-                if (backPack.containsUpgrade(Upgrade.FURNACE)) {
-                    config.set(backPack.getId() + ".furnace.f", backPack.getFuel());
-                    config.set(backPack.getId() + ".furnace.s", backPack.getSmelting());
-                    config.set(backPack.getId() + ".furnace.r", backPack.getResult());
+            if (backPack.getUpgrades() != null && !backPack.getUpgrades().isEmpty()) {
+                serializeUpgrades(config, backPack);
+                if (backPack.containsUpgradeType(UpgradeType.FURNACE)) {
+                    List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.FURNACE);
+                    for(Upgrade upgrade : list){
+                        Main.getMain().debugMessage("Saving furnace upgrade " + upgrade.getId(), "info");
+                        FurnaceUpgrade furnaceUpgrade = (FurnaceUpgrade) upgrade;
+                        if(furnaceUpgrade.getResult() != null)  config.set(backPack.getId() + ".furnace." + upgrade.getId() + ".result", furnaceUpgrade.getResult());
+                        if(furnaceUpgrade.getFuel() != null)  config.set(backPack.getId() + ".furnace." + upgrade.getId() + ".fuel", furnaceUpgrade.getFuel());
+                        if(furnaceUpgrade.getSmelting() != null)  config.set(backPack.getId() + ".furnace." + upgrade.getId() + ".smelting", furnaceUpgrade.getSmelting());
+                    }
                 }
-                if(backPack.containsUpgrade(Upgrade.JUKEBOX)){
-                    config.set(backPack.getId() + ".jukebox.discs", backPack.serializeDiscs());
-                    config.set(backPack.getId() + ".jukebox.playing", backPack.getPlaying().getType().name());
+                if(backPack.containsUpgradeType(UpgradeType.JUKEBOX)){
+                    List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.JUKEBOX);
+                    JukeboxUpgrade upgrade = (JukeboxUpgrade) list.get(0);
+                    Main.getMain().debugMessage("Saving jukebox upgrade " + upgrade.getId(), "info");
+
+                    if(upgrade.getDiscs() != null && !upgrade.getDiscs().isEmpty()) config.set(backPack.getId() + ".jukebox." + upgrade.getId() + ".discs", upgrade.serializeDiscs());
+                    if(upgrade.getPlaying() != null)    config.set(backPack.getId() + ".jukebox." + upgrade.getId() + ".playing", upgrade.getPlaying().getType().name());
+                    if(upgrade.getSound() != null)  config.set(backPack.getId() + ".jukebox." + upgrade.getId() + ".sound", upgrade.getSound().name());
                 }
-                if(backPack.containsUpgrade(Upgrade.AUTOFEED)){
-                    config.set(backPack.getId() + ".afeed.enabled", backPack.isAutoFeedEnabled());
-                    config.set(backPack.getId() + ".afeed.items", backPack.serializeFoods());
+                if(backPack.containsUpgradeType(UpgradeType.AUTOFEED)){
+                    List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.AUTOFEED);
+                    AutoFeedUpgrade upgrade = (AutoFeedUpgrade) list.get(0);
+                    Main.getMain().debugMessage("Saving auto feed upgrade " + upgrade.getId(), "info");
+                    config.set(backPack.getId() + ".autofeed." + upgrade.getId() + ".enabled", upgrade.isEnabled());
+                    if(upgrade.getItems() != null && !upgrade.getItems().isEmpty()) config.set(backPack.getId() + ".autofeed." + upgrade.getId() + ".items", upgrade.getItems());
                 }
-                if(backPack.containsUpgrade(Upgrade.VILLAGERSFOLLOW)){
-                    config.set(backPack.getId() + ".villagers.enabled", backPack.isVillagersEnabled());
+                if(backPack.containsUpgradeType(UpgradeType.VILLAGERSFOLLOW)){
+                    List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.VILLAGERSFOLLOW);
+                    VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) list.get(0);
+                    Main.getMain().debugMessage("Saving villager upgrade " + upgrade.getId(), "info");
+                    config.set(backPack.getId() + ".villager." + upgrade.getId() + ".enabled", upgrade.isEnabled());
                 }
-                if(backPack.containsUpgrade(Upgrade.COLLECTOR)){
-                    config.set(backPack.getId() + ".collector.enabled", backPack.isCollectorEnabled());
-                    config.set(backPack.getId() + ".collector.mode", backPack.getCollectorMode());
+                if(backPack.containsUpgradeType(UpgradeType.COLLECTOR)){
+                    List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.COLLECTOR);
+                    CollectorUpgrade upgrade = (CollectorUpgrade) list.get(0);
+                    Main.getMain().debugMessage("Saving collector upgrade " + upgrade.getId(), "info");
+                    config.set(backPack.getId() + ".collector." + upgrade.getId() + ".enabled", upgrade.isEnabled());
+                    config.set(backPack.getId() + ".collector." + upgrade.getId() + ".mode", upgrade.getMode());
                 }
             }
         }
@@ -67,6 +88,13 @@ public final class YamlUtils {
             }
             Main.getMain().debugMessage("Loading backpack " + backPack.getName() + " with id " + backPack.getId(), "info");
             Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
+        }
+    }
+    private static void serializeUpgrades(YamlConfiguration config, BackPack backPack){
+        config.set(backPack.getId() + ".u", null);
+        for(Upgrade upgrade : backPack.getUpgrades()){
+            Main.getMain().debugMessage("Saving upgrade " + upgrade.getId() + " " + upgrade.getType(), "info");
+            config.set(backPack.getId() + ".u." + upgrade.getId() + ".type", upgrade.getType().toString());
         }
     }
 

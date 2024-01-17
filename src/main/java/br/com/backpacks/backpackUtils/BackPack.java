@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed, GetVillagersFollow, GetCollector {
+public class BackPack extends UpgradeManager {
 
     public Inventory getSecondPage() {
         return secondPage;
@@ -51,8 +51,6 @@ public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed, GetVillage
     public boolean isLocked() {
         return locked;
     }
-
-    private List<Upgrade> upgrades;
 
     private Inventory secondPage;
 
@@ -148,72 +146,81 @@ public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed, GetVillage
         data.add(backpackType.toString());
         return data;
     }
-
-    public List<String> serializeUpgrades(){
-        List<String> list = new ArrayList<>();
-        for(Upgrade upgrade : upgrades){
-            list.add(upgrade.toString());
-        }
-
-        return list;
-    }
-
-    public List<ItemStack> serializeFoods(){
-        List<ItemStack> list = new ArrayList<>();
-        for(ItemStack itemStack : getAutoFeedItems()){
-            if(itemStack == null){
-                continue;
-            }
-            list.add(itemStack);
-        }
-        return list;
-    }
-
-    public List<String> serializeDiscs(){
-        List<String> list = new ArrayList<>();
-        for(ItemStack itemStack : getDiscs()){
-            if(itemStack == null){
-                list.add(null);
-                continue;
-            }
-            list.add(itemStack.getType().name());
-        }
-        return list;
-    }
-
     private void deserializeUpgrades(YamlConfiguration config, String s){
-        if(containsUpgrade(Upgrade.FURNACE)){
-            setFuel(config.getItemStack(s + ".furnace.f"));
-            setSmelting(config.getItemStack(s + ".furnace.s"));
-            setResult(config.getItemStack(s + ".furnace.r"));
-        }
-        if(containsUpgrade(Upgrade.JUKEBOX)){
-            List<ItemStack> discs = new ArrayList<>();
-            if(config.isSet(s + ".jukebox.playing"))    setPlaying(getSoundFromName(config.getString(s + ".jukebox.playing")));
-            if(config.isSet(s + ".jukebox.discs")) {
-                for (String item : config.getStringList(s + ".jukebox.discs")) {
-                    discs.add(getSoundFromName(item));
+        Set<String> upgradesPath = config.getConfigurationSection(s + ".u").getKeys(false);
+        List<Upgrade> upgrades = new ArrayList<>();
+        for(String key : upgradesPath) {
+            switch (UpgradeType.valueOf(config.getString(s + ".u." + key + ".type"))) {
+                case FURNACE -> {
+                    Main.getMain().debugMessage("loading furnace: " + key, "info");
+                    FurnaceUpgrade upgrade = new FurnaceUpgrade(Integer.parseInt(key));
+                    if(config.isSet(s + ".furnace." + key + ".result")){
+                        upgrade.setResult(config.getItemStack(s + ".furnace." + key + ".result"));
+                    }
+                    if(config.isSet(s + ".furnace." + key + ".fuel")){
+                        upgrade.setFuel(config.getItemStack(s + ".furnace." + key + ".fuel"));
+                    }
+                    if(config.isSet(s + ".furnace." + key + ".smelting")){
+                        upgrade.setSmelting(config.getItemStack(s + ".furnace." + key + ".smelting"));
+                    }
+                    upgrades.add(upgrade);
+                    Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);
+                }
+                case JUKEBOX -> {
+                    Main.getMain().debugMessage("loading jukebox: " + key, "info");
+                    JukeboxUpgrade upgrade = new JukeboxUpgrade(Integer.parseInt(key));
+                    if(config.isSet(s + ".jukebox." + key + ".discs")){
+                        List<ItemStack> discs = new ArrayList<>();
+                        for(String disc : config.getStringList(s + ".jukebox." + key + ".discs")){
+                            discs.add(upgrade.getSoundFromName(disc));
+                        }
+                        upgrade.setDiscs(discs);
+                    }
+                    if(config.isSet(s + ".jukebox." + key + ".playing")){
+                        upgrade.setPlaying(upgrade.getSoundFromName(config.getString(s + ".jukebox." + key + ".playing")));
+                    }
+                    if(config.isSet(s + ".jukebox." + key + ".sound")){
+                        upgrade.setSound(Sound.valueOf(config.getString(s + ".jukebox." + key + ".sound")));
+                    }
+                    upgrades.add(upgrade);
+                    Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);
+                }
+                case COLLECTOR -> {
+                    Main.getMain().debugMessage("loading collector: " + key, "info");
+                    CollectorUpgrade upgrade = new CollectorUpgrade(Integer.parseInt(key));
+                    if(config.isSet(s + ".collector." + key + ".enabled")){
+                        upgrade.setEnabled(config.getBoolean(s + ".collector." + key + ".enabled"));
+                    }
+                    if(config.isSet(s + ".collector." + key + ".mode")){
+                        upgrade.setMode(config.getInt(s + ".collector." + key + ".mode"));
+                    }
+                    upgrades.add(upgrade);
+                    Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);
+                }
+                case VILLAGERSFOLLOW -> {
+                    Main.getMain().debugMessage("loading villagers follow: " + key, "info");
+                    VillagersFollowUpgrade upgrade = new VillagersFollowUpgrade(Integer.parseInt(key));
+                    if (config.isSet(s + ".villager." + key + ".enabled")) {
+                        upgrade.setEnabled(config.getBoolean(s + ".villager." + key + ".enabled"));
+                    }
+                    upgrades.add(upgrade);
+                    Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);
+                }
+                case AUTOFEED -> {
+                    Main.getMain().debugMessage("loading auto feed: " + key, "info");
+                    AutoFeedUpgrade upgrade = new AutoFeedUpgrade(Integer.parseInt(key));
+                    if(config.isSet(s + ".autofeed." + key + ".enabled")){
+                        upgrade.setEnabled(config.getBoolean(s + ".autofeed." + key + ".enabled"));
+                    }
+                    if(config.isSet(s + ".autofeed." + key + ".items")){
+                        upgrade.setItems((List<ItemStack>) config.getList(s + ".autofeed." + key + ".items"));
+                    }
+                    upgrades.add(upgrade);
+                    Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);
                 }
             }
-            setDiscs(discs);
         }
-        if(containsUpgrade(Upgrade.AUTOFEED)){
-            if(config.isSet(s + ".afeed.enabled"))  setAutoFeedEnabled(config.getBoolean(s + ".afeed.enabled"));
-            List<ItemStack> items = new ArrayList<>();
-            if(config.isSet(s + ".afeed.items")) {
-                for (Object item : config.getList(s + ".afeed.items")) {
-                    items.add((ItemStack) item);
-                }
-            }
-            setAutoFeedItems(items);
-        }
-        if(containsUpgrade(Upgrade.VILLAGERSFOLLOW)){
-            if(config.isSet(s + ".villagers.enabled"))  setVillagersIsEnabled(config.getBoolean(s + ".villagers.enabled"));
-        }
-        if(containsUpgrade(Upgrade.COLLECTOR)){
-            if(config.isSet(s + ".collector.enabled"))  setCollectorIsEnabled(config.getBoolean(s + ".collector.enabled"));
-            if(config.isSet(s + ".collector.mode"))  setCollectorMode(config.getInt(s + ".collector.mode"));
-        }
+        setUpgrades(upgrades);
     }
 
     public BackPack deserialize(YamlConfiguration config, String s) {
@@ -225,15 +232,6 @@ public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed, GetVillage
         List<String> components = config.getStringList(s + ".i");
 
         if(config.isSet(s + ".u")){
-            List<String> upgradesStr = config.getStringList(s + ".u");
-
-            List<Upgrade> upgrades = new ArrayList<>();
-            for (String string : upgradesStr) {
-                upgrades.add(Upgrade.valueOf(string));
-            }
-
-            setUpgrades(upgrades);
-
             deserializeUpgrades(config, s);
         }
 
@@ -400,6 +398,10 @@ public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed, GetVillage
         return remainingItems;
     }
 
+    public void setRemainingItems(List<ItemStack> remainingItems) {
+        this.remainingItems = remainingItems;
+    }
+
     private List<ItemStack> remainingItems = new ArrayList<>();
 
     public List<ItemStack> tryAddItem(ItemStack itemStack){
@@ -423,172 +425,5 @@ public class BackPack implements GetFurnace, GetJukebox, GetAutoFeed, GetVillage
 
         remainingItems = list;
         return list;
-    }
-
-    public List<Upgrade> getUpgrades() {
-        return upgrades;
-    }
-
-    public void setUpgrades(List<Upgrade> upgrades) {
-        this.upgrades = upgrades;
-    }
-
-    public Boolean containsUpgrade(Upgrade upgrade) {
-        return this.upgrades.contains(upgrade);
-    }
-
-
-    //Upgrades methods
-    //Jukebox
-
-    private ItemStack playing;
-
-    private Boolean isPlaying = false;
-
-    private List<ItemStack> discs;
-
-    private Sound sound;
-
-    @Override
-    public ItemStack getPlaying() {
-        return playing;
-    }
-
-    @Override
-    public void setPlaying(ItemStack currentDisk) {
-        this.playing = currentDisk;
-    }
-
-    @Override
-    public Boolean isPlaying() {
-        return isPlaying;
-    }
-
-    @Override
-    public void setIsPlaying(Boolean playing) {
-        this.isPlaying = playing;
-    }
-
-    @Override
-    public List<ItemStack> getDiscs() {
-        return discs;
-    }
-
-    @Override
-    public void setDiscs(List<ItemStack> discs) {
-        this.discs = discs;
-    }
-
-    @Override
-    public Sound getSound() {
-        return sound;
-    }
-
-    @Override
-    public void setSound(Sound sound) {
-        this.sound = sound;
-    }
-
-    @Override
-    public ItemStack getSoundFromName(String name){
-        return new ItemStack(Material.getMaterial(name));
-    }
-
-    //furnace
-
-    private ItemStack fuel;
-    private ItemStack smelting;
-    private ItemStack result;
-
-    @Override
-    public ItemStack getFuel() {
-        return fuel;
-    }
-
-    @Override
-    public void setFuel(ItemStack fuel) {
-        this.fuel = fuel;
-    }
-
-    @Override
-    public ItemStack getSmelting() {
-        return smelting;
-    }
-
-    public void setSmelting(ItemStack smelting) {
-        this.smelting = smelting;
-    }
-
-    @Override
-    public ItemStack getResult() {
-        return result;
-    }
-
-    @Override
-    public void setResult(ItemStack result) {
-        this.result = result;
-    }
-
-    //auto-feed
-
-    private List<ItemStack> autoFeedItems;
-    private Boolean autoFeedEnabled;
-
-    @Override
-    public List<ItemStack> getAutoFeedItems() {
-        return autoFeedItems;
-    }
-
-    @Override
-    public Boolean isAutoFeedEnabled() {
-        return autoFeedEnabled;
-    }
-
-    @Override
-    public void setAutoFeedEnabled(Boolean bool) {
-        this.autoFeedEnabled = bool;
-    }
-
-    @Override
-    public void setAutoFeedItems(List<ItemStack> items) {
-        this.autoFeedItems = items;
-    }
-
-    //villagers-follow
-    private boolean isEnabled = false;
-
-    @Override
-    public boolean isVillagersEnabled() {
-        return isEnabled;
-    }
-
-    @Override
-    public void setVillagersIsEnabled(boolean isEnabled) {
-        this.isEnabled = isEnabled;
-    }
-
-
-    //Collector upgrade
-
-    private boolean isCollectorEnabled = false;
-    private int collectorMode = 0; //mode 0 = only backpack items, mode 1 = every item
-    @Override
-    public boolean isCollectorEnabled() {
-        return isCollectorEnabled;
-    }
-
-    @Override
-    public void setCollectorIsEnabled(boolean isEnabled) {
-        this.isCollectorEnabled = isEnabled;
-    }
-
-    @Override
-    public void setCollectorMode(int mode) {
-        this.collectorMode = mode;
-    }
-
-    @Override
-    public int getCollectorMode() {
-        return collectorMode;
     }
 }

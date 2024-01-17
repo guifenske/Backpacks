@@ -28,10 +28,10 @@ public class OnClickInConfigMenu implements Listener {
 
         if(event.getRawSlot() < InventoryBuilder.getFreeUpgradesSlots(backPack.getType())){
             if(event.getCurrentItem() == null) return;
-            Upgrade upgrade = RecipesUtils.getUpgradeFromItem(event.getCurrentItem());
+            Upgrade upgrade = RecipesUtils.getUpgradeFromItem(event.getCurrentItem(), backPack);
             if(upgrade == null) return;
 
-            switch (upgrade) {
+            switch (upgrade.getType()) {
                 case CRAFTING -> {
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
                     event.getWhoClicked().openWorkbench(null, true);
@@ -41,35 +41,35 @@ public class OnClickInConfigMenu implements Listener {
 
                 case FURNACE -> {
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
-                    event.getWhoClicked().openInventory(Furnace.inventory((Player) event.getWhoClicked(), backPack));
+                    event.getWhoClicked().openInventory(Furnace.inventory((Player) event.getWhoClicked(), backPack, upgrade.getId()));
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGFURNACE);
                     event.setCancelled(true);
                 }
 
                 case JUKEBOX -> {
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
-                    event.getWhoClicked().openInventory(Jukebox.inventory((Player) event.getWhoClicked(), backPack));
+                    event.getWhoClicked().openInventory(Jukebox.inventory((Player) event.getWhoClicked(), backPack, upgrade.getId()));
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGJUKEBOX);
                     event.setCancelled(true);
                 }
 
                 case AUTOFEED -> {
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
-                    event.getWhoClicked().openInventory(AutoFeed.inventory((Player) event.getWhoClicked(), backPack));
+                    event.getWhoClicked().openInventory(AutoFeed.inventory((Player) event.getWhoClicked(), backPack, upgrade.getId()));
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGAUTOFEED);
                     event.setCancelled(true);
                 }
 
                 case VILLAGERSFOLLOW -> {
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
-                    event.getWhoClicked().openInventory(VillagersFollow.inventory((Player) event.getWhoClicked(), backPack));
+                    event.getWhoClicked().openInventory(VillagersFollow.inventory((Player) event.getWhoClicked(), backPack, upgrade.getId()));
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGVILLAGERSFOLLOW);
                     event.setCancelled(true);
                 }
 
                 case COLLECTOR -> {
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
-                    event.getWhoClicked().openInventory(Collector.inventory((Player) event.getWhoClicked(), backPack));
+                    event.getWhoClicked().openInventory(Collector.inventory((Player) event.getWhoClicked(), backPack, upgrade.getId()));
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGCOLLECTOR);
                     event.setCancelled(true);
                 }

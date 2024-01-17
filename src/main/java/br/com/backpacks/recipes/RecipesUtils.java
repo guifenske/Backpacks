@@ -1,7 +1,10 @@
 package br.com.backpacks.recipes;
 
+import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.Upgrade;
+import br.com.backpacks.backpackUtils.UpgradeType;
+import br.com.backpacks.upgrades.*;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -25,6 +28,10 @@ public class RecipesUtils {
         return itemStack;
     }
 
+    public static boolean isItemstackUpgrade(ItemStack itemStack){
+        return itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade());
+    }
+
     public static ItemStack getItemFromUpgrade(Upgrade upgrade) {
         ItemStack itemStack = new ItemStack(getMaterialFromUpgrade(upgrade));
         ItemMeta meta = itemStack.getItemMeta();
@@ -33,12 +40,13 @@ public class RecipesUtils {
         meta.setLore(getLore(upgrade));
         meta.getPersistentDataContainer().set(new UpgradesRecipesNamespaces().isUpgrade(), PersistentDataType.INTEGER, 1);
         meta.getPersistentDataContainer().set(getNamespaceFromUpgrade(upgrade), PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(new UpgradesRecipesNamespaces().getUPGRADEID(), PersistentDataType.INTEGER, upgrade.getId());
         itemStack.setItemMeta(meta);
         return itemStack;
     }
 
     public static String getNameItemFromUpgrade(Upgrade upgrade){
-        switch (upgrade){
+        switch (upgrade.getType()){
             case FURNACE: return "Furnace Grid";
             case CRAFTING: return "Crafting Grid";
             case JUKEBOX: return "Jukebox";
@@ -57,7 +65,7 @@ public class RecipesUtils {
     }
 
     private static NamespacedKey getNamespaceFromUpgrade(Upgrade upgrade){
-        switch (upgrade){
+        switch (upgrade.getType()){
             case CRAFTING -> {
                 return new UpgradesRecipesNamespaces().getCraftingGrid();
             }
@@ -98,7 +106,7 @@ public class RecipesUtils {
     }
 
     private static Material getMaterialFromUpgrade(Upgrade upgrade){
-        switch (upgrade){
+        switch (upgrade.getType()){
             case CRAFTING -> {
                 return Material.CRAFTING_TABLE;
             }
@@ -139,34 +147,52 @@ public class RecipesUtils {
         return Material.NETHERITE_INGOT;
     }
 
-    public static Upgrade getUpgradeFromItem(ItemStack itemStack) {
+    public static Upgrade getUpgradeFromItem(ItemStack itemStack, BackPack backPack) {
         if (!itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade(), PersistentDataType.INTEGER))
             return null;
+        int id = 0;
+        if(itemStack.getItemMeta().getPersistentDataContainer().get(new UpgradesRecipesNamespaces().getUPGRADEID(), PersistentDataType.INTEGER) != null){
+            id = itemStack.getItemMeta().getPersistentDataContainer().get(new UpgradesRecipesNamespaces().getUPGRADEID(), PersistentDataType.INTEGER);
+        }   else{
+            id = Main.backPackManager.getUpgradeHashMap().size() + 1;
+        }
+
+        Main.getMain().debugMessage("id: " + id, "info");
 
         if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getAutoFill(), PersistentDataType.INTEGER))
-            return Upgrade.AUTOFILL;
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getAutoFeed(), PersistentDataType.INTEGER))
-            return Upgrade.AUTOFEED;
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getFurnaceGrid(), PersistentDataType.INTEGER))
-            return Upgrade.FURNACE;
+            return new Upgrade(UpgradeType.AUTOFILL, id);
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getAutoFeed(), PersistentDataType.INTEGER)){
+            if(backPack.getUpgradeFromId(id) != null) return ((AutoFeedUpgrade) backPack.getUpgradeFromId(id));
+            return new AutoFeedUpgrade(id);
+        }
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getFurnaceGrid(), PersistentDataType.INTEGER)) {
+            if(backPack.getUpgradeFromId(id) != null) return ((FurnaceUpgrade) backPack.getUpgradeFromId(id));
+            return new FurnaceUpgrade(id);
+        }
         if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getCraftingGrid(), PersistentDataType.INTEGER))
-            return Upgrade.CRAFTING;
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getJukebox(), PersistentDataType.INTEGER))
-            return Upgrade.JUKEBOX;
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getVillagersFollow(), PersistentDataType.INTEGER))
-            return Upgrade.VILLAGERSFOLLOW;
+            return new Upgrade(UpgradeType.CRAFTING, id);
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getJukebox(), PersistentDataType.INTEGER)){
+            if(backPack.getUpgradeFromId(id) != null) return ((JukeboxUpgrade) backPack.getUpgradeFromId(id));
+            return new JukeboxUpgrade(id);
+        }
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getVillagersFollow(), PersistentDataType.INTEGER)){
+            if(backPack.getUpgradeFromId(id) != null) return ((VillagersFollowUpgrade) backPack.getUpgradeFromId(id));
+            return new VillagersFollowUpgrade(id);
+        }
         if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getLiquidTank(), PersistentDataType.INTEGER))
-            return Upgrade.LIQUIDTANK;
+            return new Upgrade(UpgradeType.LIQUIDTANK, id);
         if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getENCAPSULATE(), PersistentDataType.INTEGER))
-            return Upgrade.ENCAPSULATE;
-        if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getCOLLECTOR(), PersistentDataType.INTEGER))
-            return Upgrade.COLLECTOR;
+            return new Upgrade(UpgradeType.ENCAPSULATE, id);
+        if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getCOLLECTOR(), PersistentDataType.INTEGER)){
+            if(backPack.getUpgradeFromId(id) != null) return ((CollectorUpgrade) backPack.getUpgradeFromId(id));
+            return new CollectorUpgrade(id);
+        }
 
         return null;
     }
 
     private static List<String> getLore(Upgrade upgrade) {
-        switch (upgrade) {
+        switch (upgrade.getType()) {
             case CRAFTING -> {
                 return Arrays.asList("§7Crafting Grid", "§7§nAllows you to craft items in the backpack.");
             }

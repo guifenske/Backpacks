@@ -21,6 +21,7 @@ public class UpgradesRecipesNamespaces {
     private final NamespacedKey AUTOFILL = new NamespacedKey(Main.getMain(), "autofill");
     private final NamespacedKey AUTOFEED = new NamespacedKey(Main.getMain(), "autofeed");
     private final NamespacedKey LIQUIDTANK = new NamespacedKey(Main.getMain(), "liquidtank");
+    private final NamespacedKey UPGRADEID = new NamespacedKey(Main.getMain(), "upgradeid");
     private final NamespacedKey STACKUPGRADE2X = new NamespacedKey(Main.getMain(), "stackupgrade2x");
     private final NamespacedKey STACKUPGRADE4X = new NamespacedKey(Main.getMain(), "stackupgrade4x");
     private final NamespacedKey STACKUPGRADE8X = new NamespacedKey(Main.getMain(), "stackupgrade8x");
@@ -29,6 +30,9 @@ public class UpgradesRecipesNamespaces {
 
     public NamespacedKey isUpgrade() {
         return NAMESPACEISUPGRADE;
+    }
+    public NamespacedKey getUPGRADEID() {
+        return UPGRADEID;
     }
 
     public NamespacedKey getCraftingGrid() {
