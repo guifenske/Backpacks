@@ -17,12 +17,13 @@ public class CraftBackpack implements Listener {
     private static final String DONTHAVEBACKPACKMSG =  Main.PREFIX + "§cIt looks that you don't have a backpack to upgrade in the recipe!";
     private static final String NOTCORRECTTYPE =  Main.PREFIX + "§cYou don't have the correct type of backpack to upgrade!";
 
-    public int generateId(){
+    public static int generateId(){
         return Main.backPackManager.getBackpacks().size() + 1;
     }
 
     @EventHandler
-    private void craftBackpackEvent(CraftItemEvent event){
+    private static void craftBackpackEvent(CraftItemEvent event){
+        if(!event.getRecipe().getResult().hasItemMeta()) return;
         if(!event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK())){
             switch (event.getRecipe().getResult().getType()){
                 case CHEST -> {
@@ -170,7 +171,7 @@ public class CraftBackpack implements Listener {
         return oldId;
     }
 
-    private void updateResult(CraftItemEvent event, int id) {
+    private static void updateResult(CraftItemEvent event, int id) {
         ItemStack itemStack = event.getRecipe().getResult();
         ItemMeta meta = itemStack.getItemMeta();
         meta.getPersistentDataContainer().set(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER, id);

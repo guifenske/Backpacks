@@ -3,8 +3,10 @@ package br.com.backpacks.backpackUtils;
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.inventory.ItemCreator;
 import br.com.backpacks.recipes.RecipesNamespaces;
-import br.com.backpacks.upgrades.*;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -83,15 +85,15 @@ public class BackPack extends UpgradeManager {
     private int firstPageSize;
     private int secondPageSize;
 
-    public boolean isBeingWeared() {
-        return isBeingWeared;
+    public boolean isBeingWorn() {
+        return isWorn;
     }
 
-    public void setBeingWeared(boolean beingWeared) {
-        isBeingWeared = beingWeared;
+    public void setBeingWorn(boolean worn) {
+        isWorn = worn;
     }
 
-    private boolean isBeingWeared = false;
+    private boolean isWorn = false;
 
     public String getName() {
         return name;
@@ -146,82 +148,6 @@ public class BackPack extends UpgradeManager {
         data.add(backpackType.toString());
         return data;
     }
-    private void deserializeUpgrades(YamlConfiguration config, String s){
-        Set<String> upgradesPath = config.getConfigurationSection(s + ".u").getKeys(false);
-        List<Upgrade> upgrades = new ArrayList<>();
-        for(String key : upgradesPath) {
-            switch (UpgradeType.valueOf(config.getString(s + ".u." + key + ".type"))) {
-                case FURNACE -> {
-                    Main.getMain().debugMessage("loading furnace: " + key, "info");
-                    FurnaceUpgrade upgrade = new FurnaceUpgrade(Integer.parseInt(key));
-                    if(config.isSet(s + ".furnace." + key + ".result")){
-                        upgrade.setResult(config.getItemStack(s + ".furnace." + key + ".result"));
-                    }
-                    if(config.isSet(s + ".furnace." + key + ".fuel")){
-                        upgrade.setFuel(config.getItemStack(s + ".furnace." + key + ".fuel"));
-                    }
-                    if(config.isSet(s + ".furnace." + key + ".smelting")){
-                        upgrade.setSmelting(config.getItemStack(s + ".furnace." + key + ".smelting"));
-                    }
-                    upgrades.add(upgrade);
-                    Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);
-                }
-                case JUKEBOX -> {
-                    Main.getMain().debugMessage("loading jukebox: " + key, "info");
-                    JukeboxUpgrade upgrade = new JukeboxUpgrade(Integer.parseInt(key));
-                    if(config.isSet(s + ".jukebox." + key + ".discs")){
-                        List<ItemStack> discs = new ArrayList<>();
-                        for(String disc : config.getStringList(s + ".jukebox." + key + ".discs")){
-                            discs.add(upgrade.getSoundFromName(disc));
-                        }
-                        upgrade.setDiscs(discs);
-                    }
-                    if(config.isSet(s + ".jukebox." + key + ".playing")){
-                        upgrade.setPlaying(upgrade.getSoundFromName(config.getString(s + ".jukebox." + key + ".playing")));
-                    }
-                    if(config.isSet(s + ".jukebox." + key + ".sound")){
-                        upgrade.setSound(Sound.valueOf(config.getString(s + ".jukebox." + key + ".sound")));
-                    }
-                    upgrades.add(upgrade);
-                    Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);
-                }
-                case COLLECTOR -> {
-                    Main.getMain().debugMessage("loading collector: " + key, "info");
-                    CollectorUpgrade upgrade = new CollectorUpgrade(Integer.parseInt(key));
-                    if(config.isSet(s + ".collector." + key + ".enabled")){
-                        upgrade.setEnabled(config.getBoolean(s + ".collector." + key + ".enabled"));
-                    }
-                    if(config.isSet(s + ".collector." + key + ".mode")){
-                        upgrade.setMode(config.getInt(s + ".collector." + key + ".mode"));
-                    }
-                    upgrades.add(upgrade);
-                    Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);
-                }
-                case VILLAGERSFOLLOW -> {
-                    Main.getMain().debugMessage("loading villagers follow: " + key, "info");
-                    VillagersFollowUpgrade upgrade = new VillagersFollowUpgrade(Integer.parseInt(key));
-                    if (config.isSet(s + ".villager." + key + ".enabled")) {
-                        upgrade.setEnabled(config.getBoolean(s + ".villager." + key + ".enabled"));
-                    }
-                    upgrades.add(upgrade);
-                    Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);
-                }
-                case AUTOFEED -> {
-                    Main.getMain().debugMessage("loading auto feed: " + key, "info");
-                    AutoFeedUpgrade upgrade = new AutoFeedUpgrade(Integer.parseInt(key));
-                    if(config.isSet(s + ".autofeed." + key + ".enabled")){
-                        upgrade.setEnabled(config.getBoolean(s + ".autofeed." + key + ".enabled"));
-                    }
-                    if(config.isSet(s + ".autofeed." + key + ".items")){
-                        upgrade.setItems((List<ItemStack>) config.getList(s + ".autofeed." + key + ".items"));
-                    }
-                    upgrades.add(upgrade);
-                    Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);
-                }
-            }
-        }
-        setUpgrades(upgrades);
-    }
 
     public BackPack deserialize(YamlConfiguration config, String s) {
         if(!config.isSet(s + ".i")){
@@ -232,7 +158,8 @@ public class BackPack extends UpgradeManager {
         List<String> components = config.getStringList(s + ".i");
 
         if(config.isSet(s + ".u")){
-            deserializeUpgrades(config, s);
+            List<Integer> upgradesIds = config.getIntegerList(s + ".u");
+            setUpgrades(upgradesIds);
         }
 
         name = components.get(0);

@@ -43,13 +43,13 @@ public class BackpacksAdvancements {
                 "        },\n" +
                 "        \"background\": \"minecraft:textures/gui/advancements/backgrounds/adventure.png\",\n" +
                 "        \"frame\": \"" + style.toString().toLowerCase() + "\",\n" +
-                "        \"announce_to_chat\": false,\n" +
+                "        \"announce_to_chat\": true,\n" +
                 "        \"show_toast\": true,\n" +
                 "        \"hidden\": false\n" +
                 "    },\n" +
                 "    \"requirements\": [\n" +
                 "        [\n" +
-                "            \"trigger\"\n" +
+                "            \"fish_a_backpack\"\n" +
                 "        ]\n" +
                 "    ]\n" +
                 "}");

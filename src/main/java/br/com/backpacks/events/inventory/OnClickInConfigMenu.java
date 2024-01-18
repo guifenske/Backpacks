@@ -30,6 +30,9 @@ public class OnClickInConfigMenu implements Listener {
             if(event.getCurrentItem() == null) return;
             Upgrade upgrade = RecipesUtils.getUpgradeFromItem(event.getCurrentItem(), backPack);
             if(upgrade == null) return;
+            if(!Main.backPackManager.getUpgradeHashMap().containsKey(upgrade.getId())){
+                Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);
+            }
 
             switch (upgrade.getType()) {
                 case CRAFTING -> {
@@ -90,11 +93,11 @@ public class OnClickInConfigMenu implements Listener {
                 if (player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) {
                     player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
                     player.getPersistentDataContainer().remove(new RecipesNamespaces().getHAS_BACKPACK());
-                    backPack.setBeingWeared(false);
+                    backPack.setBeingWorn(false);
                 } else {
                     player.getInventory().remove(RecipesUtils.getItemFromBackpack(backPack));
                     player.getPersistentDataContainer().set(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER, backPack.getId());
-                    backPack.setBeingWeared(true);
+                    backPack.setBeingWorn(true);
                 }
 
                 player.closeInventory();

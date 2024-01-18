@@ -42,7 +42,7 @@ public class RandomBackpack {
 
     private void generateBackpackType(){
         BackpackType[] types = BackpackType.values();
-        int randomIndex = ThreadLocalRandom.current().nextInt(types.length);
+        int randomIndex = ThreadLocalRandom.current().nextInt(types.length - 1);
         type = types[randomIndex];
     }
 
@@ -68,7 +68,6 @@ public class RandomBackpack {
     }
 
 
-    //organize the loot to be in random order inside the inventory, with random spaces between the items too
     private ItemStack[] applyRandomOrderToLoot(List<ItemStack> loot, Inventory inventory){
 
         List<ItemStack> newLoot = new ArrayList<>();

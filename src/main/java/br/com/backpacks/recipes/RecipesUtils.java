@@ -150,7 +150,7 @@ public class RecipesUtils {
     public static Upgrade getUpgradeFromItem(ItemStack itemStack, BackPack backPack) {
         if (!itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade(), PersistentDataType.INTEGER))
             return null;
-        int id = 0;
+        int id;
         if(itemStack.getItemMeta().getPersistentDataContainer().get(new UpgradesRecipesNamespaces().getUPGRADEID(), PersistentDataType.INTEGER) != null){
             id = itemStack.getItemMeta().getPersistentDataContainer().get(new UpgradesRecipesNamespaces().getUPGRADEID(), PersistentDataType.INTEGER);
         }   else{

@@ -74,7 +74,8 @@ public class ThreadBackpacks {
     public void saveAll() throws IOException {
 
         Future<Void> future = executor.submit(() -> {
-            YamlUtils.save_backpacks_yaml();
+            YamlUtils.saveBackpacks();
+            YamlUtils.saveUpgrades();
             Main.getMain().saveConfig();
             return null;
         });
@@ -93,7 +94,8 @@ public class ThreadBackpacks {
 
     public void loadAll() {
         Future<Void> future = executor.submit(() -> {
-            YamlUtils.loadBackpacksYaml();
+            YamlUtils.loadUpgrades();
+            YamlUtils.loadBackpacks();
             return null;
         });
 

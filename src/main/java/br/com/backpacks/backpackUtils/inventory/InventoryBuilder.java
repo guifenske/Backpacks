@@ -13,7 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 
 public class InventoryBuilder {
 
@@ -36,10 +36,12 @@ public class InventoryBuilder {
 
         if(backPack.getUpgrades() != null) {
             if(!backPack.getUpgrades().isEmpty()) {
-                List<Upgrade> upgrades = backPack.getUpgrades();
+                Set<Upgrade> upgrades = backPack.getUpgrades();
 
-                for (int i = 0; i < upgrades.size(); i++) {
-                    inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrades.get(i)));
+                int i = 0;
+                for(Upgrade upgrade : upgrades) {
+                    inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));
+                    i++;
                 }
             }
         }

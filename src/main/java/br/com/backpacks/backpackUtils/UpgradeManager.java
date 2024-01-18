@@ -3,26 +3,41 @@ package br.com.backpacks.backpackUtils;
 import br.com.backpacks.Main;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Set;
 
 public class UpgradeManager {
-    private ConcurrentHashMap<Integer, Upgrade> upgrades = new ConcurrentHashMap<>();
+    private Set<Integer> upgrades = new HashSet<>();
 
-    public List<Upgrade> getUpgrades() {
-        if(this.upgrades.isEmpty()) return new ArrayList<>();
-        return new ArrayList<>(upgrades.values());
+    public List<Integer> getUpgradesIds() {
+        if(upgrades.isEmpty())  return new ArrayList<>();
+        return new ArrayList<>(upgrades);
     }
 
-    public void setUpgrades(List<Upgrade> upgrades) {
+    public Set<Upgrade> getUpgrades() {
+        if(this.upgrades.isEmpty()) return new HashSet<>();
+        Set<Upgrade> upgradeHashSet = new HashSet<>();
+        for(int i : upgrades){
+            upgradeHashSet.add(getUpgradeFromId(i));
+        }
+        return upgradeHashSet;
+    }
+
+    public void setUpgrades(List<Integer> list){
+        this.upgrades.clear();
+        this.upgrades.addAll(list);
+    }
+
+    public void setUpgrades(Set<Upgrade> upgrades) {
         this.upgrades.clear();
         for(Upgrade upgrade : upgrades) {
-            this.upgrades.put(upgrade.getId(), upgrade);
+            this.upgrades.add(upgrade.getId());
         }
     }
 
     public Boolean containsUpgradeType(UpgradeType upgradeType) {
-        for(Upgrade upgrade1 : upgrades.values()) {
+        for(Upgrade upgrade1 : getUpgrades()) {
             if(upgrade1.getType() == upgradeType) {
                 return true;
             }
