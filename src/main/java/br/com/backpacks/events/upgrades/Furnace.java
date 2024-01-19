@@ -13,9 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -25,15 +23,15 @@ import java.util.HashMap;
 
 public class Furnace implements Listener {
 
-    private static final HashMap<Integer, FurnaceUpgrade> currentFurnace = new HashMap<>();
+    public static final HashMap<Integer, FurnaceUpgrade> currentFurnace = new HashMap<>();
     private static final HashMap<Integer, BukkitTask> taskMap = new HashMap<>();
-
-    private static final IntOpenHashSet firstSave = new IntOpenHashSet();
+    public static final IntOpenHashSet shouldTick = new IntOpenHashSet();
     private static final EnumMap<Material, Fuel> fuelMap = new EnumMap<>(Material.class);
     private static final EnumMap<Fuel, Integer> maxOperationsMap = new EnumMap<>(Fuel.class);
 
     static {
         fuelMap.put(Material.COAL, Fuel.COAL);
+        fuelMap.put(Material.CHARCOAL, Fuel.CHARCOAL);
         fuelMap.put(Material.COAL_BLOCK, Fuel.COAL_BLOCK);
         fuelMap.put(Material.BLAZE_ROD, Fuel.BLAZE_ROD);
         fuelMap.put(Material.ACACIA_PLANKS, Fuel.PLANKS);
@@ -56,6 +54,75 @@ public class Furnace implements Listener {
         fuelMap.put(Material.CHERRY_CHEST_BOAT, Fuel.BOAT);
         fuelMap.put(Material.DARK_OAK_BOAT, Fuel.BOAT);
         fuelMap.put(Material.DARK_OAK_CHEST_BOAT, Fuel.BOAT);
+        fuelMap.put(Material.JUNGLE_BOAT, Fuel.BOAT);
+        fuelMap.put(Material.JUNGLE_CHEST_BOAT, Fuel.BOAT);
+        fuelMap.put(Material.MANGROVE_BOAT, Fuel.BOAT);
+        fuelMap.put(Material.MANGROVE_CHEST_BOAT, Fuel.BOAT);
+        fuelMap.put(Material.OAK_BOAT, Fuel.BOAT);
+        fuelMap.put(Material.OAK_CHEST_BOAT, Fuel.BOAT);
+        fuelMap.put(Material.SPRUCE_BOAT, Fuel.BOAT);
+        fuelMap.put(Material.SPRUCE_CHEST_BOAT, Fuel.BOAT);
+        fuelMap.put(Material.WOODEN_AXE, Fuel.WOODEN_EQUIPMENT);
+        fuelMap.put(Material.WOODEN_SHOVEL, Fuel.WOODEN_EQUIPMENT);
+        fuelMap.put(Material.WOODEN_SWORD, Fuel.WOODEN_EQUIPMENT);
+        fuelMap.put(Material.WOODEN_HOE, Fuel.WOODEN_EQUIPMENT);
+        fuelMap.put(Material.WOODEN_PICKAXE, Fuel.WOODEN_EQUIPMENT);
+        fuelMap.put(Material.BOWL, Fuel.BOWL);
+        fuelMap.put(Material.ACACIA_LOG, Fuel.LOGS);
+        fuelMap.put(Material.BIRCH_LOG, Fuel.LOGS);
+        fuelMap.put(Material.CHERRY_LOG, Fuel.LOGS);
+        fuelMap.put(Material.DARK_OAK_LOG, Fuel.LOGS);
+        fuelMap.put(Material.JUNGLE_LOG, Fuel.LOGS);
+        fuelMap.put(Material.MANGROVE_LOG, Fuel.LOGS);
+        fuelMap.put(Material.OAK_LOG, Fuel.LOGS);
+        fuelMap.put(Material.SPRUCE_LOG, Fuel.LOGS);
+        fuelMap.put(Material.STRIPPED_ACACIA_LOG, Fuel.STRIPPED_LOGS);
+        fuelMap.put(Material.STRIPPED_BIRCH_LOG, Fuel.STRIPPED_LOGS);
+        fuelMap.put(Material.STRIPPED_CHERRY_LOG, Fuel.STRIPPED_LOGS);
+        fuelMap.put(Material.STRIPPED_DARK_OAK_LOG, Fuel.STRIPPED_LOGS);
+        fuelMap.put(Material.STRIPPED_JUNGLE_LOG, Fuel.STRIPPED_LOGS);
+        fuelMap.put(Material.STRIPPED_MANGROVE_LOG, Fuel.STRIPPED_LOGS);
+        fuelMap.put(Material.STRIPPED_OAK_LOG, Fuel.STRIPPED_LOGS);
+        fuelMap.put(Material.STRIPPED_SPRUCE_LOG, Fuel.STRIPPED_LOGS);
+        fuelMap.put(Material.STRIPPED_ACACIA_WOOD, Fuel.STRIPPED_WOOD);
+        fuelMap.put(Material.STRIPPED_BIRCH_WOOD, Fuel.STRIPPED_WOOD);
+        fuelMap.put(Material.STRIPPED_CHERRY_WOOD, Fuel.STRIPPED_WOOD);
+        fuelMap.put(Material.STRIPPED_DARK_OAK_WOOD, Fuel.STRIPPED_WOOD);
+        fuelMap.put(Material.STRIPPED_JUNGLE_WOOD, Fuel.STRIPPED_WOOD);
+        fuelMap.put(Material.STRIPPED_MANGROVE_WOOD, Fuel.STRIPPED_WOOD);
+        fuelMap.put(Material.STRIPPED_OAK_WOOD, Fuel.STRIPPED_WOOD);
+        fuelMap.put(Material.STRIPPED_SPRUCE_WOOD, Fuel.STRIPPED_WOOD);
+        fuelMap.put(Material.ACACIA_WOOD, Fuel.WOOD);
+        fuelMap.put(Material.BIRCH_WOOD, Fuel.WOOD);
+        fuelMap.put(Material.CHERRY_WOOD, Fuel.WOOD);
+        fuelMap.put(Material.DARK_OAK_WOOD, Fuel.WOOD);
+        fuelMap.put(Material.JUNGLE_WOOD, Fuel.WOOD);
+        fuelMap.put(Material.MANGROVE_WOOD, Fuel.WOOD);
+        fuelMap.put(Material.OAK_WOOD, Fuel.WOOD);
+        fuelMap.put(Material.SPRUCE_WOOD, Fuel.WOOD);
+        fuelMap.put(Material.ACACIA_SIGN, Fuel.SIGN);
+        fuelMap.put(Material.BIRCH_SIGN, Fuel.SIGN);
+        fuelMap.put(Material.CHERRY_SIGN, Fuel.SIGN);
+        fuelMap.put(Material.DARK_OAK_SIGN, Fuel.SIGN);
+        fuelMap.put(Material.JUNGLE_SIGN, Fuel.SIGN);
+        fuelMap.put(Material.MANGROVE_SIGN, Fuel.SIGN);
+        fuelMap.put(Material.OAK_SIGN, Fuel.SIGN);
+        fuelMap.put(Material.SPRUCE_SIGN, Fuel.SIGN);
+        fuelMap.put(Material.ACACIA_WALL_SIGN, Fuel.HANGING_SIGN);
+        fuelMap.put(Material.BIRCH_WALL_SIGN, Fuel.HANGING_SIGN);
+        fuelMap.put(Material.CHERRY_WALL_SIGN, Fuel.HANGING_SIGN);
+        fuelMap.put(Material.DARK_OAK_WALL_SIGN, Fuel.HANGING_SIGN);
+        fuelMap.put(Material.JUNGLE_WALL_SIGN, Fuel.HANGING_SIGN);
+        fuelMap.put(Material.MANGROVE_WALL_SIGN, Fuel.HANGING_SIGN);
+        fuelMap.put(Material.OAK_WALL_SIGN, Fuel.HANGING_SIGN);
+        fuelMap.put(Material.SPRUCE_WALL_SIGN, Fuel.HANGING_SIGN);
+        fuelMap.put(Material.ACACIA_SAPLING, Fuel.SAPLING);
+        fuelMap.put(Material.BIRCH_SAPLING, Fuel.SAPLING);
+        fuelMap.put(Material.CHERRY_SAPLING, Fuel.SAPLING);
+        fuelMap.put(Material.DARK_OAK_SAPLING, Fuel.SAPLING);
+        fuelMap.put(Material.JUNGLE_SAPLING, Fuel.SAPLING);
+        fuelMap.put(Material.OAK_SAPLING, Fuel.SAPLING);
+        fuelMap.put(Material.SPRUCE_SAPLING, Fuel.SAPLING);
 
         maxOperationsMap.put(Fuel.COAL, 8);
         maxOperationsMap.put(Fuel.CHARCOAL, 8);
@@ -68,71 +135,60 @@ public class Furnace implements Listener {
         maxOperationsMap.put(Fuel.PLANKS, 1);
         maxOperationsMap.put(Fuel.BLAZE_ROD, 12);
         maxOperationsMap.put(Fuel.BOAT, 6);
+        maxOperationsMap.put(Fuel.LOGS, 2);
+        maxOperationsMap.put(Fuel.STRIPPED_LOGS, 2);
+        maxOperationsMap.put(Fuel.STRIPPED_WOOD, 2);
+        maxOperationsMap.put(Fuel.WOOD, 2);
+        maxOperationsMap.put(Fuel.SIGN, 1);
+        maxOperationsMap.put(Fuel.HANGING_SIGN, 1);
+        maxOperationsMap.put(Fuel.SAPLING, 1);
     }
 
-    public static Inventory inventory(Player player, BackPack backPack, int furnaceId){
-        Inventory inventory = Bukkit.createInventory(player, InventoryType.FURNACE);
-        FurnaceUpgrade furnaceUpgrade = (FurnaceUpgrade) backPack.getUpgradeFromId(furnaceId);
-        currentFurnace.put(backPack.getId(), furnaceUpgrade);
-
-        inventory.setItem(1, furnaceUpgrade.getFuel());
-        inventory.setItem(0, furnaceUpgrade.getSmelting());
-        inventory.setItem(2, furnaceUpgrade.getResult());
-
-        if(!firstSave.contains(furnaceId)){
-            firstSave.add(furnaceId);
-            updateFurnace(backPack.getId(), player, furnaceUpgrade);
-        }
-
-        return inventory;
-    }
-
-    private static void updateFurnace(int backpackId, Player player, FurnaceUpgrade upgrade){
-
-        if(Main.backPackManager.getBackpackFromId(backpackId) == null){
+    public static void tick(FurnaceUpgrade upgrade){
+        //TODO check the type of the furnace, and then set the desired ticks;
+        if(upgrade == null){
             return;
         }
         BukkitTask task = new BukkitRunnable() {
-            int operation = 0;
-            int lastMaxOperation = 0;
             @Override
             public void run() {
                 if(upgrade.getSmelting() == null){
-                    operation = 0;
+                    upgrade.setOperation(0);
                     return;
                 }
 
-                if(upgrade.getFuel() == null)    return;
+                if(upgrade.getFuel() == null && upgrade.getOperation() == 0)    return;
 
                 Fuel fuel = getFuelFromItem(upgrade.getFuel());
                 int maxOperation = getMaxOperationsFromFuel(fuel);
-
-                if(fuel == Fuel.NOTHING){
-                    //check to update the lava_bucket fuel status
-                    if(lastMaxOperation > 0){
-                        if(lastMaxOperation == 100 && upgrade.getFuel().getType().equals(Material.BUCKET)){
+                if(fuel.equals(Fuel.NOTHING)){
+                    if(upgrade.getLastMaxOperation() > 0 && upgrade.getOperation() > 0){
+                        if(upgrade.getLastMaxOperation() == 100 && upgrade.getFuel().getType().equals(Material.BUCKET)){
                             maxOperation = 100;
-                            lastMaxOperation = maxOperation;
-                        }   else return;
-                    }   else return;
+                            upgrade.setLastMaxOperation(maxOperation);
+                        }   else    maxOperation = upgrade.getLastMaxOperation();
+                    }   else   return;
                 }
 
-                if(lastMaxOperation > 0){
-                    if(lastMaxOperation != maxOperation) operation = 0;
+                if(upgrade.getLastMaxOperation() > 0){
+                    if(upgrade.getLastMaxOperation() != maxOperation) upgrade.setOperation(0);
                 }
 
-                lastMaxOperation = maxOperation;
+                upgrade.setLastMaxOperation(maxOperation);
 
                 if(upgrade.getResult() != null){
-                    if(upgrade.getResult().getAmount() == upgrade.getResult().getMaxStackSize()) return;
+                    if(upgrade.getResult().getAmount() == upgrade.getResult().getMaxStackSize()){
+                        upgrade.setOperation(0);
+                        return;
+                    }
                 }
 
                 for(FurnaceRecipe recipe : Main.getMain().getFurnaceRecipes()){
                     if(!recipe.getInputChoice().test(upgrade.getSmelting())) continue;
 
                     if(upgrade.getResult() == null){
-                        if(operation == 0){
-                            if(maxOperation != 1)   operation = 1;
+                        if(upgrade.getOperation() == 0){
+                            if(maxOperation != 1)   upgrade.setOperation(1);
                             if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
                             else{
                                 if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
@@ -140,14 +196,14 @@ public class Furnace implements Listener {
                             }
                         }
                         else{
-                            if(operation >= maxOperation - 1){
-                                operation = 0;
+                            if(upgrade.getOperation() >= maxOperation - 1){
+                                upgrade.setOperation(0);
                                 if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
                                 else{
                                     if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
                                     else    upgrade.setFuel(upgrade.getFuel().subtract());
                                 }
-                            }   else operation++;
+                            }   else upgrade.setOperation(upgrade.getOperation() + 1);
                         }
 
                         BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), recipe.getResult(), upgrade.getFuel());
@@ -155,7 +211,7 @@ public class Furnace implements Listener {
                         if(!e.isCancelled()){
                             upgrade.setResult(e.getResult());
                             upgrade.setSmelting(e.getSource().subtract());
-                            updateOpenInv(player);
+                            upgrade.updateInventory();
                         }
 
                         return;
@@ -163,8 +219,8 @@ public class Furnace implements Listener {
 
                     if(!upgrade.getResult().isSimilar(recipe.getResult())) return;
 
-                    if(operation == 0){
-                        if(maxOperation != 1)    operation = 1;
+                    if(upgrade.getOperation() == 0){
+                        if(maxOperation != 1)    upgrade.setOperation(1);
                         if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
                         else{
                             if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
@@ -172,40 +228,30 @@ public class Furnace implements Listener {
                         }
                     }
                     else{
-                        if(operation >= maxOperation - 1){
-                            operation = 0;
+                        if(upgrade.getOperation() >= maxOperation - 1){
+                            upgrade.setOperation(0);
                             if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
                             else{
                                 if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
                                 else    upgrade.setFuel(upgrade.getFuel().subtract());
                             }
-                        }   else operation++;
+                        }   else upgrade.setOperation(upgrade.getOperation() + 1);
                     }
 
-                    BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), recipe.getResult(), upgrade.getFuel());
+                    BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), upgrade.getResult(), upgrade.getFuel());
                     Bukkit.getPluginManager().callEvent(e);
                     if(!e.isCancelled()){
                         upgrade.setResult(e.getResult().add());
                         upgrade.setSmelting(e.getSource().subtract());
-                        updateOpenInv(player);
+                        upgrade.updateInventory();
                     }
                     return;
                 }
             }
-        }.runTaskTimer(Main.getMain(), 0L, 200L);
-
+        }.runTaskTimer(Main.getMain(), 200L, 200L);
        taskMap.put(upgrade.getId(), task);
+       Main.getMain().debugMessage("Starting furnace task for " + upgrade.getId() + "!", "info");
 
-    }
-
-    private static void updateOpenInv(Player player){
-        if(!BackpackAction.getAction(player).equals(BackpackAction.Action.UPGFURNACE)) return;
-        FurnaceUpgrade upgrade = currentFurnace.get(Main.backPackManager.getCurrentBackpackId().get(player.getUniqueId()));
-
-        Inventory inventory = player.getOpenInventory().getTopInventory();
-        inventory.setItem(1, upgrade.getFuel());
-        inventory.setItem(0, upgrade.getSmelting());
-        inventory.setItem(2, upgrade.getResult());
     }
 
     @EventHandler
@@ -218,6 +264,17 @@ public class Furnace implements Listener {
                 currentFurnace.get(id).setFuel(event.getInventory().getItem(1));
                 currentFurnace.get(id).setSmelting(event.getInventory().getItem(0));
                 currentFurnace.get(id).setResult(event.getInventory().getItem(2));
+                if(!shouldTick.contains(currentFurnace.get(id).getId())) {
+                    if (currentFurnace.get(id).canTick()) {
+                        shouldTick.add(currentFurnace.get(id).getId());
+                        tick(currentFurnace.get(id));
+                    }
+                }   else{
+                    if(!currentFurnace.get(id).canTick()){
+                        taskMap.get(currentFurnace.get(id).getId()).cancel();
+                        shouldTick.remove(currentFurnace.get(id).getId());
+                    }
+                }
             }
         }.runTaskLater(Main.getMain(), 1L);
     }
@@ -225,22 +282,20 @@ public class Furnace implements Listener {
     @EventHandler
     private void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction((Player) event.getPlayer()).equals(BackpackAction.Action.UPGFURNACE)) return;
-
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
         int id = backPack.getId();
 
-        if(!firstSave.contains(currentFurnace.get(id).getId())){
-            firstSave.add(currentFurnace.get(id).getId());
-        }
         currentFurnace.get(id).setFuel(event.getInventory().getItem(1));
         currentFurnace.get(id).setSmelting(event.getInventory().getItem(0));
         currentFurnace.get(id).setResult(event.getInventory().getItem(2));
 
-        if(currentFurnace.get(id).getFuel() == null || currentFurnace.get(id).getSmelting() == null){
-            taskMap.get(currentFurnace.get(id).getId()).cancel();
-            taskMap.remove(currentFurnace.get(id).getId());
-            firstSave.remove(currentFurnace.get(id).getId());
-            currentFurnace.remove(backPack.getId());
+        if(!currentFurnace.get(id).canTick()){
+            if(taskMap.containsKey(currentFurnace.get(id).getId())) {
+                taskMap.get(currentFurnace.get(id).getId()).cancel();
+                taskMap.remove(currentFurnace.get(id).getId());
+            }
+            shouldTick.remove(currentFurnace.get(id).getId());
+            currentFurnace.remove(id);
         }
 
         BackpackAction.setAction((Player) event.getPlayer(), BackpackAction.Action.NOTHING);
@@ -265,7 +320,14 @@ public class Furnace implements Listener {
         DRIED_KELP_BLOCK,
         WOODEN_EQUIPMENT,
         BOWL,
-        NOTHING;
+        LOGS,
+        WOOD,
+        STRIPPED_WOOD,
+        STRIPPED_LOGS,
+        SIGN,
+        HANGING_SIGN,
+        SAPLING,
+        NOTHING
     }
 
     private static Fuel getFuelFromItem(ItemStack item){

@@ -9,12 +9,15 @@ import br.com.backpacks.backpackUtils.inventory.UpgradeMenu;
 import br.com.backpacks.events.upgrades.*;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.RecipesUtils;
+import br.com.backpacks.upgrades.FurnaceUpgrade;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 public class OnClickInConfigMenu implements Listener {
 
@@ -45,8 +48,14 @@ public class OnClickInConfigMenu implements Listener {
 
                 case FURNACE -> {
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
-                    event.getWhoClicked().openInventory(Furnace.inventory((Player) event.getWhoClicked(), backPack, upgrade.getId()));
-                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGFURNACE);
+                    Furnace.currentFurnace.put(backPack.getId(), (FurnaceUpgrade) upgrade);
+                    event.getWhoClicked().openInventory(((FurnaceUpgrade) upgrade).getInventory());
+                    BukkitTask task = new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGFURNACE);
+                        }
+                    }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
                 }
 

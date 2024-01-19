@@ -4,6 +4,7 @@ import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.backpackUtils.UpgradeType;
+import br.com.backpacks.events.upgrades.Furnace;
 import br.com.backpacks.upgrades.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -53,6 +54,8 @@ public final class YamlUtils {
                     if(furnaceUpgrade.getResult() != null)  config.set(upgrade.getId() + ".furnace.result", furnaceUpgrade.getResult());
                     if(furnaceUpgrade.getFuel() != null)  config.set(upgrade.getId() + ".furnace.fuel", furnaceUpgrade.getFuel());
                     if(furnaceUpgrade.getSmelting() != null)  config.set(upgrade.getId() + ".furnace.smelting", furnaceUpgrade.getSmelting());
+                    if(furnaceUpgrade.getOperation() > 0)   config.set(upgrade.getId() + ".furnace.operation", furnaceUpgrade.getOperation());
+                    if(furnaceUpgrade.getLastMaxOperation() > 0)   config.set(upgrade.getId() + ".furnace.maxoperation", furnaceUpgrade.getLastMaxOperation());
                 }
                 case JUKEBOX -> {
                     JukeboxUpgrade jukeboxUpgrade = (JukeboxUpgrade) upgrade;
@@ -102,8 +105,19 @@ public final class YamlUtils {
                     if(config.isSet(i + ".furnace.smelting")){
                         upgrade.setSmelting(config.getItemStack(i + ".furnace.smelting"));
                     }
-
+                    if(config.isSet(i + ".furnace.operation")){
+                        upgrade.setOperation(config.getInt(i + ".furnace.operation"));
+                    }
+                    if(config.isSet(i + ".furnace.maxoperation")){
+                        upgrade.setLastMaxOperation(config.getInt(i + ".furnace.maxoperation"));
+                    }
+                    upgrade.updateInventory();
                     Main.backPackManager.getUpgradeHashMap().put(Integer.parseInt(i), upgrade);
+
+                    if(upgrade.canTick()){
+                        Furnace.shouldTick.add(upgrade.getId());
+                        Furnace.tick(upgrade);
+                    }
                 }
                 case JUKEBOX -> {
                     Main.getMain().debugMessage("loading jukebox: " + i, "info");
