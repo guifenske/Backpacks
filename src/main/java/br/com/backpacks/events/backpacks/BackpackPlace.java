@@ -20,7 +20,7 @@ public class BackpackPlace implements Listener {
         
         PersistentDataContainer itemData = event.getItemInHand().getItemMeta().getPersistentDataContainer();
         if(!itemData.has(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID())){
-            if(itemData.has(new RecipesNamespaces().getIS_BACKPACK())){
+            if(itemData.has(new RecipesNamespaces().getNAMESPACE_WET_BACKPACK())){
                 event.getPlayer().sendMessage(Main.PREFIX + "§cHumm, this thing is to wet to be used as a backpack.");
                 event.setCancelled(true);
             }

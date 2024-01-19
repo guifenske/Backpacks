@@ -8,3 +8,18 @@ commands:
     description: 'Just to make easy debugging'
     aliases:
       - 'bbug'
+  backpackgive:
+    description: 'Give a backpack to a player'
+    aliases:
+      - 'bpgive'
+    usage: '/backpackgive <player> <backpackType>'
+  backpacklist:
+    description: 'show all backpacks'
+    aliases:
+      - 'bplist'
+    usage: '/backpacklist'
+  backpackgiveid:
+      description: 'Give a existent backpack to a player'
+      aliases:
+        - 'bpgiveid'
+      usage: '/backpackgiveid <player> <backpackId>'

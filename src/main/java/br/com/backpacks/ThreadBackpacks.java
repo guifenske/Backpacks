@@ -3,9 +3,12 @@ package br.com.backpacks;
 import br.com.backpacks.advancements.BackpacksAdvancements;
 import br.com.backpacks.advancements.NamespacesAdvacements;
 import br.com.backpacks.commands.Bdebug;
+import br.com.backpacks.commands.Bpgive;
+import br.com.backpacks.commands.BpgiveID;
 import br.com.backpacks.events.ConfigItemsEvents;
 import br.com.backpacks.events.HopperEvents;
 import br.com.backpacks.events.backpacks.*;
+import br.com.backpacks.events.custom.BackpackCookItemListener;
 import br.com.backpacks.events.inventory.*;
 import br.com.backpacks.events.player.CraftBackpack;
 import br.com.backpacks.events.player.FinishedSmelting;
@@ -37,6 +40,8 @@ public class ThreadBackpacks {
 
     public void registerAll() {
         executor.submit(() -> {
+            //custom
+            Bukkit.getPluginManager().registerEvents(new BackpackCookItemListener(), Main.getMain());
 
             Bukkit.getPluginManager().registerEvents(new BackpackInteract(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new BackpackBreak(), Main.getMain());
@@ -66,7 +71,9 @@ public class ThreadBackpacks {
 
             BackpacksAdvancements.createAdvancement(NamespacesAdvacements.getCAUGHT_A_BACKPACK(), "chest", "Wow, thats a huge 'fish'", BackpacksAdvancements.Style.TASK);
 
-            Main.getMain().getCommand("Bdebug").setExecutor(new Bdebug());
+            Main.getMain().getCommand("bdebug").setExecutor(new Bdebug());
+            Main.getMain().getCommand("bpgive").setExecutor(new Bpgive());
+            Main.getMain().getCommand("bpgiveid").setExecutor(new BpgiveID());
             return null;
         });
     }

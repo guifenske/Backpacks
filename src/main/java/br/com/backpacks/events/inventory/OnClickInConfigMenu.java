@@ -9,6 +9,7 @@ import br.com.backpacks.backpackUtils.inventory.UpgradeMenu;
 import br.com.backpacks.events.upgrades.*;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.RecipesUtils;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -89,6 +90,7 @@ public class OnClickInConfigMenu implements Listener {
             //equip or un-equip backpack in the back
             case 53 -> {
                 if(backPack.isBlock())  return;
+                if(event.getClickedInventory().getItem(53).getType().equals(Material.GRAY_STAINED_GLASS_PANE)) return;
 
                 if (player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) {
                     player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));

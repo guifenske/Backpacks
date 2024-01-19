@@ -23,6 +23,7 @@ public final class YamlUtils {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
         for (BackPack backPack : Main.backPackManager.getBackpacks().values()) {
+            config.set(backPack.getId() + ".loc", null);
             if(backPack.getLocation() != null){
                 List<String> data = serializeLocation(backPack.getLocation());
                 config.set(backPack.getId() + ".loc", data);

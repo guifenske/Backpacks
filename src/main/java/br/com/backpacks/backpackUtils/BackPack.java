@@ -114,7 +114,46 @@ public class BackPack extends UpgradeManager {
         }
     }
 
+    private String getDefaultName(){
+        switch (getType()){
+            case LEATHER -> {
+                return "Leather Backpack";
+            }
+            case IRON -> {
+                return "Iron Backpack";
+            }
+            case GOLD -> {
+                return "Gold Backpack";
+            }
+            case LAPIS -> {
+                return "Lapis Backpack";
+            }
+            case AMETHYST -> {
+                return "Amethyst Backpack";
+            }
+            case DIAMOND -> {
+                return "Diamond Backpack";
+            }
+            case NETHERITE -> {
+                return "Netherite Backpack";
+            }
+        }
+
+        return "Backpack";
+    }
+
     private String name;
+    public BackPack(BackpackType type, int id) {
+        this.backpackType = type;
+        this.id = id;
+        this.name = getDefaultName();
+        updateSizeOfPages();
+        firstPage = Bukkit.createInventory(null, firstPageSize, name);
+        if(secondPageSize > 0){
+            secondPage = Bukkit.createInventory(null, secondPageSize, name);
+        }
+        setArrowsAndConfigOptionItems();
+    }
 
     public BackPack(String name, Inventory firstPage, int id, BackpackType type) {
         this.backpackType = type;

@@ -3,6 +3,7 @@ package br.com.backpacks.events.upgrades;
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackAction;
+import br.com.backpacks.events.custom.BackpackCookItemEvent;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import org.bukkit.Bukkit;
@@ -148,9 +149,15 @@ public class Furnace implements Listener {
                                 }
                             }   else operation++;
                         }
-                        upgrade.setSmelting(upgrade.getSmelting().subtract());
-                        upgrade.setResult(recipe.getResult());
-                        updateOpenInv(player);
+
+                        BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), recipe.getResult(), upgrade.getFuel());
+                        Bukkit.getPluginManager().callEvent(e);
+                        if(!e.isCancelled()){
+                            upgrade.setResult(e.getResult());
+                            upgrade.setSmelting(e.getSource().subtract());
+                            updateOpenInv(player);
+                        }
+
                         return;
                     }
 
@@ -175,9 +182,13 @@ public class Furnace implements Listener {
                         }   else operation++;
                     }
 
-                    upgrade.setSmelting(upgrade.getSmelting().subtract());
-                    upgrade.setResult(upgrade.getResult().add());
-                    updateOpenInv(player);
+                    BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), recipe.getResult(), upgrade.getFuel());
+                    Bukkit.getPluginManager().callEvent(e);
+                    if(!e.isCancelled()){
+                        upgrade.setResult(e.getResult().add());
+                        upgrade.setSmelting(e.getSource().subtract());
+                        updateOpenInv(player);
+                    }
                     return;
                 }
             }

@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -47,14 +48,14 @@ public class InventoryBuilder {
         }
 
         if(!backPack.isBlock()) {
-            if (player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) {
+            if (player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK()) && player.getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER) == backPack.getId()) {
                 if(backPack.isLocked()) {
                     inv.setItem(51, unlock);
                 } else {
                     inv.setItem(51, lock);
                 }
                 inv.setItem(53, unequipBackpack);
-            } else{
+            } else if(!player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) {
                 inv.setItem(53, equipBackpack);
             }
         }

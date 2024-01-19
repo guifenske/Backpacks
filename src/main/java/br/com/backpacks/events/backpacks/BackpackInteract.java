@@ -44,7 +44,7 @@ public class BackpackInteract implements Listener {
         if(event.getItem() == null) return;
         if(player.isSneaking() && event.getAction().equals(RIGHT_CLICK_BLOCK)) return;
         if(!event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID())){
-            if(event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK())){
+            if(event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_WET_BACKPACK())){
                 event.getPlayer().sendMessage(Main.PREFIX + "§cHumm, this thing is too wet to be used as a backpack.");
                 event.setCancelled(true);
             }

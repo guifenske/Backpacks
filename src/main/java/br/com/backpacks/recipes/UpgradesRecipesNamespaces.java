@@ -125,11 +125,15 @@ public class UpgradesRecipesNamespaces {
 
         ShapedRecipe recipe = new ShapedRecipe(VILLAGERSFOLLOW, emeraldBlock);
 
-        recipe.shape("EEE", "ETE", "ESE");
+        recipe.shape("GCS", "BTB", "EEE");
 
-        recipe.setIngredient('E', Material.EMERALD_BLOCK);
+        recipe.setIngredient('B', Material.EMERALD_BLOCK);
+        recipe.setIngredient('E', Material.EMERALD);
         recipe.setIngredient('T', Material.TRIPWIRE_HOOK);
-        recipe.setIngredient('S', Material.STRING);
+        recipe.setIngredient('G', Material.GRINDSTONE);
+        recipe.setIngredient('C', Material.CARTOGRAPHY_TABLE);
+        recipe.setIngredient('S', Material.BREWING_STAND);
+
 
         return recipe;
     }
