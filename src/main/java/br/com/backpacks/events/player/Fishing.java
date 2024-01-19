@@ -1,4 +1,4 @@
-package br.com.backpacks.events;
+package br.com.backpacks.events.player;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.advancements.BackpacksAdvancements;
@@ -21,7 +21,7 @@ public class Fishing implements Listener {
     @EventHandler
     private void onFishing(PlayerFishEvent event){
        if(event.getCaught() instanceof Item){
-           if(Main.debugMode || ThreadLocalRandom.current().nextInt(1, 90) == 89){
+           if(Main.debugMode || ThreadLocalRandom.current().nextInt(1, 100) == 69){
                event.setExpToDrop(20);
                Item item = (Item) event.getCaught();
                ItemStack wetbackpack = new ItemStack(Material.CHEST);

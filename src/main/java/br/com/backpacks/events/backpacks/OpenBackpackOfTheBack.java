@@ -1,4 +1,4 @@
-package br.com.backpacks.events.backpack_related;
+package br.com.backpacks.events.backpacks;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
@@ -16,6 +16,12 @@ public class OpenBackpackOfTheBack implements Listener {
         if(!event.getPlayer().isSneaking()) return;
         if(!event.getPlayer().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) return;
         BackPack backPack = Main.backPackManager.getBackpackFromId(event.getPlayer().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        if(backPack == null){
+            Main.backPackManager.getBackpacks().remove(event.getPlayer().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+            event.getPlayer().getPersistentDataContainer().remove(new RecipesNamespaces().getHAS_BACKPACK());
+            return;
+        }
+
 
         event.setCancelled(true);
         backPack.open(event.getPlayer());

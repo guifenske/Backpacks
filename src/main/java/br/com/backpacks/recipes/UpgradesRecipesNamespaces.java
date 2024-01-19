@@ -12,28 +12,27 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Arrays;
 
 public class UpgradesRecipesNamespaces {
-
-    private final NamespacedKey TRASHCAN = new NamespacedKey(Main.getMain(), "trashcan");
     private final NamespacedKey CRAFTINGGRID = new NamespacedKey(Main.getMain(), "craftinggrid");
     private final NamespacedKey FURNACEGRID = new NamespacedKey(Main.getMain(), "furnacegrid");
     private final NamespacedKey JUKEBOX = new NamespacedKey(Main.getMain(), "jukebox");
-    private final NamespacedKey EMERALDBLOCK = new NamespacedKey(Main.getMain(), "emeraldblock");
+    private final NamespacedKey VILLAGERSFOLLOW = new NamespacedKey(Main.getMain(), "villagerfollow");
+    private final NamespacedKey ENCAPSULATE = new NamespacedKey(Main.getMain(), "encapsulate");
+    private final NamespacedKey COLLECTOR = new NamespacedKey(Main.getMain(), "COLLECTOR");
     private final NamespacedKey AUTOFILL = new NamespacedKey(Main.getMain(), "autofill");
-    private final NamespacedKey AUTOFOOD = new NamespacedKey(Main.getMain(), "autofood");
+    private final NamespacedKey AUTOFEED = new NamespacedKey(Main.getMain(), "autofeed");
     private final NamespacedKey LIQUIDTANK = new NamespacedKey(Main.getMain(), "liquidtank");
+    private final NamespacedKey UPGRADEID = new NamespacedKey(Main.getMain(), "upgradeid");
     private final NamespacedKey STACKUPGRADE2X = new NamespacedKey(Main.getMain(), "stackupgrade2x");
     private final NamespacedKey STACKUPGRADE4X = new NamespacedKey(Main.getMain(), "stackupgrade4x");
     private final NamespacedKey STACKUPGRADE8X = new NamespacedKey(Main.getMain(), "stackupgrade8x");
     private final NamespacedKey STACKUPGRADE16X = new NamespacedKey(Main.getMain(), "stackupgrade16x");
-
     private final NamespacedKey NAMESPACEISUPGRADE = new NamespacedKey(Main.getMain(), "isupgrade");
 
     public NamespacedKey isUpgrade() {
         return NAMESPACEISUPGRADE;
     }
-
-    public NamespacedKey getTRASHCAN() {
-        return TRASHCAN;
+    public NamespacedKey getUPGRADEID() {
+        return UPGRADEID;
     }
 
     public NamespacedKey getCraftingGrid() {
@@ -48,39 +47,26 @@ public class UpgradesRecipesNamespaces {
         return JUKEBOX;
     }
 
-    public NamespacedKey getEmeraldBlock() {
-        return EMERALDBLOCK;
+    public NamespacedKey getVillagersFollow() {
+        return VILLAGERSFOLLOW;
     }
 
     public NamespacedKey getAutoFill() {
         return AUTOFILL;
     }
 
-    public NamespacedKey getAutoFood() {
-        return AUTOFOOD;
+    public NamespacedKey getAutoFeed() {
+        return AUTOFEED;
     }
 
     public NamespacedKey getLiquidTank() {
         return LIQUIDTANK;
     }
-
-    public Recipe getRecipeTrashCan() {
-        ItemStack trashCan = new ItemStack(Material.CAULDRON);
-        ItemMeta meta = trashCan.getItemMeta();
-
-        meta.setDisplayName("Trash Can");
-        meta.setLore(Arrays.asList("§7Trash Can", "§7§nRemoves one slot from the backpack, to be used ", "§7§nas an trash slot."));
-        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(TRASHCAN, PersistentDataType.INTEGER, 1);
-        trashCan.setItemMeta(meta);
-
-        ShapedRecipe recipe = new ShapedRecipe(TRASHCAN, trashCan);
-
-        recipe.shape(" I ", "ILI", " I ");
-
-        recipe.setIngredient('I', Material.IRON_INGOT);
-        recipe.setIngredient('L', Material.LAVA_BUCKET);
-        return recipe;
+    public NamespacedKey getCOLLECTOR() {
+        return COLLECTOR;
+    }
+    public NamespacedKey getENCAPSULATE() {
+        return ENCAPSULATE;
     }
 
     public Recipe getRecipeCraftingGrid() {
@@ -127,23 +113,27 @@ public class UpgradesRecipesNamespaces {
         return recipe;
     }
 
-    public Recipe getRecipeEmeraldBlock() {
+    public Recipe getRecipeFollowingVillagers() {
         ItemStack emeraldBlock = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta meta = emeraldBlock.getItemMeta();
 
-        meta.setDisplayName("Emerald Block");
-        meta.setLore(Arrays.asList("§7Emerald Block", "§7§nAllows you to attract villagers when the backpack is equipped."));
+        meta.setDisplayName("Following Villagers");
+        meta.setLore(Arrays.asList("§7Emerald Block", "§7§nAllows you to attract villagers when the backpack is equipped and you are holding an emerald block."));
         meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(EMERALDBLOCK, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(VILLAGERSFOLLOW, PersistentDataType.INTEGER, 1);
         emeraldBlock.setItemMeta(meta);
 
-        ShapedRecipe recipe = new ShapedRecipe(EMERALDBLOCK, emeraldBlock);
+        ShapedRecipe recipe = new ShapedRecipe(VILLAGERSFOLLOW, emeraldBlock);
 
-        recipe.shape("EEE", "ETE", "ESE");
+        recipe.shape("GCS", "BTB", "EEE");
 
-        recipe.setIngredient('E', Material.EMERALD_BLOCK);
+        recipe.setIngredient('B', Material.EMERALD_BLOCK);
+        recipe.setIngredient('E', Material.EMERALD);
         recipe.setIngredient('T', Material.TRIPWIRE_HOOK);
-        recipe.setIngredient('S', Material.STRING);
+        recipe.setIngredient('G', Material.GRINDSTONE);
+        recipe.setIngredient('C', Material.CARTOGRAPHY_TABLE);
+        recipe.setIngredient('S', Material.BREWING_STAND);
+
 
         return recipe;
     }
@@ -190,25 +180,25 @@ public class UpgradesRecipesNamespaces {
         return recipe;
     }
 
-    public Recipe getRecipeAutoFood(){
-        ItemStack autoFood = new ItemStack(Material.MELON);
+    public Recipe getRecipeAutoFeed(){
+        ItemStack autoFood = new ItemStack(Material.COOKED_BEEF);
         ItemMeta meta = autoFood.getItemMeta();
 
-        meta.setDisplayName("Auto Food");
-        meta.setLore(Arrays.asList("§7Auto Food", "§7§nAllows you to automatically eat the food stored in the backpack."));
+        meta.setDisplayName("Auto Feed");
+        meta.setLore(Arrays.asList("§7Auto Feed", "§7§nAllows the backpack to automatically eat the food stored in the it."));
         meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(AUTOFOOD, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(AUTOFEED, PersistentDataType.INTEGER, 1);
         autoFood.setItemMeta(meta);
 
-        ShapedRecipe recipe = new ShapedRecipe(AUTOFOOD, autoFood);
+        ShapedRecipe recipe = new ShapedRecipe(AUTOFEED, autoFood);
 
         recipe.shape("IRI", "BGC", "IPI");
 
         recipe.setIngredient('R', Material.RABBIT_STEW);
         recipe.setIngredient('G', Material.GLISTERING_MELON_SLICE);
-        recipe.setIngredient('B', Material.BEEF);
+        recipe.setIngredient('B', Material.COOKED_BEEF);
         recipe.setIngredient('C', Material.GOLDEN_CARROT);
-        recipe.setIngredient('P', Material.BAKED_POTATO);
+        recipe.setIngredient('P', Material.POISONOUS_POTATO);
         recipe.setIngredient('I', Material.IRON_INGOT);
 
         return recipe;
@@ -230,6 +220,50 @@ public class UpgradesRecipesNamespaces {
 
         recipe.setIngredient('B', Material.BUCKET);
         recipe.setIngredient('G', Material.GLASS_PANE);
+
+        return recipe;
+    }
+
+    public Recipe getEncapsulateRecipe(){
+        ItemStack encapsulate = new ItemStack(Material.GLASS_BOTTLE);
+        ItemMeta meta = encapsulate.getItemMeta();
+
+        meta.setDisplayName("Encapsulate");
+        meta.setLore(Arrays.asList("§7Encapsulate", "§7§nAllows you to store backpacks inside the backpack."));
+        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(ENCAPSULATE, PersistentDataType.INTEGER, 1);
+        encapsulate.setItemMeta(meta);
+
+        ShapedRecipe recipe = new ShapedRecipe(ENCAPSULATE, encapsulate);
+
+        recipe.shape("GNG", "GSG", "GPG");
+
+        recipe.setIngredient('S', Material.NETHER_STAR);
+        recipe.setIngredient('N', Material.NETHERITE_INGOT);
+        recipe.setIngredient('P', Material.PISTON);
+        recipe.setIngredient('G', Material.GLASS);
+
+        return recipe;
+    }
+
+    public Recipe getCollectorRecipe(){
+        ItemStack collector = new ItemStack(Material.HOPPER);
+        ItemMeta meta = collector.getItemMeta();
+
+        meta.setDisplayName("Collector");
+        meta.setLore(Arrays.asList("§7Collector", "§7§nAllows you to collect items from the ground directly into your backpack."
+                                    , "§7§n§oThis upgrade only work if the backpack is being worn."));
+        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(COLLECTOR, PersistentDataType.INTEGER, 1);
+        collector.setItemMeta(meta);
+
+        ShapedRecipe recipe = new ShapedRecipe(COLLECTOR, collector);
+
+        recipe.shape("RIR", "IMI", "RIR");
+
+        recipe.setIngredient('R', Material.REDSTONE);
+        recipe.setIngredient('M', Material.CHEST_MINECART);
+        recipe.setIngredient('I', Material.IRON_INGOT);
 
         return recipe;
     }

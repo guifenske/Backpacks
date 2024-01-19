@@ -23,6 +23,12 @@ public class BackpackAction {
 
         UPGJUKEBOX,
 
+        UPGAUTOFEED,
+
+        UPGVILLAGERSFOLLOW,
+
+        UPGCOLLECTOR,
+
         OPENED;
     }
 

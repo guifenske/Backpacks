@@ -1,30 +1,19 @@
 package br.com.backpacks.backpackUtils;
 
+public class Upgrade {
 
-public enum Upgrade {
-    FURNACE,
+    private final UpgradeType type;
+    private final int id;
+    public Upgrade(UpgradeType type, int id) {
+        this.type = type;
+        this.id = id;
+    }
 
-    CRAFTING,
+    public UpgradeType getType() {
+        return type;
+    }
 
-    JUKEBOX,
-
-    EMERALDBLOCK,
-
-    AUTOFILL,
-
-    AUTOFOOD,
-
-    TRASH,
-
-    LIQUIDTANK,
-
-    STACKUPGRADE2X,
-
-    STACKUPGRADE4X,
-
-    STACKUPGRADE8X,
-
-    STACKUPGRADE16X;
-
-
+    public int getId() {
+        return id;
+    }
 }

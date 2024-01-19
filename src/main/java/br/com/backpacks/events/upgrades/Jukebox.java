@@ -1,12 +1,15 @@
-package br.com.backpacks.events.upgrades_related;
+package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackAction;
+import br.com.backpacks.backpackUtils.inventory.ItemCreator;
 import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.upgrades.JukeboxUpgrade;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,54 +17,45 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class JukeboxGrid implements Listener {
+public class Jukebox implements Listener {
 
     protected static Set<Integer> blankSlots = Set.of(0,1,2,3,4,5,9,12,14,18,19,20,21,22,23);
 
+    private static HashMap<Integer, JukeboxUpgrade> currentJukebox = new HashMap<>();
+
     protected static Set<Integer> discsSlots = Set.of(6,7,8,15,16,17,24,25,26);
 
-    public static Inventory inventory(Player player, BackPack backPack){
+    public static Inventory inventory(Player player, BackPack backPack, int jukeboxId){
         Inventory inventory = Bukkit.createInventory(player, 27, "Jukebox");
 
-        ItemStack play = new ItemStack(Material.PRISMARINE_SHARD);
-        ItemMeta playMeta = play.getItemMeta();
-        playMeta.setDisplayName("Play Music");
-        playMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 1);
-        play.setItemMeta(playMeta);
-
-        ItemStack stop = new ItemStack(Material.BARRIER);
-        ItemMeta stopMeta = stop.getItemMeta();
-        stopMeta.setDisplayName("Stop Music");
-        stopMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 2);
-        stop.setItemMeta(stopMeta);
-
-        ItemStack blank = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta blankMeta = blank.getItemMeta();
-        blankMeta.setDisplayName(" ");
-        blankMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 3);
-        blank.setItemMeta(blankMeta);
+        ItemStack play = new ItemCreator(Material.GREEN_STAINED_GLASS_PANE, "Play Music").get();
+        ItemStack stop = new ItemCreator(Material.RED_STAINED_GLASS_PANE, "Stop Music").get();
+        ItemStack blank = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").get();
 
         for (int i : blankSlots) {
             inventory.setItem(i, blank);
         }
 
-        if(backPack.getDiscs() != null && !backPack.getDiscs().isEmpty()){
-            for (int i = 0; i < backPack.getDiscs().size(); i++) {
-                inventory.setItem(i + 6, backPack.getDiscs().get(i));
+        JukeboxUpgrade jukeboxUpgrade = (JukeboxUpgrade) backPack.getUpgradeFromId(jukeboxId);
+        currentJukebox.put(backPack.getId(), jukeboxUpgrade);
+
+        int i1 = 0;
+        if(jukeboxUpgrade.getDiscs() != null && !jukeboxUpgrade.getDiscs().isEmpty()){
+            for (int i : discsSlots) {
+                if(i1 >= jukeboxUpgrade.getDiscs().size()) break;
+                inventory.setItem(i, jukeboxUpgrade.getDiscs().get(i1));
+                i1++;
             }
         }
 
         inventory.setItem(10, play);
         inventory.setItem(11, stop);
-        inventory.setItem(13, backPack.getPlaying());
+        inventory.setItem(13, jukeboxUpgrade.getPlaying());
 
         return inventory;
     }
@@ -82,6 +76,7 @@ public class JukeboxGrid implements Listener {
     private void onClick(InventoryClickEvent event){
         if(BackpackAction.getAction(event.getWhoClicked()) != BackpackAction.Action.UPGJUKEBOX) return;
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
+        boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK());
         if(backPack == null){
             event.setCancelled(true);
             return;
@@ -94,17 +89,21 @@ public class JukeboxGrid implements Listener {
         switch (event.getRawSlot()){
             case 10 -> {
                 event.setCancelled(true);
-                if(backPack.isPlaying()) return;
+                if(!canUse){
+                    event.getWhoClicked().sendMessage("§cYou can't use this upgrade because your backpack is not in your back.");
+                    return;
+                }
+                if(currentJukebox.get(backPack.getId()).isPlaying()) return;
                 if(!checkDisk(event.getInventory().getItem(13))) return;
-                backPack.setIsPlaying(true);
-                backPack.setSound(getSoundFromItem(event.getInventory().getItem(13)));
-                Jukebox.startPlaying(player, backPack.getSound());
+                currentJukebox.get(backPack.getId()).setIsPlaying(true);
+                currentJukebox.get(backPack.getId()).setSound(getSoundFromItem(event.getInventory().getItem(13)));
+                startPlaying(player, currentJukebox.get(backPack.getId()).getSound());
             }
             case 11 -> {
                 event.setCancelled(true);
-                if(!backPack.isPlaying()) return;
-                backPack.setIsPlaying(false);
-                Jukebox.stopPlaying(player);
+                if(!currentJukebox.get(backPack.getId()).isPlaying()) return;
+                currentJukebox.get(backPack.getId()).setIsPlaying(false);
+                stopPlaying(player);
             }
         }
     }
@@ -131,15 +130,31 @@ public class JukeboxGrid implements Listener {
 
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
         if(event.getInventory().getItem(13) != null && !checkDisk(event.getInventory().getItem(13)))    event.getPlayer().getInventory().addItem(event.getInventory().getItem(13));
-        else backPack.setPlaying(event.getInventory().getItem(13));
+        else currentJukebox.get(backPack.getId()).setPlaying(event.getInventory().getItem(13));
 
-        backPack.setDiscs(disks);
+        currentJukebox.get(backPack.getId()).setDiscs(disks);
+        currentJukebox.remove(backPack.getId());
         BackpackAction.setAction((Player) event.getPlayer(), BackpackAction.Action.NOTHING);
-        new BukkitRunnable() {
+        BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
                 backPack.open((Player) event.getPlayer());
             }
-        }.runTask(Main.getMain());
+        }.runTaskLater(Main.getMain(), 1L);
+    }
+
+    private final HashMap<UUID, net.kyori.adventure.sound.Sound> playing = new HashMap<>();
+
+    public void startPlaying(Entity entity, Sound sound){                                                                                //apparently this is the max volume
+        net.kyori.adventure.sound.Sound sound1 = net.kyori.adventure.sound.Sound.sound(sound, net.kyori.adventure.sound.Sound.Source.MASTER, 2147483647, 1);
+
+        playing.put(entity.getUniqueId(), sound1);
+        entity.playSound(sound1, net.kyori.adventure.sound.Sound.Emitter.self());
+    }
+
+    public void stopPlaying(Entity entity){
+        if(!playing.containsKey(entity.getUniqueId())) return;
+        entity.stopSound(playing.get(entity.getUniqueId()));
+        playing.remove(entity.getUniqueId());
     }
 }

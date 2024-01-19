@@ -1,2 +1,4 @@
 #The max number of threads that the plugin can use.
 maxThreads: 1
+
+debug: false

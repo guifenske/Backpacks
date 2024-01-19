@@ -243,7 +243,6 @@ public class RecipesNamespaces {
         wetBackpack.setItemMeta(wetBackpackMeta);
 
         //200 game ticks
-        FurnaceRecipe recipe = new FurnaceRecipe(NAMESPACE_DRIED_BACKPACK, driedBackpack, new RecipeChoice.ExactChoice(wetBackpack), 10, 200);
-        return recipe;
+        return new FurnaceRecipe(NAMESPACE_DRIED_BACKPACK, driedBackpack, new RecipeChoice.ExactChoice(wetBackpack), 10, 200);
     }
 }

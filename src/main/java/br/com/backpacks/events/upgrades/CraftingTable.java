@@ -1,4 +1,4 @@
-package br.com.backpacks.events.upgrades_related;
+package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
@@ -11,7 +11,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-public class CraftingGrid implements Listener {
+public class CraftingTable implements Listener {
 
     @EventHandler
     private void onClose(InventoryCloseEvent event){

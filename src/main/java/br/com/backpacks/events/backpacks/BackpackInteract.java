@@ -1,4 +1,4 @@
-package br.com.backpacks.events.backpack_related;
+package br.com.backpacks.events.backpacks;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
@@ -24,7 +24,10 @@ public class BackpackInteract implements Listener {
         if(event.getAction().equals(RIGHT_CLICK_BLOCK) && event.getClickedBlock().getType().equals(Material.CHEST)){
             if(player.isSneaking()) return;
             if(event.getItem() != null){
-                if(event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK())) return;
+                if(event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK())){
+                    event.setCancelled(true);
+                    return;
+                }
             }
 
             if(Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
@@ -41,8 +44,8 @@ public class BackpackInteract implements Listener {
         if(event.getItem() == null) return;
         if(player.isSneaking() && event.getAction().equals(RIGHT_CLICK_BLOCK)) return;
         if(!event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID())){
-            if(event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK())){
-                event.getPlayer().sendMessage(Main.PREFIX + "§cHumm, this thing is to wet to be used as a backpack.");
+            if(event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_WET_BACKPACK())){
+                event.getPlayer().sendMessage(Main.PREFIX + "§cHumm, this thing is too wet to be used as a backpack.");
                 event.setCancelled(true);
             }
             return;

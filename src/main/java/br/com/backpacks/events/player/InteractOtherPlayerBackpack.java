@@ -1,4 +1,4 @@
-package br.com.backpacks.events;
+package br.com.backpacks.events.player;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
@@ -25,7 +25,9 @@ public class InteractOtherPlayerBackpack implements Listener {
         BackPack backPack = Main.backPackManager.getBackpackFromId(clickedEntity.getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER));
         if(backPack == null) return;
 
-        backPack.open(player);
-        player.playSound(player, Sound.BLOCK_CHEST_OPEN, 1, 1);
+        if(!backPack.isLocked()){
+            backPack.open(player);
+            player.playSound(player, Sound.BLOCK_CHEST_OPEN, 1, 1);
+        }
     }
 }

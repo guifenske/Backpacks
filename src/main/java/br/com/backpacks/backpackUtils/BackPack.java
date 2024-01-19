@@ -1,24 +1,22 @@
 package br.com.backpacks.backpackUtils;
 
 import br.com.backpacks.Main;
+import br.com.backpacks.backpackUtils.inventory.ItemCreator;
 import br.com.backpacks.recipes.RecipesNamespaces;
-import br.com.backpacks.upgrades.GetFurnace;
-import br.com.backpacks.upgrades.GetJukebox;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-public class BackPack implements GetFurnace, GetJukebox{
+public class BackPack extends UpgradeManager {
 
     public Inventory getSecondPage() {
         return secondPage;
@@ -30,6 +28,22 @@ public class BackPack implements GetFurnace, GetJukebox{
 
     private BackpackType backpackType;
 
+    public int getConfigItemsSpace() {
+        return configItemsSpace;
+    }
+
+    private int configItemsSpace = 0;
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    private Location location;
+
     private boolean locked;
 
     public void setLocked(boolean locked) {
@@ -39,8 +53,6 @@ public class BackPack implements GetFurnace, GetJukebox{
     public boolean isLocked() {
         return locked;
     }
-
-    private List<Upgrade> upgrades;
 
     private Inventory secondPage;
 
@@ -73,6 +85,16 @@ public class BackPack implements GetFurnace, GetJukebox{
     private int firstPageSize;
     private int secondPageSize;
 
+    public boolean isBeingWorn() {
+        return isWorn;
+    }
+
+    public void setBeingWorn(boolean worn) {
+        isWorn = worn;
+    }
+
+    private boolean isWorn = false;
+
     public String getName() {
         return name;
     }
@@ -92,7 +114,46 @@ public class BackPack implements GetFurnace, GetJukebox{
         }
     }
 
+    private String getDefaultName(){
+        switch (getType()){
+            case LEATHER -> {
+                return "Leather Backpack";
+            }
+            case IRON -> {
+                return "Iron Backpack";
+            }
+            case GOLD -> {
+                return "Gold Backpack";
+            }
+            case LAPIS -> {
+                return "Lapis Backpack";
+            }
+            case AMETHYST -> {
+                return "Amethyst Backpack";
+            }
+            case DIAMOND -> {
+                return "Diamond Backpack";
+            }
+            case NETHERITE -> {
+                return "Netherite Backpack";
+            }
+        }
+
+        return "Backpack";
+    }
+
     private String name;
+    public BackPack(BackpackType type, int id) {
+        this.backpackType = type;
+        this.id = id;
+        this.name = getDefaultName();
+        updateSizeOfPages();
+        firstPage = Bukkit.createInventory(null, firstPageSize, name);
+        if(secondPageSize > 0){
+            secondPage = Bukkit.createInventory(null, secondPageSize, name);
+        }
+        setArrowsAndConfigOptionItems();
+    }
 
     public BackPack(String name, Inventory firstPage, int id, BackpackType type) {
         this.backpackType = type;
@@ -127,66 +188,18 @@ public class BackPack implements GetFurnace, GetJukebox{
         return data;
     }
 
-    public List<String> serializeUpgrades(){
-        List<String> list = new ArrayList<>();
-        for(Upgrade upgrade : upgrades){
-            list.add(upgrade.toString());
-        }
-
-        return list;
-    }
-
-    public List<String> serializeDiscs(){
-        List<String> list = new ArrayList<>();
-        for(ItemStack itemStack : getDiscs()){
-            if(itemStack == null){
-                list.add(null);
-                continue;
-            }
-            list.add(itemStack.getType().name());
-        }
-        return list;
-    }
-
-    private void deserializeUpgrades(YamlConfiguration config, String s){
-        if(containsUpgrade(Upgrade.FURNACE)){
-            setFuel(config.getItemStack(s + ".furnace.f"));
-            setSmelting(config.getItemStack(s + ".furnace.s"));
-            setResult(config.getItemStack(s + ".furnace.r"));
-        }
-        if(containsUpgrade(Upgrade.JUKEBOX)){
-            List<ItemStack> discs = new ArrayList<>();
-            for(String item : config.getStringList(s + ".jukebox.discs")){
-                discs.add(getSoundFromName(item));
-            }
-            setDiscs(discs);
-            setPlaying(getSoundFromName(config.getString(s + ".jukebox.playing")));
-        }
-    }
-
     public BackPack deserialize(YamlConfiguration config, String s) {
         if(!config.isSet(s + ".i")){
-            Main.getMain().getLogger().warning("Backpack with id " + s + " not found!");
+            Main.getMain().debugMessage("Backpack with id " + s + " not found!", "warning");
             return null;
         }
 
-        List<String> components = (List<String>) config.getList(s + ".i");
+        List<String> components = config.getStringList(s + ".i");
 
         if(config.isSet(s + ".u")){
-            List<String> upgradesStr = (List<String>) config.getList(s + ".u");
-
-            List<Upgrade> upgrades = new ArrayList<>();
-            for (String string : upgradesStr) {
-                upgrades.add(Upgrade.valueOf(string));
-            }
-
-            setUpgrades(upgrades);
-
-            deserializeUpgrades(config, s);
+            List<Integer> upgradesIds = config.getIntegerList(s + ".u");
+            setUpgrades(upgradesIds);
         }
-
-        List<ItemStack> list = new ArrayList<>();
-        List<ItemStack> list2 = new ArrayList<>();
 
         name = components.get(0);
         backpackType = BackpackType.valueOf(components.get(1));
@@ -196,23 +209,26 @@ public class BackPack implements GetFurnace, GetJukebox{
 
         firstPage = Bukkit.createInventory(null, firstPageSize, name);
 
-        for(Object item : config.getList(s + ".1")){
-            list.add((ItemStack) item);
+        if(config.isSet(s + ".1")){
+            Set<String> keysFirstPage = config.getConfigurationSection(s + ".1").getKeys(false);
+            for(String index : keysFirstPage){
+                getFirstPage().setItem(Integer.parseInt(index), config.getItemStack(s + ".1." + index));
+            }
         }
-
-        firstPage.setStorageContents(list.toArray(new ItemStack[0]));
 
         if(secondPageSize > 0) {
             secondPage = Bukkit.createInventory(null, secondPageSize, name);
-            for (Object item : config.getList(s + ".2")) {
-                list2.add((ItemStack) item);
-            }
+            if(config.isSet(s + ".2")) {
+                Set<String> keysSecondPage = config.getConfigurationSection(s + ".2").getKeys(false);
 
-            secondPage.setStorageContents(list2.toArray(new ItemStack[0]));
+                for (String index : keysSecondPage) {
+                    getSecondPage().setItem(Integer.parseInt(index), config.getItemStack(s + ".2." + index));
+                }
+
+            }
         }
 
         setArrowsAndConfigOptionItems();
-
         return this;
     }
 
@@ -279,6 +295,15 @@ public class BackPack implements GetFurnace, GetJukebox{
         BackpackAction.setAction(player, BackpackAction.Action.OPENED);
     }
 
+    public List<ItemStack> getStorageContentsFirstPageWithoutNulls() {
+        List<ItemStack> list = new ArrayList<>();
+        for(ItemStack itemStack : firstPage.getStorageContents()){
+            if(itemStack == null) continue;
+            list.add(itemStack);
+        }
+        return list;
+    }
+
     public ItemStack[] getStorageContentsFirstPage() {
         ItemStack[] array = firstPage.getStorageContents();
         int length = array.length;
@@ -305,132 +330,66 @@ public class BackPack implements GetFurnace, GetJukebox{
 
 
     public void setArrowsAndConfigOptionItems(){
-        ItemStack arrowLeft = new ItemStack(Material.ARROW);
-        ItemMeta arrowLeftMeta = arrowLeft.getItemMeta();
-        arrowLeftMeta.setDisplayName("§cBack");
-        arrowLeftMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 1);
-        arrowLeft.setItemMeta(arrowLeftMeta);
-
-        ItemStack arrowRight = new ItemStack(Material.ARROW);
-        ItemMeta arrowRightMeta = arrowRight.getItemMeta();
-        arrowRightMeta.setDisplayName("§aNext");
-        arrowRightMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 1);
-        arrowRight.setItemMeta(arrowRightMeta);
-
-        ItemStack config = new ItemStack(Material.NETHER_STAR);
-        ItemMeta configMeta = config.getItemMeta();
-        configMeta.setDisplayName("§6Config");
-        configMeta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 1);
-        config.setItemMeta(configMeta);
+        ItemStack arrowLeft = new ItemCreator(Material.ARROW, "§aPrevious").get();
+        ItemStack arrowRight = new ItemCreator(Material.ARROW, "§aNext").get();
+        ItemStack config = new ItemCreator(Material.NETHER_STAR, "§6Config").get();
 
         firstPage.setItem(firstPageSize - 1, config);
+        configItemsSpace = 1;
 
         if(secondPageSize > 0){
             firstPage.setItem(firstPageSize - 2, arrowRight);
             secondPage.setItem(secondPageSize - 2, arrowLeft);
             secondPage.setItem(secondPageSize - 1, config);
+            configItemsSpace = 2;
         }
     }
 
-    public List<Upgrade> getUpgrades() {
-        return upgrades;
+    public boolean containsItem(ItemStack itemStack){
+        for(ItemStack item : firstPage.getStorageContents()){
+            if(item == null)    continue;
+            if(item.isSimilar(itemStack)) return true;
+        }
+        if(secondPageSize > 0){
+            for(ItemStack item : secondPage.getStorageContents()){
+                if(item == null)    continue;
+                if(item.isSimilar(itemStack)) return true;
+            }
+        }
+        return false;
     }
 
-    public void setUpgrades(List<Upgrade> upgrades) {
-        this.upgrades = upgrades;
+    //used in the PickupItemEvent
+    public List<ItemStack> getRemainingItems() {
+        return remainingItems;
     }
 
-    public Boolean containsUpgrade(Upgrade upgrade) {
-        return this.upgrades.contains(upgrade);
+    public void setRemainingItems(List<ItemStack> remainingItems) {
+        this.remainingItems = remainingItems;
     }
 
+    private List<ItemStack> remainingItems = new ArrayList<>();
 
-    //Upgrades methods
+    public List<ItemStack> tryAddItem(ItemStack itemStack){
+        List<ItemStack> list = new ArrayList<>();
+        remainingItems = list;
+        if(itemStack == null) return list;
 
-    private ItemStack playing;
+        if(!firstPage.addItem(itemStack).isEmpty()){
+            list.addAll(firstPage.addItem(itemStack).values());
+            if(secondPageSize > 0){
+                List<ItemStack> list2 = new ArrayList<>();
+                for(ItemStack item : list){
+                    if(!secondPage.addItem(item).isEmpty()){
+                        list2.addAll(secondPage.addItem(item).values());
+                    }
+                }
+                remainingItems = list2;
+                return list2;
+            }
+        }
 
-    private Boolean isPlaying = false;
-
-    private List<ItemStack> discs;
-
-    private Sound sound;
-
-    @Override
-    public ItemStack getPlaying() {
-        return playing;
+        remainingItems = list;
+        return list;
     }
-
-    @Override
-    public void setPlaying(ItemStack currentDisk) {
-        this.playing = currentDisk;
-    }
-
-    @Override
-    public Boolean isPlaying() {
-        return isPlaying;
-    }
-
-    @Override
-    public void setIsPlaying(Boolean playing) {
-        this.isPlaying = playing;
-    }
-
-    @Override
-    public List<ItemStack> getDiscs() {
-        return discs;
-    }
-
-    @Override
-    public void setDiscs(List<ItemStack> discs) {
-        this.discs = discs;
-    }
-
-    @Override
-    public Sound getSound() {
-        return sound;
-    }
-
-    @Override
-    public void setSound(Sound sound) {
-        this.sound = sound;
-    }
-
-    @Override
-    public ItemStack getSoundFromName(String name){
-        return new ItemStack(Material.getMaterial(name));
-    }
-
-    private ItemStack fuel;
-    private ItemStack smelting;
-    private ItemStack result;
-
-    @Override
-    public ItemStack getFuel() {
-        return fuel;
-    }
-
-    @Override
-    public void setFuel(ItemStack fuel) {
-        this.fuel = fuel;
-    }
-
-    @Override
-    public ItemStack getSmelting() {
-        return smelting;
-    }
-
-    public void setSmelting(ItemStack smelting) {
-        this.smelting = smelting;
-    }
-
-    @Override
-    public ItemStack getResult() {
-        return result;
-    }
-
-    @Override
-    public void setResult(ItemStack result) {
-        this.result = result;
-    }
-
 }
