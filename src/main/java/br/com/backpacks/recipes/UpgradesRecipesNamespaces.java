@@ -185,7 +185,7 @@ public class UpgradesRecipesNamespaces {
         ItemMeta meta = autoFood.getItemMeta();
 
         meta.setDisplayName("Auto Feed");
-        meta.setLore(Arrays.asList("§7Auto Feed", "§7§nAllows the backpack to automatically eat the food stored in the it."));
+        meta.setLore(Arrays.asList("§7Auto Feed", "§7§nAllows the backpack to automatically eat the food stored in it."));
         meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
         meta.getPersistentDataContainer().set(AUTOFEED, PersistentDataType.INTEGER, 1);
         autoFood.setItemMeta(meta);

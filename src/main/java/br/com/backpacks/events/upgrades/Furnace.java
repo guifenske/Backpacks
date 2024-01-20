@@ -187,6 +187,10 @@ public class Furnace implements Listener {
                     if(!recipe.getInputChoice().test(upgrade.getSmelting())) continue;
 
                     if(upgrade.getResult() == null){
+                        BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), recipe.getResult(), upgrade.getFuel(), false);
+                        Bukkit.getPluginManager().callEvent(e);
+
+                        if(!e.isCancelled()) {
                         if(upgrade.getOperation() == 0){
                             if(maxOperation != 1)   upgrade.setOperation(1);
                             if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
@@ -205,10 +209,6 @@ public class Furnace implements Listener {
                                 }
                             }   else upgrade.setOperation(upgrade.getOperation() + 1);
                         }
-
-                        BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), recipe.getResult(), upgrade.getFuel());
-                        Bukkit.getPluginManager().callEvent(e);
-                        if(!e.isCancelled()){
                             upgrade.setResult(e.getResult());
                             upgrade.setSmelting(e.getSource().subtract());
                             upgrade.updateInventory();
@@ -218,29 +218,30 @@ public class Furnace implements Listener {
                     }
 
                     if(!upgrade.getResult().isSimilar(recipe.getResult())) return;
-
-                    if(upgrade.getOperation() == 0){
-                        if(maxOperation != 1)    upgrade.setOperation(1);
-                        if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                        else{
-                            if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
-                            else    upgrade.setFuel(upgrade.getFuel().subtract());
-                        }
-                    }
-                    else{
-                        if(upgrade.getOperation() >= maxOperation - 1){
-                            upgrade.setOperation(0);
-                            if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                            else{
-                                if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
-                                else    upgrade.setFuel(upgrade.getFuel().subtract());
-                            }
-                        }   else upgrade.setOperation(upgrade.getOperation() + 1);
-                    }
-
-                    BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), upgrade.getResult(), upgrade.getFuel());
+                    BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), upgrade.getResult(), upgrade.getFuel(), true);
                     Bukkit.getPluginManager().callEvent(e);
-                    if(!e.isCancelled()){
+
+                    if(!e.isCancelled()) {
+                        if (upgrade.getOperation() == 0) {
+                            if (maxOperation != 1) upgrade.setOperation(1);
+                            if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                            else {
+                                if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1)
+                                    upgrade.setFuel(null);
+                                else upgrade.setFuel(upgrade.getFuel().subtract());
+                            }
+                        } else {
+                            if (upgrade.getOperation() >= maxOperation - 1) {
+                                upgrade.setOperation(0);
+                                if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                                else {
+                                    if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1)
+                                        upgrade.setFuel(null);
+                                    else upgrade.setFuel(upgrade.getFuel().subtract());
+                                }
+                            } else upgrade.setOperation(upgrade.getOperation() + 1);
+                        }
+
                         upgrade.setResult(e.getResult().add());
                         upgrade.setSmelting(e.getSource().subtract());
                         upgrade.updateInventory();

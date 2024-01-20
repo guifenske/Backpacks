@@ -10,10 +10,7 @@ import br.com.backpacks.events.HopperEvents;
 import br.com.backpacks.events.backpacks.*;
 import br.com.backpacks.events.custom.BackpackCookItemListener;
 import br.com.backpacks.events.inventory.*;
-import br.com.backpacks.events.player.CraftBackpack;
-import br.com.backpacks.events.player.FinishedSmelting;
-import br.com.backpacks.events.player.Fishing;
-import br.com.backpacks.events.player.InteractOtherPlayerBackpack;
+import br.com.backpacks.events.player.*;
 import br.com.backpacks.events.upgrades.*;
 import br.com.backpacks.yaml.YamlUtils;
 import org.bukkit.Bukkit;
@@ -25,6 +22,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class ThreadBackpacks {
+    public ExecutorService getExecutor() {
+        return executor;
+    }
+
     private ExecutorService executor;
 
     public ThreadBackpacks() throws IOException {
@@ -43,21 +44,27 @@ public class ThreadBackpacks {
             //custom
             Bukkit.getPluginManager().registerEvents(new BackpackCookItemListener(), Main.getMain());
 
+            //player
+            Bukkit.getPluginManager().registerEvents(new PlayerDeathEvent(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new CraftBackpack(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new Fishing(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new FinishedSmelting(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new InteractOtherPlayerBackpack(), Main.getMain());
+
+            //backpack
             Bukkit.getPluginManager().registerEvents(new BackpackInteract(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new BackpackBreak(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new BackpackPlace(), Main.getMain());
-            Bukkit.getPluginManager().registerEvents(new CraftBackpack(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new OnClickBackpack(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new OnClickInConfigMenu(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new OnCloseBackpackConfigMenu(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new RenameBackpackChat(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new OpenBackpackOfTheBack(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new OnCloseBackpack(), Main.getMain());
-            Bukkit.getPluginManager().registerEvents(new Fishing(), Main.getMain());
-            Bukkit.getPluginManager().registerEvents(new FinishedSmelting(), Main.getMain());
-            Bukkit.getPluginManager().registerEvents(new InteractOtherPlayerBackpack(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new OnCloseUpgradeMenu(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new OnClickUpgradesMenu(), Main.getMain());
+
+            //others
             Bukkit.getPluginManager().registerEvents(new HopperEvents(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new ConfigItemsEvents(), Main.getMain());
 

@@ -24,11 +24,11 @@ public class Fishing implements Listener {
            if(Main.debugMode || ThreadLocalRandom.current().nextInt(1, 100) == 69){
                event.setExpToDrop(20);
                Item item = (Item) event.getCaught();
-               ItemStack wetbackpack = new ItemStack(Material.CHEST);
+               ItemStack wetbackpack = new ItemStack(Material.BARREL);
                ItemMeta meta = wetbackpack.getItemMeta();
                meta.setDisplayName("Wet Backpack");
                meta.setLore(Arrays.asList("Uhh, it looks really WET and unusable..", "Humm, what i could do with it?"));
-               meta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_BACKPACK(), PersistentDataType.INTEGER, 1);
+               meta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_BACKPACK(), PersistentDataType.INTEGER, -1);
                meta.getPersistentDataContainer().set(new RecipesNamespaces().getNAMESPACE_WET_BACKPACK(), PersistentDataType.INTEGER, 1);
                wetbackpack.setItemMeta(meta);
                item.setItemStack(wetbackpack);

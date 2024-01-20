@@ -17,16 +17,17 @@ public class BackpackCookItemListener implements Listener {
     private void onBackpackCook(BackpackCookItemEvent event) {
         Main.getMain().debugMessage("BackpackCookItemEventListener", "info");
         if (!event.getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_DRIED_BACKPACK())) return;
-
-        ItemStack driedBackpack = new ItemStack(Material.CHEST);
-        ItemMeta meta = driedBackpack.getItemMeta();
-        meta.setDisplayName("Unknown Backpack");
-        meta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_BACKPACK(), PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER, CraftBackpack.generateId());
-        RandomBackpack randomBackpack = new RandomBackpack("Unknown Backpack", meta.getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
-        BackPack backPack = randomBackpack.generateBackpack();
-        meta.getPersistentDataContainer().set(backPack.getNamespaceOfBackpackType(), PersistentDataType.INTEGER, 1);
-        driedBackpack.setItemMeta(meta);
-        event.setResult(driedBackpack);
+        if(!event.isAlreadyCooked()) {
+            ItemStack driedBackpack = new ItemStack(Material.BARREL);
+            ItemMeta meta = driedBackpack.getItemMeta();
+            meta.setDisplayName("Unknown Backpack");
+            meta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_BACKPACK(), PersistentDataType.INTEGER, 1);
+            meta.getPersistentDataContainer().set(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER, CraftBackpack.generateId());
+            RandomBackpack randomBackpack = new RandomBackpack("Unknown Backpack", meta.getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+            BackPack backPack = randomBackpack.generateBackpack();
+            meta.getPersistentDataContainer().set(backPack.getNamespaceOfBackpackType(), PersistentDataType.INTEGER, 1);
+            driedBackpack.setItemMeta(meta);
+            event.setResult(driedBackpack);
+        }
     }
 }

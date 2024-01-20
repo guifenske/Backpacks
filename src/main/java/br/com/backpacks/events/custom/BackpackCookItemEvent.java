@@ -28,10 +28,17 @@ public class BackpackCookItemEvent extends Event implements Cancellable {
 
     private ItemStack result;
     private ItemStack fuel;
-    public BackpackCookItemEvent(@NotNull ItemStack source, @NotNull ItemStack result, ItemStack fuel){
+
+    public boolean isAlreadyCooked() {
+        return alreadyCooked;
+    }
+
+    private boolean alreadyCooked;
+    public BackpackCookItemEvent(@NotNull ItemStack source, @NotNull ItemStack result, ItemStack fuel, boolean alreadyCooked){
         this.fuel = fuel;
         this.source = source;
         this.result = result;
+        this.alreadyCooked = alreadyCooked;
     }
 
     @Override

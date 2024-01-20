@@ -17,7 +17,7 @@ import java.util.List;
 public class RecipesUtils {
 
     public static ItemStack getItemFromBackpack(BackPack backPack) {
-        ItemStack itemStack = new ItemStack(Material.CHEST);
+        ItemStack itemStack = new ItemStack(Material.BARREL);
         ItemMeta meta = itemStack.getItemMeta();
         
         meta.setDisplayName(backPack.getName());
@@ -54,7 +54,7 @@ public class RecipesUtils {
             case ENCAPSULATE: return "Encapsulate";
             case COLLECTOR: return "Collector";
             case AUTOFILL: return "Auto Fill";
-            case AUTOFEED: return "Auto Food";
+            case AUTOFEED: return "Auto Feed";
             case STACKUPGRADE2X: return "Stack Upgrade 2x";
             case STACKUPGRADE4X: return "Stack Upgrade 4x";
             case STACKUPGRADE8X: return "Stack Upgrade 8x";
@@ -216,6 +216,10 @@ public class RecipesUtils {
             case COLLECTOR -> {
                 return Arrays.asList("§7Collector", "§7§nAllows you to collect items from the ground directly into your backpack."
                         , "§7§n§oThis upgrade only work if the backpack is being worn.");
+            }
+
+            case AUTOFEED -> {
+                return Arrays.asList("§7Auto Feed", "§7§nAllows the backpack to automatically eat the food stored in it.");
             }
         }
 

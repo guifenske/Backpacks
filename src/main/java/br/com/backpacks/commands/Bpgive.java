@@ -31,7 +31,7 @@ public class Bpgive implements CommandExecutor, TabCompleter {
             }
         }
 
-        Player target = Bukkit.getPlayer(args[0]);
+        Player target = Bukkit.getPlayerExact(args[0]);
         if(target == null){
             sender.sendMessage(Main.PREFIX + "§cPlayer not found!");
             return true;
