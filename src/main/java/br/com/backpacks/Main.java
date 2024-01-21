@@ -4,8 +4,10 @@ import br.com.backpacks.backpackUtils.BackPackManager;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.SmokingRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -14,12 +16,19 @@ import java.util.Iterator;
 import java.util.List;
 
 public final class Main extends JavaPlugin {
-
     private static Main back;
-
     private final List<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
+    private final List<SmokingRecipe> smokingRecipes = new ArrayList<>();
 
+    public List<SmokingRecipe> getSmokingRecipes() {
+        return smokingRecipes;
+    }
 
+    public List<BlastingRecipe> getBlastingRecipes() {
+        return blastingRecipes;
+    }
+
+    private final List<BlastingRecipe> blastingRecipes = new ArrayList<>();
     public List<FurnaceRecipe> getFurnaceRecipes() {
         return furnaceRecipes;
     }
@@ -87,13 +96,9 @@ public final class Main extends JavaPlugin {
         }
     }
 
-    public void debugMessage(String message, String type){
+    public void debugMessage(String message){
         if(debugMode){
-            switch (type){
-                case "info" -> getLogger().info(message);
-                case "warning" -> getLogger().warning(message);
-                case "severe" -> getLogger().severe(message);
-            }
+            getLogger().info(message);
         }
     }
 
@@ -114,6 +119,8 @@ public final class Main extends JavaPlugin {
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeAutoFeed());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeJukebox());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeFurnaceGrid());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getSmokerRecipe());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getBlastFurnaceRecipe());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeCraftingGrid());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeFollowingVillagers());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getEncapsulateRecipe());
@@ -124,7 +131,16 @@ public final class Main extends JavaPlugin {
 
         while (iterator.hasNext()){
             Recipe recipe = iterator.next();
-            if(!(recipe instanceof FurnaceRecipe)) continue;
+            if(!(recipe instanceof FurnaceRecipe)){
+                if(recipe instanceof SmokingRecipe){
+                    smokingRecipes.add((SmokingRecipe) recipe);
+                    continue;
+                }   else if (recipe instanceof BlastingRecipe){
+                    blastingRecipes.add((BlastingRecipe) recipe);
+                    continue;
+                }
+                continue;
+            }
             furnaceRecipes.add((FurnaceRecipe) recipe);
         }
     }

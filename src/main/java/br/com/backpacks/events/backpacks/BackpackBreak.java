@@ -58,7 +58,7 @@ public class BackpackBreak implements Listener {
 
     @EventHandler
     private void despawn(ItemDespawnEvent event){
-        Main.getMain().debugMessage("Item despawn", "info");
+        Main.getMain().debugMessage("Item despawn");
        if(!event.getEntity().getItemStack().hasItemMeta())  return;
        if(!event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK(), PersistentDataType.INTEGER)){
            if(event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade(), PersistentDataType.INTEGER)){
@@ -92,7 +92,7 @@ public class BackpackBreak implements Listener {
         }
 
         if(((Item) event.getEntity()).getHealth() > 1) return;
-        Main.getMain().debugMessage("deleting backpack", "info");
+        Main.getMain().debugMessage("deleting backpack");
 
         int id = ((Item) event.getEntity()).getItemStack().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
         if(!Main.backPackManager.getBackpacks().containsKey(id)) return;

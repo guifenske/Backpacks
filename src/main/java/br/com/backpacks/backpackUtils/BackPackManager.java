@@ -13,6 +13,16 @@ public class BackPackManager {
     }
 
     private int backpackIds = 0;
+
+    public int getUpgradesIds() {
+        return upgradesIds;
+    }
+
+    public void setUpgradesIds(int upgradesIds) {
+        this.upgradesIds = upgradesIds;
+    }
+
+    private int upgradesIds = 0;
     public int getBackpackIds() {
         return backpackIds;
     }

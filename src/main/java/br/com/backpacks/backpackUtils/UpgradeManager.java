@@ -10,9 +10,9 @@ import java.util.Set;
 public class UpgradeManager {
     private Set<Integer> upgrades = new HashSet<>();
 
-    public Set<Integer> getUpgradesIds() {
-        if(upgrades.isEmpty())  return new HashSet<>();
-        return upgrades;
+    public List<Integer> getUpgradesIds() {
+        if(upgrades.isEmpty())  return new ArrayList<>();
+        return new ArrayList<>(upgrades);
     }
 
     public Set<Upgrade> getUpgrades() {

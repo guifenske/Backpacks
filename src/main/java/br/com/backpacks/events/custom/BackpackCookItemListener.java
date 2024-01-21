@@ -15,7 +15,7 @@ import org.bukkit.persistence.PersistentDataType;
 public class BackpackCookItemListener implements Listener {
     @EventHandler
     private void onBackpackCook(BackpackCookItemEvent event) {
-        Main.getMain().debugMessage("BackpackCookItemEventListener", "info");
+        Main.getMain().debugMessage("BackpackCookItemEventListener");
         if (!event.getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_DRIED_BACKPACK())) return;
         if(!event.isAlreadyCooked()) {
             ItemStack driedBackpack = new ItemStack(Material.BARREL);

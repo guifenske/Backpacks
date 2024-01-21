@@ -48,6 +48,8 @@ public class RecipesUtils {
     public static String getNameItemFromUpgrade(Upgrade upgrade){
         switch (upgrade.getType()){
             case FURNACE: return "Furnace Grid";
+            case SMOKER: return "Smoker Upgrade";
+            case BLAST_FURNACE: return "Blast Furnace";
             case CRAFTING: return "Crafting Grid";
             case JUKEBOX: return "Jukebox";
             case VILLAGERSFOLLOW: return "Following Villagers";
@@ -88,6 +90,14 @@ public class RecipesUtils {
 
             case FURNACE -> {
                 return new UpgradesRecipesNamespaces().getFurnaceGrid();
+            }
+
+            case SMOKER -> {
+                return new UpgradesRecipesNamespaces().getSMOKER();
+            }
+
+            case BLAST_FURNACE -> {
+                return new UpgradesRecipesNamespaces().getBLASTFURNACE();
             }
 
             case LIQUIDTANK -> {
@@ -142,6 +152,14 @@ public class RecipesUtils {
             case COLLECTOR -> {
                 return Material.HOPPER;
             }
+
+            case SMOKER -> {
+                return Material.SMOKER;
+            }
+
+            case BLAST_FURNACE -> {
+                return Material.BLAST_FURNACE;
+            }
         }
 
         return Material.NETHERITE_INGOT;
@@ -157,7 +175,7 @@ public class RecipesUtils {
             id = Main.backPackManager.getUpgradeHashMap().size() + 1;
         }
 
-        Main.getMain().debugMessage("id: " + id, "info");
+        Main.getMain().debugMessage("id: " + id);
 
         if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getAutoFill(), PersistentDataType.INTEGER))
             return new Upgrade(UpgradeType.AUTOFILL, id);
@@ -167,7 +185,15 @@ public class RecipesUtils {
         }
         if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getFurnaceGrid(), PersistentDataType.INTEGER)) {
             if(backPack.getUpgradeFromId(id) != null) return ((FurnaceUpgrade) backPack.getUpgradeFromId(id));
-            return new FurnaceUpgrade(id);
+            return new FurnaceUpgrade(id, UpgradeType.FURNACE);
+        }
+        if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getBLASTFURNACE(), PersistentDataType.INTEGER)){
+            if(backPack.getUpgradeFromId(id) != null) return ((BlastFurnaceUpgrade) backPack.getUpgradeFromId(id));
+            return new BlastFurnaceUpgrade(id);
+        }
+        if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getSMOKER(), PersistentDataType.INTEGER)){
+            if(backPack.getUpgradeFromId(id) != null) return ((SmokerUpgrade) backPack.getUpgradeFromId(id));
+            return new SmokerUpgrade(id);
         }
         if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getCraftingGrid(), PersistentDataType.INTEGER))
             return new Upgrade(UpgradeType.CRAFTING, id);
@@ -203,6 +229,14 @@ public class RecipesUtils {
 
             case FURNACE -> {
                 return Arrays.asList("§7Furnace Grid", "§7§nAllows you to cook items in the backpack.");
+            }
+
+            case BLAST_FURNACE -> {
+                return Arrays.asList("§7Blast Furnace", "§7§nAllows you to cook ores in the backpack.");
+            }
+
+            case SMOKER -> {
+                return Arrays.asList("§7Smoker", "§7§nAllows you to cook food in the backpack.");
             }
 
             case VILLAGERSFOLLOW -> {

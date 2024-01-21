@@ -190,7 +190,7 @@ public class BackPack extends UpgradeManager {
 
     public BackPack deserialize(YamlConfiguration config, String s) {
         if(!config.isSet(s + ".i")){
-            Main.getMain().debugMessage("Backpack with id " + s + " not found!", "warning");
+            Main.getMain().debugMessage("Backpack with id " + s + " not found!");
             return null;
         }
 

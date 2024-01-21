@@ -37,9 +37,24 @@ public class FurnaceUpgrade extends Upgrade {
 
     private int operation = 0;
 
-    public FurnaceUpgrade(int id){
-        super(UpgradeType.FURNACE, id);
-        this.inventory = Bukkit.createInventory(null, InventoryType.FURNACE);
+    public long getCookItemTicks() {
+        return cookItemTicks;
+    }
+
+    private final long cookItemTicks;
+
+    public FurnaceUpgrade(int id, UpgradeType upgradeType){
+        super(upgradeType, id);
+        if(upgradeType.equals(UpgradeType.BLAST_FURNACE)){
+            this.cookItemTicks = 100L;
+            this.inventory = Bukkit.createInventory(null, InventoryType.BLAST_FURNACE);
+        }   else if(upgradeType.equals(UpgradeType.SMOKER)){
+            this.cookItemTicks = 100L;
+            this.inventory = Bukkit.createInventory(null, InventoryType.SMOKER);
+        }   else{
+            this.cookItemTicks = 200L;
+            this.inventory = Bukkit.createInventory(null, InventoryType.FURNACE);
+        }
     }
 
     public ItemStack getResult() {

@@ -47,14 +47,14 @@ public class OnClickInConfigMenu implements Listener {
                     event.setCancelled(true);
                 }
 
-                case FURNACE -> {
+                case FURNACE, SMOKER, BLAST_FURNACE -> {
                     BackpackAction.removeAction(player);
-                    Furnace.currentFurnace.put(backPack.getId(), (FurnaceUpgrade) upgrade);
                     event.getWhoClicked().openInventory(((FurnaceUpgrade) upgrade).getInventory());
                     BukkitTask task = new BukkitRunnable(){
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGFURNACE);
+                            Furnace.currentFurnace.put(player.getUniqueId(), ((FurnaceUpgrade) upgrade));
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);

@@ -3,8 +3,11 @@ package br.com.backpacks.events.upgrades;
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackAction;
+import br.com.backpacks.backpackUtils.UpgradeType;
 import br.com.backpacks.events.custom.BackpackCookItemEvent;
+import br.com.backpacks.upgrades.BlastFurnaceUpgrade;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
+import br.com.backpacks.upgrades.SmokerUpgrade;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -13,17 +16,20 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.SmokingRecipe;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class Furnace implements Listener {
 
-    public static final HashMap<Integer, FurnaceUpgrade> currentFurnace = new HashMap<>();
+    public static final HashMap<UUID, FurnaceUpgrade> currentFurnace = new HashMap<>();
     private static final HashMap<Integer, BukkitTask> taskMap = new HashMap<>();
     public static final IntOpenHashSet shouldTick = new IntOpenHashSet();
     private static final EnumMap<Material, Fuel> fuelMap = new EnumMap<>(Material.class);
@@ -145,7 +151,6 @@ public class Furnace implements Listener {
     }
 
     public static void tick(FurnaceUpgrade upgrade){
-        //TODO check the type of the furnace, and then set the desired ticks;
         if(upgrade == null){
             return;
         }
@@ -183,82 +188,24 @@ public class Furnace implements Listener {
                     }
                 }
 
-                for(FurnaceRecipe recipe : Main.getMain().getFurnaceRecipes()){
-                    if(!recipe.getInputChoice().test(upgrade.getSmelting())) continue;
-
-                    if(upgrade.getResult() == null){
-                        BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), recipe.getResult(), upgrade.getFuel(), false);
-                        Bukkit.getPluginManager().callEvent(e);
-
-                        if(!e.isCancelled()) {
-                        if(upgrade.getOperation() == 0){
-                            if(maxOperation != 1)   upgrade.setOperation(1);
-                            if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                            else{
-                                if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
-                                else    upgrade.setFuel(upgrade.getFuel().subtract());
-                            }
-                        }
-                        else{
-                            if(upgrade.getOperation() >= maxOperation - 1){
-                                upgrade.setOperation(0);
-                                if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                                else{
-                                    if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
-                                    else    upgrade.setFuel(upgrade.getFuel().subtract());
-                                }
-                            }   else upgrade.setOperation(upgrade.getOperation() + 1);
-                        }
-                            upgrade.setResult(e.getResult());
-                            upgrade.setSmelting(e.getSource().subtract());
-                            upgrade.updateInventory();
-                        }
-
-                        return;
-                    }
-
-                    if(!upgrade.getResult().isSimilar(recipe.getResult())) return;
-                    BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), upgrade.getResult(), upgrade.getFuel(), true);
-                    Bukkit.getPluginManager().callEvent(e);
-
-                    if(!e.isCancelled()) {
-                        if (upgrade.getOperation() == 0) {
-                            if (maxOperation != 1) upgrade.setOperation(1);
-                            if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                            else {
-                                if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1)
-                                    upgrade.setFuel(null);
-                                else upgrade.setFuel(upgrade.getFuel().subtract());
-                            }
-                        } else {
-                            if (upgrade.getOperation() >= maxOperation - 1) {
-                                upgrade.setOperation(0);
-                                if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                                else {
-                                    if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1)
-                                        upgrade.setFuel(null);
-                                    else upgrade.setFuel(upgrade.getFuel().subtract());
-                                }
-                            } else upgrade.setOperation(upgrade.getOperation() + 1);
-                        }
-
-                        upgrade.setResult(e.getResult().add());
-                        upgrade.setSmelting(e.getSource().subtract());
-                        upgrade.updateInventory();
-                    }
-                    return;
+                //is blast furnace or smoker
+                if(upgrade.getType().equals(UpgradeType.SMOKER)){
+                    smokerLogic((SmokerUpgrade) upgrade, maxOperation);
+                }   else if(upgrade.getType().equals(UpgradeType.BLAST_FURNACE)){
+                    blastFurnaceLogic((BlastFurnaceUpgrade) upgrade, maxOperation);
+                }   else {
+                    furnaceLogic(upgrade, maxOperation);
                 }
             }
-        }.runTaskTimer(Main.getMain(), 200L, 200L);
+        }.runTaskTimer(Main.getMain(), upgrade.getCookItemTicks(), upgrade.getCookItemTicks());
        taskMap.put(upgrade.getId(), task);
-       Main.getMain().debugMessage("Starting furnace task for " + upgrade.getId() + "!", "info");
-
+       Main.getMain().debugMessage("Starting furnace task for " + upgrade.getId() + "!");
     }
 
     @EventHandler
     private void onClick(InventoryClickEvent event){
         if(!BackpackAction.getAction((Player) event.getWhoClicked()).equals(BackpackAction.Action.UPGFURNACE)) return;
-        int id = Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId());
+        UUID id = event.getWhoClicked().getUniqueId();
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
@@ -284,7 +231,7 @@ public class Furnace implements Listener {
     private void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction((Player) event.getPlayer()).equals(BackpackAction.Action.UPGFURNACE)) return;
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
-        int id = backPack.getId();
+        UUID id = event.getPlayer().getUniqueId();
 
         currentFurnace.get(id).setFuel(event.getInventory().getItem(1));
         currentFurnace.get(id).setSmelting(event.getInventory().getItem(0));
@@ -338,5 +285,208 @@ public class Furnace implements Listener {
 
     private static int getMaxOperationsFromFuel(Fuel fuel){
         return maxOperationsMap.getOrDefault(fuel, 0);
+    }
+
+    private static void furnaceLogic(FurnaceUpgrade upgrade, int maxOperation){
+        for(FurnaceRecipe recipe : Main.getMain().getFurnaceRecipes()){
+            if(!recipe.getInputChoice().test(upgrade.getSmelting())) continue;
+
+            if(upgrade.getResult() == null){
+                BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), recipe.getResult(), upgrade.getFuel(), false);
+                Bukkit.getPluginManager().callEvent(e);
+
+                if(!e.isCancelled()) {
+                    if(upgrade.getOperation() == 0){
+                        if(maxOperation != 1)   upgrade.setOperation(1);
+                        if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                        else{
+                            if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
+                            else    upgrade.setFuel(upgrade.getFuel().subtract());
+                        }
+                    }
+                    else{
+                        if(upgrade.getOperation() >= maxOperation - 1){
+                            upgrade.setOperation(0);
+                            if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                            else{
+                                if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
+                                else    upgrade.setFuel(upgrade.getFuel().subtract());
+                            }
+                        }   else upgrade.setOperation(upgrade.getOperation() + 1);
+                    }
+                    upgrade.setResult(e.getResult());
+                    upgrade.setSmelting(e.getSource().subtract());
+                    upgrade.updateInventory();
+                }
+
+                return;
+            }
+
+            if(!upgrade.getResult().isSimilar(recipe.getResult())) return;
+            BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), upgrade.getResult(), upgrade.getFuel(), true);
+            Bukkit.getPluginManager().callEvent(e);
+
+            if(!e.isCancelled()) {
+                if (upgrade.getOperation() == 0) {
+                    if (maxOperation != 1) upgrade.setOperation(1);
+                    if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                    else {
+                        if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1)
+                            upgrade.setFuel(null);
+                        else upgrade.setFuel(upgrade.getFuel().subtract());
+                    }
+                } else {
+                    if (upgrade.getOperation() >= maxOperation - 1) {
+                        upgrade.setOperation(0);
+                        if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                        else {
+                            if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1)
+                                upgrade.setFuel(null);
+                            else upgrade.setFuel(upgrade.getFuel().subtract());
+                        }
+                    } else upgrade.setOperation(upgrade.getOperation() + 1);
+                }
+
+                upgrade.setResult(e.getResult().add());
+                upgrade.setSmelting(e.getSource().subtract());
+                upgrade.updateInventory();
+            }
+            return;
+        }
+    }
+
+    private static void smokerLogic(SmokerUpgrade upgrade, int maxOperation){
+        for(SmokingRecipe recipe : Main.getMain().getSmokingRecipes()){
+            if(!recipe.getInputChoice().test(upgrade.getSmelting())) continue;
+
+            if(upgrade.getResult() == null){
+                BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), recipe.getResult(), upgrade.getFuel(), false);
+                Bukkit.getPluginManager().callEvent(e);
+
+                if(!e.isCancelled()) {
+                    if(upgrade.getOperation() == 0){
+                        if(maxOperation != 1)   upgrade.setOperation(1);
+                        if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                        else{
+                            if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
+                            else    upgrade.setFuel(upgrade.getFuel().subtract());
+                        }
+                    }
+                    else{
+                        if(upgrade.getOperation() >= maxOperation - 1){
+                            upgrade.setOperation(0);
+                            if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                            else{
+                                if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
+                                else    upgrade.setFuel(upgrade.getFuel().subtract());
+                            }
+                        }   else upgrade.setOperation(upgrade.getOperation() + 1);
+                    }
+                    upgrade.setResult(e.getResult());
+                    upgrade.setSmelting(e.getSource().subtract());
+                    upgrade.updateInventory();
+                }
+
+                return;
+            }
+
+            if(!upgrade.getResult().isSimilar(recipe.getResult())) return;
+            BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), upgrade.getResult(), upgrade.getFuel(), true);
+            Bukkit.getPluginManager().callEvent(e);
+
+            if(!e.isCancelled()) {
+                if (upgrade.getOperation() == 0) {
+                    if (maxOperation != 1) upgrade.setOperation(1);
+                    if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                    else {
+                        if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1)
+                            upgrade.setFuel(null);
+                        else upgrade.setFuel(upgrade.getFuel().subtract());
+                    }
+                } else {
+                    if (upgrade.getOperation() >= maxOperation - 1) {
+                        upgrade.setOperation(0);
+                        if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                        else {
+                            if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1)
+                                upgrade.setFuel(null);
+                            else upgrade.setFuel(upgrade.getFuel().subtract());
+                        }
+                    } else upgrade.setOperation(upgrade.getOperation() + 1);
+                }
+
+                upgrade.setResult(e.getResult().add());
+                upgrade.setSmelting(e.getSource().subtract());
+                upgrade.updateInventory();
+            }
+            return;
+        }
+    }
+    private static void blastFurnaceLogic(BlastFurnaceUpgrade upgrade, int maxOperation){
+        for(BlastingRecipe recipe : Main.getMain().getBlastingRecipes()){
+            if(!recipe.getInputChoice().test(upgrade.getSmelting())) continue;
+
+            if(upgrade.getResult() == null){
+                BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), recipe.getResult(), upgrade.getFuel(), false);
+                Bukkit.getPluginManager().callEvent(e);
+
+                if(!e.isCancelled()) {
+                    if(upgrade.getOperation() == 0){
+                        if(maxOperation != 1)   upgrade.setOperation(1);
+                        if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                        else{
+                            if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
+                            else    upgrade.setFuel(upgrade.getFuel().subtract());
+                        }
+                    }
+                    else{
+                        if(upgrade.getOperation() >= maxOperation - 1){
+                            upgrade.setOperation(0);
+                            if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                            else{
+                                if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
+                                else    upgrade.setFuel(upgrade.getFuel().subtract());
+                            }
+                        }   else upgrade.setOperation(upgrade.getOperation() + 1);
+                    }
+                    upgrade.setResult(e.getResult());
+                    upgrade.setSmelting(e.getSource().subtract());
+                    upgrade.updateInventory();
+                }
+
+                return;
+            }
+
+            if(!upgrade.getResult().isSimilar(recipe.getResult())) return;
+            BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), upgrade.getResult(), upgrade.getFuel(), true);
+            Bukkit.getPluginManager().callEvent(e);
+
+            if(!e.isCancelled()) {
+                if (upgrade.getOperation() == 0) {
+                    if (maxOperation != 1) upgrade.setOperation(1);
+                    if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                    else {
+                        if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1)
+                            upgrade.setFuel(null);
+                        else upgrade.setFuel(upgrade.getFuel().subtract());
+                    }
+                } else {
+                    if (upgrade.getOperation() >= maxOperation - 1) {
+                        upgrade.setOperation(0);
+                        if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                        else {
+                            if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1)
+                                upgrade.setFuel(null);
+                            else upgrade.setFuel(upgrade.getFuel().subtract());
+                        }
+                    } else upgrade.setOperation(upgrade.getOperation() + 1);
+                }
+
+                upgrade.setResult(e.getResult().add());
+                upgrade.setSmelting(e.getSource().subtract());
+                upgrade.updateInventory();
+            }
+            return;
+        }
     }
 }

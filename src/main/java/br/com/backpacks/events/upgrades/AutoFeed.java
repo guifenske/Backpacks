@@ -54,7 +54,7 @@ public class AutoFeed implements Listener {
 
                     event.setCancelled(true);
 
-                    Main.getMain().debugMessage("Auto feed-ed " + player.getName() + ", backpack id " + backPack.getId(), "info");
+                    Main.getMain().debugMessage("Auto feed-ed " + player.getName() + ", backpack id " + backPack.getId());
                     player.setFoodLevel(player.getFoodLevel() + hungerPointsPerFood(itemStack));
                     player.setSaturation(player.getSaturation() + saturationPointsPerFood(itemStack));
                     applyEffectPerFood(player, itemStack);
@@ -149,7 +149,7 @@ public class AutoFeed implements Listener {
         }.runTaskLater(Main.getMain(), 1L);
     }
 
-    private static boolean checkFood(ItemStack itemStack){
+    public static boolean checkFood(ItemStack itemStack){
         switch (itemStack.getType()){
             case BREAD, SUSPICIOUS_STEW, ROTTEN_FLESH, SWEET_BERRIES, SPIDER_EYE, POISONOUS_POTATO, GLOW_BERRIES, POTATO, PUFFERFISH, TROPICAL_FISH, APPLE, COOKIE, DRIED_KELP, ENCHANTED_GOLDEN_APPLE, GOLDEN_APPLE, GOLDEN_CARROT, HONEY_BOTTLE, MELON_SLICE, MUSHROOM_STEW, PUMPKIN_PIE, RABBIT_STEW, BAKED_POTATO, BEETROOT_SOUP, BEETROOT, CARROT, CHORUS_FRUIT, COOKED_BEEF, COOKED_CHICKEN, COOKED_COD, COOKED_MUTTON, COOKED_PORKCHOP, COOKED_RABBIT, COOKED_SALMON, BEEF, CHICKEN, COD, MUTTON, PORKCHOP, RABBIT, SALMON -> {
                 return true;
