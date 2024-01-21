@@ -32,7 +32,11 @@ public class BackpackAction {
         OPENED;
     }
 
-    private static HashMap<UUID, Action> playerAction = new HashMap<>();
+    private static final HashMap<UUID, Action> playerAction = new HashMap<>();
+
+    public static void removeAction(Player player){
+        playerAction.remove(player.getUniqueId());
+    }
 
     public static void setAction(Player player, Action action){
         playerAction.put(player.getUniqueId(), action);

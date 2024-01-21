@@ -21,7 +21,7 @@ public final class YamlUtils {
 
     public static void saveBackpacks() throws IOException {
         File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        YamlConfiguration config = new YamlConfiguration();
 
         for (BackPack backPack : Main.backPackManager.getBackpacks().values()) {
             config.set(backPack.getId() + ".loc", null);
@@ -195,6 +195,7 @@ public final class YamlUtils {
             }
             Main.getMain().debugMessage("Loading backpack " + backPack.getName() + " with id " + backPack.getId(), "info");
             Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
+            Main.backPackManager.setBackpackIds(backPack.getId());
         }
     }
     private static void serializeUpgrades(YamlConfiguration config, BackPack backPack){

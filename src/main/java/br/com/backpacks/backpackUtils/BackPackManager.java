@@ -12,6 +12,15 @@ public class BackPackManager {
         return backpacks;
     }
 
+    private int backpackIds = 0;
+    public int getBackpackIds() {
+        return backpackIds;
+    }
+
+    public void setBackpackIds(int backpackIds) {
+        this.backpackIds = backpackIds;
+    }
+
     public ConcurrentHashMap<Integer, Upgrade> getUpgradeHashMap() {
         return upgradeHashMap;
     }

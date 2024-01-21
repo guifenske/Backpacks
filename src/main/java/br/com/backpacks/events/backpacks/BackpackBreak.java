@@ -12,8 +12,9 @@ import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityCombustEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -32,7 +33,6 @@ public class BackpackBreak implements Listener {
         backPack.setLocation(null);
         Location location = event.getBlock().getLocation();
         Main.backPackManager.getBackpacksPlacedLocations().remove(location);
-        Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
         event.getPlayer().getWorld().dropItemNaturally(location, backpack_item);
     }
 
@@ -51,14 +51,36 @@ public class BackpackBreak implements Listener {
             Location location = block.getLocation();
             backPack.setLocation(null);
             Main.backPackManager.getBackpacksPlacedLocations().remove(location);
-            Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
             block.getWorld().dropItemNaturally(location, backpack_item);
             break;
        }
     }
 
     @EventHandler
-    private void onItemCombust(EntityCombustEvent event){
+    private void despawn(ItemDespawnEvent event){
+        Main.getMain().debugMessage("Item despawn", "info");
+       if(!event.getEntity().getItemStack().hasItemMeta())  return;
+       if(!event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK(), PersistentDataType.INTEGER)){
+           if(event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade(), PersistentDataType.INTEGER)){
+               int id = event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().get(new UpgradesRecipesNamespaces().isUpgrade(), PersistentDataType.INTEGER);
+               Main.backPackManager.getUpgradeHashMap().remove(id);
+           }
+           return;
+       }
+
+        int id = event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
+        if(!Main.backPackManager.getBackpacks().containsKey(id)) return;
+        BackPack backPack = Main.backPackManager.getBackpacks().get(id);
+        if(!backPack.getUpgradesIds().isEmpty()){
+            for(int i : backPack.getUpgradesIds()){
+                Main.backPackManager.getUpgradeHashMap().remove(i);
+            }
+        }
+        Main.backPackManager.getBackpacks().remove(id);
+    }
+
+    @EventHandler
+    private void onDamageGeneral(EntityDamageEvent event){
         if(!(event.getEntity() instanceof Item)) return;
         if(!((Item) event.getEntity()).getItemStack().hasItemMeta()) return;
         if(!((Item) event.getEntity()).getItemStack().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK(), PersistentDataType.INTEGER)){
@@ -69,7 +91,17 @@ public class BackpackBreak implements Listener {
             return;
         }
 
-        int id = ((Item) event.getEntity()).getItemStack().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getIS_BACKPACK(), PersistentDataType.INTEGER);
+        if(((Item) event.getEntity()).getHealth() > 1) return;
+        Main.getMain().debugMessage("deleting backpack", "info");
+
+        int id = ((Item) event.getEntity()).getItemStack().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
+        if(!Main.backPackManager.getBackpacks().containsKey(id)) return;
+        BackPack backPack = Main.backPackManager.getBackpacks().get(id);
+        if(!backPack.getUpgradesIds().isEmpty()){
+            for(int i : backPack.getUpgradesIds()){
+                Main.backPackManager.getUpgradeHashMap().remove(i);
+            }
+        }
         Main.backPackManager.getBackpacks().remove(id);
     }
 }

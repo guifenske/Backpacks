@@ -29,6 +29,7 @@ public class OnClickInConfigMenu implements Listener {
 
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
         if(backPack == null) return;
+        Player player = (Player) event.getWhoClicked();
 
         if(event.getRawSlot() < InventoryBuilder.getFreeUpgradesSlots(backPack.getType())){
             if(event.getCurrentItem() == null) return;
@@ -40,58 +41,56 @@ public class OnClickInConfigMenu implements Listener {
 
             switch (upgrade.getType()) {
                 case CRAFTING -> {
-                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
+                    BackpackAction.removeAction(player);
                     event.getWhoClicked().openWorkbench(null, true);
-                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGCRAFTINGGRID);
+                    BackpackAction.setAction(player, BackpackAction.Action.UPGCRAFTINGGRID);
                     event.setCancelled(true);
                 }
 
                 case FURNACE -> {
-                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
+                    BackpackAction.removeAction(player);
                     Furnace.currentFurnace.put(backPack.getId(), (FurnaceUpgrade) upgrade);
                     event.getWhoClicked().openInventory(((FurnaceUpgrade) upgrade).getInventory());
                     BukkitTask task = new BukkitRunnable(){
                         @Override
                         public void run() {
-                            BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGFURNACE);
+                            BackpackAction.setAction(player, BackpackAction.Action.UPGFURNACE);
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
                 }
 
                 case JUKEBOX -> {
-                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
-                    event.getWhoClicked().openInventory(Jukebox.inventory((Player) event.getWhoClicked(), backPack, upgrade.getId()));
-                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGJUKEBOX);
+                    BackpackAction.removeAction(player);
+                    event.getWhoClicked().openInventory(Jukebox.inventory(player, backPack, upgrade.getId()));
+                    BackpackAction.setAction(player, BackpackAction.Action.UPGJUKEBOX);
                     event.setCancelled(true);
                 }
 
                 case AUTOFEED -> {
-                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
-                    event.getWhoClicked().openInventory(AutoFeed.inventory((Player) event.getWhoClicked(), backPack, upgrade.getId()));
-                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGAUTOFEED);
+                    BackpackAction.removeAction(player);
+                    event.getWhoClicked().openInventory(AutoFeed.inventory(player, backPack, upgrade.getId()));
+                    BackpackAction.setAction(player, BackpackAction.Action.UPGAUTOFEED);
                     event.setCancelled(true);
                 }
 
                 case VILLAGERSFOLLOW -> {
-                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
-                    event.getWhoClicked().openInventory(VillagersFollow.inventory((Player) event.getWhoClicked(), backPack, upgrade.getId()));
-                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGVILLAGERSFOLLOW);
+                    BackpackAction.removeAction(player);
+                    event.getWhoClicked().openInventory(VillagersFollow.inventory(player, backPack, upgrade.getId()));
+                    BackpackAction.setAction(player, BackpackAction.Action.UPGVILLAGERSFOLLOW);
                     event.setCancelled(true);
                 }
 
                 case COLLECTOR -> {
-                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
-                    event.getWhoClicked().openInventory(Collector.inventory((Player) event.getWhoClicked(), backPack, upgrade.getId()));
-                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGCOLLECTOR);
+                    BackpackAction.removeAction(player);
+                    event.getWhoClicked().openInventory(Collector.inventory(player, backPack, upgrade.getId()));
+                    BackpackAction.setAction(player, BackpackAction.Action.UPGCOLLECTOR);
                     event.setCancelled(true);
                 }
             }
 
             return;
         }
-
-        Player player = (Player) event.getWhoClicked();
 
         switch (event.getRawSlot()) {
             //go back to the previous page
@@ -127,7 +126,7 @@ public class OnClickInConfigMenu implements Listener {
             }
 
             case 36 ->{
-                BackpackAction.setAction(player, BackpackAction.Action.NOTHING);
+                BackpackAction.removeAction(player);
                 player.openInventory(UpgradeMenu.editUpgrades(player));
                 BackpackAction.setAction(player, BackpackAction.Action.UPGMENU);
                 event.setCancelled(true);

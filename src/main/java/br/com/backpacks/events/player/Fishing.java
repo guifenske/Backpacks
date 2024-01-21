@@ -32,7 +32,7 @@ public class Fishing implements Listener {
                meta.getPersistentDataContainer().set(new RecipesNamespaces().getNAMESPACE_WET_BACKPACK(), PersistentDataType.INTEGER, 1);
                wetbackpack.setItemMeta(meta);
                item.setItemStack(wetbackpack);
-               BackpacksAdvancements.displayTo(event.getPlayer(), wetbackpack.getType().toString(), "Wow, thats a huge 'fish'", BackpacksAdvancements.Style.TASK, NamespacesAdvacements.getCAUGHT_A_BACKPACK());
+               BackpacksAdvancements.displayTo(event.getPlayer(), "tropical_fish", "Wow, what a strange 'fish'", "Caught a backpack instead of a fish" ,BackpacksAdvancements.Style.TASK, NamespacesAdvacements.getCAUGHT_A_BACKPACK());
            }
        }
     }

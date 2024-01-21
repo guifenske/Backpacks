@@ -76,7 +76,9 @@ public class ThreadBackpacks {
             Bukkit.getPluginManager().registerEvents(new VillagersFollow(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new Collector(), Main.getMain());
 
-            BackpacksAdvancements.createAdvancement(NamespacesAdvacements.getCAUGHT_A_BACKPACK(), "chest", "Wow, thats a huge 'fish'", BackpacksAdvancements.Style.TASK);
+            //advancements
+            BackpacksAdvancements.createAdvancement(NamespacesAdvacements.getCAUGHT_A_BACKPACK(), "tropical_fish", "Wow, thats a strange 'fish'", "Caught a backpack instead of a fish" ,BackpacksAdvancements.Style.TASK);
+            BackpacksAdvancements.createAdvancement(NamespacesAdvacements.getTHEFIRSTOFUS(), "barrel", "The first of us.", "Craft your first backpack" ,BackpacksAdvancements.Style.TASK);
 
             Main.getMain().getCommand("bdebug").setExecutor(new Bdebug());
             Main.getMain().getCommand("bpgive").setExecutor(new Bpgive());

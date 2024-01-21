@@ -10,20 +10,22 @@ public class BackpacksAdvancements {
     private NamespacedKey key;
     private String icon;
     private String message;
+    private String description;
 
-    public static void displayTo(Player player, String icon, String message, Style style, NamespacedKey key){
-        new BackpacksAdvancements(icon, message, style, key).grantAdvancement(player);
+    public static void displayTo(Player player, String icon, String message, String description, Style style, NamespacedKey key){
+        new BackpacksAdvancements(icon, message, description, style, key).grantAdvancement(player);
     }
 
-    private BackpacksAdvancements(String icon, String message, Style style, NamespacedKey key){
+    private BackpacksAdvancements(String icon, String message, String description, Style style, NamespacedKey key){
         this.key = key;
         this.icon = icon;
         this.message = message;
         this.style = style;
+        this.description = description;
     }
 
 
-    public static void createAdvancement(NamespacedKey key, String icon, String message, Style style){
+    public static void createAdvancement(NamespacedKey key, String icon, String message, String description, Style style){
         if(Bukkit.getAdvancement(key) != null) return;
         Bukkit.getUnsafe().loadAdvancement(key, "{\n" +
                 "    \"criteria\": {\n" +
@@ -39,7 +41,7 @@ public class BackpacksAdvancements {
                 "            \"text\": \"" + message.replace("|", "\n") + "\"\n" +
                 "        },\n" +
                 "        \"description\": {\n" +
-                "            \"text\": \" Caught a backpack while fishing \"\n" +
+                "            \"text\": \"" + description.replace("|", "\n") + "\"\n" +
                 "        },\n" +
                 "        \"background\": \"minecraft:textures/gui/advancements/backgrounds/adventure.png\",\n" +
                 "        \"frame\": \"" + style.toString().toLowerCase() + "\",\n" +
@@ -49,7 +51,7 @@ public class BackpacksAdvancements {
                 "    },\n" +
                 "    \"requirements\": [\n" +
                 "        [\n" +
-                "            \"fish_a_backpack\"\n" +
+                "            \"trigger\"\n" +
                 "        ]\n" +
                 "    ]\n" +
                 "}");

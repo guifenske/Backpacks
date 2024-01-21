@@ -33,8 +33,7 @@ public class BackpackPlace implements Listener {
         event.getPlayer().getInventory().remove(event.getItemInHand());
         backPack.setIsBlock(true);
         Location backpackLocation = event.getBlockPlaced().getLocation();
-        Main.backPackManager.getBackpacksPlacedLocations().put(backpackLocation, backPack.getId());
         backPack.setLocation(backpackLocation);
-
+        Main.backPackManager.getBackpacksPlacedLocations().put(backpackLocation, backPack.getId());
     }
 }

@@ -140,7 +140,7 @@ public class AutoFeed implements Listener {
         }
         upgrade.setItems(foods);
 
-        BackpackAction.setAction((Player) event.getPlayer(), BackpackAction.Action.NOTHING);
+        BackpackAction.removeAction((Player) event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

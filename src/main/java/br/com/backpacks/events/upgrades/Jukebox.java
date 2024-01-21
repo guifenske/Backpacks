@@ -134,7 +134,7 @@ public class Jukebox implements Listener {
 
         currentJukebox.get(backPack.getId()).setDiscs(disks);
         currentJukebox.remove(backPack.getId());
-        BackpackAction.setAction((Player) event.getPlayer(), BackpackAction.Action.NOTHING);
+        BackpackAction.removeAction((Player) event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

@@ -27,6 +27,7 @@ public class PlayerDeathEvent implements Listener {
         backpack.setLocation(location);
         Main.backPackManager.getBackpacksPlacedLocations().put(backpack.getLocation(), backpack.getId());
         player.getPersistentDataContainer().remove(new RecipesNamespaces().getHAS_BACKPACK());
+        player.sendMessage(Main.PREFIX + "§cYou died and your backpack was placed on: " + backpack.getLocation().x() + ", " + backpack.getLocation().y() + ", " + backpack.getLocation().z() + "!");
     }
 
     private Location safeLocation(Location location){

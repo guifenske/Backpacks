@@ -299,7 +299,7 @@ public class Furnace implements Listener {
             currentFurnace.remove(id);
         }
 
-        BackpackAction.setAction((Player) event.getPlayer(), BackpackAction.Action.NOTHING);
+        BackpackAction.removeAction((Player) event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

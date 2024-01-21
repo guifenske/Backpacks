@@ -101,7 +101,7 @@ public class Collector implements Listener {
                 }
                 case 13 -> {
                     upgrade.setMode(upgrade.getMode() == 0 ? 1 : 0);
-                    BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.NOTHING);
+                    BackpackAction.removeAction((Player) event.getWhoClicked());
                     event.getWhoClicked().openInventory(inventory((Player) event.getWhoClicked(), backpack, upgrade.getId()));
                     BackpackAction.setAction((Player) event.getWhoClicked(), BackpackAction.Action.UPGCOLLECTOR);
                 }
@@ -113,7 +113,7 @@ public class Collector implements Listener {
     private void onClose(InventoryCloseEvent event){
         if(BackpackAction.getAction((Player) event.getPlayer()).equals(BackpackAction.Action.UPGCOLLECTOR)){
             BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
-            BackpackAction.setAction((Player) event.getPlayer(), BackpackAction.Action.NOTHING);
+            BackpackAction.removeAction((Player) event.getPlayer());
             currentCollector.remove(backPack.getId());
             Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> backPack.open((Player) event.getPlayer()), 1L);
         }
