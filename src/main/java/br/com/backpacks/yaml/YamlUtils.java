@@ -25,6 +25,8 @@ public final class YamlUtils {
 
         for (BackPack backPack : Main.backPackManager.getBackpacks().values()) {
             config.set(backPack.getId() + ".loc", null);
+            if(backPack.getUpgradeInputId() > -1) config.set(backPack.getId() + ".input", backPack.getUpgradeInputId());
+            if(backPack.getUpgradeOutputId() > -1) config.set(backPack.getId() + ".output", backPack.getUpgradeOutputId());
             if(backPack.getLocation() != null){
                 List<String> data = serializeLocation(backPack.getLocation());
                 config.set(backPack.getId() + ".loc", data);
@@ -135,6 +137,7 @@ public final class YamlUtils {
                     if(config.isSet(i + ".jukebox.sound")){
                         upgrade.setSound(Sound.valueOf(config.getString(i + ".jukebox.sound")));
                     }
+                    upgrade.updateInventory();
                     Main.backPackManager.getUpgradeHashMap().put(Integer.parseInt(i), upgrade);
                 }
                 case COLLECTOR -> {
@@ -146,7 +149,7 @@ public final class YamlUtils {
                     if(config.isSet(i + ".collector.mode")){
                         upgrade.setMode(config.getInt(i + ".collector.mode"));
                     }
-
+                    upgrade.updateInventory();
                     Main.backPackManager.getUpgradeHashMap().put(Integer.parseInt(i), upgrade);
                 }
                 case VILLAGERSFOLLOW -> {
@@ -155,7 +158,7 @@ public final class YamlUtils {
                     if (config.isSet(i + ".villager.enabled")) {
                         upgrade.setEnabled(config.getBoolean(i + ".villager.enabled"));
                     }
-
+                    upgrade.updateInventory();
                     Main.backPackManager.getUpgradeHashMap().put(Integer.parseInt(i), upgrade);
                 }
                 case AUTOFEED -> {
@@ -167,7 +170,7 @@ public final class YamlUtils {
                     if(config.isSet(i + ".autofeed.items")){
                         upgrade.setItems((List<ItemStack>) config.getList(i + ".autofeed.items"));
                     }
-
+                    upgrade.updateInventory();
                     Main.backPackManager.getUpgradeHashMap().put(Integer.parseInt(i), upgrade);
                 }
                 case CRAFTING -> {

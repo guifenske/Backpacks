@@ -55,6 +55,7 @@ public class FurnaceUpgrade extends Upgrade {
             this.cookItemTicks = 200L;
             this.inventory = Bukkit.createInventory(null, InventoryType.FURNACE);
         }
+        updateInventory();
     }
 
     public ItemStack getResult() {

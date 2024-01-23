@@ -23,6 +23,7 @@ public class VillagersFollowUpgrade extends Upgrade {
         super(UpgradeType.VILLAGERSFOLLOW, id);
         this.enabled = false;
         this.inventory = Bukkit.createInventory(null, 27, "§6§lVillagers Follow");
+        updateInventory();
     }
 
     public boolean isEnabled() {

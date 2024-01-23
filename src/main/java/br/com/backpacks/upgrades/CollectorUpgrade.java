@@ -12,7 +12,7 @@ public class CollectorUpgrade extends Upgrade {
     //mode 0 = only backpack items, mode 1 = every item
     private int mode;
     private boolean enabled;
-    private final Inventory inventory;
+    private Inventory inventory;
     public Inventory getInventory() {
         return inventory;
     }

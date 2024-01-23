@@ -63,6 +63,7 @@ public class ThreadBackpacks {
             Bukkit.getPluginManager().registerEvents(new OnCloseBackpack(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new OnCloseUpgradeMenu(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new OnClickUpgradesMenu(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new OnClickIOMenu(), Main.getMain());
 
             //others
             Bukkit.getPluginManager().registerEvents(new HopperEvents(), Main.getMain());

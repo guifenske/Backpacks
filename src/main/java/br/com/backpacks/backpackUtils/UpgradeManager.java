@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class UpgradeManager {
     private Set<Integer> upgrades = new HashSet<>();
-    private int upgradeInputId = 0;
+    private int upgradeInputId = -1;
 
     public int getUpgradeInputId() {
         return upgradeInputId;
@@ -29,7 +29,7 @@ public class UpgradeManager {
         this.upgradeOutputId = upgradeOutputId;
     }
 
-    private int upgradeOutputId = 0;
+    private int upgradeOutputId = -1;
 
     public List<Integer> getUpgradesIds() {
         if(upgrades.isEmpty())  return new ArrayList<>();
@@ -85,6 +85,16 @@ public class UpgradeManager {
     public static boolean canUpgradeStack(Upgrade upgrade){
         switch (upgrade.getType()){
             case FURNACE, CRAFTING, ENCAPSULATE -> {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean upgradeInventoryIsAdvanced(Upgrade upgrade){
+        switch (upgrade.getType()){
+            case FURNACE, SMOKER, BLAST_FURNACE, JUKEBOX -> {
                 return true;
             }
         }

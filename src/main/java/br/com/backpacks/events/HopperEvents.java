@@ -14,7 +14,6 @@ public class HopperEvents implements Listener {
     private void hopperTick(HopperInventorySearchEvent event){
         if(event.getInventory() == null) return;
         if(!Main.backPackManager.getBackpacksPlacedLocations().containsKey(event.getSearchBlock().getLocation())) return;
-
         BackPack backPack = Main.backPackManager.getBackpackFromLocation(event.getSearchBlock().getLocation());
         if(backPack.getSecondPage() != null){
             if(backPack.getStorageContentsFirstPageWithoutNulls().size() > backPack.getConfigItemsSpace()){

@@ -49,7 +49,7 @@ public class OnClickInConfigMenu implements Listener {
 
                 case FURNACE, SMOKER, BLAST_FURNACE -> {
                     BackpackAction.removeAction(player);
-                    event.getWhoClicked().openInventory(((FurnaceUpgrade) upgrade).getInventory());
+                    event.getWhoClicked().openInventory(upgrade.getInventory());
                     BukkitTask task = new BukkitRunnable(){
                         @Override
                         public void run() {
@@ -62,7 +62,7 @@ public class OnClickInConfigMenu implements Listener {
 
                 case JUKEBOX -> {
                     BackpackAction.removeAction(player);
-                    event.getWhoClicked().openInventory(((JukeboxUpgrade) upgrade).getInventory());
+                    event.getWhoClicked().openInventory(upgrade.getInventory());
                     BukkitTask task = new BukkitRunnable(){
                         @Override
                         public void run() {
@@ -75,7 +75,7 @@ public class OnClickInConfigMenu implements Listener {
 
                 case AUTOFEED -> {
                     BackpackAction.removeAction(player);
-                    event.getWhoClicked().openInventory(((AutoFeedUpgrade) upgrade).getInventory());
+                    event.getWhoClicked().openInventory(upgrade.getInventory());
                     BukkitTask task = new BukkitRunnable(){
                         @Override
                         public void run() {
@@ -87,7 +87,7 @@ public class OnClickInConfigMenu implements Listener {
 
                 case VILLAGERSFOLLOW -> {
                     BackpackAction.removeAction(player);
-                    event.getWhoClicked().openInventory(((VillagersFollowUpgrade) upgrade).getInventory());
+                    event.getWhoClicked().openInventory(upgrade.getInventory());
                     BukkitTask task = new BukkitRunnable(){
                         @Override
                         public void run() {
@@ -99,7 +99,7 @@ public class OnClickInConfigMenu implements Listener {
 
                 case COLLECTOR -> {
                     BackpackAction.removeAction(player);
-                    event.getWhoClicked().openInventory(((CollectorUpgrade) upgrade).getInventory());
+                    event.getWhoClicked().openInventory(upgrade.getInventory());
                     BukkitTask task = new BukkitRunnable(){
                         @Override
                         public void run() {
@@ -139,6 +139,13 @@ public class OnClickInConfigMenu implements Listener {
                 BackpackAction.setAction(player, BackpackAction.Action.RENAMING);
                 player.sendMessage(Main.PREFIX + "§eType the new name of the backpack");
                 player.closeInventory();
+            }
+
+            case 49 -> {
+                BackpackAction.removeAction(player);
+                player.openInventory(InventoryBuilder.inputOutputMenu(player));
+                BackpackAction.setAction(player, BackpackAction.Action.IOMENU);
+                event.setCancelled(true);
             }
 
             case 51 -> {
