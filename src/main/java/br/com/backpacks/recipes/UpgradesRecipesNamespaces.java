@@ -128,7 +128,8 @@ public class UpgradesRecipesNamespaces {
         ItemMeta meta = emeraldBlock.getItemMeta();
 
         meta.setDisplayName("Following Villagers");
-        meta.setLore(Arrays.asList("§7Emerald Block", "§7§nAllows you to attract villagers when the backpack is equipped and you are holding an emerald block."));
+        meta.setLore(Arrays.asList("§7Emerald Block", "§7§nAllows you to attract villagers when the backpack is equipped",
+                " and you are holding an emerald block."));
         meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
         meta.getPersistentDataContainer().set(VILLAGERSFOLLOW, PersistentDataType.INTEGER, 1);
         emeraldBlock.setItemMeta(meta);

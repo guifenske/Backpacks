@@ -9,7 +9,7 @@ import br.com.backpacks.backpackUtils.inventory.UpgradeMenu;
 import br.com.backpacks.events.upgrades.*;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.RecipesUtils;
-import br.com.backpacks.upgrades.FurnaceUpgrade;
+import br.com.backpacks.upgrades.*;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -62,29 +62,51 @@ public class OnClickInConfigMenu implements Listener {
 
                 case JUKEBOX -> {
                     BackpackAction.removeAction(player);
-                    event.getWhoClicked().openInventory(Jukebox.inventory(player, backPack, upgrade.getId()));
-                    BackpackAction.setAction(player, BackpackAction.Action.UPGJUKEBOX);
+                    event.getWhoClicked().openInventory(((JukeboxUpgrade) upgrade).getInventory());
+                    BukkitTask task = new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            BackpackAction.setAction(player, BackpackAction.Action.UPGJUKEBOX);
+                            Jukebox.currentJukebox.put(player.getUniqueId(), ((JukeboxUpgrade) upgrade));
+                        }
+                    }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
                 }
 
                 case AUTOFEED -> {
                     BackpackAction.removeAction(player);
-                    event.getWhoClicked().openInventory(AutoFeed.inventory(player, backPack, upgrade.getId()));
-                    BackpackAction.setAction(player, BackpackAction.Action.UPGAUTOFEED);
+                    event.getWhoClicked().openInventory(((AutoFeedUpgrade) upgrade).getInventory());
+                    BukkitTask task = new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            BackpackAction.setAction(player, BackpackAction.Action.UPGAUTOFEED);
+                        }
+                    }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
                 }
 
                 case VILLAGERSFOLLOW -> {
                     BackpackAction.removeAction(player);
-                    event.getWhoClicked().openInventory(VillagersFollow.inventory(player, backPack, upgrade.getId()));
-                    BackpackAction.setAction(player, BackpackAction.Action.UPGVILLAGERSFOLLOW);
+                    event.getWhoClicked().openInventory(((VillagersFollowUpgrade) upgrade).getInventory());
+                    BukkitTask task = new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            BackpackAction.setAction(player, BackpackAction.Action.UPGVILLAGERSFOLLOW);
+                        }
+                    }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
                 }
 
                 case COLLECTOR -> {
                     BackpackAction.removeAction(player);
-                    event.getWhoClicked().openInventory(Collector.inventory(player, backPack, upgrade.getId()));
-                    BackpackAction.setAction(player, BackpackAction.Action.UPGCOLLECTOR);
+                    event.getWhoClicked().openInventory(((CollectorUpgrade) upgrade).getInventory());
+                    BukkitTask task = new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            BackpackAction.setAction(player, BackpackAction.Action.UPGCOLLECTOR);
+                            Collector.currentCollector.put(player.getUniqueId(), ((CollectorUpgrade) upgrade));
+                        }
+                    }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
                 }
             }

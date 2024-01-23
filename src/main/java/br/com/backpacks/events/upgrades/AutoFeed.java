@@ -30,7 +30,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class AutoFeed implements Listener {
 
-    private static Set<Integer> fillSlots = Set.of(3,4,5,12,13,14,21,22,23);
+    public static final Set<Integer> fillSlots = Set.of(3,4,5,12,13,14,21,22,23);
 
     @EventHandler
     private static void tick(FoodLevelChangeEvent event){
@@ -58,61 +58,33 @@ public class AutoFeed implements Listener {
                     player.setFoodLevel(player.getFoodLevel() + hungerPointsPerFood(itemStack));
                     player.setSaturation(player.getSaturation() + saturationPointsPerFood(itemStack));
                     applyEffectPerFood(player, itemStack);
-                    player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, SoundCategory.PLAYERS ,1, 1);
+                    player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, SoundCategory.MASTER ,1, 1);
                     return;
                 }
             }
         }
     }
 
-    public static Inventory inventory(Player player, BackPack backPack, int upgradeId){
-        Inventory inventory = Bukkit.createInventory(player, 27, "Auto Feed");
-        ItemStack blank = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, "Put your food in the empty 9x9 space").get();
-        ItemStack enable = new ItemCreator(Material.GREEN_STAINED_GLASS_PANE, "Enable").get();
-        ItemStack disable = new ItemCreator(Material.RED_STAINED_GLASS_PANE, "Disable").get();
-        AutoFeedUpgrade upgrade = (AutoFeedUpgrade) backPack.getUpgradeFromId(upgradeId);
-
-        for (int i = 0; i < 27; i++) {
-            if(!fillSlots.contains(i)) inventory.setItem(i, blank);
-        }
-
-        if(upgrade.isEnabled())    inventory.setItem(10, disable);
-        else{
-            upgrade.setEnabled(false);
-            inventory.setItem(10, enable);
-        }
-
-        int i1 = 0;
-        if(upgrade.getItems() != null && !upgrade.getItems().isEmpty()){
-            for(int i : fillSlots){
-                if(i1 >= upgrade.getItems().size()) break;
-                inventory.setItem(i, upgrade.getItems().get(i1));
-                i1++;
-            }
-        }
-
-        return inventory;
-    }
-
     @EventHandler
     private static void onClick(InventoryClickEvent event){
         if(event.getClickedInventory() == null) return;
         if(!BackpackAction.getAction((Player) event.getWhoClicked()).equals(BackpackAction.Action.UPGAUTOFEED)) return;
-        if(event.getRawSlot() < 27 && !fillSlots.contains(event.getRawSlot()))  event.setCancelled(true);
+        boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK());
+        if(canUse)  canUse = Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()) == event.getWhoClicked().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER);
 
+        if(!canUse){
+            event.setCancelled(true);
+            event.getWhoClicked().sendMessage("§cYou can't use this upgrade because this backpack is not in your back.");
+            return;
+        }
+        if(event.getRawSlot() < 27 && !fillSlots.contains(event.getRawSlot()))  event.setCancelled(true);
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
-        if(backPack == null) return;
         List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.AUTOFEED);
         AutoFeedUpgrade upgrade = (AutoFeedUpgrade) list.get(0);
 
         if(event.getRawSlot() == 10){
-            if(upgrade.isEnabled()){
-                upgrade.setEnabled(false);
-                event.getClickedInventory().setItem(10, new ItemCreator(Material.GREEN_STAINED_GLASS_PANE, "Enable").get());
-            }   else{
-                upgrade.setEnabled(true);
-                event.getClickedInventory().setItem(10, new ItemCreator(Material.RED_STAINED_GLASS_PANE, "Disable").get());
-            }
+            upgrade.setEnabled(!upgrade.isEnabled());
+            upgrade.updateInventory();
         }
     }
 

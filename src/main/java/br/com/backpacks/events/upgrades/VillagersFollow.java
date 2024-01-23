@@ -50,30 +50,24 @@ public class VillagersFollow implements Listener {
         }, 0L, 10L);
     }
 
-    public static Inventory inventory(Player player, BackPack backPack, int upgradeId){
-        Inventory inventory = Bukkit.createInventory(player, 27, "§6§lVillagers Follow");
-        ItemStack enable = new ItemCreator(Material.GREEN_STAINED_GLASS_PANE, "Enable").get();
-        ItemStack disable = new ItemCreator(Material.RED_STAINED_GLASS_PANE, "Disable").get();
-        VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) backPack.getUpgradeFromId(upgradeId);
-
-        if(!upgrade.isEnabled()){
-            inventory.setItem(13, enable);
-        }   else inventory.setItem(13, disable);
-
-        return inventory;
-    }
-
     @EventHandler
     private static void onClick(InventoryClickEvent event){
         if(BackpackAction.getAction((Player) event.getWhoClicked()) != BackpackAction.Action.UPGVILLAGERSFOLLOW) return;
         event.setCancelled(true);
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
-        if(backPack == null) return;
+        boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK());
+        if(canUse) canUse = backPack.getId() == event.getWhoClicked().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER);
+        if(!canUse){
+            event.setCancelled(true);
+            event.getWhoClicked().sendMessage("§cYou can't use this upgrade because this backpack is not in your back.");
+            return;
+        }
         List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.VILLAGERSFOLLOW);
         VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) list.get(0);
 
         if(event.getRawSlot() == 13){
             upgrade.setEnabled(!upgrade.isEnabled());
+            upgrade.updateInventory();
             event.getInventory().setItem(13, new ItemCreator(upgrade.isEnabled() ? Material.RED_STAINED_GLASS_PANE : Material.GREEN_STAINED_GLASS_PANE, upgrade.isEnabled() ? "Disable" : "Enable").get());
         }
     }
@@ -92,6 +86,6 @@ public class VillagersFollow implements Listener {
 
     private static void moveToPlayer(Mob entity, Player player){
         Pathfinder pathfinder = entity.getPathfinder();
-        pathfinder.moveTo(player, 0.6);
+        pathfinder.moveTo(player, 0.55);
     }
 }

@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="Backpacks-1.0-SNAPSHOT">
-    <output-path>$PROJECT_DIR$/../../paperserver/plugins</output-path>
+    <output-path>$USER_HOME$/Área de trabalho/paperserver/plugins</output-path>
     <root id="archive" name="Backpacks-1.0-SNAPSHOT.jar">
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />

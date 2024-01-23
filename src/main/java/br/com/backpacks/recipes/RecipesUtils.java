@@ -240,7 +240,8 @@ public class RecipesUtils {
             }
 
             case VILLAGERSFOLLOW -> {
-                return Arrays.asList("§7Emerald Block", "§7§nAllows you to attract villagers when the backpack is equipped and you are holding an emerald block.");
+                return Arrays.asList("§7Emerald Block", "§7§nAllows you to attract villagers when the backpack is equipped",
+                        " and you are holding an emerald block.");
             }
 
             case ENCAPSULATE -> {
