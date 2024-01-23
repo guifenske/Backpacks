@@ -35,6 +35,7 @@ public class AutoFeedUpgrade extends Upgrade {
         super(UpgradeType.AUTOFEED, id);
         this.enabled = false;
         this.inventory = Bukkit.createInventory(null, 27, "Auto Feed");
+        updateInventory();
     }
 
     public boolean isEnabled() {

@@ -3,6 +3,7 @@ package br.com.backpacks.recipes;
 import br.com.backpacks.Main;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -120,7 +121,7 @@ public class RecipesNamespaces {
 
         recipe.shape("III", "ICI", "III");
 
-        recipe.setIngredient('C', Material.BARREL);
+        recipe.setIngredient('C', new RecipeChoice.MaterialChoice(Material.BARREL));
         recipe.setIngredient('I', Material.IRON_INGOT);
 
         return recipe;
@@ -140,7 +141,7 @@ public class RecipesNamespaces {
 
         recipe.shape("III", "ICI", "III");
 
-        recipe.setIngredient('C', Material.BARREL);
+        recipe.setIngredient('C',  new RecipeChoice.MaterialChoice(Material.BARREL));
         recipe.setIngredient('I', Material.GOLD_INGOT);
 
         return recipe;
@@ -160,7 +161,7 @@ public class RecipesNamespaces {
 
         recipe.shape("III", "ICI", "III");
 
-        recipe.setIngredient('C', Material.BARREL);
+        recipe.setIngredient('C', new RecipeChoice.MaterialChoice(Material.BARREL));
         recipe.setIngredient('I', Material.LAPIS_LAZULI);
 
         return recipe;
@@ -180,7 +181,7 @@ public class RecipesNamespaces {
 
         recipe.shape("III", "ICI", "III");
 
-        recipe.setIngredient('C', Material.BARREL);
+        recipe.setIngredient('C', new RecipeChoice.MaterialChoice(Material.BARREL));
         recipe.setIngredient('I', Material.AMETHYST_SHARD);
 
         return recipe;
@@ -200,7 +201,7 @@ public class RecipesNamespaces {
 
         recipe.shape("III", "ICI", "III");
 
-        recipe.setIngredient('C', Material.BARREL);
+        recipe.setIngredient('C', new RecipeChoice.MaterialChoice(Material.BARREL));
         recipe.setIngredient('I', Material.DIAMOND);
 
         return recipe;
@@ -220,7 +221,7 @@ public class RecipesNamespaces {
 
         recipe.shape(" I ", "ICI", " I ");
 
-        recipe.setIngredient('C', Material.BARREL);
+        recipe.setIngredient('C', new RecipeChoice.MaterialChoice(Material.BARREL));
         recipe.setIngredient('I', Material.NETHERITE_INGOT);
         return recipe;
     }

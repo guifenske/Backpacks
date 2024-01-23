@@ -32,6 +32,7 @@ public class JukeboxUpgrade extends Upgrade {
         super(UpgradeType.JUKEBOX, id);
         this.isPlaying = false;
         this.inventory = Bukkit.createInventory(null, 27, "Jukebox");
+        updateInventory();
     }
 
     public List<ItemStack> getDiscs() {

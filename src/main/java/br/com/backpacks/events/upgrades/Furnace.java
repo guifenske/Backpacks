@@ -10,7 +10,11 @@ import br.com.backpacks.upgrades.FurnaceUpgrade;
 import br.com.backpacks.upgrades.SmokerUpgrade;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,7 +32,6 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class Furnace implements Listener {
-
     public static final HashMap<UUID, FurnaceUpgrade> currentFurnace = new HashMap<>();
     private static final HashMap<Integer, BukkitTask> taskMap = new HashMap<>();
     public static final IntOpenHashSet shouldTick = new IntOpenHashSet();
@@ -188,7 +191,6 @@ public class Furnace implements Listener {
                     }
                 }
 
-                //is blast furnace or smoker
                 if(upgrade.getType().equals(UpgradeType.SMOKER)){
                     smokerLogic((SmokerUpgrade) upgrade, maxOperation);
                 }   else if(upgrade.getType().equals(UpgradeType.BLAST_FURNACE)){

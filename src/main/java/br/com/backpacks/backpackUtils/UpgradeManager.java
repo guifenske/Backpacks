@@ -1,6 +1,8 @@
 package br.com.backpacks.backpackUtils;
 
 import br.com.backpacks.Main;
+import org.bukkit.Bukkit;
+import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -9,6 +11,25 @@ import java.util.Set;
 
 public class UpgradeManager {
     private Set<Integer> upgrades = new HashSet<>();
+    private int upgradeInputId = 0;
+
+    public int getUpgradeInputId() {
+        return upgradeInputId;
+    }
+
+    public void setUpgradeInputId(int upgradeInputId) {
+        this.upgradeInputId = upgradeInputId;
+    }
+
+    public int getUpgradeOutputId() {
+        return upgradeOutputId;
+    }
+
+    public void setUpgradeOutputId(int upgradeOutputId) {
+        this.upgradeOutputId = upgradeOutputId;
+    }
+
+    private int upgradeOutputId = 0;
 
     public List<Integer> getUpgradesIds() {
         if(upgrades.isEmpty())  return new ArrayList<>();
@@ -63,7 +84,7 @@ public class UpgradeManager {
 
     public static boolean canUpgradeStack(Upgrade upgrade){
         switch (upgrade.getType()){
-            case FURNACE, CRAFTING -> {
+            case FURNACE, CRAFTING, ENCAPSULATE -> {
                 return true;
             }
         }
