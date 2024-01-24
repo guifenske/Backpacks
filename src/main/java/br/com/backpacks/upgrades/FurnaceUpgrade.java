@@ -3,6 +3,7 @@ package br.com.backpacks.upgrades;
 import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.backpackUtils.UpgradeType;
 import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -36,6 +37,16 @@ public class FurnaceUpgrade extends Upgrade {
     }
 
     private int operation = 0;
+
+    public Block getBoundFakeBlock() {
+        return boundFakeBlock;
+    }
+
+    public void setBoundFakeBlock(Block boundFakeBlock) {
+        this.boundFakeBlock = boundFakeBlock;
+    }
+
+    private Block boundFakeBlock;
 
     public long getCookItemTicks() {
         return cookItemTicks;

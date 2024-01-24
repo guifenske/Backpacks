@@ -2,13 +2,11 @@ package br.com.backpacks.events;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
-import br.com.backpacks.backpackUtils.UpgradeManager;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.HopperInventorySearchEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
-import org.bukkit.event.inventory.InventoryPickupItemEvent;
 
 public class HopperEvents implements Listener {
 
@@ -31,13 +29,6 @@ public class HopperEvents implements Listener {
         }
 
         event.setInventory(backPack.getFirstPage());
-    }
-
-    @EventHandler
-    private void hopperPickupEntity(InventoryPickupItemEvent event){
-        if(event.getItem().getItemStack().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM())){
-            event.getInventory().remove(event.getItem().getItemStack());
-        }
     }
 
     @EventHandler

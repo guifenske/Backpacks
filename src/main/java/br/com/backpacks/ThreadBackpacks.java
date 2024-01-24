@@ -25,7 +25,6 @@ public class ThreadBackpacks {
     public ExecutorService getExecutor() {
         return executor;
     }
-
     private ExecutorService executor;
 
     public ThreadBackpacks() throws IOException {
@@ -101,7 +100,7 @@ public class ThreadBackpacks {
         } catch (Exception ignored) {
 
         }
-        shutdown();
+        executor.shutdownNow();
         Main.saveComplete = true;
         synchronized (Main.lock){
             Main.lock.notifyAll();
@@ -121,9 +120,5 @@ public class ThreadBackpacks {
 
         }
         VillagersFollow.tick();
-    }
-
-    public void shutdown() {
-        executor.shutdownNow();
     }
 }

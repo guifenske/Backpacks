@@ -4,7 +4,6 @@ import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackAction;
 import br.com.backpacks.backpackUtils.UpgradeType;
-import br.com.backpacks.events.custom.BackpackCookItemEvent;
 import br.com.backpacks.upgrades.BlastFurnaceUpgrade;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
 import br.com.backpacks.upgrades.SmokerUpgrade;
@@ -13,11 +12,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockCookEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.BlastingRecipe;
@@ -30,10 +28,12 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Furnace implements Listener {
     public static final HashMap<UUID, FurnaceUpgrade> currentFurnace = new HashMap<>();
-    private static final HashMap<Integer, BukkitTask> taskMap = new HashMap<>();
+    private static final ConcurrentHashMap<Integer, BukkitTask> taskMap = new ConcurrentHashMap<>();
     public static final IntOpenHashSet shouldTick = new IntOpenHashSet();
     private static final EnumMap<Material, Fuel> fuelMap = new EnumMap<>(Material.class);
     private static final EnumMap<Fuel, Integer> maxOperationsMap = new EnumMap<>(Fuel.class);
@@ -157,15 +157,23 @@ public class Furnace implements Listener {
         if(upgrade == null){
             return;
         }
+
+        Location tempLocation = new Location(Bukkit.getWorld("world"), ThreadLocalRandom.current().nextInt(-500, 500), -70,  ThreadLocalRandom.current().nextInt(-500, 500));
+        Block tempBlock = tempLocation.getBlock();
+        tempBlock.setType(Material.FURNACE);
+        Main.getMain().debugMessage("creating block loc: " + tempLocation);
+
+        upgrade.setBoundFakeBlock(tempBlock);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
-                if(upgrade.getSmelting() == null){
-                    upgrade.setOperation(0);
+                if(!upgrade.canTick()){
+                    this.cancel();
+                    taskMap.remove(upgrade.getId());
+                    upgrade.getBoundFakeBlock().getLocation().getBlock().setType(Material.AIR);
+                    upgrade.setBoundFakeBlock(null);
                     return;
                 }
-
-                if(upgrade.getFuel() == null && upgrade.getOperation() == 0)    return;
 
                 Fuel fuel = getFuelFromItem(upgrade.getFuel());
                 int maxOperation = getMaxOperationsFromFuel(fuel);
@@ -200,6 +208,7 @@ public class Furnace implements Listener {
                 }
             }
         }.runTaskTimer(Main.getMain(), upgrade.getCookItemTicks(), upgrade.getCookItemTicks());
+
        taskMap.put(upgrade.getId(), task);
        Main.getMain().debugMessage("Starting furnace task for " + upgrade.getId() + "!");
     }
@@ -222,6 +231,8 @@ public class Furnace implements Listener {
                 }   else{
                     if(!currentFurnace.get(id).canTick()){
                         taskMap.get(currentFurnace.get(id).getId()).cancel();
+                        currentFurnace.get(id).getBoundFakeBlock().getLocation().getBlock().setType(Material.AIR);
+                        currentFurnace.get(id).setBoundFakeBlock(null);
                         shouldTick.remove(currentFurnace.get(id).getId());
                     }
                 }
@@ -244,6 +255,8 @@ public class Furnace implements Listener {
                 taskMap.get(currentFurnace.get(id).getId()).cancel();
                 taskMap.remove(currentFurnace.get(id).getId());
             }
+            currentFurnace.get(id).getBoundFakeBlock().getLocation().getBlock().setType(Material.AIR);
+            currentFurnace.get(id).setBoundFakeBlock(null);
             shouldTick.remove(currentFurnace.get(id).getId());
             currentFurnace.remove(id);
         }
@@ -294,7 +307,7 @@ public class Furnace implements Listener {
             if(!recipe.getInputChoice().test(upgrade.getSmelting())) continue;
 
             if(upgrade.getResult() == null){
-                BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), recipe.getResult(), upgrade.getFuel(), false);
+                BlockCookEvent e = new BlockCookEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), recipe.getResult());
                 Bukkit.getPluginManager().callEvent(e);
 
                 if(!e.isCancelled()) {
@@ -325,7 +338,7 @@ public class Furnace implements Listener {
             }
 
             if(!upgrade.getResult().isSimilar(recipe.getResult())) return;
-            BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), upgrade.getResult(), upgrade.getFuel(), true);
+            BlockCookEvent e = new BlockCookEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), upgrade.getResult());
             Bukkit.getPluginManager().callEvent(e);
 
             if(!e.isCancelled()) {
@@ -362,7 +375,7 @@ public class Furnace implements Listener {
             if(!recipe.getInputChoice().test(upgrade.getSmelting())) continue;
 
             if(upgrade.getResult() == null){
-                BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), recipe.getResult(), upgrade.getFuel(), false);
+                BlockCookEvent e = new BlockCookEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), recipe.getResult());
                 Bukkit.getPluginManager().callEvent(e);
 
                 if(!e.isCancelled()) {
@@ -393,7 +406,7 @@ public class Furnace implements Listener {
             }
 
             if(!upgrade.getResult().isSimilar(recipe.getResult())) return;
-            BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), upgrade.getResult(), upgrade.getFuel(), true);
+            BlockCookEvent e = new BlockCookEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), upgrade.getResult());
             Bukkit.getPluginManager().callEvent(e);
 
             if(!e.isCancelled()) {
@@ -429,7 +442,7 @@ public class Furnace implements Listener {
             if(!recipe.getInputChoice().test(upgrade.getSmelting())) continue;
 
             if(upgrade.getResult() == null){
-                BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), recipe.getResult(), upgrade.getFuel(), false);
+                BlockCookEvent e = new BlockCookEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), recipe.getResult());
                 Bukkit.getPluginManager().callEvent(e);
 
                 if(!e.isCancelled()) {
@@ -460,7 +473,7 @@ public class Furnace implements Listener {
             }
 
             if(!upgrade.getResult().isSimilar(recipe.getResult())) return;
-            BackpackCookItemEvent e = new BackpackCookItemEvent(upgrade.getSmelting(), upgrade.getResult(), upgrade.getFuel(), true);
+            BlockCookEvent e = new BlockCookEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), upgrade.getResult());
             Bukkit.getPluginManager().callEvent(e);
 
             if(!e.isCancelled()) {

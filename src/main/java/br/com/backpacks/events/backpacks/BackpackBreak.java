@@ -58,7 +58,6 @@ public class BackpackBreak implements Listener {
 
     @EventHandler
     private void despawn(ItemDespawnEvent event){
-        Main.getMain().debugMessage("Item despawn");
        if(!event.getEntity().getItemStack().hasItemMeta())  return;
        if(!event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK(), PersistentDataType.INTEGER)){
            if(event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade(), PersistentDataType.INTEGER)){
