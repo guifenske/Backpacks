@@ -25,8 +25,6 @@ public final class YamlUtils {
 
         for (BackPack backPack : Main.backPackManager.getBackpacks().values()) {
             config.set(backPack.getId() + ".loc", null);
-            if(backPack.getUpgradeInputId() > -1) config.set(backPack.getId() + ".input", backPack.getUpgradeInputId());
-            if(backPack.getUpgradeOutputId() > -1) config.set(backPack.getId() + ".output", backPack.getUpgradeOutputId());
             if(backPack.getLocation() != null){
                 List<String> data = serializeLocation(backPack.getLocation());
                 config.set(backPack.getId() + ".loc", data);

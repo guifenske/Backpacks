@@ -28,7 +28,7 @@ public class ItemCreator {
         this.itemStack.setItemMeta(meta);
     }
 
-    public ItemStack get(){
+    public ItemStack build(){
         return this.itemStack;
     }
 

@@ -35,8 +35,8 @@ public class VillagersFollowUpgrade extends Upgrade {
     }
 
     public void updateInventory(){
-        ItemStack enable = new ItemCreator(Material.GREEN_STAINED_GLASS_PANE, "Enable").get();
-        ItemStack disable = new ItemCreator(Material.RED_STAINED_GLASS_PANE, "Disable").get();
+        ItemStack enable = new ItemCreator(Material.GREEN_STAINED_GLASS_PANE, "Enable").build();
+        ItemStack disable = new ItemCreator(Material.RED_STAINED_GLASS_PANE, "Disable").build();
 
         if(this.enabled){
             inventory.setItem(13, enable);

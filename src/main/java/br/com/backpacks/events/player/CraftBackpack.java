@@ -75,6 +75,7 @@ public class CraftBackpack implements Listener {
             player.discoverRecipe(new UpgradesRecipesNamespaces().getCraftingGrid());
             BackpacksAdvancements.displayTo(player, "barrel", "§aThe first of us..", "Craft your first backpack" ,BackpacksAdvancements.Style.TASK, NamespacesAdvacements.getTHEFIRSTOFUS());
             Main.backPackManager.createBackPack(18, "Leather Backpack", id, BackpackType.LEATHER);
+            Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
             updateResult(event, id);
             return;
         }
@@ -86,6 +87,7 @@ public class CraftBackpack implements Listener {
             player.discoverRecipe(new UpgradesRecipesNamespaces().getENCAPSULATE());
             BackpacksAdvancements.displayTo(player, "barrel", "§aThe first of us..", "Craft your first backpack" ,BackpacksAdvancements.Style.TASK, NamespacesAdvacements.getTHEFIRSTOFUS());
             updateResult(event, oldId);
+            Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
             Main.backPackManager.upgradeBackpack(BackpackType.LEATHER, oldId);
             return;
         }
@@ -96,6 +98,7 @@ public class CraftBackpack implements Listener {
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_LAPIS_BACKPACK());
             BackpacksAdvancements.displayTo(player, "barrel", "§aThe first of us..", "Craft your first backpack" ,BackpacksAdvancements.Style.TASK, NamespacesAdvacements.getTHEFIRSTOFUS());
             updateResult(event, oldId);
+            Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
             Main.backPackManager.upgradeBackpack(BackpackType.IRON, oldId);
             return;
         }
@@ -106,6 +109,7 @@ public class CraftBackpack implements Listener {
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_AMETHYST_BACKPACK());
             BackpacksAdvancements.displayTo(player, "barrel", "§aThe first of us..", "Craft your first backpack" ,BackpacksAdvancements.Style.TASK, NamespacesAdvacements.getTHEFIRSTOFUS());
             updateResult(event, oldId);
+            Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
             Main.backPackManager.upgradeBackpack(BackpackType.GOLD, oldId);
             return;
         }
@@ -116,6 +120,7 @@ public class CraftBackpack implements Listener {
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_DIAMOND_BACKPACK());
             BackpacksAdvancements.displayTo(player, Material.BARREL.toString(), "§aThe first of us..", "Craft your first backpack" ,BackpacksAdvancements.Style.TASK, NamespacesAdvacements.getTHEFIRSTOFUS());
             updateResult(event, oldId);
+            Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
             Main.backPackManager.upgradeBackpack(BackpackType.LAPIS, oldId);
             return;
         }
@@ -126,6 +131,7 @@ public class CraftBackpack implements Listener {
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_NETHERITE_BACKPACK());
             BackpacksAdvancements.displayTo(player, "barrel", "§aThe first of us..", "Craft your first backpack" ,BackpacksAdvancements.Style.TASK, NamespacesAdvacements.getTHEFIRSTOFUS());
             updateResult(event, oldId);
+            Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
             Main.backPackManager.upgradeBackpack(BackpackType.AMETHYST, oldId);
             return;
         }
@@ -135,6 +141,7 @@ public class CraftBackpack implements Listener {
             if(oldId == -1) return;
             BackpacksAdvancements.displayTo(player, "barrel", "§aThe first of us..", "Craft your first backpack" ,BackpacksAdvancements.Style.TASK, NamespacesAdvacements.getTHEFIRSTOFUS());
             updateResult(event, oldId);
+            Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
             Main.backPackManager.upgradeBackpack(BackpackType.DIAMOND, oldId);
         }
     }

@@ -141,9 +141,7 @@ public class BackPackManager {
             case IRON: return 27;
             case GOLD: return 36;
             case LAPIS: return 45;
-            case AMETHYST: return 54;
-            case DIAMOND: return 54;
-            case NETHERITE: return 54;
+            case AMETHYST, DIAMOND, NETHERITE: return 54;
         }
 
         return 0;

@@ -1,5 +1,6 @@
 package br.com.backpacks.events.player;
 
+import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.RandomBackpack;
 import br.com.backpacks.recipes.RecipesNamespaces;
@@ -26,6 +27,7 @@ public class FinishedSmelting implements Listener {
         BackPack backPack = randomBackpack.generateBackpack();
         meta.getPersistentDataContainer().set(backPack.getNamespaceOfBackpackType(), PersistentDataType.INTEGER, 1);
         driedBackpack.setItemMeta(meta);
+        Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
         event.setResult(driedBackpack);
     }
 }

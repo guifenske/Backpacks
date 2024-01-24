@@ -84,9 +84,9 @@ public class JukeboxUpgrade extends Upgrade {
     }
 
     public void updateInventory(){
-        ItemStack play = new ItemCreator(Material.GREEN_STAINED_GLASS_PANE, "Play Music").get();
-        ItemStack stop = new ItemCreator(Material.RED_STAINED_GLASS_PANE, "Stop Music").get();
-        ItemStack blank = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").get();
+        ItemStack play = new ItemCreator(Material.GREEN_STAINED_GLASS_PANE, "Play Music").build();
+        ItemStack stop = new ItemCreator(Material.RED_STAINED_GLASS_PANE, "Stop Music").build();
+        ItemStack blank = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").build();
 
         for (int i : Jukebox.blankSlots) {
             inventory.setItem(i, blank);

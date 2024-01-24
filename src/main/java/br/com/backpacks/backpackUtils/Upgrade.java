@@ -1,5 +1,6 @@
 package br.com.backpacks.backpackUtils;
 
+import org.bukkit.block.TileState;
 import org.bukkit.inventory.Inventory;
 
 public class Upgrade {

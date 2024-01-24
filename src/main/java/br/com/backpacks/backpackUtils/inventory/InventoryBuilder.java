@@ -22,15 +22,14 @@ public class InventoryBuilder {
         Inventory inv = Bukkit.createInventory(player, 54, "Backpack Config");
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(player.getUniqueId()));
 
-        ItemStack equipBackpack = new ItemCreator(Material.CHEST, "Equip Backpack").get();
-        ItemStack unequipBackpack = new ItemCreator(Material.ENDER_CHEST, "Unequip Backpack").get();
-        ItemStack close = new ItemCreator(Material.BARRIER, "Close").get();
-        ItemStack loremIpsum = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").get();
-        ItemStack rename = new ItemCreator(Material.NAME_TAG, "Rename Backpack").get();
-        ItemStack lock = new ItemCreator(Material.WRITABLE_BOOK, "Lock Backpack", Arrays.asList("§7§nLock the access to this backpack", "§7§n from other players when in your back.")).get();
-        ItemStack unlock = new ItemCreator(Material.WRITTEN_BOOK, "Unlock Backpack", Arrays.asList("§7§nUnlock the access to this backpack", "§7§n from other players when in your back.")).get();
-        ItemStack editUpgrades = new ItemCreator(Material.ANVIL, "Edit Upgrades").get();
-        ItemStack inputOutput = new ItemCreator(Material.HOPPER, "Input/Output").get();
+        ItemStack equipBackpack = new ItemCreator(Material.CHEST, "Equip Backpack").build();
+        ItemStack unequipBackpack = new ItemCreator(Material.ENDER_CHEST, "Unequip Backpack").build();
+        ItemStack close = new ItemCreator(Material.BARRIER, "Close").build();
+        ItemStack loremIpsum = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").build();
+        ItemStack rename = new ItemCreator(Material.NAME_TAG, "Rename Backpack").build();
+        ItemStack lock = new ItemCreator(Material.WRITABLE_BOOK, "Lock Backpack", Arrays.asList("§7§nLock the access to this backpack", "§7§n from other players when in your back.")).build();
+        ItemStack unlock = new ItemCreator(Material.WRITTEN_BOOK, "Unlock Backpack", Arrays.asList("§7§nUnlock the access to this backpack", "§7§n from other players when in your back.")).build();
+        ItemStack editUpgrades = new ItemCreator(Material.ANVIL, "Edit Upgrades").build();
 
         for(int i = getFreeUpgradesSlots(backPack.getType()); i < 54; i++){
             inv.setItem(i, loremIpsum);
@@ -61,31 +60,11 @@ public class InventoryBuilder {
             }
         }
 
-        inv.setItem(49, inputOutput);
         inv.setItem(36, editUpgrades);
         inv.setItem(52, rename);
         inv.setItem(45, close);
         return inv;
     }
-
-    public static Inventory inputOutputMenu(Player player){
-        Inventory inventory = Bukkit.createInventory(player, 27, "Input/Output");
-        ItemStack input = new ItemCreator(Material.HOPPER, "Input").get();
-        ItemStack output = new ItemCreator(Material.DROPPER, "Output").get();
-        ItemStack close = new ItemCreator(Material.BARRIER, "Close").get();
-        ItemStack loremIpsum = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").get();
-
-        for(int i = 0; i < 27; i++){
-            inventory.setItem(i, loremIpsum);
-        }
-
-        inventory.setItem(11, input);
-        inventory.setItem(15, output);
-        inventory.setItem(22, close);
-
-        return inventory;
-    }
-
     public static int getFreeUpgradesSlots(BackpackType type){
         switch (type){
             case LEATHER: return 2;

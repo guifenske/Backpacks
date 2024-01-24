@@ -201,9 +201,6 @@ public class BackPack extends UpgradeManager {
             setUpgrades(upgradesIds);
         }
 
-        if(config.isSet(s + ".input")) setUpgradeInputId(config.getInt(s + ".input"));
-        if(config.isSet(s + ".output")) setUpgradeInputId(config.getInt(s + ".output"));
-
         name = components.get(0);
         backpackType = BackpackType.valueOf(components.get(1));
         id = Integer.parseInt(s);
@@ -307,6 +304,15 @@ public class BackPack extends UpgradeManager {
         return list;
     }
 
+    public List<ItemStack> getStorageContentsSecondPageWithoutNulls() {
+        List<ItemStack> list = new ArrayList<>();
+        for(ItemStack itemStack : secondPage.getStorageContents()){
+            if(itemStack == null) continue;
+            list.add(itemStack);
+        }
+        return list;
+    }
+
     public ItemStack[] getStorageContentsFirstPage() {
         ItemStack[] array = firstPage.getStorageContents();
         int length = array.length;
@@ -333,9 +339,9 @@ public class BackPack extends UpgradeManager {
 
 
     public void setArrowsAndConfigOptionItems(){
-        ItemStack arrowLeft = new ItemCreator(Material.ARROW, "§aPrevious").get();
-        ItemStack arrowRight = new ItemCreator(Material.ARROW, "§aNext").get();
-        ItemStack config = new ItemCreator(Material.NETHER_STAR, "§6Config").get();
+        ItemStack arrowLeft = new ItemCreator(Material.ARROW, "§aPrevious").build();
+        ItemStack arrowRight = new ItemCreator(Material.ARROW, "§aNext").build();
+        ItemStack config = new ItemCreator(Material.NETHER_STAR, "§6Config").build();
 
         firstPage.setItem(firstPageSize - 1, config);
         configItemsSpace = 1;

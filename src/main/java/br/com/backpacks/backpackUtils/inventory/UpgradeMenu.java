@@ -18,7 +18,7 @@ public class UpgradeMenu {
         Inventory inv = Bukkit.createInventory(player, 9, "Upgrades Menu");
 
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(player.getUniqueId()));
-        ItemStack item = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").get();
+        ItemStack item = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").build();
 
         for(int i = InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i < 9; i++){
             inv.setItem(i, item);

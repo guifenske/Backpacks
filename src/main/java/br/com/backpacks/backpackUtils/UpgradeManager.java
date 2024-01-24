@@ -11,25 +11,6 @@ import java.util.Set;
 
 public class UpgradeManager {
     private Set<Integer> upgrades = new HashSet<>();
-    private int upgradeInputId = -1;
-
-    public int getUpgradeInputId() {
-        return upgradeInputId;
-    }
-
-    public void setUpgradeInputId(int upgradeInputId) {
-        this.upgradeInputId = upgradeInputId;
-    }
-
-    public int getUpgradeOutputId() {
-        return upgradeOutputId;
-    }
-
-    public void setUpgradeOutputId(int upgradeOutputId) {
-        this.upgradeOutputId = upgradeOutputId;
-    }
-
-    private int upgradeOutputId = -1;
 
     public List<Integer> getUpgradesIds() {
         if(upgrades.isEmpty())  return new ArrayList<>();

@@ -42,10 +42,10 @@ public class CollectorUpgrade extends Upgrade {
     }
 
     public void updateInventory(){
-        ItemStack enable = new ItemCreator(Material.GREEN_STAINED_GLASS_PANE, "Enable").get();
-        ItemStack disable = new ItemCreator(Material.RED_STAINED_GLASS_PANE, "Disable").get();
-        ItemStack mode0 = new ItemCreator(Material.LIME_STAINED_GLASS_PANE, "Mode 0: Only pickup backpack stored items").get();
-        ItemStack mode1 = new ItemCreator(Material.BLUE_STAINED_GLASS_PANE, "Mode 1: Store all pickup-ed items into the backpack").get();
+        ItemStack enable = new ItemCreator(Material.GREEN_STAINED_GLASS_PANE, "Enable").build();
+        ItemStack disable = new ItemCreator(Material.RED_STAINED_GLASS_PANE, "Disable").build();
+        ItemStack mode0 = new ItemCreator(Material.LIME_STAINED_GLASS_PANE, "Mode 0: Only pickup backpack stored items").build();
+        ItemStack mode1 = new ItemCreator(Material.BLUE_STAINED_GLASS_PANE, "Mode 1: Store all pickup-ed items into the backpack").build();
 
         if(this.isEnabled()) {
             this.inventory.setItem(11, disable);

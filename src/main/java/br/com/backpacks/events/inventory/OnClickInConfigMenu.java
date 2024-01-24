@@ -141,13 +141,6 @@ public class OnClickInConfigMenu implements Listener {
                 player.closeInventory();
             }
 
-            case 49 -> {
-                BackpackAction.removeAction(player);
-                player.openInventory(InventoryBuilder.inputOutputMenu(player));
-                BackpackAction.setAction(player, BackpackAction.Action.IOMENU);
-                event.setCancelled(true);
-            }
-
             case 51 -> {
                 if (event.getClickedInventory().getItem(53) == null) return;
                 backPack.setLocked(!backPack.isLocked());

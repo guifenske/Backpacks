@@ -10,12 +10,6 @@ public class BackpackAction {
     public enum Action {
         CONFIGMENU,
 
-        IOMENU,
-
-        EDITINGINPUT,
-
-        EDITINGOUTPUT,
-
         NOTHING,
 
         RENAMING,
