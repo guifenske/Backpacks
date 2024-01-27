@@ -3,11 +3,8 @@ package br.com.backpacks.events.upgrades;
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackAction;
-import br.com.backpacks.backpackUtils.inventory.ItemCreator;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -15,7 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -46,7 +42,7 @@ public class Jukebox implements Listener {
     @EventHandler
     private void onClick(InventoryClickEvent event){
         if(BackpackAction.getAction(event.getWhoClicked()) != BackpackAction.Action.UPGJUKEBOX) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
+        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
         boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK());
         if(backPack == null){
             event.setCancelled(true);
@@ -107,6 +103,7 @@ public class Jukebox implements Listener {
 
         currentJukebox.get(event.getPlayer().getUniqueId()).setDiscs(disks);
         currentJukebox.get(event.getPlayer().getUniqueId()).updateInventory();
+        currentJukebox.get(event.getPlayer().getUniqueId()).getViewers().remove((Player) event.getPlayer());
         currentJukebox.remove(event.getPlayer().getUniqueId());
         BackpackAction.removeAction((Player) event.getPlayer());
         BukkitTask task = new BukkitRunnable() {

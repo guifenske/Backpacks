@@ -10,7 +10,10 @@ import br.com.backpacks.upgrades.VillagersFollowUpgrade;
 import com.destroystokyo.paper.entity.Pathfinder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Mob;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -79,6 +82,6 @@ public class VillagersFollow implements Listener {
 
     private static void moveToPlayer(Mob entity, Player player){
         Pathfinder pathfinder = entity.getPathfinder();
-        pathfinder.moveTo(player, 0.55);
+        pathfinder.moveTo(player, 0.55D);
     }
 }

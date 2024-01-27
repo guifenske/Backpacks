@@ -1,8 +1,6 @@
 package br.com.backpacks.backpackUtils;
 
 import br.com.backpacks.Main;
-import org.bukkit.Bukkit;
-import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -66,16 +64,6 @@ public class UpgradeManager {
     public static boolean canUpgradeStack(Upgrade upgrade){
         switch (upgrade.getType()){
             case FURNACE, CRAFTING, ENCAPSULATE -> {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static boolean upgradeInventoryIsAdvanced(Upgrade upgrade){
-        switch (upgrade.getType()){
-            case FURNACE, SMOKER, BLAST_FURNACE, JUKEBOX -> {
                 return true;
             }
         }

@@ -2,6 +2,8 @@ package br.com.backpacks.backpackUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -74,6 +76,14 @@ public class BackPackManager {
 
     public HashMap<UUID, Integer> getCurrentBackpackId() {
         return currentBackpackId;
+    }
+
+    public BackPack getPlayerCurrentBackpack(Player player){
+        return backpacks.get(currentBackpackId.get(player.getUniqueId()));
+    }
+
+    public BackPack getPlayerCurrentBackpack(HumanEntity player){
+        return backpacks.get(currentBackpackId.get(player.getUniqueId()));
     }
 
     public BackPack getBackpackFromId(int id) {

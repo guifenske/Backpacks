@@ -72,6 +72,7 @@ public class BackpackBreak implements Listener {
         BackPack backPack = Main.backPackManager.getBackpacks().get(id);
         if(!backPack.getUpgradesIds().isEmpty()){
             for(int i : backPack.getUpgradesIds()){
+                backPack.getUpgradesIds().remove(i);
                 Main.backPackManager.getUpgradeHashMap().remove(i);
             }
         }
@@ -98,6 +99,7 @@ public class BackpackBreak implements Listener {
         BackPack backPack = Main.backPackManager.getBackpacks().get(id);
         if(!backPack.getUpgradesIds().isEmpty()){
             for(int i : backPack.getUpgradesIds()){
+                backPack.getUpgradesIds().remove(i);
                 Main.backPackManager.getUpgradeHashMap().remove(i);
             }
         }

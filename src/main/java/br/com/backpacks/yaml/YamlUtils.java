@@ -4,7 +4,6 @@ import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.backpackUtils.UpgradeType;
-import br.com.backpacks.events.upgrades.Furnace;
 import br.com.backpacks.upgrades.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -94,33 +93,31 @@ public final class YamlUtils {
             Main.backPackManager.setUpgradesIds(Integer.parseInt(i));
             switch (type){
                 case FURNACE, BLAST_FURNACE, SMOKER -> {
-                    Main.getMain().debugMessage("loading furnace: " + i);
                     FurnaceUpgrade upgrade = new FurnaceUpgrade(Integer.parseInt(i), type);
                     if(config.isSet(i + ".furnace.result")){
                         upgrade.setResult(config.getItemStack(i + ".furnace.result"));
                     }
+                    Main.getMain().debugMessage("loading furnace: step one " + i);
                     if(config.isSet(i + ".furnace.fuel")){
                         upgrade.setFuel(config.getItemStack(i + ".furnace.fuel"));
                     }
+                    Main.getMain().debugMessage("loading furnace: step two " + i);
                     if(config.isSet(i + ".furnace.smelting")){
                         upgrade.setSmelting(config.getItemStack(i + ".furnace.smelting"));
                     }
+                    Main.getMain().debugMessage("loading furnace: step three " + i);
                     if(config.isSet(i + ".furnace.operation")){
                         upgrade.setOperation(config.getInt(i + ".furnace.operation"));
                     }
+                    Main.getMain().debugMessage("loading furnace: step four " + i);
                     if(config.isSet(i + ".furnace.maxoperation")){
                         upgrade.setLastMaxOperation(config.getInt(i + ".furnace.maxoperation"));
                     }
+                    Main.getMain().debugMessage("furnace loaded: " + i);
                     upgrade.updateInventory();
                     Main.backPackManager.getUpgradeHashMap().put(Integer.parseInt(i), upgrade);
-
-                    if(upgrade.canTick()){
-                        Furnace.shouldTick.add(upgrade.getId());
-                        Furnace.tick(upgrade);
-                    }
                 }
                 case JUKEBOX -> {
-                    Main.getMain().debugMessage("loading jukebox: " + i);
                     JukeboxUpgrade upgrade = new JukeboxUpgrade(Integer.parseInt(i));
                     if(config.isSet(i + ".jukebox.discs")){
                         List<ItemStack> discs = new ArrayList<>();
@@ -135,11 +132,11 @@ public final class YamlUtils {
                     if(config.isSet(i + ".jukebox.sound")){
                         upgrade.setSound(Sound.valueOf(config.getString(i + ".jukebox.sound")));
                     }
+                    Main.getMain().debugMessage("loading jukebox: " + i);
                     upgrade.updateInventory();
                     Main.backPackManager.getUpgradeHashMap().put(Integer.parseInt(i), upgrade);
                 }
                 case COLLECTOR -> {
-                    Main.getMain().debugMessage("loading collector: " + i);
                     CollectorUpgrade upgrade = new CollectorUpgrade(Integer.parseInt(i));
                     if(config.isSet(i + ".collector.enabled")){
                         upgrade.setEnabled(config.getBoolean(i + ".collector.enabled"));
@@ -147,20 +144,20 @@ public final class YamlUtils {
                     if(config.isSet(i + ".collector.mode")){
                         upgrade.setMode(config.getInt(i + ".collector.mode"));
                     }
+                    Main.getMain().debugMessage("loading collector: " + i);
                     upgrade.updateInventory();
                     Main.backPackManager.getUpgradeHashMap().put(Integer.parseInt(i), upgrade);
                 }
                 case VILLAGERSFOLLOW -> {
-                    Main.getMain().debugMessage("loading villagers follow: " + i);
                     VillagersFollowUpgrade upgrade = new VillagersFollowUpgrade(Integer.parseInt(i));
                     if (config.isSet(i + ".villager.enabled")) {
                         upgrade.setEnabled(config.getBoolean(i + ".villager.enabled"));
                     }
+                    Main.getMain().debugMessage("loading villagers follow: " + i);
                     upgrade.updateInventory();
                     Main.backPackManager.getUpgradeHashMap().put(Integer.parseInt(i), upgrade);
                 }
                 case AUTOFEED -> {
-                    Main.getMain().debugMessage("loading auto feed: " + i);
                     AutoFeedUpgrade upgrade = new AutoFeedUpgrade(Integer.parseInt(i));
                     if(config.isSet(i + ".autofeed.enabled")){
                         upgrade.setEnabled(config.getBoolean(i + ".autofeed.enabled"));
@@ -168,6 +165,7 @@ public final class YamlUtils {
                     if(config.isSet(i + ".autofeed.items")){
                         upgrade.setItems((List<ItemStack>) config.getList(i + ".autofeed.items"));
                     }
+                    Main.getMain().debugMessage("loading auto feed: " + i);
                     upgrade.updateInventory();
                     Main.backPackManager.getUpgradeHashMap().put(Integer.parseInt(i), upgrade);
                 }
@@ -192,6 +190,7 @@ public final class YamlUtils {
             backPack.setIsBlock(false);
             if(config.isSet(i + ".loc")){
                 backPack.setLocation(deserializeLocation(config.getStringList(i + ".loc")));
+                backPack.setIsBlock(true);
                 Main.backPackManager.getBackpacksPlacedLocations().put(backPack.getLocation(), backPack.getId());
             }
             Main.getMain().debugMessage("Loading backpack " + backPack.getName() + " with id " + backPack.getId());

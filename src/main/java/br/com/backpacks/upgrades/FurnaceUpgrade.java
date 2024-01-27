@@ -1,24 +1,37 @@
 package br.com.backpacks.upgrades;
 
+import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.backpackUtils.UpgradeType;
+import br.com.backpacks.events.upgrades.Furnace;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 public class FurnaceUpgrade extends Upgrade {
     private ItemStack result;
     private ItemStack fuel;
     private ItemStack smelting;
     private int lastMaxOperation = -1;
+    private final Inventory inventory;
 
-    public Inventory getInventory() {
-        return inventory;
+    public int getCookTime() {
+        return cookTime;
     }
 
-    private Inventory inventory;
+    public void setCookTime(int cookTime) {
+        this.cookTime = cookTime;
+    }
+
+    private final int cookTimeMultiplier;
+
+    private int cookTime = 0;
 
     public int getLastMaxOperation() {
         return lastMaxOperation;
@@ -59,12 +72,15 @@ public class FurnaceUpgrade extends Upgrade {
         if(upgradeType.equals(UpgradeType.BLAST_FURNACE)){
             this.cookItemTicks = 100L;
             this.inventory = Bukkit.createInventory(null, InventoryType.BLAST_FURNACE);
+            this.cookTimeMultiplier = 2;
         }   else if(upgradeType.equals(UpgradeType.SMOKER)){
             this.cookItemTicks = 100L;
             this.inventory = Bukkit.createInventory(null, InventoryType.SMOKER);
+            this.cookTimeMultiplier = 2;
         }   else{
             this.cookItemTicks = 200L;
             this.inventory = Bukkit.createInventory(null, InventoryType.FURNACE);
+            this.cookTimeMultiplier = 2;
         }
         updateInventory();
     }
@@ -106,5 +122,40 @@ public class FurnaceUpgrade extends Upgrade {
         inventory.setItem(0, getSmelting());
         inventory.setItem(1, getFuel());
         inventory.setItem(2, getResult());
+    }
+
+    public void startSubTick(){
+        BukkitTask task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if(!Furnace.shouldTick.contains(getId())){
+                    setCookTime(0);
+                    for(Player player : getViewers()){
+                        InventoryView view = player.getOpenInventory();
+                        view.setProperty(InventoryView.Property.COOK_TIME, getCookTime());
+                    }
+                    this.cancel();
+                    return;
+                }
+                if(!canTick()){
+                    setCookTime(0);
+                    for(Player player : getViewers()){
+                        InventoryView view = player.getOpenInventory();
+                        view.setProperty(InventoryView.Property.COOK_TIME, getCookTime());
+                    }
+                    this.cancel();
+                    return;
+                }
+                setCookTime(getCookTime() + cookTimeMultiplier);
+                for(Player player : getViewers()){
+                    InventoryView view = player.getOpenInventory();
+                    view.setProperty(InventoryView.Property.COOK_TIME, getCookTime());
+                }
+            }
+        }.runTaskTimer(Main.getMain(), 0L, 2L);
+    }
+
+    public Inventory getInventory(){
+        return inventory;
     }
 }

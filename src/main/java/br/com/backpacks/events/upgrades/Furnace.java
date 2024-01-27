@@ -18,25 +18,22 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockCookEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.BlastingRecipe;
-import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.SmokingRecipe;
+import org.bukkit.inventory.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Furnace implements Listener {
-    public static final HashMap<UUID, FurnaceUpgrade> currentFurnace = new HashMap<>();
+    public static final ConcurrentHashMap<Player, FurnaceUpgrade> currentFurnace = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Integer, BukkitTask> taskMap = new ConcurrentHashMap<>();
     public static final IntOpenHashSet shouldTick = new IntOpenHashSet();
     private static final EnumMap<Material, Fuel> fuelMap = new EnumMap<>(Material.class);
     private static final EnumMap<Fuel, Integer> maxOperationsMap = new EnumMap<>(Fuel.class);
+    private static final HashMap<Material, Float> expPointsPerMaterial = new HashMap<>();
 
     static {
         fuelMap.put(Material.COAL, Fuel.COAL);
@@ -151,89 +148,154 @@ public class Furnace implements Listener {
         maxOperationsMap.put(Fuel.SIGN, 1);
         maxOperationsMap.put(Fuel.HANGING_SIGN, 1);
         maxOperationsMap.put(Fuel.SAPLING, 1);
+
+        expPointsPerMaterial.put(Material.DRIED_KELP, 0.1f);
+        expPointsPerMaterial.put(Material.COAL, 0.1f);
+        expPointsPerMaterial.put(Material.GREEN_DYE, 0.1f);
+        expPointsPerMaterial.put(Material.STONE, 0.1f);
+        expPointsPerMaterial.put(Material.SMOOTH_STONE, 0.1f);
+        expPointsPerMaterial.put(Material.CRACKED_STONE_BRICKS, 0.1f);
+        expPointsPerMaterial.put(Material.DEEPSLATE, 0.1f);
+        expPointsPerMaterial.put(Material.CRACKED_DEEPSLATE_BRICKS, 0.1f);
+        expPointsPerMaterial.put(Material.CRACKED_DEEPSLATE_TILES, 0.1f);
+        expPointsPerMaterial.put(Material.SMOOTH_SANDSTONE, 0.1f);
+        expPointsPerMaterial.put(Material.SMOOTH_RED_SANDSTONE, 0.1f);
+        expPointsPerMaterial.put(Material.CRACKED_NETHER_BRICKS, 0.1f);
+        expPointsPerMaterial.put(Material.SMOOTH_BASALT, 0.1f);
+        expPointsPerMaterial.put(Material.CRACKED_POLISHED_BLACKSTONE_BRICKS, 0.1f);
+        expPointsPerMaterial.put(Material.SMOOTH_QUARTZ, 0.1f);
+        expPointsPerMaterial.put(Material.GRAY_GLAZED_TERRACOTTA, 0.1f);
+        expPointsPerMaterial.put(Material.GREEN_GLAZED_TERRACOTTA, 0.1f);
+        expPointsPerMaterial.put(Material.BLACK_GLAZED_TERRACOTTA, 0.1f);
+        expPointsPerMaterial.put(Material.BLUE_GLAZED_TERRACOTTA, 0.1f);
+        expPointsPerMaterial.put(Material.BROWN_GLAZED_TERRACOTTA, 0.1f);
+        expPointsPerMaterial.put(Material.CYAN_GLAZED_TERRACOTTA, 0.1f);
+        expPointsPerMaterial.put(Material.LIGHT_BLUE_GLAZED_TERRACOTTA, 0.1f);
+        expPointsPerMaterial.put(Material.LIGHT_GRAY_GLAZED_TERRACOTTA, 0.1f);
+        expPointsPerMaterial.put(Material.LIME_GLAZED_TERRACOTTA, 0.1f);
+        expPointsPerMaterial.put(Material.YELLOW_GLAZED_TERRACOTTA, 0.1f);
+        expPointsPerMaterial.put(Material.WHITE_GLAZED_TERRACOTTA, 0.1f);
+        expPointsPerMaterial.put(Material.ORANGE_GLAZED_TERRACOTTA, 0.1f);
+        expPointsPerMaterial.put(Material.MAGENTA_GLAZED_TERRACOTTA, 0.1f);
+        expPointsPerMaterial.put(Material.PINK_GLAZED_TERRACOTTA, 0.1f);
+        expPointsPerMaterial.put(Material.PURPLE_GLAZED_TERRACOTTA, 0.1f);
+        expPointsPerMaterial.put(Material.RED_GLAZED_TERRACOTTA, 0.1f);
+        expPointsPerMaterial.put(Material.POPPED_CHORUS_FRUIT, 0.1f);
+        expPointsPerMaterial.put(Material.LIME_DYE, 0.1f);
+        expPointsPerMaterial.put(Material.NETHER_BRICK, 0.1f);
+        expPointsPerMaterial.put(Material.IRON_NUGGET, 0.1f);
+        expPointsPerMaterial.put(Material.GLASS, 0.1f);
+        expPointsPerMaterial.put(Material.GOLD_NUGGET, 0.1f);
+        expPointsPerMaterial.put(Material.SPONGE, 0.15f);
+        expPointsPerMaterial.put(Material.CHARCOAL, 0.15f);
+        expPointsPerMaterial.put(Material.LAPIS_LAZULI, 0.2f);
+        expPointsPerMaterial.put(Material.REDSTONE, 0.3f);
+        expPointsPerMaterial.put(Material.BRICK, 0.35f);
+        expPointsPerMaterial.put(Material.TERRACOTTA, 0.35f);
+        expPointsPerMaterial.put(Material.BAKED_POTATO, 0.35f);
+        expPointsPerMaterial.put(Material.COOKED_BEEF, 0.35f);
+        expPointsPerMaterial.put(Material.COOKED_PORKCHOP, 0.35f);
+        expPointsPerMaterial.put(Material.COOKED_CHICKEN, 0.35f);
+        expPointsPerMaterial.put(Material.COOKED_MUTTON, 0.35f);
+        expPointsPerMaterial.put(Material.COOKED_COD, 0.35f);
+        expPointsPerMaterial.put(Material.COOKED_RABBIT, 0.35f);
+        expPointsPerMaterial.put(Material.COOKED_SALMON, 0.35f);
+        expPointsPerMaterial.put(Material.IRON_INGOT, 0.7f);
+        expPointsPerMaterial.put(Material.COPPER_INGOT, 0.7f);
+        expPointsPerMaterial.put(Material.GOLD_INGOT, 1.0f);
+        expPointsPerMaterial.put(Material.EMERALD, 1.0f);
+        expPointsPerMaterial.put(Material.DIAMOND, 1.0f);
+        expPointsPerMaterial.put(Material.NETHERITE_SCRAP, 2.0f);
     }
 
     public static void tick(FurnaceUpgrade upgrade){
         if(upgrade == null){
             return;
         }
+        upgrade.startSubTick();
 
-        Location tempLocation = new Location(Bukkit.getWorld("world"), ThreadLocalRandom.current().nextInt(-500, 500), -70,  ThreadLocalRandom.current().nextInt(-500, 500));
-        Block tempBlock = tempLocation.getBlock();
-        tempBlock.setType(Material.FURNACE);
-        Main.getMain().debugMessage("creating block loc: " + tempLocation);
-
-        upgrade.setBoundFakeBlock(tempBlock);
-        BukkitTask task = new BukkitRunnable() {
-            @Override
-            public void run() {
-                if(!upgrade.canTick()){
-                    this.cancel();
-                    taskMap.remove(upgrade.getId());
-                    upgrade.getBoundFakeBlock().getLocation().getBlock().setType(Material.AIR);
-                    upgrade.setBoundFakeBlock(null);
-                    return;
-                }
-
-                Fuel fuel = getFuelFromItem(upgrade.getFuel());
-                int maxOperation = getMaxOperationsFromFuel(fuel);
-                if(fuel.equals(Fuel.NOTHING)){
-                    if(upgrade.getLastMaxOperation() > 0 && upgrade.getOperation() > 0){
-                        if(upgrade.getLastMaxOperation() == 100 && upgrade.getFuel().getType().equals(Material.BUCKET)){
-                            maxOperation = 100;
-                            upgrade.setLastMaxOperation(maxOperation);
-                        }   else    maxOperation = upgrade.getLastMaxOperation();
-                    }   else   return;
-                }
-
-                if(upgrade.getLastMaxOperation() > 0){
-                    if(upgrade.getLastMaxOperation() != maxOperation) upgrade.setOperation(0);
-                }
-
-                upgrade.setLastMaxOperation(maxOperation);
-
-                if(upgrade.getResult() != null){
-                    if(upgrade.getResult().getAmount() == upgrade.getResult().getMaxStackSize()){
-                        upgrade.setOperation(0);
+        Main.getMain().getThreadBackpacks().getExecutor().submit(() ->{
+            if(upgrade.getBoundFakeBlock() == null) {
+                Location tempLocation = new Location(Bukkit.getWorld("world"), ThreadLocalRandom.current().nextInt(-900, 900), -70, ThreadLocalRandom.current().nextInt(-900, 900));
+                Block tempBlock = tempLocation.getBlock();
+                upgrade.setBoundFakeBlock(tempBlock);
+            }
+            BukkitTask task = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if(!upgrade.canTick()){
+                        this.cancel();
+                        upgrade.setBoundFakeBlock(null);
                         return;
                     }
-                }
 
-                if(upgrade.getType().equals(UpgradeType.SMOKER)){
-                    smokerLogic((SmokerUpgrade) upgrade, maxOperation);
-                }   else if(upgrade.getType().equals(UpgradeType.BLAST_FURNACE)){
-                    blastFurnaceLogic((BlastFurnaceUpgrade) upgrade, maxOperation);
-                }   else {
-                    furnaceLogic(upgrade, maxOperation);
-                }
-            }
-        }.runTaskTimer(Main.getMain(), upgrade.getCookItemTicks(), upgrade.getCookItemTicks());
+                    Fuel fuel = getFuelFromItem(upgrade.getFuel());
+                    int maxOperation = getMaxOperationsFromFuel(fuel);
+                    if(fuel.equals(Fuel.NOTHING)){
+                        if(upgrade.getLastMaxOperation() > 0 && upgrade.getOperation() > 0){
+                            if(upgrade.getLastMaxOperation() == 100 && upgrade.getFuel().getType().equals(Material.BUCKET)){
+                                maxOperation = 100;
+                                upgrade.setLastMaxOperation(maxOperation);
+                            }   else    maxOperation = upgrade.getLastMaxOperation();
+                        }   else   return;
+                    }
 
-       taskMap.put(upgrade.getId(), task);
+                    if(upgrade.getLastMaxOperation() > 0){
+                        if(upgrade.getLastMaxOperation() != maxOperation) upgrade.setOperation(0);
+                    }
+
+                    upgrade.setLastMaxOperation(maxOperation);
+
+                    if(upgrade.getType().equals(UpgradeType.SMOKER)){
+                        smokerLogic((SmokerUpgrade) upgrade, maxOperation);
+                    }   else if(upgrade.getType().equals(UpgradeType.BLAST_FURNACE)){
+                        blastFurnaceLogic((BlastFurnaceUpgrade) upgrade, maxOperation);
+                    }   else {
+                        furnaceLogic(upgrade, maxOperation);
+                    }
+                }
+            }.runTaskTimer(Main.getMain(), upgrade.getCookItemTicks(), upgrade.getCookItemTicks());
+
+            taskMap.put(upgrade.getId(), task);
+        });
+
        Main.getMain().debugMessage("Starting furnace task for " + upgrade.getId() + "!");
     }
 
     @EventHandler
     private void onClick(InventoryClickEvent event){
         if(!BackpackAction.getAction((Player) event.getWhoClicked()).equals(BackpackAction.Action.UPGFURNACE)) return;
-        UUID id = event.getWhoClicked().getUniqueId();
+        Player player = (Player) event.getWhoClicked();
+
+        if(event.getRawSlot() == 2){
+            if(event.getCurrentItem() != null && currentFurnace.get(player).getResult().isSimilar(event.getCurrentItem())){
+                if(event.getCurrentItem().getAmount() * expPointsPerMaterial.getOrDefault(event.getCurrentItem().getType(), 0f) > 1){
+                    player.giveExp((int) (event.getCurrentItem().getAmount() * expPointsPerMaterial.getOrDefault(event.getCurrentItem().getType(), 0f)));
+                }   else{
+                    player.setExp(event.getCurrentItem().getAmount() * expPointsPerMaterial.getOrDefault(event.getCurrentItem().getType(), 0f));
+                }
+            }
+        }
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
-                currentFurnace.get(id).setFuel(event.getInventory().getItem(1));
-                currentFurnace.get(id).setSmelting(event.getInventory().getItem(0));
-                currentFurnace.get(id).setResult(event.getInventory().getItem(2));
-                if(!shouldTick.contains(currentFurnace.get(id).getId())) {
-                    if (currentFurnace.get(id).canTick()) {
-                        shouldTick.add(currentFurnace.get(id).getId());
-                        tick(currentFurnace.get(id));
+                currentFurnace.get(player).setFuel(event.getInventory().getItem(1));
+                currentFurnace.get(player).setSmelting(event.getInventory().getItem(0));
+                currentFurnace.get(player).setResult(event.getInventory().getItem(2));
+                if(!shouldTick.contains(currentFurnace.get(player).getId())) {
+                    if (currentFurnace.get(player).canTick()) {
+                        shouldTick.add(currentFurnace.get(player).getId());
+                        tick(currentFurnace.get(player));
                     }
                 }   else{
-                    if(!currentFurnace.get(id).canTick()){
-                        taskMap.get(currentFurnace.get(id).getId()).cancel();
-                        currentFurnace.get(id).getBoundFakeBlock().getLocation().getBlock().setType(Material.AIR);
-                        currentFurnace.get(id).setBoundFakeBlock(null);
-                        shouldTick.remove(currentFurnace.get(id).getId());
+                    if(!currentFurnace.get(player).canTick()){
+                        taskMap.get(currentFurnace.get(player).getId()).cancel();
+                        currentFurnace.get(player).setCookTime(0);
+                        player.getOpenInventory().setProperty(InventoryView.Property.COOK_TIME, 0);
+                        if(currentFurnace.get(player).getBoundFakeBlock() != null) {
+                            currentFurnace.get(player).setBoundFakeBlock(null);
+                        }
+                        shouldTick.remove(currentFurnace.get(player).getId());
                     }
                 }
             }
@@ -243,25 +305,27 @@ public class Furnace implements Listener {
     @EventHandler
     private void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction((Player) event.getPlayer()).equals(BackpackAction.Action.UPGFURNACE)) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
-        UUID id = event.getPlayer().getUniqueId();
+        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
+        Player player = (Player) event.getPlayer();
 
-        currentFurnace.get(id).setFuel(event.getInventory().getItem(1));
-        currentFurnace.get(id).setSmelting(event.getInventory().getItem(0));
-        currentFurnace.get(id).setResult(event.getInventory().getItem(2));
+        currentFurnace.get(player).setFuel(event.getInventory().getItem(1));
+        currentFurnace.get(player).setSmelting(event.getInventory().getItem(0));
+        currentFurnace.get(player).setResult(event.getInventory().getItem(2));
 
-        if(!currentFurnace.get(id).canTick()){
-            if(taskMap.containsKey(currentFurnace.get(id).getId())) {
-                taskMap.get(currentFurnace.get(id).getId()).cancel();
-                taskMap.remove(currentFurnace.get(id).getId());
+        if(!currentFurnace.get(player).canTick()){
+            if(taskMap.containsKey(currentFurnace.get(player).getId())) {
+                currentFurnace.get(player).setCookTime(0);
+                taskMap.get(currentFurnace.get(player).getId()).cancel();
+                taskMap.remove(currentFurnace.get(player).getId());
             }
-            currentFurnace.get(id).getBoundFakeBlock().getLocation().getBlock().setType(Material.AIR);
-            currentFurnace.get(id).setBoundFakeBlock(null);
-            shouldTick.remove(currentFurnace.get(id).getId());
-            currentFurnace.remove(id);
+            if(currentFurnace.get(player).getBoundFakeBlock() != null) {
+                currentFurnace.get(player).setBoundFakeBlock(null);
+            }
+            shouldTick.remove(currentFurnace.get(player).getId());
+            currentFurnace.get(player).getViewers().remove(player);
+            currentFurnace.remove(player);
         }
 
-        BackpackAction.removeAction((Player) event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
@@ -305,65 +369,29 @@ public class Furnace implements Listener {
     private static void furnaceLogic(FurnaceUpgrade upgrade, int maxOperation){
         for(FurnaceRecipe recipe : Main.getMain().getFurnaceRecipes()){
             if(!recipe.getInputChoice().test(upgrade.getSmelting())) continue;
+            ItemStack result;
+            if(upgrade.getResult() != null) result = upgrade.getResult().clone();
+            else    result = recipe.getResult();
 
-            if(upgrade.getResult() == null){
-                BlockCookEvent e = new BlockCookEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), recipe.getResult());
-                Bukkit.getPluginManager().callEvent(e);
-
-                if(!e.isCancelled()) {
-                    if(upgrade.getOperation() == 0){
-                        if(maxOperation != 1)   upgrade.setOperation(1);
-                        if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                        else{
-                            if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
-                            else    upgrade.setFuel(upgrade.getFuel().subtract());
-                        }
-                    }
-                    else{
-                        if(upgrade.getOperation() >= maxOperation - 1){
-                            upgrade.setOperation(0);
-                            if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                            else{
-                                if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
-                                else    upgrade.setFuel(upgrade.getFuel().subtract());
-                            }
-                        }   else upgrade.setOperation(upgrade.getOperation() + 1);
-                    }
-                    upgrade.setResult(e.getResult());
-                    upgrade.setSmelting(e.getSource().subtract());
-                    upgrade.updateInventory();
-                }
-
-                return;
-            }
-
-            if(!upgrade.getResult().isSimilar(recipe.getResult())) return;
-            BlockCookEvent e = new BlockCookEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), upgrade.getResult());
+            BlockCookEvent e = new BlockCookEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), result);
             Bukkit.getPluginManager().callEvent(e);
 
             if(!e.isCancelled()) {
-                if (upgrade.getOperation() == 0) {
-                    if (maxOperation != 1) upgrade.setOperation(1);
-                    if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                    else {
-                        if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1)
-                            upgrade.setFuel(null);
-                        else upgrade.setFuel(upgrade.getFuel().subtract());
+                if(upgrade.getResult() != null && !upgrade.getResult().isSimilar(e.getResult())) return;
+                if(upgrade.getOperation() == 0 || upgrade.getOperation() >= maxOperation - 1){
+                    if(upgrade.getFuel() == null) upgrade.setOperation(0);
+                    else upgrade.setOperation(1);
+                    if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                    else{
+                        if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
+                        else    upgrade.setFuel(upgrade.getFuel().subtract());
                     }
-                } else {
-                    if (upgrade.getOperation() >= maxOperation - 1) {
-                        upgrade.setOperation(0);
-                        if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                        else {
-                            if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1)
-                                upgrade.setFuel(null);
-                            else upgrade.setFuel(upgrade.getFuel().subtract());
-                        }
-                    } else upgrade.setOperation(upgrade.getOperation() + 1);
-                }
+                } else upgrade.setOperation(upgrade.getOperation() + 1);
 
-                upgrade.setResult(e.getResult().add());
+                if(upgrade.getResult() != null) upgrade.setResult(e.getResult().add());
+                else   upgrade.setResult(e.getResult());
                 upgrade.setSmelting(e.getSource().subtract());
+                upgrade.setCookTime(0);
                 upgrade.updateInventory();
             }
             return;
@@ -373,65 +401,29 @@ public class Furnace implements Listener {
     private static void smokerLogic(SmokerUpgrade upgrade, int maxOperation){
         for(SmokingRecipe recipe : Main.getMain().getSmokingRecipes()){
             if(!recipe.getInputChoice().test(upgrade.getSmelting())) continue;
+            ItemStack result;
+            if(upgrade.getResult() != null) result = upgrade.getResult().clone();
+            else    result = recipe.getResult();
 
-            if(upgrade.getResult() == null){
-                BlockCookEvent e = new BlockCookEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), recipe.getResult());
-                Bukkit.getPluginManager().callEvent(e);
-
-                if(!e.isCancelled()) {
-                    if(upgrade.getOperation() == 0){
-                        if(maxOperation != 1)   upgrade.setOperation(1);
-                        if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                        else{
-                            if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
-                            else    upgrade.setFuel(upgrade.getFuel().subtract());
-                        }
-                    }
-                    else{
-                        if(upgrade.getOperation() >= maxOperation - 1){
-                            upgrade.setOperation(0);
-                            if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                            else{
-                                if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
-                                else    upgrade.setFuel(upgrade.getFuel().subtract());
-                            }
-                        }   else upgrade.setOperation(upgrade.getOperation() + 1);
-                    }
-                    upgrade.setResult(e.getResult());
-                    upgrade.setSmelting(e.getSource().subtract());
-                    upgrade.updateInventory();
-                }
-
-                return;
-            }
-
-            if(!upgrade.getResult().isSimilar(recipe.getResult())) return;
-            BlockCookEvent e = new BlockCookEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), upgrade.getResult());
+            BlockCookEvent e = new BlockCookEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), result);
             Bukkit.getPluginManager().callEvent(e);
 
             if(!e.isCancelled()) {
-                if (upgrade.getOperation() == 0) {
-                    if (maxOperation != 1) upgrade.setOperation(1);
-                    if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                    else {
-                        if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1)
-                            upgrade.setFuel(null);
-                        else upgrade.setFuel(upgrade.getFuel().subtract());
+                if(upgrade.getResult() != null && !upgrade.getResult().isSimilar(e.getResult())) return;
+                if(upgrade.getOperation() == 0 || upgrade.getOperation() >= maxOperation - 1){
+                    if(upgrade.getFuel() == null) upgrade.setOperation(0);
+                    else upgrade.setOperation(1);
+                    if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                    else{
+                        if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
+                        else    upgrade.setFuel(upgrade.getFuel().subtract());
                     }
-                } else {
-                    if (upgrade.getOperation() >= maxOperation - 1) {
-                        upgrade.setOperation(0);
-                        if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                        else {
-                            if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1)
-                                upgrade.setFuel(null);
-                            else upgrade.setFuel(upgrade.getFuel().subtract());
-                        }
-                    } else upgrade.setOperation(upgrade.getOperation() + 1);
-                }
+                } else upgrade.setOperation(upgrade.getOperation() + 1);
 
-                upgrade.setResult(e.getResult().add());
+                if(upgrade.getResult() != null) upgrade.setResult(e.getResult().add());
+                else   upgrade.setResult(e.getResult());
                 upgrade.setSmelting(e.getSource().subtract());
+                upgrade.setCookTime(0);
                 upgrade.updateInventory();
             }
             return;
@@ -440,65 +432,29 @@ public class Furnace implements Listener {
     private static void blastFurnaceLogic(BlastFurnaceUpgrade upgrade, int maxOperation){
         for(BlastingRecipe recipe : Main.getMain().getBlastingRecipes()){
             if(!recipe.getInputChoice().test(upgrade.getSmelting())) continue;
+            ItemStack result;
+            if(upgrade.getResult() != null) result = upgrade.getResult().clone();
+            else    result = recipe.getResult();
 
-            if(upgrade.getResult() == null){
-                BlockCookEvent e = new BlockCookEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), recipe.getResult());
-                Bukkit.getPluginManager().callEvent(e);
-
-                if(!e.isCancelled()) {
-                    if(upgrade.getOperation() == 0){
-                        if(maxOperation != 1)   upgrade.setOperation(1);
-                        if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                        else{
-                            if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
-                            else    upgrade.setFuel(upgrade.getFuel().subtract());
-                        }
-                    }
-                    else{
-                        if(upgrade.getOperation() >= maxOperation - 1){
-                            upgrade.setOperation(0);
-                            if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                            else{
-                                if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
-                                else    upgrade.setFuel(upgrade.getFuel().subtract());
-                            }
-                        }   else upgrade.setOperation(upgrade.getOperation() + 1);
-                    }
-                    upgrade.setResult(e.getResult());
-                    upgrade.setSmelting(e.getSource().subtract());
-                    upgrade.updateInventory();
-                }
-
-                return;
-            }
-
-            if(!upgrade.getResult().isSimilar(recipe.getResult())) return;
-            BlockCookEvent e = new BlockCookEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), upgrade.getResult());
+            BlockCookEvent e = new BlockCookEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), result);
             Bukkit.getPluginManager().callEvent(e);
 
             if(!e.isCancelled()) {
-                if (upgrade.getOperation() == 0) {
-                    if (maxOperation != 1) upgrade.setOperation(1);
-                    if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                    else {
-                        if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1)
-                            upgrade.setFuel(null);
-                        else upgrade.setFuel(upgrade.getFuel().subtract());
+                if(upgrade.getResult() != null && !upgrade.getResult().isSimilar(e.getResult())) return;
+                if(upgrade.getOperation() == 0 || upgrade.getOperation() >= maxOperation - 1){
+                    if(upgrade.getFuel() == null) upgrade.setOperation(0);
+                    else upgrade.setOperation(1);
+                    if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                    else{
+                        if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
+                        else    upgrade.setFuel(upgrade.getFuel().subtract());
                     }
-                } else {
-                    if (upgrade.getOperation() >= maxOperation - 1) {
-                        upgrade.setOperation(0);
-                        if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                        else {
-                            if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1)
-                                upgrade.setFuel(null);
-                            else upgrade.setFuel(upgrade.getFuel().subtract());
-                        }
-                    } else upgrade.setOperation(upgrade.getOperation() + 1);
-                }
+                } else upgrade.setOperation(upgrade.getOperation() + 1);
 
-                upgrade.setResult(e.getResult().add());
+                if(upgrade.getResult() != null) upgrade.setResult(e.getResult().add());
+                else   upgrade.setResult(e.getResult());
                 upgrade.setSmelting(e.getSource().subtract());
+                upgrade.setCookTime(0);
                 upgrade.updateInventory();
             }
             return;

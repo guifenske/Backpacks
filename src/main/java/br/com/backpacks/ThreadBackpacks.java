@@ -7,13 +7,14 @@ import br.com.backpacks.commands.Bpgive;
 import br.com.backpacks.commands.BpgiveID;
 import br.com.backpacks.events.ConfigItemsEvents;
 import br.com.backpacks.events.HopperEvents;
+import br.com.backpacks.events.ServerLoadEvent;
 import br.com.backpacks.events.backpacks.*;
-import br.com.backpacks.events.custom.BackpackCookItemListener;
 import br.com.backpacks.events.inventory.*;
 import br.com.backpacks.events.player.*;
 import br.com.backpacks.events.upgrades.*;
 import br.com.backpacks.yaml.YamlUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,9 +41,6 @@ public class ThreadBackpacks {
 
     public void registerAll() {
         executor.submit(() -> {
-            //custom
-            Bukkit.getPluginManager().registerEvents(new BackpackCookItemListener(), Main.getMain());
-
             //player
             Bukkit.getPluginManager().registerEvents(new PlayerDeathEvent(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new CraftBackpack(), Main.getMain());
@@ -66,6 +64,7 @@ public class ThreadBackpacks {
             //others
             Bukkit.getPluginManager().registerEvents(new HopperEvents(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new ConfigItemsEvents(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new ServerLoadEvent(), Main.getMain());
 
             //Upgrades
             Bukkit.getPluginManager().registerEvents(new CraftingTable(), Main.getMain());
@@ -86,7 +85,16 @@ public class ThreadBackpacks {
         });
     }
 
+    private void cancelAllTasks(){
+        for(BukkitTask task : Bukkit.getScheduler().getPendingTasks()){
+            if(task.getOwner().equals(Main.getMain())){
+                task.cancel();
+            }
+        }
+    }
+
     public void saveAll() throws IOException {
+        cancelAllTasks();
 
         Future<Void> future = executor.submit(() -> {
             YamlUtils.saveBackpacks();
@@ -119,6 +127,5 @@ public class ThreadBackpacks {
         } catch (Exception ignored) {
 
         }
-        VillagersFollow.tick();
     }
 }

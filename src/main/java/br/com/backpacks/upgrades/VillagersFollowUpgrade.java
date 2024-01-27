@@ -39,7 +39,7 @@ public class VillagersFollowUpgrade extends Upgrade {
         ItemStack disable = new ItemCreator(Material.RED_STAINED_GLASS_PANE, "Disable").build();
 
         if(this.enabled){
-            inventory.setItem(13, enable);
-        }   else inventory.setItem(13, disable);
+            inventory.setItem(13, disable);
+        }   else inventory.setItem(13, enable);
     }
 }

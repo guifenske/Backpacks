@@ -5,17 +5,17 @@ import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackAction;
 import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.backpackUtils.UpgradeType;
-import br.com.backpacks.backpackUtils.inventory.ItemCreator;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.upgrades.AutoFeedUpgrade;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
@@ -67,7 +67,6 @@ public class AutoFeed implements Listener {
 
     @EventHandler
     private static void onClick(InventoryClickEvent event){
-        if(event.getClickedInventory() == null) return;
         if(!BackpackAction.getAction((Player) event.getWhoClicked()).equals(BackpackAction.Action.UPGAUTOFEED)) return;
         boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK());
         if(canUse)  canUse = Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()) == event.getWhoClicked().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER);
@@ -78,7 +77,7 @@ public class AutoFeed implements Listener {
             return;
         }
         if(event.getRawSlot() < 27 && !fillSlots.contains(event.getRawSlot()))  event.setCancelled(true);
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
+        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
         List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.AUTOFEED);
         AutoFeedUpgrade upgrade = (AutoFeedUpgrade) list.get(0);
 
@@ -111,6 +110,7 @@ public class AutoFeed implements Listener {
             foods.add(itemStack);
         }
         upgrade.setItems(foods);
+        upgrade.getViewers().remove((Player) event.getPlayer());
 
         BackpackAction.removeAction((Player) event.getPlayer());
         BukkitTask task = new BukkitRunnable() {

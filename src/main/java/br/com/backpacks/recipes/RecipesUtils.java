@@ -172,10 +172,9 @@ public class RecipesUtils {
         if(itemStack.getItemMeta().getPersistentDataContainer().get(new UpgradesRecipesNamespaces().getUPGRADEID(), PersistentDataType.INTEGER) != null){
             id = itemStack.getItemMeta().getPersistentDataContainer().get(new UpgradesRecipesNamespaces().getUPGRADEID(), PersistentDataType.INTEGER);
         }   else{
-            id = Main.backPackManager.getUpgradeHashMap().size() + 1;
+            id = Main.backPackManager.getUpgradesIds() + 1;
+            Main.backPackManager.setUpgradesIds(id);
         }
-
-        Main.getMain().debugMessage("id: " + id);
 
         if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getAutoFill(), PersistentDataType.INTEGER))
             return new Upgrade(UpgradeType.AUTOFILL, id);
