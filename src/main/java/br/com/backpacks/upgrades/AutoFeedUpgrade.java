@@ -8,7 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
+import java.util.HashMap;
 
 import static br.com.backpacks.events.upgrades.AutoFeed.fillSlots;
 
@@ -21,15 +21,10 @@ public class AutoFeedUpgrade extends Upgrade {
 
     private Inventory inventory;
 
-    public List<ItemStack> getItems() {
+    public HashMap<Integer, ItemStack> getItems() {
         return items;
     }
-
-    public void setItems(List<ItemStack> items) {
-        this.items = items;
-    }
-
-    private List<ItemStack> items;
+    private final HashMap<Integer, ItemStack> items = new HashMap<>();
 
     public AutoFeedUpgrade(int id){
         super(UpgradeType.AUTOFEED, id);
@@ -62,12 +57,9 @@ public class AutoFeedUpgrade extends Upgrade {
             inventory.setItem(10, enable);
         }
 
-        int i1 = 0;
         if(getItems() != null && !getItems().isEmpty()){
             for(int i : fillSlots){
-                if(i1 >= getItems().size()) break;
-                inventory.setItem(i, getItems().get(i1));
-                i1++;
+                inventory.setItem(i, getItems().get(i));
             }
         }
     }

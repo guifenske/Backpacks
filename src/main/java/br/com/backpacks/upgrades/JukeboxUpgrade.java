@@ -10,14 +10,13 @@ import org.bukkit.Sound;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 import static br.com.backpacks.events.upgrades.Jukebox.discsSlots;
 
 public class JukeboxUpgrade extends Upgrade {
 
-    private List<ItemStack> discs = new ArrayList<>();
+    private HashMap<Integer, ItemStack> discs = new HashMap<>();
     private ItemStack playing;
     private Boolean isPlaying;
     private Sound sound;
@@ -35,12 +34,8 @@ public class JukeboxUpgrade extends Upgrade {
         updateInventory();
     }
 
-    public List<ItemStack> getDiscs() {
+    public HashMap<Integer, ItemStack> getDiscs() {
         return discs;
-    }
-
-    public void setDiscs(List<ItemStack> discs) {
-        this.discs = discs;
     }
 
     public ItemStack getPlaying() {
@@ -70,19 +65,6 @@ public class JukeboxUpgrade extends Upgrade {
     public ItemStack getSoundFromName(String name) {
         return new ItemStack(Material.getMaterial(name));
     }
-
-    public List<String> serializeDiscs(){
-        List<String> list = new ArrayList<>();
-            for(ItemStack itemStack : getDiscs()){
-                if(itemStack == null){
-                    list.add(null);
-                    continue;
-                }
-                list.add(itemStack.getType().name());
-            }
-        return list;
-    }
-
     public void updateInventory(){
         ItemStack play = new ItemCreator(Material.GREEN_STAINED_GLASS_PANE, "Play Music").build();
         ItemStack stop = new ItemCreator(Material.RED_STAINED_GLASS_PANE, "Stop Music").build();
@@ -92,13 +74,8 @@ public class JukeboxUpgrade extends Upgrade {
             inventory.setItem(i, blank);
         }
 
-        int i1 = 0;
-        if(getDiscs() != null && !getDiscs().isEmpty()){
-            for (int i : discsSlots) {
-                if(i1 >= getDiscs().size()) break;
-                inventory.setItem(i, getDiscs().get(i1));
-                i1++;
-            }
+        for (int i : discsSlots) {
+            inventory.setItem(i, getDiscs().get(i));
         }
 
         inventory.setItem(10, play);

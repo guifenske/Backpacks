@@ -7,6 +7,7 @@ import br.com.backpacks.backpackUtils.UpgradeType;
 import br.com.backpacks.upgrades.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public final class YamlUtils {
 
@@ -58,15 +60,23 @@ public final class YamlUtils {
                 case JUKEBOX -> {
                     JukeboxUpgrade jukeboxUpgrade = (JukeboxUpgrade) upgrade;
                     Main.getMain().debugMessage("Saving jukebox upgrade " + jukeboxUpgrade.getId());
-                    if(jukeboxUpgrade.getDiscs() != null && !jukeboxUpgrade.getDiscs().isEmpty()) config.set(upgrade.getId() + ".jukebox.discs", jukeboxUpgrade.serializeDiscs());
+                    if(!jukeboxUpgrade.getDiscs().isEmpty()){
+                        for(int i : jukeboxUpgrade.getDiscs().keySet()){
+                            config.set(upgrade.getId() + ".jukebox.discs." + i, jukeboxUpgrade.getDiscs().get(i).getType().name());
+                        }
+                    }
                     if(jukeboxUpgrade.getPlaying() != null)    config.set(upgrade.getId() + ".jukebox.playing", jukeboxUpgrade.getPlaying().getType().name());
-                    if(jukeboxUpgrade.getSound() != null)  config.set(upgrade.getId() + ".jukebox.sound", jukeboxUpgrade.getSound().name());
+                    if(jukeboxUpgrade.getSound() != null)  config.set(upgrade.getId() + ".jukebox.sound", jukeboxUpgrade.getSound().name().toUpperCase());
                 }
                 case AUTOFEED -> {
                     AutoFeedUpgrade autoFeedUpgrade = (AutoFeedUpgrade) upgrade;
                     Main.getMain().debugMessage("Saving auto feed upgrade " + autoFeedUpgrade.getId());
                     config.set(upgrade.getId() + ".autofeed.enabled", autoFeedUpgrade.isEnabled());
-                    if(autoFeedUpgrade.getItems() != null && !autoFeedUpgrade.getItems().isEmpty()) config.set(upgrade.getId() + ".autofeed.items", autoFeedUpgrade.getItems());
+                    if(!autoFeedUpgrade.getItems().isEmpty()){
+                        for(int i : autoFeedUpgrade.getItems().keySet()){
+                            config.set(upgrade.getId() + ".autofeed.items." + i, autoFeedUpgrade.getItems().get(i));
+                        }
+                    }
                 }
                 case VILLAGERSFOLLOW -> {
                     VillagersFollowUpgrade followUpgrade = (VillagersFollowUpgrade) upgrade;
@@ -120,11 +130,10 @@ public final class YamlUtils {
                 case JUKEBOX -> {
                     JukeboxUpgrade upgrade = new JukeboxUpgrade(Integer.parseInt(i));
                     if(config.isSet(i + ".jukebox.discs")){
-                        List<ItemStack> discs = new ArrayList<>();
-                        for(String disc : config.getStringList(i + ".jukebox.discs")){
-                            discs.add(upgrade.getSoundFromName(disc));
+                        Set<String> keys = config.getConfigurationSection(i + ".jukebox.discs").getKeys(false);
+                        for(String s : keys){
+                            upgrade.getDiscs().put(Integer.parseInt(s), new ItemStack(Material.getMaterial(config.getString(i + ".jukebox.discs." + s))));
                         }
-                        upgrade.setDiscs(discs);
                     }
                     if(config.isSet(i + ".jukebox.playing")){
                         upgrade.setPlaying(upgrade.getSoundFromName(config.getString(i + ".jukebox.playing")));
@@ -162,9 +171,11 @@ public final class YamlUtils {
                     if(config.isSet(i + ".autofeed.enabled")){
                         upgrade.setEnabled(config.getBoolean(i + ".autofeed.enabled"));
                     }
-                    if(config.isSet(i + ".autofeed.items")){
-                        upgrade.setItems((List<ItemStack>) config.getList(i + ".autofeed.items"));
+                    Set<String> keys = config.getConfigurationSection(i + ".autofeed.items").getKeys(false);
+                    for(String s : keys){
+                        upgrade.getItems().put(Integer.parseInt(s), config.getItemStack(i + ".autofeed.items." + s));
                     }
+
                     Main.getMain().debugMessage("loading auto feed: " + i);
                     upgrade.updateInventory();
                     Main.backPackManager.getUpgradeHashMap().put(Integer.parseInt(i), upgrade);

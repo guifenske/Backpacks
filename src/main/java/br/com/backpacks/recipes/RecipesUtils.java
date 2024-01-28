@@ -248,45 +248,45 @@ public class RecipesUtils {
     private static List<String> getLore(Upgrade upgrade) {
         switch (upgrade.getType()) {
             case CRAFTING -> {
-                return Arrays.asList("§7Crafting Grid", "§7§nAllows you to craft items in the backpack.");
+                return Arrays.asList("§7Crafting Table Upgrade", "§7§nAllows you to craft items in the backpack.");
             }
 
             case JUKEBOX -> {
-                return Arrays.asList("§7Jukebox", "§7§nAllows you to play music discs in the backpack.");
+                return Arrays.asList("§7Jukebox Upgrade", "§7§nAllows you to play music discs in the backpack.");
             }
 
             case FURNACE -> {
-                return Arrays.asList("§7Furnace Grid", "§7§nAllows you to cook items in the backpack.");
+                return Arrays.asList("§7Furnace Upgrade", "§7§nAllows you to cook items in the backpack.");
             }
 
             case BLAST_FURNACE -> {
-                return Arrays.asList("§7Blast Furnace", "§7§nAllows you to cook ores in the backpack.");
+                return Arrays.asList("§7Blast Furnace Upgrade", "§7§nAllows you to cook ores in the backpack.");
             }
 
             case SMOKER -> {
-                return Arrays.asList("§7Smoker", "§7§nAllows you to cook food in the backpack.");
+                return Arrays.asList("§7Smoker Upgrade", "§7§nAllows you to cook food in the backpack.");
             }
 
             case VILLAGERSFOLLOW -> {
-                return Arrays.asList("§7Following Villagers", "§7§nAllows you to attract villagers when the backpack is equipped",
+                return Arrays.asList("§7Following Villagers Upgrade", "§7§nAllows you to attract villagers when the backpack is equipped",
                         "§7§n and you are holding an emerald block.");
             }
 
             case ENCAPSULATE -> {
-                return Arrays.asList("§7Encapsulate", "§7§nAllows you to store backpacks inside the backpack.");
+                return Arrays.asList("§7Encapsulate Upgrade", "§7§nAllows you to store backpacks inside the backpack.");
             }
 
             case COLLECTOR -> {
-                return Arrays.asList("§7Collector", "§7§nAllows you to collect items from the ground directly into your backpack."
+                return Arrays.asList("§7Collector Upgrade", "§7§nAllows you to collect items from the ground directly into your backpack."
                         , "§7§n§oThis upgrade only work if the backpack is being worn.");
             }
 
             case AUTOFEED -> {
-                return Arrays.asList("§7Auto Feed", "§7§nAllows the backpack to automatically eat the food stored in it.");
+                return Arrays.asList("§7Auto Feed Upgrade", "§7§nAllows the backpack to automatically eat the food stored in it.");
             }
 
             case UNBREAKABLE -> {
-                return Arrays.asList("§Unbreakable Upgrade", "§7§nMake the backpack unbreakable.");
+                return Arrays.asList("§Unbreakable Upgrade Upgrade", "§7§nMake the backpack unbreakable.");
             }
         }
 

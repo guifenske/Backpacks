@@ -17,7 +17,9 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.UUID;
 
 public class Jukebox implements Listener {
 
@@ -51,7 +53,7 @@ public class Jukebox implements Listener {
         if(canUse)  canUse = backPack.getId() == event.getWhoClicked().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER);
         if(!canUse){
             event.setCancelled(true);
-            event.getWhoClicked().sendMessage("§cYou can't use this upgrade because this backpack is not in your back.");
+            event.getWhoClicked().sendMessage(Main.PREFIX + "§cYou can't use this upgrade because this backpack is not in your back.");
             return;
         }
         if(blankSlots.contains(event.getRawSlot())) event.setCancelled(true);
@@ -80,31 +82,30 @@ public class Jukebox implements Listener {
     @EventHandler
     private void onClose(InventoryCloseEvent event){
         if(BackpackAction.getAction(event.getPlayer()) != BackpackAction.Action.UPGJUKEBOX) return;
-
-        List<ItemStack> disks = new ArrayList<>();
+        UUID uuid = event.getPlayer().getUniqueId();
 
         for(int i : discsSlots){
             if(event.getInventory().getItem(i) == null){
-                disks.add(null);
+                currentJukebox.get(uuid).getDiscs().put(i, null);
                 continue;
             }
             if(!checkDisk(event.getInventory().getItem(i))){
                 event.getPlayer().getInventory().addItem(event.getInventory().getItem(i));
-                disks.add(null);
+                event.getInventory().remove(event.getInventory().getItem(i));
+                currentJukebox.get(uuid).getDiscs().put(i, null);
                 continue;
             }
 
-            disks.add(event.getInventory().getItem(i));
+            currentJukebox.get(uuid).getDiscs().put(i, event.getInventory().getItem(i));
         }
 
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
+        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         if(event.getInventory().getItem(13) != null && !checkDisk(event.getInventory().getItem(13)))    event.getPlayer().getInventory().addItem(event.getInventory().getItem(13));
-        else currentJukebox.get(event.getPlayer().getUniqueId()).setPlaying(event.getInventory().getItem(13));
+        else currentJukebox.get(uuid).setPlaying(event.getInventory().getItem(13));
 
-        currentJukebox.get(event.getPlayer().getUniqueId()).setDiscs(disks);
-        currentJukebox.get(event.getPlayer().getUniqueId()).updateInventory();
-        currentJukebox.get(event.getPlayer().getUniqueId()).getViewers().remove((Player) event.getPlayer());
-        currentJukebox.remove(event.getPlayer().getUniqueId());
+        currentJukebox.get(uuid).updateInventory();
+        currentJukebox.get(uuid).getViewers().remove((Player) event.getPlayer());
+        currentJukebox.remove(uuid);
         BackpackAction.removeAction((Player) event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override

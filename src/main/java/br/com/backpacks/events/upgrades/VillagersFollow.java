@@ -56,7 +56,7 @@ public class VillagersFollow implements Listener {
         if(canUse) canUse = backPack.getId() == event.getWhoClicked().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER);
         if(!canUse){
             event.setCancelled(true);
-            event.getWhoClicked().sendMessage("§cYou can't use this upgrade because this backpack is not in your back.");
+            event.getWhoClicked().sendMessage(Main.PREFIX + "§cYou can't use this upgrade because this backpack is not in your back.");
             return;
         }
         List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.VILLAGERSFOLLOW);

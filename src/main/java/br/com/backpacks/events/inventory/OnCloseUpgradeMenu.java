@@ -21,7 +21,7 @@ public class OnCloseUpgradeMenu implements Listener {
     private void onClose(InventoryCloseEvent event){
         if(BackpackAction.getAction((Player) event.getPlayer()) != BackpackAction.Action.UPGMENU) return;
 
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
+        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         if(backPack == null) return;
 
         Set<Upgrade> upgrades = new HashSet<>();

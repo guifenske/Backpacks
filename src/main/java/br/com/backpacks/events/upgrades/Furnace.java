@@ -13,9 +13,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockCookEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -231,6 +229,16 @@ public class Furnace implements Listener {
                     }
 
                     Fuel fuel = getFuelFromItem(upgrade.getFuel());
+
+                    if(upgrade.getFuel() != null && fuel.equals(Fuel.NOTHING)){
+                        this.cancel();
+                        upgrade.setCookTime(0);
+                        upgrade.getSubTickTask().cancel();
+                        upgrade.setBoundFakeBlock(null);
+                        Main.getMain().getSLF4JLogger().warn("Furnace " + upgrade.getId() + " has a invalid fuel! Fuel = " + upgrade.getFuel() + ", if this is a bug or a valid fuel, report to the developer!");
+                        return;
+                    }
+
                     int maxOperation = getMaxOperationsFromFuel(fuel);
                     if(fuel.equals(Fuel.NOTHING)){
                         if(upgrade.getLastMaxOperation() > 0 && upgrade.getOperation() > 0){
@@ -374,18 +382,24 @@ public class Furnace implements Listener {
             if(upgrade.getResult() != null) result = upgrade.getResult().clone();
             else    result = recipe.getResult();
 
-            BlockCookEvent e = new BlockCookEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), result);
+            FurnaceSmeltEvent e = new FurnaceSmeltEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), result, recipe);
             Bukkit.getPluginManager().callEvent(e);
 
             if(!e.isCancelled()) {
                 if(upgrade.getResult() != null && !upgrade.getResult().isSimilar(e.getResult())) return;
                 if(upgrade.getOperation() == 0 || upgrade.getOperation() >= maxOperation - 1){
-                    if(upgrade.getFuel() == null) upgrade.setOperation(0);
-                    else upgrade.setOperation(1);
-                    if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                    else{
-                        if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
-                        else    upgrade.setFuel(upgrade.getFuel().subtract());
+                    FurnaceBurnEvent furnaceBurnEvent = new FurnaceBurnEvent(upgrade.getBoundFakeBlock(), upgrade.getFuel(), upgrade.getCookTime());
+                    Bukkit.getPluginManager().callEvent(furnaceBurnEvent);
+                    if(!furnaceBurnEvent.isCancelled()) {
+                        if (upgrade.getFuel() == null) upgrade.setOperation(0);
+                        else upgrade.setOperation(1);
+                        if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                        else {
+                            if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
+                            else upgrade.setFuel(upgrade.getFuel().subtract());
+                        }
+                    }   else{
+                        upgrade.setFuel(furnaceBurnEvent.getFuel());
                     }
                 } else upgrade.setOperation(upgrade.getOperation() + 1);
 
@@ -398,7 +412,13 @@ public class Furnace implements Listener {
                 upgrade.setSmelting(e.getSource().subtract());
                 upgrade.setCookTime(0);
                 upgrade.updateInventory();
+            }   else{
+                upgrade.setSmelting(e.getSource());
+                upgrade.setResult(e.getResult());
             }
+
+            FurnaceStartSmeltEvent e2 = new FurnaceStartSmeltEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), recipe, recipe.getCookingTime());
+            Bukkit.getPluginManager().callEvent(e2);
             return;
         }
     }
@@ -410,18 +430,24 @@ public class Furnace implements Listener {
             if(upgrade.getResult() != null) result = upgrade.getResult().clone();
             else    result = recipe.getResult();
 
-            BlockCookEvent e = new BlockCookEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), result);
+            FurnaceSmeltEvent e = new FurnaceSmeltEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), result, recipe);
             Bukkit.getPluginManager().callEvent(e);
 
             if(!e.isCancelled()) {
                 if(upgrade.getResult() != null && !upgrade.getResult().isSimilar(e.getResult())) return;
                 if(upgrade.getOperation() == 0 || upgrade.getOperation() >= maxOperation - 1){
-                    if(upgrade.getFuel() == null) upgrade.setOperation(0);
-                    else upgrade.setOperation(1);
-                    if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                    else{
-                        if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
-                        else    upgrade.setFuel(upgrade.getFuel().subtract());
+                    FurnaceBurnEvent furnaceBurnEvent = new FurnaceBurnEvent(upgrade.getBoundFakeBlock(), upgrade.getFuel(), upgrade.getCookTime());
+                    Bukkit.getPluginManager().callEvent(furnaceBurnEvent);
+                    if(!furnaceBurnEvent.isCancelled()) {
+                        if (upgrade.getFuel() == null) upgrade.setOperation(0);
+                        else upgrade.setOperation(1);
+                        if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                        else {
+                            if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
+                            else upgrade.setFuel(upgrade.getFuel().subtract());
+                        }
+                    }   else{
+                        upgrade.setFuel(furnaceBurnEvent.getFuel());
                     }
                 } else upgrade.setOperation(upgrade.getOperation() + 1);
 
@@ -434,7 +460,13 @@ public class Furnace implements Listener {
                 upgrade.setSmelting(e.getSource().subtract());
                 upgrade.setCookTime(0);
                 upgrade.updateInventory();
+            }   else{
+                upgrade.setSmelting(e.getSource());
+                upgrade.setResult(e.getResult());
             }
+
+            FurnaceStartSmeltEvent e2 = new FurnaceStartSmeltEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), recipe, recipe.getCookingTime());
+            Bukkit.getPluginManager().callEvent(e2);
             return;
         }
     }
@@ -445,18 +477,24 @@ public class Furnace implements Listener {
             if(upgrade.getResult() != null) result = upgrade.getResult().clone();
             else    result = recipe.getResult();
 
-            BlockCookEvent e = new BlockCookEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), result);
+            FurnaceSmeltEvent e = new FurnaceSmeltEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), result, recipe);
             Bukkit.getPluginManager().callEvent(e);
 
             if(!e.isCancelled()) {
                 if(upgrade.getResult() != null && !upgrade.getResult().isSimilar(e.getResult())) return;
                 if(upgrade.getOperation() == 0 || upgrade.getOperation() >= maxOperation - 1){
-                    if(upgrade.getFuel() == null) upgrade.setOperation(0);
-                    else upgrade.setOperation(1);
-                    if(maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
-                    else{
-                        if(upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
-                        else    upgrade.setFuel(upgrade.getFuel().subtract());
+                    FurnaceBurnEvent furnaceBurnEvent = new FurnaceBurnEvent(upgrade.getBoundFakeBlock(), upgrade.getFuel(), upgrade.getCookTime());
+                    Bukkit.getPluginManager().callEvent(furnaceBurnEvent);
+                    if(!furnaceBurnEvent.isCancelled()) {
+                        if (upgrade.getFuel() == null) upgrade.setOperation(0);
+                        else upgrade.setOperation(1);
+                        if (maxOperation == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
+                        else {
+                            if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
+                            else upgrade.setFuel(upgrade.getFuel().subtract());
+                        }
+                    }   else{
+                        upgrade.setFuel(furnaceBurnEvent.getFuel());
                     }
                 } else upgrade.setOperation(upgrade.getOperation() + 1);
 
@@ -469,7 +507,13 @@ public class Furnace implements Listener {
                 upgrade.setSmelting(e.getSource().subtract());
                 upgrade.setCookTime(0);
                 upgrade.updateInventory();
+            }   else{
+                upgrade.setSmelting(e.getSource());
+                upgrade.setResult(e.getResult());
             }
+
+            FurnaceStartSmeltEvent e2 = new FurnaceStartSmeltEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), recipe, recipe.getCookingTime());
+            Bukkit.getPluginManager().callEvent(e2);
             return;
         }
     }

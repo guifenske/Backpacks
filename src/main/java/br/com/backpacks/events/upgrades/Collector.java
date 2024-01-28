@@ -65,7 +65,7 @@ public class Collector implements Listener {
             if(canUse) canUse = backpack.getId() == event.getWhoClicked().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER);
             if(!canUse){
                 event.setCancelled(true);
-                event.getWhoClicked().sendMessage("§cYou can't use this upgrade because this backpack is not in your back.");
+                event.getWhoClicked().sendMessage(Main.PREFIX + "§cYou can't use this upgrade because this backpack is not in your back.");
                 return;
             }
             CollectorUpgrade upgrade = currentCollector.get(event.getWhoClicked().getUniqueId());

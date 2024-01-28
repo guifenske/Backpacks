@@ -23,7 +23,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -45,11 +44,12 @@ public class AutoFeed implements Listener {
             if(upgrade.getItems() == null || upgrade.getItems().isEmpty()) return;
             int need = 20 - player.getFoodLevel();
             if(event.getFoodLevel() < 20){
-                for(ItemStack itemStack : upgrade.getItems()){
+                for(int index : upgrade.getItems().keySet()){
+                    ItemStack itemStack = upgrade.getItems().get(index);
                     if(itemStack == null) continue;
                     if(need < hungerPointsPerFood(itemStack) && player.getHealth() == player.getMaxHealth()) continue;
 
-                    if(itemStack.getAmount() == 1) upgrade.getItems().remove(itemStack);
+                    if(itemStack.getAmount() == 1) upgrade.getItems().put(index, null);
                     else itemStack.subtract();
 
                     event.setCancelled(true);
@@ -73,7 +73,7 @@ public class AutoFeed implements Listener {
 
         if(!canUse){
             event.setCancelled(true);
-            event.getWhoClicked().sendMessage("§cYou can't use this upgrade because this backpack is not in your back.");
+            event.getWhoClicked().sendMessage(Main.PREFIX + "§cYou can't use this upgrade because this backpack is not in your back.");
             return;
         }
         if(event.getRawSlot() < 27 && !fillSlots.contains(event.getRawSlot()))  event.setCancelled(true);
@@ -93,23 +93,21 @@ public class AutoFeed implements Listener {
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
         List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.AUTOFEED);
         AutoFeedUpgrade upgrade = (AutoFeedUpgrade) list.get(0);
-        List<ItemStack> foods = new ArrayList<>();
 
         for (int i : fillSlots) {
             ItemStack itemStack = event.getInventory().getItem(i);
             if (itemStack == null){
-                foods.add(null);
+                upgrade.getItems().put(i, null);
                 continue;
             }
             if (!checkFood(itemStack)) {
                 event.getPlayer().getInventory().addItem(itemStack);
                 event.getInventory().remove(itemStack);
-                foods.add(null);
+                upgrade.getItems().put(i, null);
                 continue;
             }
-            foods.add(itemStack);
+            upgrade.getItems().put(i, itemStack);
         }
-        upgrade.setItems(foods);
         upgrade.getViewers().remove((Player) event.getPlayer());
 
         BackpackAction.removeAction((Player) event.getPlayer());
@@ -279,7 +277,7 @@ public class AutoFeed implements Listener {
 
             case CHORUS_FRUIT -> {
                 Location location = player.getLocation().add(ThreadLocalRandom.current().nextInt(-8, 8), 0, ThreadLocalRandom.current().nextInt(-8, 8));
-                player.teleportAsync(player.getWorld().getHighestBlockAt(location).getLocation().add(0, 1, 0)); //add one just to make sure the player don't get suffocated by a block
+                player.teleportAsync(player.getWorld().getHighestBlockAt(location).getLocation());
             }
         }
     }
