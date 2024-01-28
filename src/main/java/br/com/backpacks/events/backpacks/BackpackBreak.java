@@ -28,12 +28,12 @@ public class BackpackBreak implements Listener {
         event.setDropItems(false);
 
         BackPack backPack = Main.backPackManager.getBackpackFromLocation(event.getBlock().getLocation());
-        ItemStack backpack_item = RecipesUtils.getItemFromBackpack(backPack);
+        ItemStack backpackItem = RecipesUtils.getItemFromBackpack(backPack);
 
         backPack.setLocation(null);
         Location location = event.getBlock().getLocation();
         Main.backPackManager.getBackpacksPlacedLocations().remove(location);
-        event.getPlayer().getWorld().dropItemNaturally(location, backpack_item);
+        event.getPlayer().getWorld().dropItemNaturally(location, backpackItem);
     }
 
     @EventHandler
@@ -46,12 +46,12 @@ public class BackpackBreak implements Listener {
             block.setType(Material.AIR);
 
             BackPack backPack = Main.backPackManager.getBackpackFromLocation(block.getLocation());
-            ItemStack backpack_item = RecipesUtils.getItemFromBackpack(backPack);
+            ItemStack backpackItem = RecipesUtils.getItemFromBackpack(backPack);
 
             Location location = block.getLocation();
             backPack.setLocation(null);
             Main.backPackManager.getBackpacksPlacedLocations().remove(location);
-            block.getWorld().dropItemNaturally(location, backpack_item);
+            block.getWorld().dropItemNaturally(location, backpackItem);
             break;
        }
     }
@@ -72,7 +72,6 @@ public class BackpackBreak implements Listener {
         BackPack backPack = Main.backPackManager.getBackpacks().get(id);
         if(!backPack.getUpgradesIds().isEmpty()){
             for(int i : backPack.getUpgradesIds()){
-                backPack.getUpgradesIds().remove(i);
                 Main.backPackManager.getUpgradeHashMap().remove(i);
             }
         }
@@ -102,7 +101,6 @@ public class BackpackBreak implements Listener {
         }
         if(!backPack.getUpgradesIds().isEmpty()){
             for(int i : backPack.getUpgradesIds()){
-                backPack.getUpgradesIds().remove(i);
                 Main.backPackManager.getUpgradeHashMap().remove(i);
             }
         }

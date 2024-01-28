@@ -2,6 +2,8 @@ package br.com.backpacks;
 
 import br.com.backpacks.advancements.BackpacksAdvancements;
 import br.com.backpacks.advancements.NamespacesAdvacements;
+import br.com.backpacks.backupHandler.BackupHandler;
+import br.com.backpacks.backupHandler.ScheduledBackup;
 import br.com.backpacks.commands.Bdebug;
 import br.com.backpacks.commands.Bpgive;
 import br.com.backpacks.commands.BpgiveID;
@@ -19,24 +21,25 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class ThreadBackpacks {
-    public ExecutorService getExecutor() {
+    public ScheduledExecutorService getExecutor() {
         return executor;
     }
-    private ExecutorService executor;
+    private int maxThreads = 1;
+    private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
     public ThreadBackpacks() throws IOException {
         File file = new File(Main.getMain().getDataFolder().getCanonicalFile().getAbsolutePath() + "/config.yml");
-        executor = Executors.newSingleThreadExecutor();
         if(file.exists()){
             if(Main.getMain().getConfig().getInt("maxThreads") == 0){
                 return;
             }
-            executor = Executors.newFixedThreadPool(Main.getMain().getConfig().getInt("maxThreads"));
+            executor = Executors.newScheduledThreadPool(Main.getMain().getConfig().getInt("maxThreads"));
+            maxThreads = Main.getMain().getConfig().getInt("maxThreads");
         }
     }
 
@@ -130,5 +133,16 @@ public class ThreadBackpacks {
         } catch (Exception ignored) {
 
         }
+
+        Main.getMain().setBackupHandler(new BackupHandler(Main.getMain().getConfig().getInt("autobackup.keep")));
+
+        if(Main.getMain().getConfig().getBoolean("autobackup.enabled")){
+            if(Main.getMain().getConfig().isSet("autobackup.path")){
+                new ScheduledBackup(ScheduledBackup.IntervalType.valueOf(Main.getMain().getConfig().getString("autobackup.type")), Main.getMain().getConfig().getInt("autobackup.interval"), Main.getMain().getConfig().getString("autobackup.path")).startWithDelay();
+                return;
+            }
+            new ScheduledBackup(ScheduledBackup.IntervalType.valueOf(Main.getMain().getConfig().getString("autobackup.type")), Main.getMain().getConfig().getInt("autobackup.interval")).startWithDelay();
+        }
+
     }
 }

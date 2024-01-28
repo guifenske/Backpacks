@@ -1,6 +1,7 @@
 package br.com.backpacks;
 
 import br.com.backpacks.backpackUtils.BackPackManager;
+import br.com.backpacks.backupHandler.BackupHandler;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
 import org.bukkit.Bukkit;
@@ -67,8 +68,19 @@ public final class Main extends JavaPlugin {
         Main.back = back;
     }
 
+    private BackupHandler backupHandler;
+
+    public BackupHandler getBackupHandler() {
+        return backupHandler;
+    }
+
+    public void setBackupHandler(BackupHandler backupHandler) {
+        this.backupHandler = backupHandler;
+    }
+
     @Override
     public void onEnable() {
+        saveDefaultConfig();
         String version = Bukkit.getBukkitVersion().split("-")[0];
         if(!version.contains("1.20")){
             Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§cThis plugin at the moment is only compatible with the 1.20.x versions.");
@@ -76,9 +88,11 @@ public final class Main extends JavaPlugin {
             return;
         }
         setMain(this);
-        saveDefaultConfig();
 
-        if(getConfig().getBoolean("debug"))  debugMode = true;
+        if(getConfig().isSet("debug") && getConfig().getBoolean("debug")){
+            debugMode = true;
+            Main.getMain().debugMessage("Starting plugin...");
+        }
 
         try {
             threadBackpacks = new ThreadBackpacks();
@@ -95,6 +109,8 @@ public final class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         Main.getMain().getLogger().info("Saving backpacks.");
+        saveConfig();
+        reloadConfig();
 
         try {
             threadBackpacks.saveAll();

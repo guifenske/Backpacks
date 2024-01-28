@@ -2,3 +2,14 @@
 maxThreads: 1
 
 debug: false
+
+autobackup:
+  enabled: true
+  #the type of backup to use. Valid values are: MINUTES, HOURS, SECONDS
+  type: MINUTES
+  #interval
+  interval: 10
+  #number of backups files to keep
+  keep: 5
+  #the path to create all the backups, default being on BackPacks/backups, remove the '#' to change the path.
+  #path: DEFAULT
