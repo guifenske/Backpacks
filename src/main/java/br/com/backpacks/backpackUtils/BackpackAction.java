@@ -28,6 +28,8 @@ public class BackpackAction {
 
         UPGCOLLECTOR,
 
+        BPLIST,
+
         OPENED;
     }
 

@@ -5,6 +5,7 @@ import br.com.backpacks.advancements.NamespacesAdvacements;
 import br.com.backpacks.commands.Bdebug;
 import br.com.backpacks.commands.Bpgive;
 import br.com.backpacks.commands.BpgiveID;
+import br.com.backpacks.commands.Bplist;
 import br.com.backpacks.events.ConfigItemsEvents;
 import br.com.backpacks.events.HopperEvents;
 import br.com.backpacks.events.ServerLoadEvent;
@@ -65,6 +66,7 @@ public class ThreadBackpacks {
             Bukkit.getPluginManager().registerEvents(new HopperEvents(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new ConfigItemsEvents(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new ServerLoadEvent(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new Bplist(), Main.getMain());
 
             //Upgrades
             Bukkit.getPluginManager().registerEvents(new CraftingTable(), Main.getMain());
@@ -81,6 +83,7 @@ public class ThreadBackpacks {
             Main.getMain().getCommand("bdebug").setExecutor(new Bdebug());
             Main.getMain().getCommand("bpgive").setExecutor(new Bpgive());
             Main.getMain().getCommand("bpgiveid").setExecutor(new BpgiveID());
+            Main.getMain().getCommand("bplist").setExecutor(new Bplist());
             return null;
         });
     }
