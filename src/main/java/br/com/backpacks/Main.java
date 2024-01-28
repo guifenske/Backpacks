@@ -69,6 +69,12 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        String version = Bukkit.getBukkitVersion().split("-")[0];
+        if(!version.contains("1.20")){
+            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§cThis plugin at the moment is only compatible with the 1.20.x versions.");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
         setMain(this);
         saveDefaultConfig();
 
