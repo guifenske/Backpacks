@@ -24,13 +24,5 @@ public enum UpgradeType {
 
     LIQUIDTANK,
 
-    STACKUPGRADE2X,
-
-    STACKUPGRADE4X,
-
-    STACKUPGRADE8X,
-
-    STACKUPGRADE16X;
-
-
+    UNBREAKABLE
 }

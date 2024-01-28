@@ -72,11 +72,11 @@ public class FurnaceUpgrade extends Upgrade {
         if(upgradeType.equals(UpgradeType.BLAST_FURNACE)){
             this.cookItemTicks = 100L;
             this.inventory = Bukkit.createInventory(null, InventoryType.BLAST_FURNACE);
-            this.cookTimeMultiplier = 2;
+            this.cookTimeMultiplier = 4;
         }   else if(upgradeType.equals(UpgradeType.SMOKER)){
             this.cookItemTicks = 100L;
             this.inventory = Bukkit.createInventory(null, InventoryType.SMOKER);
-            this.cookTimeMultiplier = 2;
+            this.cookTimeMultiplier = 4;
         }   else{
             this.cookItemTicks = 200L;
             this.inventory = Bukkit.createInventory(null, InventoryType.FURNACE);
@@ -84,6 +84,12 @@ public class FurnaceUpgrade extends Upgrade {
         }
         updateInventory();
     }
+
+    public BukkitTask getSubTickTask() {
+        return subTickTask;
+    }
+
+    private BukkitTask subTickTask = null;
 
     public ItemStack getResult() {
         return result;
@@ -125,25 +131,13 @@ public class FurnaceUpgrade extends Upgrade {
     }
 
     public void startSubTick(){
-        BukkitTask task = new BukkitRunnable() {
+        subTickTask = new BukkitRunnable() {
             @Override
             public void run() {
                 if(!Furnace.shouldTick.contains(getId())){
-                    setCookTime(0);
-                    for(Player player : getViewers()){
-                        InventoryView view = player.getOpenInventory();
-                        view.setProperty(InventoryView.Property.COOK_TIME, getCookTime());
-                    }
-                    this.cancel();
                     return;
                 }
                 if(!canTick()){
-                    setCookTime(0);
-                    for(Player player : getViewers()){
-                        InventoryView view = player.getOpenInventory();
-                        view.setProperty(InventoryView.Property.COOK_TIME, getCookTime());
-                    }
-                    this.cancel();
                     return;
                 }
                 setCookTime(getCookTime() + cookTimeMultiplier);

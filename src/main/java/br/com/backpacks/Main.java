@@ -6,29 +6,40 @@ import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.SmokingRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public final class Main extends JavaPlugin {
     private static Main back;
-    private final List<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
-    private final List<SmokingRecipe> smokingRecipes = new ArrayList<>();
+    private List<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
+
+    public void setSmokingRecipes(List<SmokingRecipe> smokingRecipes) {
+        this.smokingRecipes = smokingRecipes;
+    }
+
+    private List<SmokingRecipe> smokingRecipes = new ArrayList<>();
 
     public List<SmokingRecipe> getSmokingRecipes() {
         return smokingRecipes;
+    }
+
+    public void setFurnaceRecipes(List<FurnaceRecipe> recipes){
+        this.furnaceRecipes = recipes;
     }
 
     public List<BlastingRecipe> getBlastingRecipes() {
         return blastingRecipes;
     }
 
-    private final List<BlastingRecipe> blastingRecipes = new ArrayList<>();
+    public void setBlastingRecipes(List<BlastingRecipe> blastingRecipes) {
+        this.blastingRecipes = blastingRecipes;
+    }
+
+    private List<BlastingRecipe> blastingRecipes = new ArrayList<>();
     public List<FurnaceRecipe> getFurnaceRecipes() {
         return furnaceRecipes;
     }
@@ -104,45 +115,29 @@ public final class Main extends JavaPlugin {
 
     private void registerRecipes(){
         //Backpacks
-        Bukkit.addRecipe(new RecipesNamespaces().leather_backpack_recipe());
-        Bukkit.addRecipe(new RecipesNamespaces().iron_backpack_recipe());
-        Bukkit.addRecipe(new RecipesNamespaces().diamond_backpack_recipe());
-        Bukkit.addRecipe(new RecipesNamespaces().netherite_backpack_recipe());
-        Bukkit.addRecipe(new RecipesNamespaces().gold_backpack_recipe());
-        Bukkit.addRecipe(new RecipesNamespaces().amethyst_backpack_recipe());
-        Bukkit.addRecipe(new RecipesNamespaces().lapis_backpack_recipe());
+        Bukkit.addRecipe(new RecipesNamespaces().leatherBackpackRecipe());
+        Bukkit.addRecipe(new RecipesNamespaces().ironBackpackRecipe());
+        Bukkit.addRecipe(new RecipesNamespaces().diamondBackpackRecipe());
+        Bukkit.addRecipe(new RecipesNamespaces().netheriteBackpackRecipe());
+        Bukkit.addRecipe(new RecipesNamespaces().goldBackpackRecipe());
+        Bukkit.addRecipe(new RecipesNamespaces().amethystBackpackRecipe());
+        Bukkit.addRecipe(new RecipesNamespaces().lapisBackpackRecipe());
         Bukkit.addRecipe(new RecipesNamespaces().driedBackpackRecipe());
 
 
         //Upgrades
       //  Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeAutoFill());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeAutoFeed());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeJukebox());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeFurnaceGrid());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getAutoFeedRecipe());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getJukeboxRecipe());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getFurnaceRecipe());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getSmokerRecipe());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getBlastFurnaceRecipe());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeCraftingGrid());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeFollowingVillagers());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getCraftingTableRecipe());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getFollowingVillagersRecipe());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getEncapsulateRecipe());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getCollectorRecipe());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getUnbreakableUpgradeRecipe());
         //Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeLiquidTank());
-
-        Iterator<Recipe> iterator = Bukkit.recipeIterator();
-
-        while (iterator.hasNext()){
-            Recipe recipe = iterator.next();
-            if(!(recipe instanceof FurnaceRecipe)){
-                if(recipe instanceof SmokingRecipe){
-                    smokingRecipes.add((SmokingRecipe) recipe);
-                    continue;
-                }   else if (recipe instanceof BlastingRecipe){
-                    blastingRecipes.add((BlastingRecipe) recipe);
-                    continue;
-                }
-                continue;
-            }
-            furnaceRecipes.add((FurnaceRecipe) recipe);
-        }
     }
 
 }

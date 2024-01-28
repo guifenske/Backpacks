@@ -3,7 +3,6 @@ package br.com.backpacks.recipes;
 import br.com.backpacks.Main;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -87,7 +86,7 @@ public class RecipesNamespaces {
 
     private final NamespacedKey NAMESPACE_NETHERITE_BACKPACK = new NamespacedKey(Main.getMain(), "netheritebackpack");
 
-    public Recipe leather_backpack_recipe() {
+    public Recipe leatherBackpackRecipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -107,7 +106,7 @@ public class RecipesNamespaces {
         return recipe;
     }
 
-    public Recipe iron_backpack_recipe() {
+    public Recipe ironBackpackRecipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -127,7 +126,7 @@ public class RecipesNamespaces {
         return recipe;
     }
 
-    public Recipe gold_backpack_recipe() {
+    public Recipe goldBackpackRecipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -147,7 +146,7 @@ public class RecipesNamespaces {
         return recipe;
     }
 
-    public Recipe lapis_backpack_recipe() {
+    public Recipe lapisBackpackRecipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -167,7 +166,7 @@ public class RecipesNamespaces {
         return recipe;
     }
 
-    public Recipe amethyst_backpack_recipe() {
+    public Recipe amethystBackpackRecipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -187,7 +186,7 @@ public class RecipesNamespaces {
         return recipe;
     }
 
-    public Recipe diamond_backpack_recipe() {
+    public Recipe diamondBackpackRecipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -207,7 +206,7 @@ public class RecipesNamespaces {
         return recipe;
     }
 
-    public Recipe netherite_backpack_recipe() {
+    public Recipe netheriteBackpackRecipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 

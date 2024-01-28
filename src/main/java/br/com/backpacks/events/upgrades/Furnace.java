@@ -4,9 +4,7 @@ import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackAction;
 import br.com.backpacks.backpackUtils.UpgradeType;
-import br.com.backpacks.upgrades.BlastFurnaceUpgrade;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
-import br.com.backpacks.upgrades.SmokerUpgrade;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -224,8 +222,11 @@ public class Furnace implements Listener {
                 @Override
                 public void run() {
                     if(!upgrade.canTick()){
+                        upgrade.getSubTickTask().cancel();
+                        upgrade.setCookTime(0);
                         this.cancel();
                         upgrade.setBoundFakeBlock(null);
+                        Main.getMain().debugMessage("Stopping furnace task for " + upgrade.getId() + "!");
                         return;
                     }
 
@@ -247,9 +248,9 @@ public class Furnace implements Listener {
                     upgrade.setLastMaxOperation(maxOperation);
 
                     if(upgrade.getType().equals(UpgradeType.SMOKER)){
-                        smokerLogic((SmokerUpgrade) upgrade, maxOperation);
+                        smokerLogic(upgrade, maxOperation);
                     }   else if(upgrade.getType().equals(UpgradeType.BLAST_FURNACE)){
-                        blastFurnaceLogic((BlastFurnaceUpgrade) upgrade, maxOperation);
+                        blastFurnaceLogic(upgrade, maxOperation);
                     }   else {
                         furnaceLogic(upgrade, maxOperation);
                     }
@@ -390,6 +391,10 @@ public class Furnace implements Listener {
 
                 if(upgrade.getResult() != null) upgrade.setResult(e.getResult().add());
                 else   upgrade.setResult(e.getResult());
+                if(e.getSource().getAmount() == 1){
+                    taskMap.get(upgrade.getId()).cancel();
+                    upgrade.getSubTickTask().cancel();
+                }
                 upgrade.setSmelting(e.getSource().subtract());
                 upgrade.setCookTime(0);
                 upgrade.updateInventory();
@@ -398,7 +403,7 @@ public class Furnace implements Listener {
         }
     }
 
-    private static void smokerLogic(SmokerUpgrade upgrade, int maxOperation){
+    private static void smokerLogic(FurnaceUpgrade upgrade, int maxOperation){
         for(SmokingRecipe recipe : Main.getMain().getSmokingRecipes()){
             if(!recipe.getInputChoice().test(upgrade.getSmelting())) continue;
             ItemStack result;
@@ -422,6 +427,10 @@ public class Furnace implements Listener {
 
                 if(upgrade.getResult() != null) upgrade.setResult(e.getResult().add());
                 else   upgrade.setResult(e.getResult());
+                if(e.getSource().getAmount() == 1){
+                    taskMap.get(upgrade.getId()).cancel();
+                    upgrade.getSubTickTask().cancel();
+                }
                 upgrade.setSmelting(e.getSource().subtract());
                 upgrade.setCookTime(0);
                 upgrade.updateInventory();
@@ -429,7 +438,7 @@ public class Furnace implements Listener {
             return;
         }
     }
-    private static void blastFurnaceLogic(BlastFurnaceUpgrade upgrade, int maxOperation){
+    private static void blastFurnaceLogic(FurnaceUpgrade upgrade, int maxOperation){
         for(BlastingRecipe recipe : Main.getMain().getBlastingRecipes()){
             if(!recipe.getInputChoice().test(upgrade.getSmelting())) continue;
             ItemStack result;
@@ -453,6 +462,10 @@ public class Furnace implements Listener {
 
                 if(upgrade.getResult() != null) upgrade.setResult(e.getResult().add());
                 else   upgrade.setResult(e.getResult());
+                if(e.getSource().getAmount() == 1){
+                    taskMap.get(upgrade.getId()).cancel();
+                    upgrade.getSubTickTask().cancel();
+                }
                 upgrade.setSmelting(e.getSource().subtract());
                 upgrade.setCookTime(0);
                 upgrade.updateInventory();

@@ -95,6 +95,16 @@ public class BackPack extends UpgradeManager {
 
     private boolean isWorn = false;
 
+    public boolean isUnbreakable() {
+        return isUnbreakable;
+    }
+
+    public void setUnbreakable(boolean unbreakable) {
+        isUnbreakable = unbreakable;
+    }
+
+    private boolean isUnbreakable = false;
+
     public String getName() {
         return name;
     }
@@ -103,8 +113,6 @@ public class BackPack extends UpgradeManager {
         this.name = name;
         Inventory newFirstPage = Bukkit.createInventory(null, firstPageSize, name);
         newFirstPage.setStorageContents(firstPage.getStorageContents());
-
-
         firstPage = newFirstPage;
 
         if(secondPageSize > 0){

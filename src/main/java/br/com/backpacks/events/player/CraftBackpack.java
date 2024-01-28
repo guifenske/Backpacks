@@ -36,8 +36,8 @@ public class CraftBackpack implements Listener {
                     }
                 }
                 case FURNACE, SMOKER, BLAST_FURNACE -> {
-                    if(!event.getWhoClicked().hasDiscoveredRecipe(new UpgradesRecipesNamespaces().getFurnaceGrid())){
-                        event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getFurnaceGrid());
+                    if(!event.getWhoClicked().hasDiscoveredRecipe(new UpgradesRecipesNamespaces().getFurnace())){
+                        event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getFurnace());
                     }
                 }
                 case JUKEBOX, NOTE_BLOCK -> {
@@ -63,7 +63,7 @@ public class CraftBackpack implements Listener {
 
         int oldId = -1;
 
-        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getFurnaceGrid())){
+        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getFurnace())){
             player.discoverRecipe(new UpgradesRecipesNamespaces().getSMOKER());
             player.discoverRecipe(new UpgradesRecipesNamespaces().getBLASTFURNACE());
             return;
