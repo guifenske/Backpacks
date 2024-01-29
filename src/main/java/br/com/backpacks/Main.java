@@ -88,10 +88,10 @@ public final class Main extends JavaPlugin {
             return;
         }
         setMain(this);
-
         if(getConfig().getBoolean("debug")){
             debugMode = true;
         }
+        UpdateChecker.checkForUpdates();
 
         try {
             threadBackpacks = new ThreadBackpacks();

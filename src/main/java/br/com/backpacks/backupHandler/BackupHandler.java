@@ -7,6 +7,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +22,7 @@ public class BackupHandler {
         return path;
     }
 
-    private String path;
+    private final String path;
 
     public BackupHandler(int keepBackups, String path) {
         this.keepBackups = keepBackups;
@@ -29,20 +31,8 @@ public class BackupHandler {
 
     public boolean removeBackup(String name){
         File file = new File(path + "/" + name);
-        getBackups().remove(name);
         return file.delete();
     }
-
-    public List<String> getBackups() {
-        return backups;
-    }
-
-    public void setBackups(List<String> backups) {
-        this.backups = backups;
-    }
-
-    private List<String> backups = new ArrayList<>();
-
 
     public void backup(String path) throws IOException, InvalidConfigurationException {
         Path source;
@@ -72,10 +62,9 @@ public class BackupHandler {
             Main.getMain().getServer().getPluginManager().disablePlugin(Main.getMain());
             return;
         }
-
+        Instant start = Instant.now();
         source.toFile().mkdir();
 
-        Main.getMain().debugMessage("Starting backup...");
         File backpackFile = new File(path + "/backpacks.yml");
         File upgradeFile = new File(path + "/upgrades.yml");
         YamlConfiguration yaml = new YamlConfiguration();
@@ -89,8 +78,10 @@ public class BackupHandler {
         yaml2.load(upgrades);
         yaml2.save(upgradeFile);
 
-        String nameZip = ZipUtils.zipAll(backpackFile.toPath(), upgradeFile.toPath(), path);
-        Main.getMain().debugMessage("Backup complete!");
+        ZipUtils.zipAll(backpackFile.toPath(), upgradeFile.toPath(), path);
+        Instant finish = Instant.now();
+        long time = Duration.between(start, finish).toMillis();
+        Main.getMain().debugMessage("Backup completed in " + time + " ms!");
         if(getNumberOfFilesInPath(source) > keepBackups){
             List<String> names = new ArrayList<>();
             File[] files = source.toFile().listFiles();
@@ -99,21 +90,27 @@ public class BackupHandler {
             //remove the oldest file
             for(int i = 0; i < files.length; i++){
                 names.add(files[i].getName());
-                long creationDate = Long.parseLong(files[i].getName().split("-")[1].split(".zip")[0]);
-                if(creationDate < oldestDate){
-                    oldestDate = creationDate;
+                long currentLastModified = files[i].lastModified();
+                if(currentLastModified < oldestDate){
+                    oldestDate = currentLastModified;
                     index = i;
+                    names.remove(i);
                 }
             }
-            setBackups(names);
             files[index].delete();
-            return;
         }
-        getBackups().add(nameZip);
     }
 
     private int getNumberOfFilesInPath(Path path){
         return path.toFile().listFiles().length;
     }
 
+    public List<String> getBackupsNames(){
+        List<String> list = new ArrayList<>();
+        if(Path.of(path).toFile().listFiles() == null || Path.of(path).toFile().listFiles().length == 0) return list;
+        for(File file : Path.of(path).toFile().listFiles()){
+            list.add(file.getName());
+        }
+        return list;
+    }
 }

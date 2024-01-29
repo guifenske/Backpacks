@@ -41,7 +41,7 @@ public class BpBackup implements CommandExecutor, TabCompleter {
         }
 
         if (args[0].equalsIgnoreCase("remove")) {
-            if(!Main.getMain().getBackupHandler().getBackups().contains(args[1])){
+            if(!Main.getMain().getBackupHandler().getBackupsNames().contains(args[1])){
                 sender.sendMessage("§cBackup not found.");
                 return false;
             }
@@ -65,7 +65,7 @@ public class BpBackup implements CommandExecutor, TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         List<String> stringList = new ArrayList<>();
-        List<String> backups = Main.getMain().getBackupHandler().getBackups();
+        List<String> backups = Main.getMain().getBackupHandler().getBackupsNames();
         if(args.length == 1){
             if(args[0].isEmpty()){
                 stringList.add("create");

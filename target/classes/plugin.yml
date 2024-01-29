@@ -1,5 +1,5 @@
 name: Backpacks
-version: '1.0-SNAPSHOT'
+version: '1.0'
 main: br.com.backpacks.Main
 api-version: '1.20'
 
