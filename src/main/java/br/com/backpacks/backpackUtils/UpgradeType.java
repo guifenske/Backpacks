@@ -4,6 +4,10 @@ package br.com.backpacks.backpackUtils;
 public enum UpgradeType {
     FURNACE,
 
+    BLAST_FURNACE,
+
+    SMOKER,
+
     CRAFTING,
 
     JUKEBOX,
@@ -20,13 +24,5 @@ public enum UpgradeType {
 
     LIQUIDTANK,
 
-    STACKUPGRADE2X,
-
-    STACKUPGRADE4X,
-
-    STACKUPGRADE8X,
-
-    STACKUPGRADE16X;
-
-
+    UNBREAKABLE
 }

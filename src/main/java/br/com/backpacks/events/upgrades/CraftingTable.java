@@ -18,7 +18,7 @@ public class CraftingTable implements Listener {
         if(!event.getInventory().getType().equals(InventoryType.WORKBENCH)) return;
         if(BackpackAction.getAction((Player) event.getPlayer()) != BackpackAction.Action.UPGCRAFTINGGRID) return;
 
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
+        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         if(backPack == null) return;
 
         BukkitTask task = new BukkitRunnable() {

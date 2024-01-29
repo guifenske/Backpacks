@@ -14,13 +14,13 @@ import org.bukkit.persistence.PersistentDataType;
 public class BackpackPlace implements Listener {
 
     @EventHandler
-    private void generalPlaceEvent(BlockPlaceEvent event){
-        if(!event.getPlayer().isSneaking()) return;
-        if(!event.getBlockPlaced().getType().equals(Material.CHEST)) return;
-        
+    private void generalPlaceEvent(BlockPlaceEvent event) {
+        if (!event.getPlayer().isSneaking()) return;
+        if (!event.getBlockPlaced().getType().equals(Material.BARREL)) return;
+
         PersistentDataContainer itemData = event.getItemInHand().getItemMeta().getPersistentDataContainer();
-        if(!itemData.has(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID())){
-            if(itemData.has(new RecipesNamespaces().getNAMESPACE_WET_BACKPACK())){
+        if (!itemData.has(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID())) {
+            if (itemData.has(new RecipesNamespaces().getNAMESPACE_WET_BACKPACK())) {
                 event.getPlayer().sendMessage(Main.PREFIX + "§cHumm, this thing is to wet to be used as a backpack.");
                 event.setCancelled(true);
             }
@@ -28,15 +28,12 @@ public class BackpackPlace implements Listener {
         }
 
         BackPack backPack = Main.backPackManager.getBackpackFromId(itemData.get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
-        if(backPack == null) return;
+        if (backPack == null) return;
         //enforce removal of the item from the player's inventory
         event.getPlayer().getInventory().remove(event.getItemInHand());
-
         backPack.setIsBlock(true);
-
         Location backpackLocation = event.getBlockPlaced().getLocation();
-        Main.backPackManager.getBackpacksPlacedLocations().put(backpackLocation, backPack.getId());
         backPack.setLocation(backpackLocation);
+        Main.backPackManager.getBackpacksPlacedLocations().put(backpackLocation, backPack.getId());
     }
-
 }

@@ -19,7 +19,7 @@ public class RenameBackpackChat implements Listener {
         String newName = event.getMessage();
         event.setCancelled(true);
 
-        BackpackAction.setAction(player, BackpackAction.Action.NOTHING);
+        BackpackAction.removeAction(player);
 
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(player.getUniqueId()));
         if(!backPack.isBlock() && !backPack.isBeingWorn()) {

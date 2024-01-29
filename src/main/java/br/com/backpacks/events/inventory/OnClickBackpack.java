@@ -22,7 +22,7 @@ public class OnClickBackpack implements Listener {
 
         if(event.getRawSlot() == event.getInventory().getSize() - 1){
             event.setCancelled(true);
-            BackpackAction.setAction(player, BackpackAction.Action.NOTHING);
+            BackpackAction.removeAction(player);
             player.openInventory(InventoryBuilder.mainConfigInv(player));
             Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> BackpackAction.setAction(player, BackpackAction.Action.CONFIGMENU), 1L);
         }   else if(event.getRawSlot() == event.getInventory().getSize() - 2){

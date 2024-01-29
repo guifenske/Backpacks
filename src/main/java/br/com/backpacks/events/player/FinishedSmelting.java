@@ -1,5 +1,6 @@
 package br.com.backpacks.events.player;
 
+import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.RandomBackpack;
 import br.com.backpacks.recipes.RecipesNamespaces;
@@ -15,9 +16,9 @@ public class FinishedSmelting implements Listener {
 
     @EventHandler
     private void onSmelt(BlockCookEvent event){
-        if(!event.getSource().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_WET_BACKPACK())) return;
+        if(!event.getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_DRIED_BACKPACK())) return;
 
-        ItemStack driedBackpack = new ItemStack(Material.CHEST);
+        ItemStack driedBackpack = new ItemStack(Material.BARREL);
         ItemMeta meta = driedBackpack.getItemMeta();
         meta.setDisplayName("Unknown Backpack");
         meta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_BACKPACK(), PersistentDataType.INTEGER, 1);
@@ -26,6 +27,7 @@ public class FinishedSmelting implements Listener {
         BackPack backPack = randomBackpack.generateBackpack();
         meta.getPersistentDataContainer().set(backPack.getNamespaceOfBackpackType(), PersistentDataType.INTEGER, 1);
         driedBackpack.setItemMeta(meta);
+        Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
         event.setResult(driedBackpack);
     }
 }
