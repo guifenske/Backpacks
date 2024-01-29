@@ -51,6 +51,9 @@ public class BackupHandler {
         }   catch (Exception e){
             Main.getMain().getSLF4JLogger().error("Invalid path for backup, please use this syntax: /path/to/backup/folder");
             Main.getMain().getSLF4JLogger().error("Shutting down plugin...");
+
+            Main.getMain().getThreadBackpacks().cancelAllTasks();
+
             try {
                 Main.getMain().getThreadBackpacks().saveAll();
             } catch (IOException exception) {
@@ -65,6 +68,7 @@ public class BackupHandler {
                     }
                 }
             }
+            Main.getMain().getThreadBackpacks().getExecutor().shutdownNow();
             Main.getMain().getServer().getPluginManager().disablePlugin(Main.getMain());
             return;
         }

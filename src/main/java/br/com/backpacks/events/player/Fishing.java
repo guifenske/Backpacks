@@ -1,7 +1,5 @@
 package br.com.backpacks.events.player;
 
-import br.com.backpacks.advancements.BackpacksAdvancements;
-import br.com.backpacks.advancements.NamespacesAdvacements;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
@@ -31,7 +29,6 @@ public class Fishing implements Listener {
                meta.getPersistentDataContainer().set(new RecipesNamespaces().getNAMESPACE_WET_BACKPACK(), PersistentDataType.INTEGER, 1);
                wetbackpack.setItemMeta(meta);
                item.setItemStack(wetbackpack);
-               BackpacksAdvancements.displayTo(event.getPlayer(), "tropical_fish", "Wow, what a strange 'fish'", "Caught a backpack instead of a fish" ,BackpacksAdvancements.Style.TASK, NamespacesAdvacements.getCAUGHT_A_BACKPACK());
            }
        }
     }

@@ -1,12 +1,9 @@
 package br.com.backpacks.events.player;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.advancements.BackpacksAdvancements;
-import br.com.backpacks.advancements.NamespacesAdvacements;
 import br.com.backpacks.backpackUtils.BackpackType;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -73,7 +70,6 @@ public class CraftBackpack implements Listener {
             int id = generateId();
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_IRON_BACKPACK());
             player.discoverRecipe(new UpgradesRecipesNamespaces().getCraftingGrid());
-            BackpacksAdvancements.displayTo(player, "barrel", "§aThe first of us..", "Craft your first backpack" ,BackpacksAdvancements.Style.TASK, NamespacesAdvacements.getTHEFIRSTOFUS());
             Main.backPackManager.createBackPack(18, "Leather Backpack", id, BackpackType.LEATHER);
             Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
             updateResult(event, id);
@@ -85,7 +81,6 @@ public class CraftBackpack implements Listener {
             if(oldId == -1) return;
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_GOLD_BACKPACK());
             player.discoverRecipe(new UpgradesRecipesNamespaces().getENCAPSULATE());
-            BackpacksAdvancements.displayTo(player, "barrel", "§aThe first of us..", "Craft your first backpack" ,BackpacksAdvancements.Style.TASK, NamespacesAdvacements.getTHEFIRSTOFUS());
             updateResult(event, oldId);
             Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
             Main.backPackManager.upgradeBackpack(BackpackType.LEATHER, oldId);
@@ -96,7 +91,6 @@ public class CraftBackpack implements Listener {
             oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.GOLD);
             if(oldId == -1) return;
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_LAPIS_BACKPACK());
-            BackpacksAdvancements.displayTo(player, "barrel", "§aThe first of us..", "Craft your first backpack" ,BackpacksAdvancements.Style.TASK, NamespacesAdvacements.getTHEFIRSTOFUS());
             updateResult(event, oldId);
             Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
             Main.backPackManager.upgradeBackpack(BackpackType.IRON, oldId);
@@ -107,7 +101,6 @@ public class CraftBackpack implements Listener {
             oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.LAPIS);
             if(oldId == -1) return;
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_AMETHYST_BACKPACK());
-            BackpacksAdvancements.displayTo(player, "barrel", "§aThe first of us..", "Craft your first backpack" ,BackpacksAdvancements.Style.TASK, NamespacesAdvacements.getTHEFIRSTOFUS());
             updateResult(event, oldId);
             Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
             Main.backPackManager.upgradeBackpack(BackpackType.GOLD, oldId);
@@ -118,7 +111,6 @@ public class CraftBackpack implements Listener {
             oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.AMETHYST);
             if(oldId == -1) return;
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_DIAMOND_BACKPACK());
-            BackpacksAdvancements.displayTo(player, Material.BARREL.toString(), "§aThe first of us..", "Craft your first backpack" ,BackpacksAdvancements.Style.TASK, NamespacesAdvacements.getTHEFIRSTOFUS());
             updateResult(event, oldId);
             Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
             Main.backPackManager.upgradeBackpack(BackpackType.LAPIS, oldId);
@@ -129,7 +121,6 @@ public class CraftBackpack implements Listener {
             oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.DIAMOND);
             if(oldId == -1) return;
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_NETHERITE_BACKPACK());
-            BackpacksAdvancements.displayTo(player, "barrel", "§aThe first of us..", "Craft your first backpack" ,BackpacksAdvancements.Style.TASK, NamespacesAdvacements.getTHEFIRSTOFUS());
             updateResult(event, oldId);
             Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
             Main.backPackManager.upgradeBackpack(BackpackType.AMETHYST, oldId);
@@ -139,7 +130,6 @@ public class CraftBackpack implements Listener {
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_NETHERITE_BACKPACK())){
             oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.NETHERITE);
             if(oldId == -1) return;
-            BackpacksAdvancements.displayTo(player, "barrel", "§aThe first of us..", "Craft your first backpack" ,BackpacksAdvancements.Style.TASK, NamespacesAdvacements.getTHEFIRSTOFUS());
             updateResult(event, oldId);
             Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
             Main.backPackManager.upgradeBackpack(BackpackType.DIAMOND, oldId);

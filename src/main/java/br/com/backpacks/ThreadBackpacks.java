@@ -1,7 +1,5 @@
 package br.com.backpacks;
 
-import br.com.backpacks.advancements.BackpacksAdvancements;
-import br.com.backpacks.advancements.NamespacesAdvacements;
 import br.com.backpacks.backupHandler.BackupHandler;
 import br.com.backpacks.backupHandler.ScheduledBackup;
 import br.com.backpacks.commands.*;
@@ -76,10 +74,6 @@ public class ThreadBackpacks {
             Bukkit.getPluginManager().registerEvents(new VillagersFollow(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new Collector(), Main.getMain());
 
-            //advancements
-            BackpacksAdvancements.createAdvancement(NamespacesAdvacements.getCAUGHT_A_BACKPACK(), "tropical_fish", "Wow, thats a strange 'fish'", "Caught a backpack instead of a fish" ,BackpacksAdvancements.Style.TASK);
-            BackpacksAdvancements.createAdvancement(NamespacesAdvacements.getTHEFIRSTOFUS(), "barrel", "The first of us.", "Craft your first backpack" ,BackpacksAdvancements.Style.TASK);
-
             Main.getMain().getCommand("bdebug").setExecutor(new Bdebug());
             Main.getMain().getCommand("bpgive").setExecutor(new Bpgive());
             Main.getMain().getCommand("bpgiveid").setExecutor(new BpgiveID());
@@ -89,7 +83,7 @@ public class ThreadBackpacks {
         });
     }
 
-    private void cancelAllTasks(){
+    public void cancelAllTasks(){
         for(BukkitTask task : Bukkit.getScheduler().getPendingTasks()){
             if(task.getOwner().equals(Main.getMain())){
                 task.cancel();
