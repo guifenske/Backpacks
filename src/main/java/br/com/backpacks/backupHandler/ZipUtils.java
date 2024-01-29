@@ -13,10 +13,11 @@ import java.util.zip.ZipOutputStream;
 
 public class ZipUtils {
 
-    public static void zipAll(Path pathBackpacks, Path pathUpgrades, String path) throws IOException {
+    public static String zipAll(Path pathBackpacks, Path pathUpgrades, String path) throws IOException {
         List<String> srcFiles = Arrays.asList(pathBackpacks.toString(), pathUpgrades.toString());
+        String fileOutputName = "backup-" + System.currentTimeMillis() + ".zip";
 
-        FileOutputStream fos = new FileOutputStream(Paths.get(path) + "/backup-" + System.currentTimeMillis() + ".zip");
+        FileOutputStream fos = new FileOutputStream(Paths.get(path) + "/" + fileOutputName);
         ZipOutputStream zipOut = new ZipOutputStream(fos);
 
         for (String srcFile : srcFiles) {
@@ -36,5 +37,6 @@ public class ZipUtils {
 
         zipOut.close();
         fos.close();
+        return fileOutputName;
     }
 }

@@ -4,10 +4,7 @@ import br.com.backpacks.advancements.BackpacksAdvancements;
 import br.com.backpacks.advancements.NamespacesAdvacements;
 import br.com.backpacks.backupHandler.BackupHandler;
 import br.com.backpacks.backupHandler.ScheduledBackup;
-import br.com.backpacks.commands.Bdebug;
-import br.com.backpacks.commands.Bpgive;
-import br.com.backpacks.commands.BpgiveID;
-import br.com.backpacks.commands.Bplist;
+import br.com.backpacks.commands.*;
 import br.com.backpacks.events.ConfigItemsEvents;
 import br.com.backpacks.events.HopperEvents;
 import br.com.backpacks.events.ServerLoadEvent;
@@ -87,6 +84,7 @@ public class ThreadBackpacks {
             Main.getMain().getCommand("bpgive").setExecutor(new Bpgive());
             Main.getMain().getCommand("bpgiveid").setExecutor(new BpgiveID());
             Main.getMain().getCommand("bplist").setExecutor(new Bplist());
+            Main.getMain().getCommand("bpbackup").setExecutor(new BpBackup());
             return null;
         });
     }
@@ -134,14 +132,46 @@ public class ThreadBackpacks {
 
         }
 
-        Main.getMain().setBackupHandler(new BackupHandler(Main.getMain().getConfig().getInt("autobackup.keep")));
-
         if(Main.getMain().getConfig().getBoolean("autobackup.enabled")){
-            if(Main.getMain().getConfig().isSet("autobackup.path")){
-                new ScheduledBackup(ScheduledBackup.IntervalType.valueOf(Main.getMain().getConfig().getString("autobackup.type")), Main.getMain().getConfig().getInt("autobackup.interval"), Main.getMain().getConfig().getString("autobackup.path")).startWithDelay();
+            ScheduledBackup scheduledBackup = new ScheduledBackup();
+            if(Main.getMain().getConfig().getInt("autobackup.interval") > 0){
+                scheduledBackup.setInterval(Main.getMain().getConfig().getInt("autobackup.interval"));
+            }   else{
+                Main.getMain().getLogger().warning("Invalid interval for autobackup, please use a number greater than 0.");
                 return;
             }
-            new ScheduledBackup(ScheduledBackup.IntervalType.valueOf(Main.getMain().getConfig().getString("autobackup.type")), Main.getMain().getConfig().getInt("autobackup.interval")).startWithDelay();
+
+            if(Main.getMain().getConfig().isSet("autobackup.path")){
+                if(Main.getMain().getConfig().getString("autobackup.path") != null){
+                    scheduledBackup.setPath(Main.getMain().getConfig().getString("autobackup.path"));
+                }   else{
+                    Main.getMain().getLogger().warning("Invalid path for autobackup, please use this syntax: /path/to/backup/folder");
+                    return;
+                }
+            }   else{
+                scheduledBackup.setPath(Main.getMain().getDataFolder().getAbsolutePath() + "/Backups");
+            }
+
+            if(Main.getMain().getConfig().getString("autobackup.type") != null){
+                try{
+                    ScheduledBackup.IntervalType.valueOf(Main.getMain().getConfig().getString("autobackup.type"));
+                }   catch (IllegalArgumentException e){
+                    Main.getMain().getLogger().warning("Invalid type for autobackup, please use MINUTES | HOURS | SECONDS.");
+                    return;
+                }
+                scheduledBackup.setType(ScheduledBackup.IntervalType.valueOf(Main.getMain().getConfig().getString("autobackup.type")));
+            }   else{
+                Main.getMain().getLogger().warning("Invalid type for autobackup, please use MINUTES | HOURS | SECONDS.");
+            }
+            int keep = 0;
+            if(Main.getMain().getConfig().getInt("autobackup.keep") > 0){
+                keep = Main.getMain().getConfig().getInt("autobackup.keep");
+            }   else{
+                Main.getMain().getLogger().warning("Invalid keep for autobackup, please use a number greater than 0.");
+            }
+            BackupHandler backupHandler = new BackupHandler(keep, scheduledBackup.getPath());
+            Main.getMain().setBackupHandler(backupHandler);
+            scheduledBackup.startWithDelay();
         }
 
     }

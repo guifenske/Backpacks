@@ -7,6 +7,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import static br.com.backpacks.Main.lock;
 import static br.com.backpacks.Main.saveComplete;
@@ -14,9 +16,32 @@ import static br.com.backpacks.Main.saveComplete;
 public class BackupHandler {
     private int keepBackups = 0;
 
-    public BackupHandler(int keepBackups) {
-        this.keepBackups = keepBackups;
+    public String getPath() {
+        return path;
     }
+
+    private String path;
+
+    public BackupHandler(int keepBackups, String path) {
+        this.keepBackups = keepBackups;
+        this.path = path;
+    }
+
+    public boolean removeBackup(String name){
+        File file = new File(path + "/" + name);
+        getBackups().remove(name);
+        return file.delete();
+    }
+
+    public List<String> getBackups() {
+        return backups;
+    }
+
+    public void setBackups(List<String> backups) {
+        this.backups = backups;
+    }
+
+    private List<String> backups = new ArrayList<>();
 
 
     public void backup(String path) throws IOException, InvalidConfigurationException {
@@ -60,22 +85,27 @@ public class BackupHandler {
         yaml2.load(upgrades);
         yaml2.save(upgradeFile);
 
-        ZipUtils.zipAll(backpackFile.toPath(), upgradeFile.toPath(), path);
+        String nameZip = ZipUtils.zipAll(backpackFile.toPath(), upgradeFile.toPath(), path);
         Main.getMain().debugMessage("Backup complete!");
         if(getNumberOfFilesInPath(source) > keepBackups){
+            List<String> names = new ArrayList<>();
             File[] files = source.toFile().listFiles();
             int index = 0;
             long oldestDate = files[0].lastModified();
             //remove the oldest file
             for(int i = 0; i < files.length; i++){
+                names.add(files[i].getName());
                 long creationDate = Long.parseLong(files[i].getName().split("-")[1].split(".zip")[0]);
                 if(creationDate < oldestDate){
                     oldestDate = creationDate;
                     index = i;
                 }
             }
+            setBackups(names);
             files[index].delete();
+            return;
         }
+        getBackups().add(nameZip);
     }
 
     private int getNumberOfFilesInPath(Path path){

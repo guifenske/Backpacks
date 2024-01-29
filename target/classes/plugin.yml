@@ -23,13 +23,8 @@ commands:
     aliases:
       - 'bpgiveid'
     usage: '/backpackgiveid <player> <backpackId>'
-  backpackremove:
-    description: 'Remove a backpack'
-    aliases:
-      - 'bpremove'
-    usage: '/backpackremove <backpackId>'
   backup:
     description: 'Make a new backup file'
     aliases:
       - 'bpbackup'
-    usage: '/backup <MANAGE/CREATE>'
+    usage: '/backup <create/remove>'

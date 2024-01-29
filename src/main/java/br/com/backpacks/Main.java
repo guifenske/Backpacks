@@ -89,9 +89,8 @@ public final class Main extends JavaPlugin {
         }
         setMain(this);
 
-        if(getConfig().isSet("debug") && getConfig().getBoolean("debug")){
+        if(getConfig().getBoolean("debug")){
             debugMode = true;
-            Main.getMain().debugMessage("Starting plugin...");
         }
 
         try {

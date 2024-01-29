@@ -11,24 +11,34 @@ public class ScheduledBackup {
     public IntervalType getType() {
         return type;
     }
-    private final int interval;
-    private final IntervalType type;
-    private final String path;
-    public ScheduledBackup(IntervalType type, int interval, String path) {
+
+    public void setInterval(int interval) {
         this.interval = interval;
-        this.type = type;
-        this.path = path;
-        Main.getMain().debugMessage("Backup path specified, using: " + path);
     }
 
-    public ScheduledBackup(IntervalType type, int interval) {
-        this.interval = interval;
+    public void setType(IntervalType type) {
         this.type = type;
-        this.path = Main.getMain().getDataFolder().getAbsolutePath() + "/Backups";
-        Main.getMain().debugMessage("Backup path not specified, using default: " + path);
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    private int interval = -1;
+    private IntervalType type;
+    private String path;
+    public ScheduledBackup(){
     }
 
     public void startWithDelay(){
+        if(type == null) return;
+        if(path == null) return;
+        if(interval == -1) return;
+
         switch (type){
             case HOURS -> Main.getMain().getThreadBackpacks().getExecutor().scheduleAtFixedRate(() -> {
                 try {
@@ -57,6 +67,10 @@ public class ScheduledBackup {
     }
 
     public void start(){
+        if(type == null) return;
+        if(path == null) return;
+        if(interval == -1) return;
+
         switch (type){
             case HOURS -> Main.getMain().getThreadBackpacks().getExecutor().scheduleAtFixedRate(() -> {
                 try {
