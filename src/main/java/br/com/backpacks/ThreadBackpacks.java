@@ -46,6 +46,7 @@ public class ThreadBackpacks {
             Bukkit.getPluginManager().registerEvents(new Fishing(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new FinishedSmelting(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new InteractOtherPlayerBackpack(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new AnvilRenameBackpack(), Main.getMain());
 
             //backpack
             Bukkit.getPluginManager().registerEvents(new BackpackInteract(), Main.getMain());
