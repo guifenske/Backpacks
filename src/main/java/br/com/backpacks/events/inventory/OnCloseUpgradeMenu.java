@@ -1,10 +1,7 @@
 package br.com.backpacks.events.inventory;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackPack;
-import br.com.backpacks.backpackUtils.BackpackAction;
-import br.com.backpacks.backpackUtils.Upgrade;
-import br.com.backpacks.backpackUtils.UpgradeManager;
+import br.com.backpacks.backpackUtils.*;
 import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import br.com.backpacks.recipes.RecipesUtils;
 import org.bukkit.entity.Player;
@@ -24,7 +21,7 @@ public class OnCloseUpgradeMenu implements Listener {
     private void onClose(InventoryCloseEvent event){
         if(BackpackAction.getAction((Player) event.getPlayer()) != BackpackAction.Action.UPGMENU) return;
 
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
+        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         if(backPack == null) return;
 
         Set<Upgrade> upgrades = new HashSet<>();
@@ -32,7 +29,7 @@ public class OnCloseUpgradeMenu implements Listener {
         for(int i = 0; i < InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i++){
             ItemStack item = event.getInventory().getItem(i);
             if(item == null) continue;
-            if(RecipesUtils.isItemstackUpgrade(item)){
+            if(RecipesUtils.isItemUpgrade(item)){
                 Upgrade upgrade = RecipesUtils.getUpgradeFromItem(item, backPack);
                 if(!UpgradeManager.canUpgradeStack(upgrade)){
                     boolean shouldSkip = false;
@@ -51,13 +48,13 @@ public class OnCloseUpgradeMenu implements Listener {
                     event.getInventory().setItem(i, item.asOne());
                 }
                 upgrades.add(upgrade);
-                Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);
             }   else{
                 event.getInventory().remove(item);
                 event.getPlayer().getInventory().addItem(item);
             }
         }
         backPack.setUpgrades(upgrades);
+        backPack.setUnbreakable(!backPack.getUpgradesFromType(UpgradeType.UNBREAKABLE).isEmpty());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

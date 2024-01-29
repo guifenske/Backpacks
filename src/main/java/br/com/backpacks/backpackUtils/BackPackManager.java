@@ -2,6 +2,8 @@ package br.com.backpacks.backpackUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -10,6 +12,25 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BackPackManager {
     public ConcurrentHashMap<Integer, BackPack> getBackpacks() {
         return backpacks;
+    }
+
+    private int backpackIds = 0;
+
+    public int getUpgradesIds() {
+        return upgradesIds;
+    }
+
+    public void setUpgradesIds(int upgradesIds) {
+        this.upgradesIds = upgradesIds;
+    }
+
+    private int upgradesIds = 0;
+    public int getBackpackIds() {
+        return backpackIds;
+    }
+
+    public void setBackpackIds(int backpackIds) {
+        this.backpackIds = backpackIds;
     }
 
     public ConcurrentHashMap<Integer, Upgrade> getUpgradeHashMap() {
@@ -55,6 +76,14 @@ public class BackPackManager {
 
     public HashMap<UUID, Integer> getCurrentBackpackId() {
         return currentBackpackId;
+    }
+
+    public BackPack getPlayerCurrentBackpack(Player player){
+        return backpacks.get(currentBackpackId.get(player.getUniqueId()));
+    }
+
+    public BackPack getPlayerCurrentBackpack(HumanEntity player){
+        return backpacks.get(currentBackpackId.get(player.getUniqueId()));
     }
 
     public BackPack getBackpackFromId(int id) {
@@ -122,9 +151,7 @@ public class BackPackManager {
             case IRON: return 27;
             case GOLD: return 36;
             case LAPIS: return 45;
-            case AMETHYST: return 54;
-            case DIAMOND: return 54;
-            case NETHERITE: return 54;
+            case AMETHYST, DIAMOND, NETHERITE: return 54;
         }
 
         return 0;

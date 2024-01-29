@@ -19,7 +19,12 @@ commands:
       - 'bplist'
     usage: '/backpacklist'
   backpackgiveid:
-      description: 'Give a existent backpack to a player'
-      aliases:
-        - 'bpgiveid'
-      usage: '/backpackgiveid <player> <backpackId>'
+    description: 'Give a existent backpack to a player'
+    aliases:
+      - 'bpgiveid'
+    usage: '/backpackgiveid <player> <backpackId>'
+  backup:
+    description: 'Make a new backup file'
+    aliases:
+      - 'bpbackup'
+    usage: '/backup <create/remove>'

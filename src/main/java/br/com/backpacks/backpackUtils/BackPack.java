@@ -95,6 +95,16 @@ public class BackPack extends UpgradeManager {
 
     private boolean isWorn = false;
 
+    public boolean isUnbreakable() {
+        return isUnbreakable;
+    }
+
+    public void setUnbreakable(boolean unbreakable) {
+        isUnbreakable = unbreakable;
+    }
+
+    private boolean isUnbreakable = false;
+
     public String getName() {
         return name;
     }
@@ -103,8 +113,6 @@ public class BackPack extends UpgradeManager {
         this.name = name;
         Inventory newFirstPage = Bukkit.createInventory(null, firstPageSize, name);
         newFirstPage.setStorageContents(firstPage.getStorageContents());
-
-
         firstPage = newFirstPage;
 
         if(secondPageSize > 0){
@@ -190,7 +198,7 @@ public class BackPack extends UpgradeManager {
 
     public BackPack deserialize(YamlConfiguration config, String s) {
         if(!config.isSet(s + ".i")){
-            Main.getMain().debugMessage("Backpack with id " + s + " not found!", "warning");
+            Main.getMain().debugMessage("Backpack with id " + s + " not found!");
             return null;
         }
 
@@ -282,7 +290,7 @@ public class BackPack extends UpgradeManager {
     public void open(Player player){
         Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 1);
         Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
-        BackpackAction.setAction(player, BackpackAction.Action.NOTHING);
+        BackpackAction.removeAction(player);
         player.openInventory(firstPage);
         BackpackAction.setAction(player, BackpackAction.Action.OPENED);
     }
@@ -290,7 +298,7 @@ public class BackPack extends UpgradeManager {
     public void openSecondPage(Player player){
         Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 2);
         Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
-        BackpackAction.setAction(player, BackpackAction.Action.NOTHING);
+        BackpackAction.removeAction(player);
         player.openInventory(secondPage);
         BackpackAction.setAction(player, BackpackAction.Action.OPENED);
     }
@@ -298,6 +306,15 @@ public class BackPack extends UpgradeManager {
     public List<ItemStack> getStorageContentsFirstPageWithoutNulls() {
         List<ItemStack> list = new ArrayList<>();
         for(ItemStack itemStack : firstPage.getStorageContents()){
+            if(itemStack == null) continue;
+            list.add(itemStack);
+        }
+        return list;
+    }
+
+    public List<ItemStack> getStorageContentsSecondPageWithoutNulls() {
+        List<ItemStack> list = new ArrayList<>();
+        for(ItemStack itemStack : secondPage.getStorageContents()){
             if(itemStack == null) continue;
             list.add(itemStack);
         }
@@ -330,9 +347,9 @@ public class BackPack extends UpgradeManager {
 
 
     public void setArrowsAndConfigOptionItems(){
-        ItemStack arrowLeft = new ItemCreator(Material.ARROW, "§aPrevious").get();
-        ItemStack arrowRight = new ItemCreator(Material.ARROW, "§aNext").get();
-        ItemStack config = new ItemCreator(Material.NETHER_STAR, "§6Config").get();
+        ItemStack arrowLeft = new ItemCreator(Material.ARROW, "§aPrevious").build();
+        ItemStack arrowRight = new ItemCreator(Material.ARROW, "§aNext").build();
+        ItemStack config = new ItemCreator(Material.NETHER_STAR, "§6Config").build();
 
         firstPage.setItem(firstPageSize - 1, config);
         configItemsSpace = 1;

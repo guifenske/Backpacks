@@ -86,8 +86,8 @@ public class RecipesNamespaces {
 
     private final NamespacedKey NAMESPACE_NETHERITE_BACKPACK = new NamespacedKey(Main.getMain(), "netheritebackpack");
 
-    public Recipe leather_backpack_recipe() {
-        ItemStack backpack = new ItemStack(org.bukkit.Material.CHEST);
+    public Recipe leatherBackpackRecipe() {
+        ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
         meta.setDisplayName("Leather Backpack");
@@ -100,14 +100,14 @@ public class RecipesNamespaces {
 
         recipe.shape("FLF", "LCL", "FLF");
 
-        recipe.setIngredient('C', Material.CHEST);
+        recipe.setIngredient('C', Material.BARREL);
         recipe.setIngredient('L', Material.LEATHER);
         recipe.setIngredient('F', Material.FEATHER);
         return recipe;
     }
 
-    public Recipe iron_backpack_recipe() {
-        ItemStack backpack = new ItemStack(org.bukkit.Material.CHEST);
+    public Recipe ironBackpackRecipe() {
+        ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
         meta.setDisplayName("Iron Backpack");
@@ -120,14 +120,14 @@ public class RecipesNamespaces {
 
         recipe.shape("III", "ICI", "III");
 
-        recipe.setIngredient('C', Material.CHEST);
+        recipe.setIngredient('C', new RecipeChoice.MaterialChoice(Material.BARREL));
         recipe.setIngredient('I', Material.IRON_INGOT);
 
         return recipe;
     }
 
-    public Recipe gold_backpack_recipe() {
-        ItemStack backpack = new ItemStack(org.bukkit.Material.CHEST);
+    public Recipe goldBackpackRecipe() {
+        ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
         meta.setDisplayName("Gold Backpack");
@@ -140,14 +140,14 @@ public class RecipesNamespaces {
 
         recipe.shape("III", "ICI", "III");
 
-        recipe.setIngredient('C', Material.CHEST);
+        recipe.setIngredient('C',  new RecipeChoice.MaterialChoice(Material.BARREL));
         recipe.setIngredient('I', Material.GOLD_INGOT);
 
         return recipe;
     }
 
-    public Recipe lapis_backpack_recipe() {
-        ItemStack backpack = new ItemStack(org.bukkit.Material.CHEST);
+    public Recipe lapisBackpackRecipe() {
+        ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
         meta.setDisplayName("Lapis Backpack");
@@ -160,14 +160,14 @@ public class RecipesNamespaces {
 
         recipe.shape("III", "ICI", "III");
 
-        recipe.setIngredient('C', Material.CHEST);
+        recipe.setIngredient('C', new RecipeChoice.MaterialChoice(Material.BARREL));
         recipe.setIngredient('I', Material.LAPIS_LAZULI);
 
         return recipe;
     }
 
-    public Recipe amethyst_backpack_recipe() {
-        ItemStack backpack = new ItemStack(org.bukkit.Material.CHEST);
+    public Recipe amethystBackpackRecipe() {
+        ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
         meta.setDisplayName("Amethyst Backpack");
@@ -180,14 +180,14 @@ public class RecipesNamespaces {
 
         recipe.shape("III", "ICI", "III");
 
-        recipe.setIngredient('C', Material.CHEST);
+        recipe.setIngredient('C', new RecipeChoice.MaterialChoice(Material.BARREL));
         recipe.setIngredient('I', Material.AMETHYST_SHARD);
 
         return recipe;
     }
 
-    public Recipe diamond_backpack_recipe() {
-        ItemStack backpack = new ItemStack(org.bukkit.Material.CHEST);
+    public Recipe diamondBackpackRecipe() {
+        ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
         meta.setDisplayName("Diamond Backpack");
@@ -200,14 +200,14 @@ public class RecipesNamespaces {
 
         recipe.shape("III", "ICI", "III");
 
-        recipe.setIngredient('C', Material.CHEST);
+        recipe.setIngredient('C', new RecipeChoice.MaterialChoice(Material.BARREL));
         recipe.setIngredient('I', Material.DIAMOND);
 
         return recipe;
     }
 
-    public Recipe netherite_backpack_recipe() {
-        ItemStack backpack = new ItemStack(org.bukkit.Material.CHEST);
+    public Recipe netheriteBackpackRecipe() {
+        ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
         meta.setDisplayName("Netherite Backpack");
@@ -220,13 +220,13 @@ public class RecipesNamespaces {
 
         recipe.shape(" I ", "ICI", " I ");
 
-        recipe.setIngredient('C', Material.CHEST);
+        recipe.setIngredient('C', new RecipeChoice.MaterialChoice(Material.BARREL));
         recipe.setIngredient('I', Material.NETHERITE_INGOT);
         return recipe;
     }
 
     public FurnaceRecipe driedBackpackRecipe() {
-        ItemStack driedBackpack = new ItemStack(org.bukkit.Material.CHEST);
+        ItemStack driedBackpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = driedBackpack.getItemMeta();
 
         meta.setDisplayName("Unknown Backpack");
@@ -234,11 +234,11 @@ public class RecipesNamespaces {
         meta.getPersistentDataContainer().set(NAMESPACE_DRIED_BACKPACK, PersistentDataType.INTEGER, 1);
         driedBackpack.setItemMeta(meta);
 
-        ItemStack wetBackpack = new ItemStack(Material.CHEST);
+        ItemStack wetBackpack = new ItemStack(Material.BARREL);
         ItemMeta wetBackpackMeta = wetBackpack.getItemMeta();
         wetBackpackMeta.setDisplayName("Wet Backpack");
         wetBackpackMeta.setLore(Arrays.asList("Uhh, it looks really WET and unusable..", "Humm, what i could do with it?"));
-        wetBackpackMeta.getPersistentDataContainer().set(IS_BACKPACK, PersistentDataType.INTEGER, 1);
+        wetBackpackMeta.getPersistentDataContainer().set(IS_BACKPACK, PersistentDataType.INTEGER, -1);
         wetBackpackMeta.getPersistentDataContainer().set(NAMESPACE_WET_BACKPACK, PersistentDataType.INTEGER, 1);
         wetBackpack.setItemMeta(wetBackpackMeta);
 

@@ -5,17 +5,17 @@ import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackAction;
 import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.backpackUtils.UpgradeType;
-import br.com.backpacks.backpackUtils.inventory.ItemCreator;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.upgrades.AutoFeedUpgrade;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
@@ -23,14 +23,13 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AutoFeed implements Listener {
 
-    private static Set<Integer> fillSlots = Set.of(3,4,5,12,13,14,21,22,23);
+    public static final Set<Integer> fillSlots = Set.of(3,4,5,12,13,14,21,22,23);
 
     @EventHandler
     private static void tick(FoodLevelChangeEvent event){
@@ -45,74 +44,46 @@ public class AutoFeed implements Listener {
             if(upgrade.getItems() == null || upgrade.getItems().isEmpty()) return;
             int need = 20 - player.getFoodLevel();
             if(event.getFoodLevel() < 20){
-                for(ItemStack itemStack : upgrade.getItems()){
+                for(int index : upgrade.getItems().keySet()){
+                    ItemStack itemStack = upgrade.getItems().get(index);
                     if(itemStack == null) continue;
                     if(need < hungerPointsPerFood(itemStack) && player.getHealth() == player.getMaxHealth()) continue;
 
-                    if(itemStack.getAmount() == 1) upgrade.getItems().remove(itemStack);
+                    if(itemStack.getAmount() == 1) upgrade.getItems().put(index, null);
                     else itemStack.subtract();
 
                     event.setCancelled(true);
 
-                    Main.getMain().debugMessage("Auto feed-ed " + player.getName() + ", backpack id " + backPack.getId(), "info");
+                    Main.getMain().debugMessage("Auto feed-ed " + player.getName() + ", backpack id " + backPack.getId());
                     player.setFoodLevel(player.getFoodLevel() + hungerPointsPerFood(itemStack));
                     player.setSaturation(player.getSaturation() + saturationPointsPerFood(itemStack));
                     applyEffectPerFood(player, itemStack);
-                    player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, SoundCategory.PLAYERS ,1, 1);
+                    player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, SoundCategory.MASTER ,1, 1);
                     return;
                 }
             }
         }
     }
 
-    public static Inventory inventory(Player player, BackPack backPack, int upgradeId){
-        Inventory inventory = Bukkit.createInventory(player, 27, "Auto Feed");
-        ItemStack blank = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, "Put your food in the empty 9x9 space").get();
-        ItemStack enable = new ItemCreator(Material.GREEN_STAINED_GLASS_PANE, "Enable").get();
-        ItemStack disable = new ItemCreator(Material.RED_STAINED_GLASS_PANE, "Disable").get();
-        AutoFeedUpgrade upgrade = (AutoFeedUpgrade) backPack.getUpgradeFromId(upgradeId);
-
-        for (int i = 0; i < 27; i++) {
-            if(!fillSlots.contains(i)) inventory.setItem(i, blank);
-        }
-
-        if(upgrade.isEnabled())    inventory.setItem(10, disable);
-        else{
-            upgrade.setEnabled(false);
-            inventory.setItem(10, enable);
-        }
-
-        int i1 = 0;
-        if(upgrade.getItems() != null && !upgrade.getItems().isEmpty()){
-            for(int i : fillSlots){
-                if(i1 >= upgrade.getItems().size()) break;
-                inventory.setItem(i, upgrade.getItems().get(i1));
-                i1++;
-            }
-        }
-
-        return inventory;
-    }
-
     @EventHandler
     private static void onClick(InventoryClickEvent event){
-        if(event.getClickedInventory() == null) return;
         if(!BackpackAction.getAction((Player) event.getWhoClicked()).equals(BackpackAction.Action.UPGAUTOFEED)) return;
-        if(event.getRawSlot() < 27 && !fillSlots.contains(event.getRawSlot()))  event.setCancelled(true);
+        boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK());
+        if(canUse)  canUse = Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()) == event.getWhoClicked().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER);
 
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
-        if(backPack == null) return;
+        if(!canUse){
+            event.setCancelled(true);
+            event.getWhoClicked().sendMessage(Main.PREFIX + "§cYou can't use this upgrade because this backpack is not in your back.");
+            return;
+        }
+        if(event.getRawSlot() < 27 && !fillSlots.contains(event.getRawSlot()))  event.setCancelled(true);
+        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
         List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.AUTOFEED);
         AutoFeedUpgrade upgrade = (AutoFeedUpgrade) list.get(0);
 
         if(event.getRawSlot() == 10){
-            if(upgrade.isEnabled()){
-                upgrade.setEnabled(false);
-                event.getClickedInventory().setItem(10, new ItemCreator(Material.GREEN_STAINED_GLASS_PANE, "Enable").get());
-            }   else{
-                upgrade.setEnabled(true);
-                event.getClickedInventory().setItem(10, new ItemCreator(Material.RED_STAINED_GLASS_PANE, "Disable").get());
-            }
+            upgrade.setEnabled(!upgrade.isEnabled());
+            upgrade.updateInventory();
         }
     }
 
@@ -122,25 +93,24 @@ public class AutoFeed implements Listener {
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
         List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.AUTOFEED);
         AutoFeedUpgrade upgrade = (AutoFeedUpgrade) list.get(0);
-        List<ItemStack> foods = new ArrayList<>();
 
         for (int i : fillSlots) {
             ItemStack itemStack = event.getInventory().getItem(i);
             if (itemStack == null){
-                foods.add(null);
+                upgrade.getItems().put(i, null);
                 continue;
             }
             if (!checkFood(itemStack)) {
                 event.getPlayer().getInventory().addItem(itemStack);
                 event.getInventory().remove(itemStack);
-                foods.add(null);
+                upgrade.getItems().put(i, null);
                 continue;
             }
-            foods.add(itemStack);
+            upgrade.getItems().put(i, itemStack);
         }
-        upgrade.setItems(foods);
+        upgrade.getViewers().remove((Player) event.getPlayer());
 
-        BackpackAction.setAction((Player) event.getPlayer(), BackpackAction.Action.NOTHING);
+        BackpackAction.removeAction((Player) event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
@@ -149,7 +119,7 @@ public class AutoFeed implements Listener {
         }.runTaskLater(Main.getMain(), 1L);
     }
 
-    private static boolean checkFood(ItemStack itemStack){
+    public static boolean checkFood(ItemStack itemStack){
         switch (itemStack.getType()){
             case BREAD, SUSPICIOUS_STEW, ROTTEN_FLESH, SWEET_BERRIES, SPIDER_EYE, POISONOUS_POTATO, GLOW_BERRIES, POTATO, PUFFERFISH, TROPICAL_FISH, APPLE, COOKIE, DRIED_KELP, ENCHANTED_GOLDEN_APPLE, GOLDEN_APPLE, GOLDEN_CARROT, HONEY_BOTTLE, MELON_SLICE, MUSHROOM_STEW, PUMPKIN_PIE, RABBIT_STEW, BAKED_POTATO, BEETROOT_SOUP, BEETROOT, CARROT, CHORUS_FRUIT, COOKED_BEEF, COOKED_CHICKEN, COOKED_COD, COOKED_MUTTON, COOKED_PORKCHOP, COOKED_RABBIT, COOKED_SALMON, BEEF, CHICKEN, COD, MUTTON, PORKCHOP, RABBIT, SALMON -> {
                 return true;
@@ -307,7 +277,7 @@ public class AutoFeed implements Listener {
 
             case CHORUS_FRUIT -> {
                 Location location = player.getLocation().add(ThreadLocalRandom.current().nextInt(-8, 8), 0, ThreadLocalRandom.current().nextInt(-8, 8));
-                player.teleportAsync(player.getWorld().getHighestBlockAt(location).getLocation().add(0, 1, 0)); //add one just to make sure the player don't get suffocated by a block
+                player.teleportAsync(player.getWorld().getHighestBlockAt(location).getLocation());
             }
         }
     }
