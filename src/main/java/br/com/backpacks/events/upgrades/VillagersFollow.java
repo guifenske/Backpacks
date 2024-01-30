@@ -52,13 +52,6 @@ public class VillagersFollow implements Listener {
         if(BackpackAction.getAction((Player) event.getWhoClicked()) != BackpackAction.Action.UPGVILLAGERSFOLLOW) return;
         event.setCancelled(true);
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
-        boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK());
-        if(canUse) canUse = backPack.getId() == event.getWhoClicked().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER);
-        if(!canUse){
-            event.setCancelled(true);
-            event.getWhoClicked().sendMessage(Main.PREFIX + "§cYou can't use this upgrade because this backpack is not in your back.");
-            return;
-        }
         List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.VILLAGERSFOLLOW);
         VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) list.get(0);
 

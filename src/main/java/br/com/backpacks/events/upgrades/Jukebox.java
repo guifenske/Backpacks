@@ -3,7 +3,6 @@ package br.com.backpacks.events.upgrades;
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackAction;
-import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -13,7 +12,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -45,17 +43,11 @@ public class Jukebox implements Listener {
     private void onClick(InventoryClickEvent event){
         if(BackpackAction.getAction(event.getWhoClicked()) != BackpackAction.Action.UPGJUKEBOX) return;
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-        boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK());
         if(backPack == null){
             event.setCancelled(true);
             return;
         }
-        if(canUse)  canUse = backPack.getId() == event.getWhoClicked().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER);
-        if(!canUse){
-            event.setCancelled(true);
-            event.getWhoClicked().sendMessage(Main.PREFIX + "§cYou can't use this upgrade because this backpack is not in your back.");
-            return;
-        }
+
         if(blankSlots.contains(event.getRawSlot())) event.setCancelled(true);
 
         Player player = (Player) event.getWhoClicked();

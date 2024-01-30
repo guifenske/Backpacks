@@ -17,13 +17,9 @@ import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 public class Collector implements Listener {
-    public static final HashMap<UUID, CollectorUpgrade> currentCollector = new HashMap<>();
-
     @EventHandler
     private void onPickUp(PlayerAttemptPickupItemEvent event){
         if(!event.getPlayer().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) return;
@@ -60,15 +56,10 @@ public class Collector implements Listener {
     private static void onClick(InventoryClickEvent event){
         if(BackpackAction.getAction((Player) event.getWhoClicked()).equals(BackpackAction.Action.UPGCOLLECTOR)){
             event.setCancelled(true);
-            BackPack backpack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-            boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK());
-            if(canUse) canUse = backpack.getId() == event.getWhoClicked().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER);
-            if(!canUse){
-                event.setCancelled(true);
-                event.getWhoClicked().sendMessage(Main.PREFIX + "§cYou can't use this upgrade because this backpack is not in your back.");
-                return;
-            }
-            CollectorUpgrade upgrade = currentCollector.get(event.getWhoClicked().getUniqueId());
+            BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
+            List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.COLLECTOR);
+            if(list.isEmpty()) return;
+            CollectorUpgrade upgrade = (CollectorUpgrade) list.get(0);
 
             switch (event.getRawSlot()){
                 case 11 -> {
@@ -86,10 +77,12 @@ public class Collector implements Listener {
     @EventHandler
     private void onClose(InventoryCloseEvent event){
         if(BackpackAction.getAction((Player) event.getPlayer()).equals(BackpackAction.Action.UPGCOLLECTOR)){
-            BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
+            BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
+            List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.COLLECTOR);
+            if(list.isEmpty()) return;
+            CollectorUpgrade upgrade = (CollectorUpgrade) list.get(0);
             BackpackAction.removeAction((Player) event.getPlayer());
-            currentCollector.get(event.getPlayer().getUniqueId()).getViewers().remove((Player) event.getPlayer());
-            currentCollector.remove(event.getPlayer().getUniqueId());
+            upgrade.getViewers().remove((Player) event.getPlayer());
             Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> backPack.open((Player) event.getPlayer()), 1L);
         }
     }
