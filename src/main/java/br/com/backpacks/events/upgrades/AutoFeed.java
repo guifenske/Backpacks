@@ -100,7 +100,6 @@ public class AutoFeed implements Listener {
             }
             upgrade.getItems().put(i, itemStack);
         }
-        upgrade.getViewers().remove((Player) event.getPlayer());
 
         BackpackAction.removeAction((Player) event.getPlayer());
         BukkitTask task = new BukkitRunnable() {

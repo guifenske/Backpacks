@@ -96,7 +96,6 @@ public class Jukebox implements Listener {
         else currentJukebox.get(uuid).setPlaying(event.getInventory().getItem(13));
 
         currentJukebox.get(uuid).updateInventory();
-        currentJukebox.get(uuid).getViewers().remove((Player) event.getPlayer());
         currentJukebox.remove(uuid);
         BackpackAction.removeAction((Player) event.getPlayer());
         BukkitTask task = new BukkitRunnable() {

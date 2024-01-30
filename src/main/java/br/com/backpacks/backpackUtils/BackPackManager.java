@@ -10,6 +10,15 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BackPackManager {
+    public boolean canOpen() {
+        return canBeOpen;
+    }
+
+    public void setCanBeOpen(boolean canBeOpen) {
+        this.canBeOpen = canBeOpen;
+    }
+
+    private boolean canBeOpen = true;
     public ConcurrentHashMap<Integer, BackPack> getBackpacks() {
         return backpacks;
     }
@@ -53,21 +62,6 @@ public class BackPackManager {
     }
 
     private ConcurrentHashMap<Location, Integer> backpacksPlacedLocations = new ConcurrentHashMap<>();
-
-    public BackPack createBackPack(int size, String name, int id, BackpackType type) {
-        // Create a new backpack with the specified size and name
-
-        if(size > 54){
-            BackPack backPack = new BackPack(name, Bukkit.createInventory(null, 54, name), Bukkit.createInventory(null, size - 54, name), id, type);
-            backpacks.put(id, backPack);
-            return backPack;
-        }
-
-        BackPack backPack = new BackPack(name, Bukkit.createInventory(null, size, name), id, type);
-        backpacks.put(id, backPack);
-        return backPack;
-    }
-
     private HashMap<UUID, Integer> currentPage = new HashMap<>();
 
     public HashMap<UUID, Integer> getCurrentPage() {

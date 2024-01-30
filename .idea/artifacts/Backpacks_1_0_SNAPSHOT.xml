@@ -6,7 +6,6 @@
         <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="Backpacks" />
-      <element id="library" level="project" name="Maven: com.frengor:ultimateadvancementapi-shadeable:2.2.8" />
     </root>
   </artifact>
 </component>

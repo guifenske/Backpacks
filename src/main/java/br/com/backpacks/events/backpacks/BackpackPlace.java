@@ -27,13 +27,15 @@ public class BackpackPlace implements Listener {
             return;
         }
 
-        BackPack backPack = Main.backPackManager.getBackpackFromId(itemData.get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
-        if (backPack == null) return;
-        //enforce removal of the item from the player's inventory
-        event.getPlayer().getInventory().remove(event.getItemInHand());
-        backPack.setIsBlock(true);
-        Location backpackLocation = event.getBlockPlaced().getLocation();
-        backPack.setLocation(backpackLocation);
-        Main.backPackManager.getBackpacksPlacedLocations().put(backpackLocation, backPack.getId());
+        if(Main.backPackManager.canOpen()) {
+            BackPack backPack = Main.backPackManager.getBackpackFromId(itemData.get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+            if (backPack == null) return;
+            //enforce removal of the item from the player's inventory
+            event.getPlayer().getInventory().remove(event.getItemInHand());
+            backPack.setIsBlock(true);
+            Location backpackLocation = event.getBlockPlaced().getLocation();
+            backPack.setLocation(backpackLocation);
+            Main.backPackManager.getBackpacksPlacedLocations().put(backpackLocation, backPack.getId());
+        }
     }
 }

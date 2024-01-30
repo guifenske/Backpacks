@@ -3,35 +3,33 @@ package br.com.backpacks.backpackUtils;
 import br.com.backpacks.Main;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class UpgradeManager {
-    private Set<Integer> upgrades = new HashSet<>();
+    private List<Integer> upgrades = new ArrayList<>();
 
     public List<Integer> getUpgradesIds() {
         if(upgrades.isEmpty())  return new ArrayList<>();
         return new ArrayList<>(upgrades);
     }
 
-    public Set<Upgrade> getUpgrades() {
-        if(this.upgrades.isEmpty()) return new HashSet<>();
-        Set<Upgrade> upgradeHashSet = new HashSet<>();
-        for(int i : upgrades){
-            upgradeHashSet.add(getUpgradeFromId(i));
+    public List<Upgrade> getUpgrades() {
+        if(this.upgrades.isEmpty()) return new ArrayList<>();
+        List<Upgrade> upgrades1 = new ArrayList<>();
+        for(int i = 0; i < upgrades.size(); i++){
+            upgrades1.add(getUpgradeFromId(upgrades.get(i)));
         }
-        return upgradeHashSet;
+        return upgrades1;
     }
 
-    public void setUpgrades(List<Integer> list){
+    public void setUpgradesIds(List<Integer> list){
         this.upgrades.clear();
         this.upgrades.addAll(list);
     }
 
-    public void setUpgrades(Set<Upgrade> upgrades) {
+    public void setUpgrades(List<Upgrade> upgradeList){
         this.upgrades.clear();
-        for(Upgrade upgrade : upgrades) {
+        for(Upgrade upgrade : upgradeList) {
             this.upgrades.add(upgrade.getId());
         }
     }

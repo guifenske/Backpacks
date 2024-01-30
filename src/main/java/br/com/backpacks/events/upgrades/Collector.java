@@ -82,7 +82,6 @@ public class Collector implements Listener {
             if(list.isEmpty()) return;
             CollectorUpgrade upgrade = (CollectorUpgrade) list.get(0);
             BackpackAction.removeAction((Player) event.getPlayer());
-            upgrade.getViewers().remove((Player) event.getPlayer());
             Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> backPack.open((Player) event.getPlayer()), 1L);
         }
     }

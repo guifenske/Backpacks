@@ -1,9 +1,11 @@
 package br.com.backpacks.events.player;
 
 import br.com.backpacks.Main;
+import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackType;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -70,7 +72,8 @@ public class CraftBackpack implements Listener {
             int id = generateId();
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_IRON_BACKPACK());
             player.discoverRecipe(new UpgradesRecipesNamespaces().getCraftingGrid());
-            Main.backPackManager.createBackPack(18, "Leather Backpack", id, BackpackType.LEATHER);
+            BackPack backPack =  new BackPack("Leather Backpack", Bukkit.createInventory(null, 18, "Leather Backpack"), id, BackpackType.LEATHER);
+            Main.backPackManager.getBackpacks().put(id, backPack);
             Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
             updateResult(event, id);
             return;

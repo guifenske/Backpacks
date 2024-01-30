@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
-import java.util.Set;
+import java.util.List;
 
 public class InventoryBuilder {
 
@@ -37,7 +37,7 @@ public class InventoryBuilder {
 
         if(backPack.getUpgrades() != null) {
             if(!backPack.getUpgrades().isEmpty()) {
-                Set<Upgrade> upgrades = backPack.getUpgrades();
+                List<Upgrade> upgrades = backPack.getUpgrades();
 
                 int i = 0;
                 for(Upgrade upgrade : upgrades) {

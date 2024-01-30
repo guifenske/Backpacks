@@ -44,7 +44,6 @@ public class OnClickInConfigMenu implements Listener {
                     BackpackAction.removeAction(player);
                     event.getWhoClicked().openWorkbench(null, true);
                     BackpackAction.setAction(player, BackpackAction.Action.UPGCRAFTINGGRID);
-                    upgrade.getViewers().add(player);
                     event.setCancelled(true);
                 }
 
@@ -55,7 +54,6 @@ public class OnClickInConfigMenu implements Listener {
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGFURNACE);
-                            upgrade.getViewers().add(player);
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
@@ -68,7 +66,6 @@ public class OnClickInConfigMenu implements Listener {
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGJUKEBOX);
-                            upgrade.getViewers().add(player);
                             Jukebox.currentJukebox.put(player.getUniqueId(), ((JukeboxUpgrade) upgrade));
                         }
                     }.runTaskLater(Main.getMain(), 1L);
@@ -82,7 +79,6 @@ public class OnClickInConfigMenu implements Listener {
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGAUTOFEED);
-                            upgrade.getViewers().add(player);
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
@@ -95,7 +91,6 @@ public class OnClickInConfigMenu implements Listener {
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGVILLAGERSFOLLOW);
-                            upgrade.getViewers().add(player);
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
@@ -108,7 +103,6 @@ public class OnClickInConfigMenu implements Listener {
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGCOLLECTOR);
-                            upgrade.getViewers().add(player);
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);

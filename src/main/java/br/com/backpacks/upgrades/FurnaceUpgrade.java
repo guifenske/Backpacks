@@ -6,7 +6,7 @@ import br.com.backpacks.backpackUtils.UpgradeType;
 import br.com.backpacks.events.upgrades.Furnace;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -141,7 +141,7 @@ public class FurnaceUpgrade extends Upgrade {
                     return;
                 }
                 setCookTime(getCookTime() + cookTimeMultiplier);
-                for(Player player : getViewers()){
+                for(HumanEntity player : getInventory().getViewers()){
                     InventoryView view = player.getOpenInventory();
                     view.setProperty(InventoryView.Property.COOK_TIME, getCookTime());
                 }
