@@ -35,9 +35,8 @@ public class UpdateChecker {
                 Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "An update is available! Latest version: " + latestVersion);
             }
         } catch (IOException e) {
-           // Main.getMain().debugMessage(CURRENT_VERSION);
-           // Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Could not find versions for this plugin, aborting update check.");
-            throw new RuntimeException();
+            Main.getMain().debugMessage(CURRENT_VERSION);
+            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Could not find versions for this plugin, aborting update check.");
         }
     }
 

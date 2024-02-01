@@ -1,7 +1,7 @@
 package br.com.backpacks;
 
-import br.com.backpacks.backupHandler.BackupHandler;
-import br.com.backpacks.backupHandler.ScheduledBackup;
+import br.com.backpacks.backup.BackupHandler;
+import br.com.backpacks.backup.ScheduledBackup;
 import br.com.backpacks.commands.*;
 import br.com.backpacks.events.ConfigItemsEvents;
 import br.com.backpacks.events.HopperEvents;
@@ -24,7 +24,6 @@ public class ThreadBackpacks {
     public ScheduledExecutorService getExecutor() {
         return executor;
     }
-    private int maxThreads = 1;
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
     public ThreadBackpacks() throws IOException {
@@ -34,7 +33,6 @@ public class ThreadBackpacks {
                 return;
             }
             executor = Executors.newScheduledThreadPool(Main.getMain().getConfig().getInt("maxThreads"));
-            maxThreads = Main.getMain().getConfig().getInt("maxThreads");
         }
     }
 
@@ -46,6 +44,7 @@ public class ThreadBackpacks {
             Bukkit.getPluginManager().registerEvents(new Fishing(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new FinishedSmelting(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new InteractOtherPlayerBackpack(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new AnvilRenameBackpack(), Main.getMain());
 
             //backpack
             Bukkit.getPluginManager().registerEvents(new BackpackInteract(), Main.getMain());
@@ -64,7 +63,7 @@ public class ThreadBackpacks {
             Bukkit.getPluginManager().registerEvents(new HopperEvents(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new ConfigItemsEvents(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new ServerLoadEvent(), Main.getMain());
-            Bukkit.getPluginManager().registerEvents(new Bplist(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new BpList(), Main.getMain());
 
             //Upgrades
             Bukkit.getPluginManager().registerEvents(new CraftingTable(), Main.getMain());
@@ -74,11 +73,12 @@ public class ThreadBackpacks {
             Bukkit.getPluginManager().registerEvents(new VillagersFollow(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new Collector(), Main.getMain());
 
-            Main.getMain().getCommand("bdebug").setExecutor(new Bdebug());
-            Main.getMain().getCommand("bpgive").setExecutor(new Bpgive());
-            Main.getMain().getCommand("bpgiveid").setExecutor(new BpgiveID());
-            Main.getMain().getCommand("bplist").setExecutor(new Bplist());
+            Main.getMain().getCommand("bbug").setExecutor(new BpDebug());
+            Main.getMain().getCommand("bpgive").setExecutor(new BpGive());
+            Main.getMain().getCommand("bpgiveid").setExecutor(new BpGiveID());
+            Main.getMain().getCommand("bplist").setExecutor(new BpList());
             Main.getMain().getCommand("bpbackup").setExecutor(new BpBackup());
+            Main.getMain().getCommand("bpreload").setExecutor(new BpReload());
             return null;
         });
     }

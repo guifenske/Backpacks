@@ -107,19 +107,15 @@ public final class YamlUtils {
                     if(config.isSet(i + ".furnace.result")){
                         upgrade.setResult(config.getItemStack(i + ".furnace.result"));
                     }
-                    Main.getMain().debugMessage("loading furnace: step one " + i);
                     if(config.isSet(i + ".furnace.fuel")){
                         upgrade.setFuel(config.getItemStack(i + ".furnace.fuel"));
                     }
-                    Main.getMain().debugMessage("loading furnace: step two " + i);
                     if(config.isSet(i + ".furnace.smelting")){
                         upgrade.setSmelting(config.getItemStack(i + ".furnace.smelting"));
                     }
-                    Main.getMain().debugMessage("loading furnace: step three " + i);
                     if(config.isSet(i + ".furnace.operation")){
                         upgrade.setOperation(config.getInt(i + ".furnace.operation"));
                     }
-                    Main.getMain().debugMessage("loading furnace: step four " + i);
                     if(config.isSet(i + ".furnace.maxoperation")){
                         upgrade.setLastMaxOperation(config.getInt(i + ".furnace.maxoperation"));
                     }
@@ -171,9 +167,11 @@ public final class YamlUtils {
                     if(config.isSet(i + ".autofeed.enabled")){
                         upgrade.setEnabled(config.getBoolean(i + ".autofeed.enabled"));
                     }
-                    Set<String> keys = config.getConfigurationSection(i + ".autofeed.items").getKeys(false);
-                    for(String s : keys){
-                        upgrade.getItems().put(Integer.parseInt(s), config.getItemStack(i + ".autofeed.items." + s));
+                    if(config.isSet(i + ".autofeed.items")){
+                        Set<String> keys = config.getConfigurationSection(i + ".autofeed.items").getKeys(false);
+                        for(String s : keys){
+                            upgrade.getItems().put(Integer.parseInt(s), config.getItemStack(i + ".autofeed.items." + s));
+                        }
                     }
 
                     Main.getMain().debugMessage("loading auto feed: " + i);

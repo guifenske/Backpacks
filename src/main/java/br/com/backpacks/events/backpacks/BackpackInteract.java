@@ -31,12 +31,14 @@ public class BackpackInteract implements Listener {
             }
             if(Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
 
-            BackPack backPack = Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation());
-            player.closeInventory();
             event.setCancelled(true);
-            backPack.setIsBlock(true);
-            backPack.open(player);
-            player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
+            if(Main.backPackManager.canOpen()){
+                BackPack backPack = Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation());
+                player.closeInventory();
+                backPack.open(player);
+                backPack.setIsBlock(true);
+                player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
+            }
             return;
         }
         if(!event.getAction().equals(RIGHT_CLICK_BLOCK) && !event.getAction().equals(RIGHT_CLICK_AIR)) return;
@@ -50,13 +52,14 @@ public class BackpackInteract implements Listener {
             return;
         }
 
-        BackPack backPack = Main.backPackManager.getBackpackFromId(event.getItem().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
-        if(backPack == null) return;
-
         event.setCancelled(true);
-        backPack.setIsBlock(false);
+        if(Main.backPackManager.canOpen()) {
+            BackPack backPack = Main.backPackManager.getBackpackFromId(event.getItem().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+            if(backPack == null) return;
+            backPack.setIsBlock(false);
 
-        backPack.open(player);
-        player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
+            backPack.open(player);
+            player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
+        }
     }
 }

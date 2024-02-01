@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Set;
+import java.util.List;
 
 public class UpgradeMenu {
 
@@ -25,13 +25,11 @@ public class UpgradeMenu {
         }
 
         int i = 0;
-        Set<Upgrade> upgrades = backPack.getUpgrades();
-        if(backPack.getUpgrades() != null) {
-            if (!backPack.getUpgrades().isEmpty()) {
-                for (Upgrade upgrade : upgrades) {
-                    inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));
-                    i++;
-                }
+        List<Upgrade> upgrades = backPack.getUpgrades();
+        if (!backPack.getUpgrades().isEmpty()) {
+            for (Upgrade upgrade : upgrades) {
+                inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));
+                i++;
             }
         }
 

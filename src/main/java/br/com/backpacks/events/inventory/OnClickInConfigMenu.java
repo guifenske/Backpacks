@@ -6,12 +6,10 @@ import br.com.backpacks.backpackUtils.BackpackAction;
 import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import br.com.backpacks.backpackUtils.inventory.UpgradeMenu;
-import br.com.backpacks.events.upgrades.Collector;
 import br.com.backpacks.events.upgrades.Furnace;
 import br.com.backpacks.events.upgrades.Jukebox;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.RecipesUtils;
-import br.com.backpacks.upgrades.CollectorUpgrade;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
 import org.bukkit.Material;
@@ -48,7 +46,6 @@ public class OnClickInConfigMenu implements Listener {
                     BackpackAction.removeAction(player);
                     event.getWhoClicked().openWorkbench(null, true);
                     BackpackAction.setAction(player, BackpackAction.Action.UPGCRAFTINGGRID);
-                    upgrade.getViewers().add(player);
                     event.setCancelled(true);
                 }
 
@@ -59,8 +56,7 @@ public class OnClickInConfigMenu implements Listener {
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGFURNACE);
-                            upgrade.getViewers().add(player);
-                            Furnace.currentFurnace.put(player, ((FurnaceUpgrade) upgrade));
+                            Furnace.currentFurnace.put(player.getUniqueId(), ((FurnaceUpgrade) upgrade));
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
@@ -73,7 +69,6 @@ public class OnClickInConfigMenu implements Listener {
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGJUKEBOX);
-                            upgrade.getViewers().add(player);
                             Jukebox.currentJukebox.put(player.getUniqueId(), ((JukeboxUpgrade) upgrade));
                         }
                     }.runTaskLater(Main.getMain(), 1L);
@@ -87,7 +82,6 @@ public class OnClickInConfigMenu implements Listener {
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGAUTOFEED);
-                            upgrade.getViewers().add(player);
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
@@ -100,7 +94,6 @@ public class OnClickInConfigMenu implements Listener {
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGVILLAGERSFOLLOW);
-                            upgrade.getViewers().add(player);
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
@@ -113,8 +106,6 @@ public class OnClickInConfigMenu implements Listener {
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGCOLLECTOR);
-                            Collector.currentCollector.put(player.getUniqueId(), ((CollectorUpgrade) upgrade));
-                            upgrade.getViewers().add(player);
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);

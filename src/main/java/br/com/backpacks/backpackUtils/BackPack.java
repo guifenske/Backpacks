@@ -206,7 +206,7 @@ public class BackPack extends UpgradeManager {
 
         if(config.isSet(s + ".u")){
             List<Integer> upgradesIds = config.getIntegerList(s + ".u");
-            setUpgrades(upgradesIds);
+            setUpgradesIds(upgradesIds);
         }
 
         name = components.get(0);

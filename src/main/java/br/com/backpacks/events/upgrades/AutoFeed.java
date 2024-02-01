@@ -68,14 +68,6 @@ public class AutoFeed implements Listener {
     @EventHandler
     private static void onClick(InventoryClickEvent event){
         if(!BackpackAction.getAction((Player) event.getWhoClicked()).equals(BackpackAction.Action.UPGAUTOFEED)) return;
-        boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK());
-        if(canUse)  canUse = Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()) == event.getWhoClicked().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER);
-
-        if(!canUse){
-            event.setCancelled(true);
-            event.getWhoClicked().sendMessage(Main.PREFIX + "§cYou can't use this upgrade because this backpack is not in your back.");
-            return;
-        }
         if(event.getRawSlot() < 27 && !fillSlots.contains(event.getRawSlot()))  event.setCancelled(true);
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
         List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.AUTOFEED);
@@ -108,7 +100,6 @@ public class AutoFeed implements Listener {
             }
             upgrade.getItems().put(i, itemStack);
         }
-        upgrade.getViewers().remove((Player) event.getPlayer());
 
         BackpackAction.removeAction((Player) event.getPlayer());
         BukkitTask task = new BukkitRunnable() {

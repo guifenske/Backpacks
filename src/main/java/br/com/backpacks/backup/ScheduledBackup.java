@@ -1,4 +1,4 @@
-package br.com.backpacks.backupHandler;
+package br.com.backpacks.backup;
 
 import br.com.backpacks.Main;
 

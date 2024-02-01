@@ -20,11 +20,12 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Furnace implements Listener {
-    public static final ConcurrentHashMap<Player, FurnaceUpgrade> currentFurnace = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<UUID, FurnaceUpgrade> currentFurnace = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Integer, BukkitTask> taskMap = new ConcurrentHashMap<>();
     public static final IntOpenHashSet shouldTick = new IntOpenHashSet();
     private static final EnumMap<Material, Fuel> fuelMap = new EnumMap<>(Material.class);
@@ -277,7 +278,7 @@ public class Furnace implements Listener {
         Player player = (Player) event.getWhoClicked();
 
         if(event.getRawSlot() == 2){
-            if(event.getCurrentItem() != null && currentFurnace.get(player).getResult().isSimilar(event.getCurrentItem())){
+            if(event.getCurrentItem() != null && currentFurnace.get(player.getUniqueId()).getResult().isSimilar(event.getCurrentItem())){
                 if(event.getCurrentItem().getAmount() * expPointsPerMaterial.getOrDefault(event.getCurrentItem().getType(), 0f) > 1){
                     player.giveExp((int) (event.getCurrentItem().getAmount() * expPointsPerMaterial.getOrDefault(event.getCurrentItem().getType(), 0f)));
                 }   else{
@@ -288,23 +289,23 @@ public class Furnace implements Listener {
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
-                currentFurnace.get(player).setFuel(event.getInventory().getItem(1));
-                currentFurnace.get(player).setSmelting(event.getInventory().getItem(0));
-                currentFurnace.get(player).setResult(event.getInventory().getItem(2));
-                if(!shouldTick.contains(currentFurnace.get(player).getId())) {
-                    if (currentFurnace.get(player).canTick()) {
-                        shouldTick.add(currentFurnace.get(player).getId());
-                        tick(currentFurnace.get(player));
+                currentFurnace.get(player.getUniqueId()).setFuel(event.getInventory().getItem(1));
+                currentFurnace.get(player.getUniqueId()).setSmelting(event.getInventory().getItem(0));
+                currentFurnace.get(player.getUniqueId()).setResult(event.getInventory().getItem(2));
+                if(!shouldTick.contains(currentFurnace.get(player.getUniqueId()).getId())) {
+                    if (currentFurnace.get(player.getUniqueId()).canTick()) {
+                        shouldTick.add(currentFurnace.get(player.getUniqueId()).getId());
+                        tick(currentFurnace.get(player.getUniqueId()));
                     }
                 }   else{
-                    if(!currentFurnace.get(player).canTick()){
-                        taskMap.get(currentFurnace.get(player).getId()).cancel();
-                        currentFurnace.get(player).setCookTime(0);
+                    if(!currentFurnace.get(player.getUniqueId()).canTick()){
+                        taskMap.get(currentFurnace.get(player.getUniqueId()).getId()).cancel();
+                        currentFurnace.get(player.getUniqueId()).setCookTime(0);
                         player.getOpenInventory().setProperty(InventoryView.Property.COOK_TIME, 0);
-                        if(currentFurnace.get(player).getBoundFakeBlock() != null) {
-                            currentFurnace.get(player).setBoundFakeBlock(null);
+                        if(currentFurnace.get(player.getUniqueId()).getBoundFakeBlock() != null) {
+                            currentFurnace.get(player.getUniqueId()).setBoundFakeBlock(null);
                         }
-                        shouldTick.remove(currentFurnace.get(player).getId());
+                        shouldTick.remove(currentFurnace.get(player.getUniqueId()).getId());
                     }
                 }
             }
@@ -317,22 +318,21 @@ public class Furnace implements Listener {
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         Player player = (Player) event.getPlayer();
 
-        currentFurnace.get(player).setFuel(event.getInventory().getItem(1));
-        currentFurnace.get(player).setSmelting(event.getInventory().getItem(0));
-        currentFurnace.get(player).setResult(event.getInventory().getItem(2));
+        currentFurnace.get(player.getUniqueId()).setFuel(event.getInventory().getItem(1));
+        currentFurnace.get(player.getUniqueId()).setSmelting(event.getInventory().getItem(0));
+        currentFurnace.get(player.getUniqueId()).setResult(event.getInventory().getItem(2));
 
-        if(!currentFurnace.get(player).canTick()){
-            if(taskMap.containsKey(currentFurnace.get(player).getId())) {
-                currentFurnace.get(player).setCookTime(0);
-                taskMap.get(currentFurnace.get(player).getId()).cancel();
-                taskMap.remove(currentFurnace.get(player).getId());
+        if(!currentFurnace.get(player.getUniqueId()).canTick()){
+            if(taskMap.containsKey(currentFurnace.get(player.getUniqueId()).getId())) {
+                currentFurnace.get(player.getUniqueId()).setCookTime(0);
+                taskMap.get(currentFurnace.get(player.getUniqueId()).getId()).cancel();
+                taskMap.remove(currentFurnace.get(player.getUniqueId()).getId());
             }
-            if(currentFurnace.get(player).getBoundFakeBlock() != null) {
-                currentFurnace.get(player).setBoundFakeBlock(null);
+            if(currentFurnace.get(player.getUniqueId()).getBoundFakeBlock() != null) {
+                currentFurnace.get(player.getUniqueId()).setBoundFakeBlock(null);
             }
-            shouldTick.remove(currentFurnace.get(player).getId());
-            currentFurnace.get(player).getViewers().remove(player);
-            currentFurnace.remove(player);
+            shouldTick.remove(currentFurnace.get(player.getUniqueId()).getId());
+            currentFurnace.remove(player.getUniqueId());
         }
 
         BukkitTask task = new BukkitRunnable() {

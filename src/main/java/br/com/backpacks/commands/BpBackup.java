@@ -17,28 +17,57 @@ public class BpBackup implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if(args.length < 1 || args.length > 2){
-            sender.sendMessage("§cUse: /bpbackup <create|remove>");
+            sender.sendMessage("§cUse: /bpbackup <create|remove|rollback>");
             return false;
         }
 
         if(args.length == 1){
             if(args[0].equalsIgnoreCase("create")){
-                try {
-                    Main.getMain().getBackupHandler().backup(Main.getMain().getBackupHandler().getPath());
-                } catch (IOException | InvalidConfigurationException e) {
-                    sender.sendMessage("§cAn error occurred while creating the backup, please check the console for more information.");
-                    throw new RuntimeException(e);
-                }
+                Main.getMain().getThreadBackpacks().getExecutor().submit(() ->{
+                    try {
+                        Main.getMain().getBackupHandler().backup(Main.getMain().getBackupHandler().getPath());
+                    }   catch (IOException | InvalidConfigurationException e) {
+                        sender.sendMessage("§cAn error occurred while creating the backup, please check the console for more information.");
+                        throw new RuntimeException(e);
+                    }
+                });
+
                 sender.sendMessage("§aBackup created successfully.");
                 return true;
             }  else if(args[0].equalsIgnoreCase("remove")){
                 sender.sendMessage("§cUse: /bpbackup remove <id>");
                 return false;
             }   else{
-                sender.sendMessage("§cUse: /bpbackup <create|remove>");
+                sender.sendMessage("§cUse: /bpbackup <create|remove|rollback>");
                 return false;
             }
         }
+
+
+        if(args[0].equalsIgnoreCase("restore")){
+            if(!Main.getMain().getBackupHandler().getBackupsNames().contains(args[1])){
+                sender.sendMessage("§cBackup not found.");
+                return false;
+            }
+
+            Main.getMain().getThreadBackpacks().getExecutor().submit(() -> {
+                try{
+                    long time = Main.getMain().getBackupHandler().restoreBackup(args[1]);
+                    if(time != -1L){
+                        sender.sendMessage("§aBackup restored successfully.");
+                        return true;
+                    }   else{
+                        sender.sendMessage("§cSomething went wrong, please check the console for more information.");
+                        return false;
+                    }
+                }   catch (IOException e){
+                    sender.sendMessage("§cAn error occurred while restoring the backup, please check the console for more information.");
+                    throw new RuntimeException(e);
+                }
+            });
+            return true;
+        }
+
 
         if (args[0].equalsIgnoreCase("remove")) {
             if(!Main.getMain().getBackupHandler().getBackupsNames().contains(args[1])){
@@ -46,20 +75,23 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                 return false;
             }
 
-            if (Main.getMain().getBackupHandler().removeBackup(args[1])) {
-                sender.sendMessage("§aBackup removed successfully.");
-                return true;
-            } else {
-                sender.sendMessage("§cSomething went wrong, please check the console for more information.");
-                return false;
-            }
+            Main.getMain().getThreadBackpacks().getExecutor().submit(() -> {
+                if (Main.getMain().getBackupHandler().removeBackup(args[1])) {
+                    sender.sendMessage("§aBackup removed successfully.");
+                    return true;
+                } else {
+                    sender.sendMessage("§cSomething went wrong, please check the console for more information.");
+                    return false;
+                }
+            });
         } else if (args[0].equalsIgnoreCase("create")) {
             sender.sendMessage("§cUse just: /bpbackup create");
             return false;
         } else {
-            sender.sendMessage("§cUse: /bpbackup create, or /bpbackup remove <fileName>");
+            sender.sendMessage("§cUse: /bpbackup <create|remove|restore>");
             return false;
         }
+        return true;
     }
 
     @Override
@@ -70,8 +102,9 @@ public class BpBackup implements CommandExecutor, TabCompleter {
             if(args[0].isEmpty()){
                 stringList.add("create");
                 stringList.add("remove");
+                stringList.add("rollback");
             }   else{
-                for(String s : List.of("create", "remove")){
+                for(String s : List.of("create", "remove", "rollback")){
                     for(int i = 1; i <= s.length(); i++){
                         if(args[0].equalsIgnoreCase(s.substring(0, i))){
                             stringList.add(s);
@@ -80,7 +113,7 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                 }
             }
         }   else if(args.length == 2){
-            if(args[1].isEmpty() && args[0].equalsIgnoreCase("remove")){
+            if(args[1].isEmpty() && (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("rollback"))){
                 stringList.addAll(backups);
             }   else{
                 for(String s : backups){

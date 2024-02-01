@@ -1,7 +1,7 @@
 package br.com.backpacks;
 
 import br.com.backpacks.backpackUtils.BackPackManager;
-import br.com.backpacks.backupHandler.BackupHandler;
+import br.com.backpacks.backup.BackupHandler;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
 import org.bukkit.Bukkit;

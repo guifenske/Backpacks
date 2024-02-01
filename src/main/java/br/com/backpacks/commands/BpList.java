@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class Bplist implements CommandExecutor, Listener {
+public class BpList implements CommandExecutor, Listener {
     private final HashMap<UUID, Integer> page = new HashMap<>();
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {

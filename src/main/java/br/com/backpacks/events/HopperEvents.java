@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.HopperInventorySearchEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.inventory.InventoryHolder;
 
 public class HopperEvents implements Listener {
 
@@ -34,7 +35,7 @@ public class HopperEvents implements Listener {
     @EventHandler
     private void moveItem(InventoryMoveItemEvent event){
         if(event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM())){
-            event.setCancelled(true);
+            InventoryHolder holder = event.getDestination().getHolder();event.setCancelled(true);
         }
     }
 }

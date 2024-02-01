@@ -12,8 +12,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OnCloseUpgradeMenu implements Listener {
 
@@ -24,7 +24,8 @@ public class OnCloseUpgradeMenu implements Listener {
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         if(backPack == null) return;
 
-        Set<Upgrade> upgrades = new HashSet<>();
+        List<Upgrade> upgrades = backPack.getUpgrades();
+        List<Upgrade> newUpgrades = new ArrayList<>();
 
         for(int i = 0; i < InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i++){
             ItemStack item = event.getInventory().getItem(i);
@@ -47,13 +48,13 @@ public class OnCloseUpgradeMenu implements Listener {
                     event.getPlayer().getInventory().addItem(item.subtract());
                     event.getInventory().setItem(i, item.asOne());
                 }
-                upgrades.add(upgrade);
+                newUpgrades.add(upgrade);
             }   else{
                 event.getInventory().remove(item);
                 event.getPlayer().getInventory().addItem(item);
             }
         }
-        backPack.setUpgrades(upgrades);
+        backPack.setUpgrades(newUpgrades);
         backPack.setUnbreakable(!backPack.getUpgradesFromType(UpgradeType.UNBREAKABLE).isEmpty());
         BukkitTask task = new BukkitRunnable() {
             @Override

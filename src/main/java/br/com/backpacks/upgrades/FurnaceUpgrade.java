@@ -6,6 +6,7 @@ import br.com.backpacks.backpackUtils.UpgradeType;
 import br.com.backpacks.events.upgrades.Furnace;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -135,15 +136,27 @@ public class FurnaceUpgrade extends Upgrade {
             @Override
             public void run() {
                 if(!Furnace.shouldTick.contains(getId())){
+                    this.cancel();
                     return;
                 }
                 if(!canTick()){
+                    this.cancel();
                     return;
                 }
                 setCookTime(getCookTime() + cookTimeMultiplier);
-                for(Player player : getViewers()){
-                    InventoryView view = player.getOpenInventory();
-                    view.setProperty(InventoryView.Property.COOK_TIME, getCookTime());
+                for(HumanEntity player : getInventory().getViewers()){
+                    if(Furnace.currentFurnace.containsKey(player.getUniqueId())) {
+                        InventoryView view = player.getOpenInventory();
+                        if (Furnace.currentFurnace.get(player.getUniqueId()) == null) {
+                            view.setProperty(InventoryView.Property.COOK_TIME, 0);
+                            continue;
+                        }
+                        if (Furnace.currentFurnace.get(player.getUniqueId()).getId() != getId()) {
+                            view.setProperty(InventoryView.Property.COOK_TIME, 0);
+                            continue;
+                        }
+                        view.setProperty(InventoryView.Property.COOK_TIME, getCookTime());
+                    }
                 }
             }
         }.runTaskTimer(Main.getMain(), 0L, 2L);
