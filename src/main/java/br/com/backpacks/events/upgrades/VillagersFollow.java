@@ -24,7 +24,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -44,9 +43,8 @@ public class VillagersFollow implements Listener {
                 if (!upgrade.isEnabled()) {
                     continue;
                 }
-                for (Entity entity : getNearbyEntities(player.getLocation().toBlockLocation())) {
-                    if (entity.getType().equals(EntityType.VILLAGER)) moveToPlayer((Mob) entity, player);
-                }
+
+                moveNearbyVillagers(player.getLocation().toBlockLocation(), player);
             }
         }, 0, 500, TimeUnit.MILLISECONDS);
     }
@@ -85,20 +83,18 @@ public class VillagersFollow implements Listener {
         });
     }
 
-    private static Entity[] getNearbyEntities(Location l) {
+    private static void moveNearbyVillagers(Location l, Player player) {
         int chunkRadius = 1;
-        HashSet<Entity> radiusEntities = new HashSet<>();
         int x = (int) l.getX(), z = (int) l.getZ();
         World world = l.getWorld();
         for (int chX = -chunkRadius; chX <= chunkRadius; chX++) {
             for (int chZ = -chunkRadius; chZ <= chunkRadius; chZ++) {
                 for (Entity e : new Location(world, x + (chX * 16), 0, z + (chZ * 16)).getChunk().getEntities()) {
-                    if (e.getLocation().distanceSquared(l) <= 100){
-                        radiusEntities.add(e);
+                    if (e.getLocation().distanceSquared(l) <= 100 && e.getType().equals(EntityType.VILLAGER)){
+                        moveToPlayer((Mob) e, player);
                     }
                 }
             }
         }
-        return radiusEntities.toArray(new Entity[0]);
     }
 }
