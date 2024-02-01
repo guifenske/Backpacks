@@ -52,6 +52,11 @@ public class ZipUtils {
     public static void unzipAll(String pathBackup) throws IOException {
         File destDir = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/");
 
+        if(!pathBackup.endsWith(".zip")) {
+            Main.backPackManager.setCanBeOpen(true);
+            throw new IOException("Invalid File: " + pathBackup);
+        }
+
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(pathBackup));
         ZipEntry zipEntry = zis.getNextEntry();

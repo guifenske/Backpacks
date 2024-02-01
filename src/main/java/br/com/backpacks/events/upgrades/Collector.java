@@ -78,9 +78,6 @@ public class Collector implements Listener {
     private void onClose(InventoryCloseEvent event){
         if(BackpackAction.getAction((Player) event.getPlayer()).equals(BackpackAction.Action.UPGCOLLECTOR)){
             BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
-            List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.COLLECTOR);
-            if(list.isEmpty()) return;
-            CollectorUpgrade upgrade = (CollectorUpgrade) list.get(0);
             BackpackAction.removeAction((Player) event.getPlayer());
             Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> backPack.open((Player) event.getPlayer()), 1L);
         }
