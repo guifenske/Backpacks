@@ -29,13 +29,13 @@ public class BackpackInteract implements Listener {
                     return;
                 }
             }
+            if(Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
 
             event.setCancelled(true);
             if(Main.backPackManager.canOpen()){
-                if(Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
                 BackPack backPack = Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation());
-                backPack.open(player);
                 player.closeInventory();
+                backPack.open(player);
                 backPack.setIsBlock(true);
                 player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
             }

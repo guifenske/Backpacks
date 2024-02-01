@@ -23,6 +23,10 @@ public class BackpackBreak implements Listener {
     @EventHandler
     private void playerBreak(BlockBreakEvent event){
         if(!event.getBlock().getType().equals(Material.BARREL)) return;
+        if(!Main.backPackManager.canOpen()){
+            event.setCancelled(true);
+            return;
+        }
         if(Main.backPackManager.getBackpackFromLocation(event.getBlock().getLocation()) == null) return;
 
         event.setDropItems(false);
@@ -40,6 +44,10 @@ public class BackpackBreak implements Listener {
     private void explosionBreak(EntityExplodeEvent event){
         for(Block block : event.blockList()){
             if(!block.getType().equals(Material.BARREL)) continue;
+            if(!Main.backPackManager.canOpen()){
+                event.setCancelled(true);
+                continue;
+            }
             if(Main.backPackManager.getBackpackFromLocation(block.getLocation()) == null) continue;
 
             event.setCancelled(true);
@@ -61,9 +69,18 @@ public class BackpackBreak implements Listener {
         if(!event.getEntity().getItemStack().hasItemMeta())  return;
         if(!event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK())){
             if(event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade())){
+                if(!Main.backPackManager.canOpen()){
+                    event.setCancelled(true);
+                    return;
+                }
                 int id = event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().get(new UpgradesRecipesNamespaces().getUPGRADEID(), PersistentDataType.INTEGER);
                 Main.backPackManager.getUpgradeHashMap().remove(id);
             }
+            return;
+        }
+
+        if(!Main.backPackManager.canOpen()){
+            event.setCancelled(true);
             return;
         }
 
@@ -85,9 +102,18 @@ public class BackpackBreak implements Listener {
         if(event.getFinalDamage() < ((Item) event.getEntity()).getHealth()) return;
         if(!((Item) event.getEntity()).getItemStack().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK())){
             if(((Item) event.getEntity()).getItemStack().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade())){
+                if(!Main.backPackManager.canOpen()){
+                    event.setCancelled(true);
+                    return;
+                }
                 int id = ((Item) event.getEntity()).getItemStack().getItemMeta().getPersistentDataContainer().get(new UpgradesRecipesNamespaces().getUPGRADEID(), PersistentDataType.INTEGER);
                 Main.backPackManager.getUpgradeHashMap().remove(id);
             }
+            return;
+        }
+
+        if(!Main.backPackManager.canOpen()){
+            event.setCancelled(true);
             return;
         }
 

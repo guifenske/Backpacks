@@ -36,6 +36,6 @@ public class BackpackPlace implements Listener {
             Location backpackLocation = event.getBlockPlaced().getLocation();
             backPack.setLocation(backpackLocation);
             Main.backPackManager.getBackpacksPlacedLocations().put(backpackLocation, backPack.getId());
-        }
+        }   else event.setCancelled(true);
     }
 }
