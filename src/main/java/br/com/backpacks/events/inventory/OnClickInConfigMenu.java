@@ -35,7 +35,7 @@ public class OnClickInConfigMenu implements Listener {
 
         if(event.getRawSlot() < InventoryBuilder.getFreeUpgradesSlots(backPack.getType())){
             if(event.getCurrentItem() == null) return;
-            Upgrade upgrade = RecipesUtils.getUpgradeFromItem(event.getCurrentItem(), backPack);
+            Upgrade upgrade = RecipesUtils.getUpgradeFromItem(event.getCurrentItem());
             if(upgrade == null) return;
             if(!Main.backPackManager.getUpgradeHashMap().containsKey(upgrade.getId())){
                 Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);

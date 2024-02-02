@@ -31,7 +31,7 @@ public class OnCloseUpgradeMenu implements Listener {
             ItemStack item = event.getInventory().getItem(i);
             if(item == null) continue;
             if(RecipesUtils.isItemUpgrade(item)){
-                Upgrade upgrade = RecipesUtils.getUpgradeFromItem(item, backPack);
+                Upgrade upgrade = RecipesUtils.getUpgradeFromItem(item);
                 if(!UpgradeManager.canUpgradeStack(upgrade)){
                     boolean shouldSkip = false;
                     for(Upgrade upgrade1 : upgrades){

@@ -16,8 +16,8 @@ public class UpgradeManager {
     public List<Upgrade> getUpgrades() {
         if(this.upgrades.isEmpty()) return new ArrayList<>();
         List<Upgrade> upgrades1 = new ArrayList<>();
-        for(int i = 0; i < upgrades.size(); i++){
-            upgrades1.add(getUpgradeFromId(upgrades.get(i)));
+        for (Integer upgrade : upgrades) {
+            upgrades1.add(getUpgradeFromId(upgrade));
         }
         return upgrades1;
     }
@@ -44,7 +44,7 @@ public class UpgradeManager {
     }
 
     //get the upgrade from all upgrades, in the backpack or not
-    public Upgrade getUpgradeFromId(int id) {
+    public static Upgrade getUpgradeFromId(int id) {
         if(Main.backPackManager.getUpgradeHashMap().containsKey(id)) return Main.backPackManager.getUpgradeHashMap().get(id);
         return null;
     }
