@@ -72,6 +72,7 @@ public class ThreadBackpacks {
             Bukkit.getPluginManager().registerEvents(new AutoFeed(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new VillagersFollow(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new Collector(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new Tanks(), Main.getMain());
 
             Main.getMain().getCommand("bbug").setExecutor(new BpDebug());
             Main.getMain().getCommand("bpgive").setExecutor(new BpGive());

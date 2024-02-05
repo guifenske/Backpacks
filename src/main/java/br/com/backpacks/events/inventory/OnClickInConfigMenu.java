@@ -110,6 +110,18 @@ public class OnClickInConfigMenu implements Listener {
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
                 }
+
+                case LIQUIDTANK -> {
+                    BackpackAction.removeAction(player);
+                    event.getWhoClicked().openInventory(upgrade.getInventory());
+                    BukkitTask task = new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            BackpackAction.setAction(player, BackpackAction.Action.UPGTANKS);
+                        }
+                    }.runTaskLater(Main.getMain(), 1L);
+                    event.setCancelled(true);
+                }
             }
 
             return;

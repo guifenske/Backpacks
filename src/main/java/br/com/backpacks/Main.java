@@ -158,7 +158,7 @@ public final class Main extends JavaPlugin {
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getEncapsulateRecipe());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getCollectorRecipe());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getUnbreakableUpgradeRecipe());
-        //Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeLiquidTank());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getLiquidTankRecipe());
     }
 
 }

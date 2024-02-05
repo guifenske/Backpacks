@@ -3,6 +3,8 @@ package br.com.backpacks.events.upgrades;
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackAction;
+import br.com.backpacks.backpackUtils.UpgradeType;
+import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -12,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -48,6 +51,7 @@ public class Jukebox implements Listener {
             return;
         }
 
+        boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK()) && event.getWhoClicked().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER) == backPack.getId();
         if(blankSlots.contains(event.getRawSlot())) event.setCancelled(true);
 
         Player player = (Player) event.getWhoClicked();
@@ -55,6 +59,10 @@ public class Jukebox implements Listener {
         switch (event.getRawSlot()){
             case 10 -> {
                 event.setCancelled(true);
+                if(!canUse){
+                    event.getWhoClicked().sendMessage(Main.PREFIX + "§This backpack is not in your back!");
+                    return;
+                }
                 if(currentJukebox.get(player.getUniqueId()).isPlaying()) return;
                 if(!checkDisk(event.getInventory().getItem(13))) return;
                 currentJukebox.get(player.getUniqueId()).setIsPlaying(true);
@@ -63,6 +71,10 @@ public class Jukebox implements Listener {
             }
             case 11 -> {
                 event.setCancelled(true);
+                if(!canUse){
+                    event.getWhoClicked().sendMessage(Main.PREFIX + "§This backpack is not in your back!");
+                    return;
+                }
                 if(!currentJukebox.get(player.getUniqueId()).isPlaying()) return;
                 currentJukebox.get(player.getUniqueId()).setIsPlaying(false);
                 stopPlaying(player);
@@ -106,18 +118,16 @@ public class Jukebox implements Listener {
         }.runTaskLater(Main.getMain(), 1L);
     }
 
-    private final HashMap<UUID, net.kyori.adventure.sound.Sound> playing = new HashMap<>();
-
     public void startPlaying(Entity entity, Sound sound){                                                                                //apparently this is the max volume
-        net.kyori.adventure.sound.Sound sound1 = net.kyori.adventure.sound.Sound.sound(sound, net.kyori.adventure.sound.Sound.Source.MASTER, 2147483647, 1);
-
-        playing.put(entity.getUniqueId(), sound1);
+        net.kyori.adventure.sound.Sound sound1 = net.kyori.adventure.sound.Sound.sound(sound, net.kyori.adventure.sound.Sound.Source.MUSIC, 2147483647, 1);
         entity.playSound(sound1, net.kyori.adventure.sound.Sound.Emitter.self());
     }
 
     public void stopPlaying(Entity entity){
-        if(!playing.containsKey(entity.getUniqueId())) return;
-        entity.stopSound(playing.get(entity.getUniqueId()));
-        playing.remove(entity.getUniqueId());
+        int id = entity.getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER);
+        BackPack backPack = Main.backPackManager.getBackpackFromId(id);
+
+        net.kyori.adventure.sound.Sound sound = net.kyori.adventure.sound.Sound.sound(((JukeboxUpgrade)backPack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0)).getSound(), net.kyori.adventure.sound.Sound.Source.MUSIC, 2147483647, 1);
+        entity.stopSound(sound);
     }
 }

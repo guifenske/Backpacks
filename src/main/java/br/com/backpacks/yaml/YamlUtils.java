@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public final class YamlUtils {
@@ -61,8 +62,8 @@ public final class YamlUtils {
                     JukeboxUpgrade jukeboxUpgrade = (JukeboxUpgrade) upgrade;
                     Main.getMain().debugMessage("Saving jukebox upgrade " + jukeboxUpgrade.getId());
                     if(!jukeboxUpgrade.getDiscs().isEmpty()){
-                        for(int i : jukeboxUpgrade.getDiscs().keySet()){
-                            config.set(upgrade.getId() + ".jukebox.discs." + i, jukeboxUpgrade.getDiscs().get(i).getType().name());
+                        for(Map.Entry<Integer, ItemStack> item : jukeboxUpgrade.getDiscs().entrySet()){
+                            config.set(upgrade.getId() + ".jukebox.discs." + item.getKey(), item.getValue().getType().name());
                         }
                     }
                     if(jukeboxUpgrade.getPlaying() != null)    config.set(upgrade.getId() + ".jukebox.playing", jukeboxUpgrade.getPlaying().getType().name());
@@ -73,8 +74,8 @@ public final class YamlUtils {
                     Main.getMain().debugMessage("Saving auto feed upgrade " + autoFeedUpgrade.getId());
                     config.set(upgrade.getId() + ".autofeed.enabled", autoFeedUpgrade.isEnabled());
                     if(!autoFeedUpgrade.getItems().isEmpty()){
-                        for(int i : autoFeedUpgrade.getItems().keySet()){
-                            config.set(upgrade.getId() + ".autofeed.items." + i, autoFeedUpgrade.getItems().get(i));
+                        for(Map.Entry<Integer, ItemStack> item : autoFeedUpgrade.getItems().entrySet()){
+                            config.set(upgrade.getId() + ".autofeed.items." + item.getKey(), item.getValue());
                         }
                     }
                 }
@@ -88,6 +89,22 @@ public final class YamlUtils {
                     Main.getMain().debugMessage("Saving collector upgrade " + collectorUpgrade.getId());
                     config.set(upgrade.getId() + ".collector.enabled", collectorUpgrade.isEnabled());
                     config.set(upgrade.getId() + ".collector.mode", collectorUpgrade.getMode());
+                }
+                case LIQUIDTANK -> {
+                    TanksUpgrade tanksUpgrade = (TanksUpgrade) upgrade;
+                    Main.getMain().debugMessage("Saving tank upgrade " + tanksUpgrade.getId());
+                    if(!tanksUpgrade.getItemsPerTank(1).isEmpty()){
+                        for(Map.Entry<Integer, ItemStack> item : tanksUpgrade.getItemsPerTank(1).entrySet()){
+                            config.set(upgrade.getId() + ".tank1." + item.getKey(), item.getValue());
+                        }
+                    }
+                    if(!tanksUpgrade.getItemsPerTank(2).isEmpty()){
+                        for(Map.Entry<Integer, ItemStack> item : tanksUpgrade.getItemsPerTank(2).entrySet()){
+                            config.set(upgrade.getId() + ".tank2." + item.getKey(), item.getValue());
+                        }
+                    }
+                    if(tanksUpgrade.getInventory().getItem(12) != null) config.set(upgrade.getId() + ".12", tanksUpgrade.getInventory().getItem(12));
+                    if(tanksUpgrade.getInventory().getItem(14) != null) config.set(upgrade.getId() + ".14", tanksUpgrade.getInventory().getItem(14));
                 }
             }
         }
@@ -193,6 +210,31 @@ public final class YamlUtils {
                 }
                 case UNBREAKABLE -> {
                     Upgrade upgrade = new Upgrade(UpgradeType.UNBREAKABLE, id);
+                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                }
+                case LIQUIDTANK -> {
+                    TanksUpgrade upgrade = new TanksUpgrade(id);
+                    if(config.isSet(i + ".tank1")){
+                        Set<String> keys = config.getConfigurationSection(i + ".tank1").getKeys(false);
+                        for(String s : keys){
+                            upgrade.getInventory().setItem(Integer.parseInt(s), config.getItemStack(i + ".tank1." + s));
+                        }
+                    }
+                    if(config.isSet(i + ".tank2")){
+                        Set<String> keys = config.getConfigurationSection(i + ".tank2").getKeys(false);
+                        for(String s : keys){
+                            upgrade.getInventory().setItem(Integer.parseInt(s), config.getItemStack(i + ".tank2." + s));
+                        }
+                    }
+                    if(config.isSet(i + ".12")){
+                        upgrade.getInventory().setItem(12, config.getItemStack(i + ".12"));
+                    }
+                    if(config.isSet(i + ".14")){
+                        upgrade.getInventory().setItem(14, config.getItemStack(i + ".14"));
+                    }
+
+                    Main.getMain().debugMessage("loading tank upgrade: " + i);
+                    upgrade.updateInventory();
                     Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
                 }
             }

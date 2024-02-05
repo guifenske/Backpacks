@@ -18,6 +18,8 @@ public class BackpackAction {
 
         UPGMENU,
 
+        UPGTANKS,
+
         UPGFURNACE,
 
         UPGJUKEBOX,

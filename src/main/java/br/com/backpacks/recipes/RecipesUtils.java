@@ -59,6 +59,7 @@ public class RecipesUtils {
             case AUTOFILL: return "Auto Fill Upgrade";
             case AUTOFEED: return "Auto Feed Upgrade";
             case UNBREAKABLE: return "Unbreakable Upgrade";
+            case LIQUIDTANK: return "Liquid Tank Upgrade";
         }
 
         return "";
@@ -223,8 +224,8 @@ public class RecipesUtils {
             return Main.backPackManager.getUpgradeHashMap().get(id);
         }
         if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getLiquidTank())) {
-            if(UpgradeManager.getUpgradeFromId(id) != null) return UpgradeManager.getUpgradeFromId(id);
-            Main.backPackManager.getUpgradeHashMap().put(id, new Upgrade(UpgradeType.LIQUIDTANK, id));
+            if(UpgradeManager.getUpgradeFromId(id) != null) return (TanksUpgrade) UpgradeManager.getUpgradeFromId(id);
+            Main.backPackManager.getUpgradeHashMap().put(id, new TanksUpgrade(id));
             return Main.backPackManager.getUpgradeHashMap().get(id);
         }
         if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getENCAPSULATE())) {
@@ -288,6 +289,10 @@ public class RecipesUtils {
 
             case UNBREAKABLE -> {
                 return Arrays.asList("§Unbreakable Upgrade Upgrade", "§7§nMake the backpack unbreakable.");
+            }
+
+            case LIQUIDTANK -> {
+                return Arrays.asList("§7Liquid Tank Upgrade", "§7§nAllows you to store liquids in the backpack.");
             }
         }
 
