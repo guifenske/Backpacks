@@ -83,22 +83,16 @@ public class AutoFeed implements Listener {
     private static void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction((Player) event.getPlayer()).equals(BackpackAction.Action.UPGAUTOFEED)) return;
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
-        List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.AUTOFEED);
-        AutoFeedUpgrade upgrade = (AutoFeedUpgrade) list.get(0);
 
         for (int i : fillSlots) {
             ItemStack itemStack = event.getInventory().getItem(i);
             if (itemStack == null){
-                upgrade.getItems().put(i, null);
                 continue;
             }
             if (!checkFood(itemStack)) {
                 event.getPlayer().getInventory().addItem(itemStack);
                 event.getInventory().remove(itemStack);
-                upgrade.getItems().put(i, null);
-                continue;
             }
-            upgrade.getItems().put(i, itemStack);
         }
 
         BackpackAction.removeAction((Player) event.getPlayer());

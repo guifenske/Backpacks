@@ -22,9 +22,12 @@ public class AutoFeedUpgrade extends Upgrade {
     private Inventory inventory;
 
     public HashMap<Integer, ItemStack> getItems() {
-        return items;
+        HashMap<Integer, ItemStack> hashMap = new HashMap<>();
+        for(int i : fillSlots){
+            hashMap.put(i, inventory.getItem(i));
+        }
+        return hashMap;
     }
-    private final HashMap<Integer, ItemStack> items = new HashMap<>();
 
     public AutoFeedUpgrade(int id){
         super(UpgradeType.AUTOFEED, id);
@@ -55,12 +58,6 @@ public class AutoFeedUpgrade extends Upgrade {
         else{
             setEnabled(false);
             inventory.setItem(10, enable);
-        }
-
-        if(getItems() != null && !getItems().isEmpty()){
-            for(int i : fillSlots){
-                inventory.setItem(i, getItems().get(i));
-            }
         }
     }
 }

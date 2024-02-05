@@ -118,11 +118,7 @@ public final class YamlUtils {
         for(String i : config.getKeys(false)){
             UpgradeType type = UpgradeType.valueOf(config.getString(i + ".type"));
             int id = Integer.parseInt(i);
-            if(Main.backPackManager.getUpgradesIds() == 0) Main.backPackManager.setUpgradesIds(id);
-            if(Main.backPackManager.getUpgradesIds() < id){
-                Main.backPackManager.setUpgradesIds(id);
-                continue;
-            }
+            Main.backPackManager.setUpgradesIds(id);
             switch (type){
                 case FURNACE, BLAST_FURNACE, SMOKER -> {
                     FurnaceUpgrade upgrade = new FurnaceUpgrade(id, type);
@@ -192,12 +188,11 @@ public final class YamlUtils {
                     if(config.isSet(i + ".autofeed.items")){
                         Set<String> keys = config.getConfigurationSection(i + ".autofeed.items").getKeys(false);
                         for(String s : keys){
-                            upgrade.getItems().put(Integer.parseInt(s), config.getItemStack(i + ".autofeed.items." + s));
+                            upgrade.getInventory().setItem(Integer.parseInt(s), config.getItemStack(i + ".autofeed.items." + s));
                         }
                     }
 
                     Main.getMain().debugMessage("loading auto feed: " + i);
-                    upgrade.updateInventory();
                     Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
                 }
                 case CRAFTING -> {
@@ -234,7 +229,6 @@ public final class YamlUtils {
                     }
 
                     Main.getMain().debugMessage("loading tank upgrade: " + i);
-                    upgrade.updateInventory();
                     Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
                 }
             }

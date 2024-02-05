@@ -80,7 +80,6 @@ public class Jukebox implements Listener {
                 stopPlaying(player);
             }
         }
-        currentJukebox.get(player.getUniqueId()).updateInventory();
     }
 
     @EventHandler
@@ -90,24 +89,23 @@ public class Jukebox implements Listener {
 
         for(int i : discsSlots){
             if(event.getInventory().getItem(i) == null){
-                currentJukebox.get(uuid).getDiscs().put(i, null);
                 continue;
             }
             if(!checkDisk(event.getInventory().getItem(i))){
                 event.getPlayer().getInventory().addItem(event.getInventory().getItem(i));
                 event.getInventory().remove(event.getInventory().getItem(i));
-                currentJukebox.get(uuid).getDiscs().put(i, null);
-                continue;
             }
-
-            currentJukebox.get(uuid).getDiscs().put(i, event.getInventory().getItem(i));
         }
 
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         if(event.getInventory().getItem(13) != null && !checkDisk(event.getInventory().getItem(13)))    event.getPlayer().getInventory().addItem(event.getInventory().getItem(13));
         else currentJukebox.get(uuid).setPlaying(event.getInventory().getItem(13));
+        if(event.getInventory().getItem(13) == null && currentJukebox.get(uuid).isPlaying()){
+            currentJukebox.get(uuid).setPlaying(null);
+            currentJukebox.get(uuid).setIsPlaying(false);
+            stopPlaying(event.getPlayer());
+        }
 
-        currentJukebox.get(uuid).updateInventory();
         currentJukebox.remove(uuid);
         BackpackAction.removeAction((Player) event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
@@ -126,6 +124,7 @@ public class Jukebox implements Listener {
     public void stopPlaying(Entity entity){
         int id = entity.getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER);
         BackPack backPack = Main.backPackManager.getBackpackFromId(id);
+        if(backPack.getUpgradesFromType(UpgradeType.JUKEBOX).isEmpty()) return;
 
         net.kyori.adventure.sound.Sound sound = net.kyori.adventure.sound.Sound.sound(((JukeboxUpgrade)backPack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0)).getSound(), net.kyori.adventure.sound.Sound.Source.MUSIC, 2147483647, 1);
         entity.stopSound(sound);

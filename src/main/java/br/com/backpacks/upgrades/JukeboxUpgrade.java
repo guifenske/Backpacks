@@ -15,8 +15,6 @@ import java.util.HashMap;
 import static br.com.backpacks.events.upgrades.Jukebox.discsSlots;
 
 public class JukeboxUpgrade extends Upgrade {
-
-    private HashMap<Integer, ItemStack> discs = new HashMap<>();
     private ItemStack playing;
     private Boolean isPlaying;
     private Sound sound;
@@ -35,7 +33,11 @@ public class JukeboxUpgrade extends Upgrade {
     }
 
     public HashMap<Integer, ItemStack> getDiscs() {
-        return discs;
+        HashMap<Integer, ItemStack> hashMap = new HashMap<>();
+        for(int i : discsSlots){
+            hashMap.put(i, inventory.getItem(i));
+        }
+        return hashMap;
     }
 
     public ItemStack getPlaying() {
@@ -72,10 +74,6 @@ public class JukeboxUpgrade extends Upgrade {
 
         for (int i : Jukebox.blankSlots) {
             inventory.setItem(i, blank);
-        }
-
-        for (int i : discsSlots) {
-            inventory.setItem(i, getDiscs().get(i));
         }
 
         inventory.setItem(10, play);

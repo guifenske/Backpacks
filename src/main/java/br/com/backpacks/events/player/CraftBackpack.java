@@ -4,6 +4,7 @@ import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackType;
 import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -59,8 +60,19 @@ public class CraftBackpack implements Listener {
         }
 
         Player player = (Player) event.getWhoClicked();
+        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade())){
+            ItemStack itemStack = event.getRecipe().getResult();
+            ItemMeta meta = itemStack.getItemMeta();
+            meta.getPersistentDataContainer().set(new UpgradesRecipesNamespaces().getUPGRADEID(), PersistentDataType.INTEGER, Main.backPackManager.getUpgradesIds() + 1);
+            itemStack.setItemMeta(meta);
+            event.getInventory().setResult(itemStack);
+            Main.backPackManager.setUpgradesIds(Main.backPackManager.getUpgradesIds() + 1);
+            Main.getMain().debugMessage("Upgrade id: " + Main.backPackManager.getUpgradesIds());
+            RecipesUtils.getUpgradeFromItem(itemStack);
+        }
 
         int oldId = -1;
+        if(!event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack())) return;
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getFurnace())){
             player.discoverRecipe(new UpgradesRecipesNamespaces().getSMOKER());
@@ -142,7 +154,7 @@ public class CraftBackpack implements Listener {
     private static int checkBackpackInTheMatrix(CraftItemEvent event, int oldId, BackpackType type) {
         ItemStack backpack = event.getInventory().getItem(5);
 
-        if(backpack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK())){
+        if(backpack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack())){
             oldId = backpack.getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
         }
 

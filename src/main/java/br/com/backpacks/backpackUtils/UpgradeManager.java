@@ -9,8 +9,7 @@ public class UpgradeManager {
     private List<Integer> upgrades = new ArrayList<>();
 
     public List<Integer> getUpgradesIds() {
-        if(upgrades.isEmpty())  return new ArrayList<>();
-        return new ArrayList<>(upgrades);
+        return upgrades;
     }
 
     public List<Upgrade> getUpgrades() {

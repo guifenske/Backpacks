@@ -35,15 +35,13 @@ public class InventoryBuilder {
             inv.setItem(i, loremIpsum);
         }
 
-        if(backPack.getUpgrades() != null) {
-            if(!backPack.getUpgrades().isEmpty()) {
-                List<Upgrade> upgrades = backPack.getUpgrades();
+        if(!backPack.getUpgrades().isEmpty()) {
+            List<Upgrade> upgrades = backPack.getUpgrades();
 
-                int i = 0;
-                for(Upgrade upgrade : upgrades) {
-                    inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));
-                    i++;
-                }
+            int i = 0;
+            for(Upgrade upgrade : upgrades) {
+                inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));
+                i++;
             }
         }
 

@@ -12,7 +12,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.inventory.ItemStack;
@@ -67,7 +67,7 @@ public class BackpackBreak implements Listener {
     @EventHandler
     private void despawn(ItemDespawnEvent event){
         if(!event.getEntity().getItemStack().hasItemMeta())  return;
-        if(!event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK())){
+        if(!event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack())){
             if(event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade())){
                 if(!Main.backPackManager.canOpen()){
                     event.setCancelled(true);
@@ -96,17 +96,17 @@ public class BackpackBreak implements Listener {
     }
 
     @EventHandler
-    private void onDamageGeneral(EntityDamageEvent event){
+    private void onEntityDeath(EntityDeathEvent event){
         if(!(event.getEntity() instanceof Item)) return;
-        if(!((Item) event.getEntity()).getItemStack().hasItemMeta()) return;
-        if(event.getFinalDamage() < ((Item) event.getEntity()).getHealth()) return;
-        if(!((Item) event.getEntity()).getItemStack().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK())){
-            if(((Item) event.getEntity()).getItemStack().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade())){
+        Item eventItem = (Item) event.getEntity();
+        if(!eventItem.getItemStack().hasItemMeta())  return;
+        if(!eventItem.getItemStack().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack())){
+            if(eventItem.getItemStack().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade())){
                 if(!Main.backPackManager.canOpen()){
                     event.setCancelled(true);
                     return;
                 }
-                int id = ((Item) event.getEntity()).getItemStack().getItemMeta().getPersistentDataContainer().get(new UpgradesRecipesNamespaces().getUPGRADEID(), PersistentDataType.INTEGER);
+                int id = eventItem.getItemStack().getItemMeta().getPersistentDataContainer().get(new UpgradesRecipesNamespaces().getUPGRADEID(), PersistentDataType.INTEGER);
                 Main.backPackManager.getUpgradeHashMap().remove(id);
             }
             return;
@@ -117,14 +117,9 @@ public class BackpackBreak implements Listener {
             return;
         }
 
-        int id = ((Item) event.getEntity()).getItemStack().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
+        int id = eventItem.getItemStack().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
         if(!Main.backPackManager.getBackpacks().containsKey(id)) return;
         BackPack backPack = Main.backPackManager.getBackpacks().get(id);
-        if(backPack.isUnbreakable()){
-            event.setCancelled(true);
-            event.getEntity().setInvulnerable(true);
-            return;
-        }
         if(!backPack.getUpgradesIds().isEmpty()){
             for(int i : backPack.getUpgradesIds()){
                 Main.backPackManager.getUpgradeHashMap().remove(i);

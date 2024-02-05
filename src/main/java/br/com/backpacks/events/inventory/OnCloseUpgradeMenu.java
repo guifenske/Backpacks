@@ -24,7 +24,6 @@ public class OnCloseUpgradeMenu implements Listener {
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         if(backPack == null) return;
 
-        List<Upgrade> upgrades = backPack.getUpgrades();
         List<Upgrade> newUpgrades = new ArrayList<>();
 
         for(int i = 0; i < InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i++){
@@ -34,7 +33,7 @@ public class OnCloseUpgradeMenu implements Listener {
                 Upgrade upgrade = RecipesUtils.getUpgradeFromItem(item);
                 if(!UpgradeManager.canUpgradeStack(upgrade)){
                     boolean shouldSkip = false;
-                    for(Upgrade upgrade1 : upgrades){
+                    for(Upgrade upgrade1 : newUpgrades){
                         if(upgrade1.getType() == upgrade.getType()){
                             event.getInventory().remove(item);
                             event.getPlayer().getInventory().addItem(item);
