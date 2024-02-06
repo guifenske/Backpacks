@@ -38,7 +38,7 @@ public class ZipUtils {
             zipOut.putNextEntry(zipEntry);
             fileToZip.delete();
 
-            byte[] bytes = new byte[1024];
+            byte[] bytes = new byte[4096];
             int length;
             while((length = fis.read(bytes)) >= 0) {
                 zipOut.write(bytes, 0, length);
@@ -57,7 +57,7 @@ public class ZipUtils {
             throw new IOException("Invalid File: " + pathBackup);
         }
 
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[4096];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(pathBackup));
         ZipEntry zipEntry = zis.getNextEntry();
         while (zipEntry != null) {

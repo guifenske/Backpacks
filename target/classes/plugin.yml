@@ -4,31 +4,31 @@ main: br.com.backpacks.Main
 api-version: '1.20'
 
 commands:
-  debug:
+  bpdebug:
     description: 'Just to make easy debugging'
     aliases:
       - 'bbug'
-  give:
+  bpgive:
     description: 'Give a backpack to a player'
     aliases:
       - 'bpgive'
     usage: '/backpackgive <player> <backpackType>'
-  list:
+  bplist:
     description: 'Show all backpacks'
     aliases:
       - 'bplist'
     usage: '/backpacklist'
-  giveid:
+  bpgiveid:
     description: 'Give a existent backpack to a player'
     aliases:
       - 'bpgiveid'
     usage: '/backpackgiveid <player> <backpackId>'
-  backup:
+  bpbackup:
     description: 'Make a new backup file'
     aliases:
       - 'bpbackup'
     usage: '/backpacksbackup <create|remove|rollback> <backupName>'
-  reload:
+  bpreload:
     description: 'Reload the config file'
     aliases:
       - 'bpreload'

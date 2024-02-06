@@ -240,8 +240,7 @@ public class BackPack extends UpgradeManager {
         return this;
     }
 
-    public NamespacedKey getNamespaceOfBackpackType() {
-
+    public NamespacedKey getNamespace() {
         switch (getType()) {
             case LEATHER -> {
                 return new RecipesNamespaces().getNAMESPACE_LEATHER_BACKPACK();

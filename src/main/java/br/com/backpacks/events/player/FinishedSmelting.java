@@ -25,7 +25,7 @@ public class FinishedSmelting implements Listener {
         meta.getPersistentDataContainer().set(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER, CraftBackpack.generateId());
         RandomBackpack randomBackpack = new RandomBackpack("Unknown Backpack", meta.getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
         BackPack backPack = randomBackpack.generateBackpack();
-        meta.getPersistentDataContainer().set(backPack.getNamespaceOfBackpackType(), PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(backPack.getNamespace(), PersistentDataType.INTEGER, 1);
         driedBackpack.setItemMeta(meta);
         Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
         event.setResult(driedBackpack);

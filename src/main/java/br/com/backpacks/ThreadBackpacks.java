@@ -16,6 +16,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
@@ -127,47 +128,56 @@ public class ThreadBackpacks {
 
         }
 
-        if(Main.getMain().getConfig().getBoolean("autobackup.enabled")){
-            ScheduledBackup scheduledBackup = new ScheduledBackup();
-            if(Main.getMain().getConfig().getInt("autobackup.interval") > 0){
-                scheduledBackup.setInterval(Main.getMain().getConfig().getInt("autobackup.interval"));
-            }   else{
-                Main.getMain().getLogger().warning("Invalid interval for autobackup, please use a number greater than 0.");
-                return;
-            }
-
-            if(Main.getMain().getConfig().isSet("autobackup.path")){
-                if(Main.getMain().getConfig().getString("autobackup.path") != null){
-                    scheduledBackup.setPath(Main.getMain().getConfig().getString("autobackup.path"));
-                }   else{
-                    Main.getMain().getLogger().warning("Invalid path for autobackup, please use this syntax: /path/to/backup/folder");
-                    return;
-                }
-            }   else{
-                scheduledBackup.setPath(Main.getMain().getDataFolder().getAbsolutePath() + "/Backups");
-            }
-
-            if(Main.getMain().getConfig().getString("autobackup.type") != null){
-                try{
-                    ScheduledBackup.IntervalType.valueOf(Main.getMain().getConfig().getString("autobackup.type"));
-                }   catch (IllegalArgumentException e){
-                    Main.getMain().getLogger().warning("Invalid type for autobackup, please use MINUTES | HOURS | SECONDS.");
-                    return;
-                }
-                scheduledBackup.setType(ScheduledBackup.IntervalType.valueOf(Main.getMain().getConfig().getString("autobackup.type")));
-            }   else{
-                Main.getMain().getLogger().warning("Invalid type for autobackup, please use MINUTES | HOURS | SECONDS.");
-            }
-            int keep = 0;
-            if(Main.getMain().getConfig().getInt("autobackup.keep") > 0){
-                keep = Main.getMain().getConfig().getInt("autobackup.keep");
-            }   else{
-                Main.getMain().getLogger().warning("Invalid keep for autobackup, please use a number greater than 0.");
-            }
-            BackupHandler backupHandler = new BackupHandler(keep, scheduledBackup.getPath());
-            Main.getMain().setBackupHandler(backupHandler);
-            scheduledBackup.startWithDelay();
+        if(!Main.getMain().getConfig().getBoolean("autobackup.enabled")) return;
+        ScheduledBackup scheduledBackup = new ScheduledBackup();
+        if(Main.getMain().getConfig().getInt("autobackup.interval") > 0){
+            scheduledBackup.setInterval(Main.getMain().getConfig().getInt("autobackup.interval"));
+        }   else{
+            Main.getMain().getLogger().warning("Invalid interval for autobackup, please use a number greater than 0.");
+            return;
         }
 
+        if(Main.getMain().getConfig().isSet("autobackup.path")){
+            if(Main.getMain().getConfig().getString("autobackup.path") != null){
+                String path = Main.getMain().getConfig().getString("autobackup.path");
+                if(path.equalsIgnoreCase("DEFAULT")){
+                    path = Main.getMain().getDataFolder().getAbsolutePath() + "/Backups";
+                }
+                try{
+                    Path.of(path);
+                }   catch (Exception e){
+                    path = Main.getMain().getDataFolder().getAbsolutePath() + "/Backups";
+                    Main.getMain().getLogger().warning("Invalid path for autobackup, please use this syntax: /path/to/backup/folder");
+                    Main.getMain().getLogger().info("Using default backups folder.");
+                }
+                scheduledBackup.setPath(path);
+            }   else{
+                Main.getMain().getLogger().warning("Invalid path for autobackup, please use this syntax: /path/to/backup/folder");
+                return;
+            }
+        }   else{
+            scheduledBackup.setPath(Main.getMain().getDataFolder().getAbsolutePath() + "/Backups");
+        }
+
+        if(Main.getMain().getConfig().getString("autobackup.type") != null){
+            try{
+                ScheduledBackup.IntervalType.valueOf(Main.getMain().getConfig().getString("autobackup.type"));
+            }   catch (IllegalArgumentException e){
+                Main.getMain().getLogger().warning("Invalid type for autobackup, please use MINUTES | HOURS | SECONDS.");
+                return;
+            }
+            scheduledBackup.setType(ScheduledBackup.IntervalType.valueOf(Main.getMain().getConfig().getString("autobackup.type")));
+        }   else{
+            Main.getMain().getLogger().warning("Invalid type for autobackup, please use MINUTES | HOURS | SECONDS.");
+        }
+        int keep = 0;
+        if(Main.getMain().getConfig().getInt("autobackup.keep") > 0){
+            keep = Main.getMain().getConfig().getInt("autobackup.keep");
+        }   else{
+            Main.getMain().getLogger().warning("Invalid keep for autobackup, please use a number greater than 0.");
+        }
+        BackupHandler backupHandler = new BackupHandler(keep, scheduledBackup.getPath());
+        Main.getMain().setBackupHandler(backupHandler);
+        scheduledBackup.startWithDelay();
     }
 }
