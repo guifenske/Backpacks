@@ -21,8 +21,8 @@ import java.util.Set;
 
 public final class YamlUtils {
 
-    public static void saveBackpacks() throws IOException {
-        File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
+    public static void saveBackpacks(String path) throws IOException {
+        File file = new File(path);
         YamlConfiguration config = new YamlConfiguration();
 
         for (BackPack backPack : Main.backPackManager.getBackpacks().values()) {
@@ -41,8 +41,8 @@ public final class YamlUtils {
         config.save(file);
     }
 
-    public static void saveUpgrades() throws IOException {
-        File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
+    public static void saveUpgrades(String path) throws IOException {
+        File file = new File(path);
         YamlConfiguration config = new YamlConfiguration();
 
         for(Upgrade upgrade : Main.backPackManager.getUpgradeHashMap().values()){

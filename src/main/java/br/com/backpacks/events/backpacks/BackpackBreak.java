@@ -2,6 +2,7 @@ package br.com.backpacks.events.backpacks;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
+import br.com.backpacks.backpackUtils.UpgradeType;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
@@ -120,6 +121,12 @@ public class BackpackBreak implements Listener {
         int id = eventItem.getItemStack().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
         if(!Main.backPackManager.getBackpacks().containsKey(id)) return;
         BackPack backPack = Main.backPackManager.getBackpacks().get(id);
+
+        if(backPack.getUpgradesFromType(UpgradeType.UNBREAKABLE).isEmpty()){
+            event.setCancelled(true);
+            return;
+        }
+
         if(!backPack.getUpgradesIds().isEmpty()){
             for(int i : backPack.getUpgradesIds()){
                 Main.backPackManager.getUpgradeHashMap().remove(i);

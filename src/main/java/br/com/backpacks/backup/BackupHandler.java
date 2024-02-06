@@ -69,12 +69,11 @@ public class BackupHandler {
         File upgradeFile = new File(path + "/upgrades.yml");
         YamlConfiguration yaml = new YamlConfiguration();
         YamlConfiguration yaml2 = new YamlConfiguration();
-        File backpacks = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
-        File upgrades = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
-        yaml.load(backpacks);
         yaml.save(backpackFile);
-        yaml2.load(upgrades);
         yaml2.save(upgradeFile);
+
+        YamlUtils.saveBackpacks(path + "/backpacks.yml");
+        YamlUtils.saveUpgrades(path + "/upgrades.yml");
 
         ZipUtils.zipAll(backpackFile.toPath(), upgradeFile.toPath(), path);
         while(getNumberOfFilesInPath(source) > keepBackups){

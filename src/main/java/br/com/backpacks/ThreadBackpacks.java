@@ -96,8 +96,8 @@ public class ThreadBackpacks {
         cancelAllTasks();
 
         Future<Void> future = executor.submit(() -> {
-            YamlUtils.saveBackpacks();
-            YamlUtils.saveUpgrades();
+            YamlUtils.saveBackpacks(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
+            YamlUtils.saveUpgrades(Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
             Main.getMain().saveConfig();
             return null;
         });
