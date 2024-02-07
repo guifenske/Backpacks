@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class BackPack extends UpgradeManager {
 
@@ -104,9 +105,17 @@ public class BackPack extends UpgradeManager {
     }
 
     private boolean isUnbreakable = false;
-
+    private UUID owner;
     public String getName() {
         return name;
+    }
+
+    public void setOwner(UUID owner) {
+        this.owner = owner;
+    }
+
+    public UUID getOwner() {
+        return owner;
     }
 
     public void setName(String name) {

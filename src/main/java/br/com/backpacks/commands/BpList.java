@@ -28,27 +28,25 @@ import java.util.List;
 import java.util.UUID;
 
 public class BpList implements CommandExecutor, Listener {
-    private final HashMap<UUID, Integer> page = new HashMap<>();
+    private HashMap<UUID, Integer> page = new HashMap<>();
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if(sender instanceof ConsoleCommandSender){
             sender.sendMessage(Main.PREFIX + "§cThis command can only be used by players.");
-            return false;
+            return true;
         }
         if(args.length > 0){
             sender.sendMessage(Main.PREFIX + "§cInvalid arguments, use just /bplist");
-            return false;
+            return true;
         }
         Player player = (Player) sender;
         if(!player.isOp()){
             player.sendMessage(Main.PREFIX + "§cYou don't have permission to use this command.");
-            return false;
+            return true;
         }
         page.put(player.getUniqueId(), 0);
-        Bukkit.getScheduler().runTaskLater(Main.getMain(), ()-> {
-            player.openInventory(inventory(player));
-            BackpackAction.setAction(player, BackpackAction.Action.BPLIST);
-        }, 1L);
+        player.openInventory(inventory(player));
+        Bukkit.getScheduler().runTaskLater(Main.getMain(), ()-> BackpackAction.setAction(player, BackpackAction.Action.BPLIST), 1L);
 
         return true;
     }

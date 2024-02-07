@@ -15,7 +15,6 @@ public class CraftingTable implements Listener {
     @EventHandler
     private void onClose(InventoryCloseEvent event){
         if(BackpackAction.getAction((Player) event.getPlayer()) != BackpackAction.Action.UPGCRAFTINGGRID) return;
-
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         if(backPack == null) return;
 

@@ -8,6 +8,7 @@ import br.com.backpacks.events.upgrades.VillagersFollow;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.FurnaceRecipe;
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class ServerLoadEvent implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     private void onServerLoad(org.bukkit.event.server.ServerLoadEvent event){
         VillagersFollow.tick();
         for(Upgrade upgrade : Main.backPackManager.getUpgradeHashMap().values()){

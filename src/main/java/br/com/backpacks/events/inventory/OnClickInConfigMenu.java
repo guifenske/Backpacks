@@ -135,13 +135,15 @@ public class OnClickInConfigMenu implements Listener {
                 if(backPack.isBlock())  return;
                 if(event.getClickedInventory().getItem(53).getType().equals(Material.GRAY_STAINED_GLASS_PANE)) return;
 
-                if (player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) {
+                if (backPack.getOwner() != null && backPack.getOwner().equals(player.getUniqueId())){
                     player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
                     player.getPersistentDataContainer().remove(new RecipesNamespaces().getHAS_BACKPACK());
+                    backPack.setOwner(null);
                     backPack.setBeingWorn(false);
-                } else {
+                } else if(backPack.getOwner() == null){
                     player.getInventory().remove(RecipesUtils.getItemFromBackpack(backPack));
                     player.getPersistentDataContainer().set(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER, backPack.getId());
+                    backPack.setOwner(player.getUniqueId());
                     backPack.setBeingWorn(true);
                 }
 
