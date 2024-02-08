@@ -61,4 +61,6 @@ public class Upgrade {
 
         return null;
     }
+
+    public boolean canReceiveInput(@NotNull ItemStack itemStack){return false;}
 }

@@ -31,9 +31,9 @@ public class Jukebox implements Listener {
 
     public static List<Integer> discsSlots = List.of(6,7,8,15,16,17,24,25,26);
 
-    private Boolean checkDisk(ItemStack itemStack){
+    public static Boolean checkDisk(ItemStack itemStack){
         if(itemStack == null) return false;
-        return itemStack.getType().toString().toUpperCase().contains("MUSIC_DISC");
+        return itemStack.getType().toString().contains("MUSIC_DISC");
     }
 
     public Sound getSoundFromItem(ItemStack itemStack){

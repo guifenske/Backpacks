@@ -4,6 +4,7 @@ import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.backpackUtils.UpgradeManager;
+import br.com.backpacks.events.upgrades.Furnace;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
@@ -35,7 +36,14 @@ public class HopperEvents implements Listener {
                         ItemStack itemStack = upgrade.tryAddItem(List.of(0), event.getItem().asOne());
                         if(itemStack != null){
                             event.setCancelled(true);
+                            return;
                         }
+
+                        if(((FurnaceUpgrade) upgrade).canTick() && !Furnace.shouldTick.contains(upgrade.getId())){
+                            Furnace.shouldTick.add(upgrade.getId());
+                            Furnace.tick((FurnaceUpgrade) upgrade);
+                        }
+
                         return;
                     }
 
@@ -43,6 +51,11 @@ public class HopperEvents implements Listener {
                     if(itemStack != null){
                         event.setCancelled(true);
                     }
+                    return;
+                }
+
+                if(!upgrade.canReceiveInput(event.getItem().asOne())){
+                    event.setCancelled(true);
                     return;
                 }
 

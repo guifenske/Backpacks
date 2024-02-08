@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +40,11 @@ public class JukeboxUpgrade extends Upgrade {
             hashMap.put(i, inventory.getItem(i));
         }
         return hashMap;
+    }
+
+    @Override
+    public boolean canReceiveInput(@NotNull ItemStack itemStack) {
+        return Jukebox.checkDisk(itemStack);
     }
 
     @Override

@@ -3,10 +3,12 @@ package br.com.backpacks.upgrades;
 import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.backpackUtils.UpgradeType;
 import br.com.backpacks.backpackUtils.inventory.ItemCreator;
+import br.com.backpacks.events.upgrades.AutoFeed;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +30,11 @@ public class AutoFeedUpgrade extends Upgrade {
             hashMap.put(i, inventory.getItem(i));
         }
         return hashMap;
+    }
+
+    @Override
+    public boolean canReceiveInput(@NotNull ItemStack itemStack) {
+        return AutoFeed.checkFood(itemStack);
     }
 
     @Override
