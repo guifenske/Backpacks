@@ -23,7 +23,7 @@ public class OnClickBackpack implements Listener {
         if(event.getRawSlot() == event.getInventory().getSize() - 1){
             event.setCancelled(true);
             BackpackAction.removeAction(player);
-            player.openInventory(InventoryBuilder.mainConfigInv(player));
+            player.openInventory(InventoryBuilder.getConfigInv(backPack));
             Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> BackpackAction.setAction(player, BackpackAction.Action.CONFIGMENU), 1L);
         }   else if(event.getRawSlot() == event.getInventory().getSize() - 2){
             if(backPack.getSecondPageSize() == 0) return;

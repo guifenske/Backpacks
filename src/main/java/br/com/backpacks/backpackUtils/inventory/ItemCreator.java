@@ -9,7 +9,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.List;
 
 public class ItemCreator {
-    ItemStack itemStack;
+    private final ItemStack itemStack;
 
     public ItemCreator(Material material, String name){
         this.itemStack = new ItemStack(material, 1);

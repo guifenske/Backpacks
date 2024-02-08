@@ -4,6 +4,7 @@ import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.backpackUtils.UpgradeType;
+import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import br.com.backpacks.upgrades.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -249,6 +250,11 @@ public final class YamlUtils {
             }
             Main.getMain().debugMessage("Loading backpack " + backPack.getName() + " with id " + backPack.getId());
             Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
+
+            new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
+
             int id = backPack.getId();
             if(Main.backPackManager.getBackpackIds() == 0) Main.backPackManager.setBackpackIds(id);
             if(Main.backPackManager.getBackpackIds() < id){

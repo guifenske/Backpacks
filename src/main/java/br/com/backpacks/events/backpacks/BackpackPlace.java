@@ -5,9 +5,11 @@ import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Barrel;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -35,6 +37,9 @@ public class BackpackPlace implements Listener {
             backPack.setIsBlock(true);
             Location backpackLocation = event.getBlockPlaced().getLocation();
             backPack.setLocation(backpackLocation);
+            //we need to do this to trigger the hopper event
+            Barrel barrel = (Barrel) event.getBlockPlaced().getState();
+            barrel.getInventory().setItem(0, new ItemStack(Material.STICK));
             Main.backPackManager.getBackpacksPlacedLocations().put(backpackLocation, backPack.getId());
         }   else event.setCancelled(true);
     }

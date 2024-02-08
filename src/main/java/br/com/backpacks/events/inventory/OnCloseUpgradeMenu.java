@@ -1,7 +1,10 @@
 package br.com.backpacks.events.inventory;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.*;
+import br.com.backpacks.backpackUtils.BackPack;
+import br.com.backpacks.backpackUtils.BackpackAction;
+import br.com.backpacks.backpackUtils.Upgrade;
+import br.com.backpacks.backpackUtils.UpgradeManager;
 import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import br.com.backpacks.recipes.RecipesUtils;
 import org.bukkit.entity.Player;
@@ -54,7 +57,9 @@ public class OnCloseUpgradeMenu implements Listener {
             }
         }
         backPack.setUpgrades(newUpgrades);
-        backPack.setUnbreakable(!backPack.getUpgradesFromType(UpgradeType.UNBREAKABLE).isEmpty());
+        InventoryBuilder.updateConfigInv(backPack);
+        InventoryBuilder.updateEditIOInv(backPack);
+        InventoryBuilder.updateUpgradesInv(backPack);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

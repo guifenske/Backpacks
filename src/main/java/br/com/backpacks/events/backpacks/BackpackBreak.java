@@ -3,6 +3,7 @@ package br.com.backpacks.events.backpacks;
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.UpgradeType;
+import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
@@ -36,6 +37,7 @@ public class BackpackBreak implements Listener {
         ItemStack backpackItem = RecipesUtils.getItemFromBackpack(backPack);
 
         backPack.setLocation(null);
+        backPack.setIsBlock(false);
         Location location = event.getBlock().getLocation();
         Main.backPackManager.getBackpacksPlacedLocations().remove(location);
         event.getPlayer().getWorld().dropItemNaturally(location, backpackItem);
@@ -59,6 +61,7 @@ public class BackpackBreak implements Listener {
 
             Location location = block.getLocation();
             backPack.setLocation(null);
+            backPack.setIsBlock(false);
             Main.backPackManager.getBackpacksPlacedLocations().remove(location);
             block.getWorld().dropItemNaturally(location, backpackItem);
             break;
@@ -93,6 +96,8 @@ public class BackpackBreak implements Listener {
                 Main.backPackManager.getUpgradeHashMap().remove(i);
             }
         }
+
+        InventoryBuilder.deleteAllMenusFromBackpack(backPack);
         Main.backPackManager.getBackpacks().remove(id);
     }
 
@@ -124,6 +129,7 @@ public class BackpackBreak implements Listener {
 
         if(backPack.getUpgradesFromType(UpgradeType.UNBREAKABLE).isEmpty()){
             event.setCancelled(true);
+            event.getEntity().setInvulnerable(true);
             return;
         }
 
@@ -132,6 +138,8 @@ public class BackpackBreak implements Listener {
                 Main.backPackManager.getUpgradeHashMap().remove(i);
             }
         }
+
+        InventoryBuilder.deleteAllMenusFromBackpack(backPack);
         Main.backPackManager.getBackpacks().remove(id);
     }
 }

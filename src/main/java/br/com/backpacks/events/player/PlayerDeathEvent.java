@@ -5,10 +5,12 @@ import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Barrel;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 public class PlayerDeathEvent implements Listener {
@@ -23,6 +25,10 @@ public class PlayerDeathEvent implements Listener {
         location.setYaw(0.0f);
         location.setPitch(0.0f);
         location.getBlock().setType(Material.BARREL);
+        location.getBlock().tick();
+        //we need to do this to trigger the hopper event
+        Barrel barrel = (Barrel) location.getBlock().getState();
+        barrel.getInventory().addItem(new ItemStack(Material.STICK));
 
         backpack.setIsBlock(true);
         backpack.setLocation(location);
@@ -37,5 +43,4 @@ public class PlayerDeathEvent implements Listener {
         }
         return location;
     }
-
 }

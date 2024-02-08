@@ -22,7 +22,7 @@ public class RenameBackpackChat implements Listener {
         BackpackAction.removeAction(player);
 
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(player.getUniqueId()));
-        if(!backPack.isBlock() && !backPack.isBeingWorn()) {
+        if(!backPack.isBlock() && backPack.getOwner() == null) {
             player.getInventory().remove(RecipesUtils.getItemFromBackpack(backPack));
             backPack.setName(newName);
             player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));

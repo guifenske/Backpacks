@@ -19,6 +19,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ public class Jukebox implements Listener {
 
     public static HashMap<UUID, JukeboxUpgrade> currentJukebox = new HashMap<>();
 
-    public static Set<Integer> discsSlots = Set.of(6,7,8,15,16,17,24,25,26);
+    public static List<Integer> discsSlots = List.of(6,7,8,15,16,17,24,25,26);
 
     private Boolean checkDisk(ItemStack itemStack){
         if(itemStack == null) return false;

@@ -3,6 +3,7 @@ package br.com.backpacks.events.player;
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackType;
+import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
@@ -38,6 +39,8 @@ public class CraftBackpack implements Listener {
                 case FURNACE, SMOKER, BLAST_FURNACE -> {
                     if(!event.getWhoClicked().hasDiscoveredRecipe(new UpgradesRecipesNamespaces().getFurnace())){
                         event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getFurnace());
+                        event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getBLASTFURNACE());
+                        event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getSMOKER());
                     }
                 }
                 case JUKEBOX, NOTE_BLOCK -> {
@@ -67,7 +70,6 @@ public class CraftBackpack implements Listener {
             itemStack.setItemMeta(meta);
             event.getInventory().setResult(itemStack);
             Main.backPackManager.setUpgradesIds(Main.backPackManager.getUpgradesIds() + 1);
-            Main.getMain().debugMessage("Upgrade id: " + Main.backPackManager.getUpgradesIds());
             RecipesUtils.getUpgradeFromItem(itemStack);
         }
 
@@ -85,9 +87,12 @@ public class CraftBackpack implements Listener {
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_IRON_BACKPACK());
             player.discoverRecipe(new UpgradesRecipesNamespaces().getCraftingGrid());
             BackPack backPack =  new BackPack("Leather Backpack", Bukkit.createInventory(null, 18, "Leather Backpack"), id, BackpackType.LEATHER);
+            updateResult(event, id);
             Main.backPackManager.getBackpacks().put(id, backPack);
             Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
-            updateResult(event, id);
+            new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
             return;
         }
 
@@ -98,7 +103,10 @@ public class CraftBackpack implements Listener {
             player.discoverRecipe(new UpgradesRecipesNamespaces().getENCAPSULATE());
             updateResult(event, oldId);
             Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
-            Main.backPackManager.upgradeBackpack(BackpackType.LEATHER, oldId);
+            BackPack backPack = Main.backPackManager.upgradeBackpack(BackpackType.LEATHER, oldId);
+            new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
             return;
         }
 
@@ -106,9 +114,13 @@ public class CraftBackpack implements Listener {
             oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.GOLD);
             if(oldId == -1) return;
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_LAPIS_BACKPACK());
+            player.discoverRecipe(new UpgradesRecipesNamespaces().getLiquidTank());
             updateResult(event, oldId);
             Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
-            Main.backPackManager.upgradeBackpack(BackpackType.IRON, oldId);
+            BackPack backPack = Main.backPackManager.upgradeBackpack(BackpackType.IRON, oldId);
+            new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
             return;
         }
 
@@ -116,9 +128,13 @@ public class CraftBackpack implements Listener {
             oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.LAPIS);
             if(oldId == -1) return;
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_AMETHYST_BACKPACK());
+            player.discoverRecipe(new UpgradesRecipesNamespaces().getUNBREAKING());
             updateResult(event, oldId);
             Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
-            Main.backPackManager.upgradeBackpack(BackpackType.GOLD, oldId);
+            BackPack backPack = Main.backPackManager.upgradeBackpack(BackpackType.GOLD, oldId);
+            new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
             return;
         }
 
@@ -128,7 +144,10 @@ public class CraftBackpack implements Listener {
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_DIAMOND_BACKPACK());
             updateResult(event, oldId);
             Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
-            Main.backPackManager.upgradeBackpack(BackpackType.LAPIS, oldId);
+            BackPack backPack = Main.backPackManager.upgradeBackpack(BackpackType.LAPIS, oldId);
+            new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
             return;
         }
 
@@ -138,7 +157,10 @@ public class CraftBackpack implements Listener {
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_NETHERITE_BACKPACK());
             updateResult(event, oldId);
             Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
-            Main.backPackManager.upgradeBackpack(BackpackType.AMETHYST, oldId);
+            BackPack backPack = Main.backPackManager.upgradeBackpack(BackpackType.AMETHYST, oldId);
+            new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
             return;
         }
 
@@ -147,7 +169,10 @@ public class CraftBackpack implements Listener {
             if(oldId == -1) return;
             updateResult(event, oldId);
             Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
-            Main.backPackManager.upgradeBackpack(BackpackType.DIAMOND, oldId);
+            BackPack backPack = Main.backPackManager.upgradeBackpack(BackpackType.DIAMOND, oldId);
+            new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
         }
     }
 

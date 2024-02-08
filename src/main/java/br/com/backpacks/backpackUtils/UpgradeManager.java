@@ -67,4 +67,23 @@ public class UpgradeManager {
 
         return false;
     }
+
+    private Integer inputUpgrade = -1;
+    private Integer outputUpgrade = -1;
+
+    public Integer getInputUpgrade() {
+        return inputUpgrade;
+    }
+
+    public Integer getOutputUpgrade() {
+        return outputUpgrade;
+    }
+
+    public void setInputUpgrade(int inputUpgrade){
+        this.inputUpgrade = inputUpgrade;
+    }
+
+    public void setOutputUpgrade(int outputUpgrade){
+        this.outputUpgrade = outputUpgrade;
+    }
 }

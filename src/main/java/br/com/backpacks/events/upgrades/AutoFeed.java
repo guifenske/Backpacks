@@ -24,12 +24,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AutoFeed implements Listener {
 
-    public static final Set<Integer> fillSlots = Set.of(3,4,5,12,13,14,21,22,23);
+    public static final List<Integer> fillSlots = List.of(3,4,5,12,13,14,21,22,23);
 
     @EventHandler
     private static void tick(FoodLevelChangeEvent event){

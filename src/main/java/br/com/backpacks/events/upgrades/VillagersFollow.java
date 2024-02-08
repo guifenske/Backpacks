@@ -89,6 +89,7 @@ public class VillagersFollow implements Listener {
         World world = l.getWorld();
         for (int chX = -chunkRadius; chX <= chunkRadius; chX++) {
             for (int chZ = -chunkRadius; chZ <= chunkRadius; chZ++) {
+                if(!new Location(world, x + (chX * 16), 0, z + (chZ * 16)).isChunkLoaded()) continue;
                 for (Entity e : new Location(world, x + (chX * 16), 0, z + (chZ * 16)).getChunk().getEntities()) {
                     if (e.getLocation().distanceSquared(l) <= 100 && e.getType().equals(EntityType.VILLAGER)){
                         moveToPlayer((Mob) e, player);

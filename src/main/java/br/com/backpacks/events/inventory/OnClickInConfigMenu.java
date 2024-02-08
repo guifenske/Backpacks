@@ -5,7 +5,6 @@ import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackAction;
 import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
-import br.com.backpacks.backpackUtils.inventory.UpgradeMenu;
 import br.com.backpacks.events.upgrades.Furnace;
 import br.com.backpacks.events.upgrades.Jukebox;
 import br.com.backpacks.recipes.RecipesNamespaces;
@@ -139,15 +138,13 @@ public class OnClickInConfigMenu implements Listener {
                     player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
                     player.getPersistentDataContainer().remove(new RecipesNamespaces().getHAS_BACKPACK());
                     backPack.setOwner(null);
-                    backPack.setBeingWorn(false);
                 } else if(backPack.getOwner() == null){
                     player.getInventory().remove(RecipesUtils.getItemFromBackpack(backPack));
                     player.getPersistentDataContainer().set(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER, backPack.getId());
                     backPack.setOwner(player.getUniqueId());
-                    backPack.setBeingWorn(true);
                 }
 
-                player.closeInventory();
+                InventoryBuilder.updateConfigInv(backPack);
         }
             //rename backpack
             case 52 -> {
@@ -157,15 +154,22 @@ public class OnClickInConfigMenu implements Listener {
             }
 
             case 51 -> {
-                if (event.getClickedInventory().getItem(53) == null) return;
+                if (event.getClickedInventory().getItem(53).getType().equals(Material.GRAY_STAINED_GLASS_PANE)) return;
                 backPack.setLocked(!backPack.isLocked());
-                player.closeInventory();
+                InventoryBuilder.updateConfigInv(backPack);
             }
 
             case 36 ->{
                 BackpackAction.removeAction(player);
-                player.openInventory(UpgradeMenu.editUpgrades(player));
+                player.openInventory(InventoryBuilder.getUpgradesInv(backPack));
                 BackpackAction.setAction(player, BackpackAction.Action.UPGMENU);
+                event.setCancelled(true);
+            }
+
+            case 49 -> {
+                BackpackAction.removeAction(player);
+                player.openInventory(InventoryBuilder.getIOInv());
+                BackpackAction.setAction(player, BackpackAction.Action.IOMENU);
                 event.setCancelled(true);
             }
         }

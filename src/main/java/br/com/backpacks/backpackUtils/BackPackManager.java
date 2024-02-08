@@ -85,58 +85,66 @@ public class BackPackManager {
         throw new NullPointerException("Backpack with id " + id + " not found");
     }
 
-    public void upgradeBackpack(BackpackType oldType, int oldId) {
-        if(oldId == -1) return;
+    public BackPack upgradeBackpack(BackpackType oldType, int oldId) {
+        if(oldId == -1) return null;
 
         BackPack oldBackpack = getBackpackFromId(oldId);
 
         backpacks.remove(oldId);
 
         switch (oldType){
-            case LEATHER:
-                BackPack ironBackpack = new BackPack("Iron Backpack", Bukkit.createInventory(null, 27, "Iron Backpack"), oldId, BackpackType.IRON);
-                ironBackpack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
-                ironBackpack.setArrowsAndConfigOptionItems();
-                ironBackpack.setUpgrades(oldBackpack.getUpgrades());
-                backpacks.put(oldId, ironBackpack);
-                break;
-            case IRON:
-                BackPack goldBackpack = new BackPack("Gold Backpack", Bukkit.createInventory(null, 36, "Gold Backpack"), oldId, BackpackType.GOLD);
-                goldBackpack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
-                goldBackpack.setArrowsAndConfigOptionItems();
-                goldBackpack.setUpgrades(oldBackpack.getUpgrades());
-                backpacks.put(oldId, goldBackpack);
-                break;
-            case GOLD:
-                BackPack lapisBackpack = new BackPack("Lapis Backpack", Bukkit.createInventory(null, 45, "Lapis Backpack"), oldId, BackpackType.LAPIS);
-                lapisBackpack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
-                lapisBackpack.setArrowsAndConfigOptionItems();
-                lapisBackpack.setUpgrades(oldBackpack.getUpgrades());
-                backpacks.put(oldId, lapisBackpack);
-                break;
-            case LAPIS:
-                BackPack amethystBackpack = new BackPack("Amethyst Backpack", Bukkit.createInventory(null, 54, "Amethyst Backpack"), oldId, BackpackType.AMETHYST);
-                amethystBackpack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
-                amethystBackpack.setArrowsAndConfigOptionItems();
-                amethystBackpack.setUpgrades(oldBackpack.getUpgrades());
-                backpacks.put(oldId, amethystBackpack);
-                break;
-            case AMETHYST:
-                BackPack diamondBackpack = new BackPack("Diamond Backpack", Bukkit.createInventory(null, 54, "Diamond Backpack"), Bukkit.createInventory(null, 27, "Diamond Backpack"), oldId, BackpackType.DIAMOND);
-                diamondBackpack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
-                diamondBackpack.setArrowsAndConfigOptionItems();
-                diamondBackpack.setUpgrades(oldBackpack.getUpgrades());
-                backpacks.put(oldId, diamondBackpack);
-                break;
-            case DIAMOND:
-                BackPack netheriteBackpack = new BackPack("Netherite Backpack", Bukkit.createInventory(null, 54, "Netherite Backpack"),  Bukkit.createInventory(null, 54, "Netherite Backpack"), oldId, BackpackType.NETHERITE);
-                netheriteBackpack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
-                netheriteBackpack.getSecondPage().setStorageContents(oldBackpack.getStorageContentsSecondPage());
-                netheriteBackpack.setArrowsAndConfigOptionItems();
-                netheriteBackpack.setUpgrades(oldBackpack.getUpgrades());
-                backpacks.put(oldId, netheriteBackpack);
-                break;
+            case LEATHER ->{
+                BackPack backPack = new BackPack("Iron Backpack", Bukkit.createInventory(null, 27, "Iron Backpack"), oldId, BackpackType.IRON);
+                backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
+                backPack.setArrowsAndConfigOptionItems();
+                backPack.setUpgrades(oldBackpack.getUpgrades());
+                backpacks.put(oldId, backPack);
+                return backPack;
+            }
+            case IRON -> {
+                BackPack backPack = new BackPack("Gold Backpack", Bukkit.createInventory(null, 36, "Gold Backpack"), oldId, BackpackType.GOLD);
+                backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
+                backPack.setArrowsAndConfigOptionItems();
+                backPack.setUpgrades(oldBackpack.getUpgrades());
+                backpacks.put(oldId, backPack);
+                return backPack;
+            }
+            case GOLD -> {
+                BackPack backPack = new BackPack("Lapis Backpack", Bukkit.createInventory(null, 45, "Lapis Backpack"), oldId, BackpackType.LAPIS);
+                backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
+                backPack.setArrowsAndConfigOptionItems();
+                backPack.setUpgrades(oldBackpack.getUpgrades());
+                backpacks.put(oldId, backPack);
+                return backPack;
+            }
+            case LAPIS -> {
+                BackPack backPack = new BackPack("Amethyst Backpack", Bukkit.createInventory(null, 54, "Amethyst Backpack"), oldId, BackpackType.AMETHYST);
+                backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
+                backPack.setArrowsAndConfigOptionItems();
+                backPack.setUpgrades(oldBackpack.getUpgrades());
+                backpacks.put(oldId, backPack);
+                return backPack;
+            }
+            case AMETHYST -> {
+                BackPack backPack = new BackPack("Diamond Backpack", Bukkit.createInventory(null, 54, "Diamond Backpack"), Bukkit.createInventory(null, 27, "Diamond Backpack"), oldId, BackpackType.DIAMOND);
+                backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
+                backPack.setArrowsAndConfigOptionItems();
+                backPack.setUpgrades(oldBackpack.getUpgrades());
+                backpacks.put(oldId, backPack);
+                return backPack;
+            }
+            case DIAMOND -> {
+                BackPack backPack = new BackPack("Netherite Backpack", Bukkit.createInventory(null, 54, "Netherite Backpack"), Bukkit.createInventory(null, 54, "Netherite Backpack"), oldId, BackpackType.NETHERITE);
+                backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
+                backPack.getSecondPage().setStorageContents(oldBackpack.getStorageContentsSecondPage());
+                backPack.setArrowsAndConfigOptionItems();
+                backPack.setUpgrades(oldBackpack.getUpgrades());
+                backpacks.put(oldId, backPack);
+                return backPack;
+            }
         }
+
+        return null;
     }
 
     public int getSizeFirstPageFromBackpackType(BackpackType type){

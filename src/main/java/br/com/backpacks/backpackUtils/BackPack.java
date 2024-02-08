@@ -29,12 +29,6 @@ public class BackPack extends UpgradeManager {
 
     private BackpackType backpackType;
 
-    public int getConfigItemsSpace() {
-        return configItemsSpace;
-    }
-
-    private int configItemsSpace = 0;
-
     public Location getLocation() {
         return location;
     }
@@ -86,25 +80,6 @@ public class BackPack extends UpgradeManager {
     private int firstPageSize;
     private int secondPageSize;
 
-    public boolean isBeingWorn() {
-        return isWorn;
-    }
-
-    public void setBeingWorn(boolean worn) {
-        isWorn = worn;
-    }
-
-    private boolean isWorn = false;
-
-    public boolean isUnbreakable() {
-        return isUnbreakable;
-    }
-
-    public void setUnbreakable(boolean unbreakable) {
-        isUnbreakable = unbreakable;
-    }
-
-    private boolean isUnbreakable = false;
     private UUID owner;
     public String getName() {
         return name;
@@ -311,22 +286,22 @@ public class BackPack extends UpgradeManager {
         BackpackAction.setAction(player, BackpackAction.Action.OPENED);
     }
 
-    public List<ItemStack> getStorageContentsFirstPageWithoutNulls() {
-        List<ItemStack> list = new ArrayList<>();
-        for(ItemStack itemStack : firstPage.getStorageContents()){
+    public ItemStack getFirstItem(){
+        for(ItemStack itemStack : firstPage){
             if(itemStack == null) continue;
-            list.add(itemStack);
+            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM())) continue;
+            return itemStack;
         }
-        return list;
-    }
 
-    public List<ItemStack> getStorageContentsSecondPageWithoutNulls() {
-        List<ItemStack> list = new ArrayList<>();
-        for(ItemStack itemStack : secondPage.getStorageContents()){
-            if(itemStack == null) continue;
-            list.add(itemStack);
+        if(getSecondPage() != null){
+            for(ItemStack itemStack : secondPage){
+                if(itemStack == null) continue;
+                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM())) continue;
+                return itemStack;
+            }
         }
-        return list;
+
+        return null;
     }
 
     public ItemStack[] getStorageContentsFirstPage() {
@@ -360,13 +335,11 @@ public class BackPack extends UpgradeManager {
         ItemStack config = new ItemCreator(Material.NETHER_STAR, "§6Config").build();
 
         firstPage.setItem(firstPageSize - 1, config);
-        configItemsSpace = 1;
 
         if(secondPageSize > 0){
             firstPage.setItem(firstPageSize - 2, arrowRight);
             secondPage.setItem(secondPageSize - 2, arrowLeft);
             secondPage.setItem(secondPageSize - 1, config);
-            configItemsSpace = 2;
         }
     }
 

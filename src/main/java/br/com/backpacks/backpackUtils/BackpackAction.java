@@ -32,6 +32,12 @@ public class BackpackAction {
 
         BPLIST,
 
+        IOMENU,
+
+        EDITINPUT,
+
+        EDITOUTPUT,
+
         OPENED;
     }
 

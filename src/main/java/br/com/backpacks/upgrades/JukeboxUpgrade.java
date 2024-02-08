@@ -11,6 +11,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.List;
 
 import static br.com.backpacks.events.upgrades.Jukebox.discsSlots;
 
@@ -38,6 +39,21 @@ public class JukeboxUpgrade extends Upgrade {
             hashMap.put(i, inventory.getItem(i));
         }
         return hashMap;
+    }
+
+    @Override
+    public boolean isAdvanced() {
+        return true;
+    }
+
+    @Override
+    public List<Integer> inputSlots() {
+        return discsSlots;
+    }
+
+    @Override
+    public List<Integer> outputSlots() {
+        return discsSlots;
     }
 
     public ItemStack getPlaying() {

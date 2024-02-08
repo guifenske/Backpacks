@@ -34,7 +34,6 @@ public class BackpackInteract implements Listener {
             event.setCancelled(true);
             if(Main.backPackManager.canOpen()){
                 BackPack backPack = Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation());
-                player.closeInventory();
                 backPack.open(player);
                 backPack.setIsBlock(true);
                 player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);

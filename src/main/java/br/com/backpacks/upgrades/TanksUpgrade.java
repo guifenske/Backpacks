@@ -18,6 +18,21 @@ public class TanksUpgrade extends Upgrade {
         return inventory;
     }
 
+    @Override
+    public boolean isAdvanced() {
+        return true;
+    }
+
+    @Override
+    public List<Integer> inputSlots() {
+        return List.of(0, 9, 18, 8, 17, 26);
+    }
+
+    @Override
+    public List<Integer> outputSlots() {
+        return List.of(0, 9, 18, 8, 17, 26);
+    }
+
     public TanksUpgrade(int id) {
         super(UpgradeType.LIQUIDTANK, id);
         this.inventory = Bukkit.createInventory(null, 27, "Tanks Upgrade");

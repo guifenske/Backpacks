@@ -38,35 +38,31 @@ public class Tanks implements Listener {
         TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getUpgradesFromType(UpgradeType.LIQUIDTANK).get(0);
 
         switch (event.getRawSlot()){
-            case 12 -> Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
-                generalLogic(event, tanksUpgrade, 1);
-            }, 1L);
-
-            case 14 -> Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
-                generalLogic(event, tanksUpgrade, 2);
+            case 12, 14 -> Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
+                generalLogic(tanksUpgrade);
             }, 1L);
         }
     }
 
-    private void generalLogic(InventoryClickEvent event, TanksUpgrade tanksUpgrade, int tank){
-        int index = 0;
-        switch (tank){
-            case 1 -> index = 12;
-            case 2 -> index = 14;
+    public void generalLogic(TanksUpgrade tanksUpgrade){
+        for(int tank = 1; tank <= 2; tank++) {
+            int index = 12;
+            if(tank == 2) index = 14;
+            ItemStack currentItem = tanksUpgrade.getInventory().getItem(index);
+            if (currentItem == null) return;
+            if (!currentItem.getType().toString().contains("BUCKET")) return;
+            if (currentItem.getAmount() > 1) return;
+            if (currentItem.hasItemMeta()) {
+                if (!currentItem.getItemMeta().getDisplayName().equals(currentItem.getType().name()) || !currentItem.getItemMeta().getPersistentDataContainer().isEmpty())
+                    return;
+            }
+            if (currentItem.getType().equals(Material.BUCKET)) {
+                tanksUpgrade.removeFirstLiquidFromTank(tank);
+                return;
+            }
+            if (!tanksUpgrade.canFillTank(tank)) return;
+            tanksUpgrade.addLiquidToTank(currentItem, tank);
+            tanksUpgrade.getInventory().getItem(index).setType(Material.BUCKET);
         }
-        ItemStack currentItem = event.getInventory().getItem(index);
-        if (currentItem == null) return;
-        if(!currentItem.getType().toString().contains("BUCKET")) return;
-        if(currentItem.getAmount() > 1) return;
-        if(currentItem.hasItemMeta()){
-            if(!currentItem.getItemMeta().getDisplayName().equals(currentItem.getType().name()) || !currentItem.getItemMeta().getPersistentDataContainer().isEmpty()) return;
-        }
-        if (currentItem.getType().equals(Material.BUCKET)) {
-            tanksUpgrade.removeFirstLiquidFromTank(tank);
-            return;
-        }
-        if(!tanksUpgrade.canFillTank(tank)) return;
-        tanksUpgrade.addLiquidToTank(currentItem, tank);
-        event.getInventory().getItem(index).setType(Material.BUCKET);
     }
 }
