@@ -193,6 +193,14 @@ public class BackPack extends UpgradeManager {
             setUpgradesIds(upgradesIds);
         }
 
+        if(config.isSet(s + ".out")){
+            this.setOutputUpgrade(config.getInt(s + ".out"));
+        }
+
+        if(config.isSet(s + ".inp")){
+            this.setInputUpgrade(config.getInt(s + ".inp"));
+        }
+
         name = components.get(0);
         backpackType = BackpackType.valueOf(components.get(1));
         id = Integer.parseInt(s);

@@ -32,6 +32,12 @@ public final class YamlUtils {
                 List<String> data = serializeLocation(backPack.getLocation());
                 config.set(backPack.getId() + ".loc", data);
             }
+            if(backPack.getOutputUpgrade() != -1){
+                config.set(backPack.getId() + ".out", backPack.getOutputUpgrade());
+            }
+            if(backPack.getInputUpgrade() != -1){
+                config.set(backPack.getId() + ".inp", backPack.getInputUpgrade());
+            }
             config.set(backPack.getId() + ".i", backPack.serialize());
             saveStorageContents(backPack, config);
             if (backPack.getUpgrades() != null && !backPack.getUpgrades().isEmpty()) {
