@@ -69,7 +69,6 @@ public class OnClickInConfigMenu implements Listener {
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGJUKEBOX);
-                            Jukebox.currentJukebox.put(player.getUniqueId(), ((JukeboxUpgrade) upgrade));
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);

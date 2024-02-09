@@ -16,15 +16,11 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 public class Jukebox implements Listener {
 
     public static List<Integer> blankSlots = List.of(0,1,2,3,4,5,9,12,14,18,19,20,21,22,23);
-
-    public static HashMap<UUID, JukeboxUpgrade> currentJukebox = new HashMap<>();
 
     public static List<Integer> discsSlots = List.of(6,7,8,15,16,17,24,25,26);
 
@@ -34,9 +30,7 @@ public class Jukebox implements Listener {
 
     public net.kyori.adventure.sound.Sound getSoundFromItem(@NotNull ItemStack itemStack){
         org.bukkit.Sound bukkitSound = org.bukkit.Sound.valueOf(itemStack.getType().name());
-        Sound sound = Sound.sound(bukkitSound, Sound.Source.RECORD, 1, 1);
-        Main.getMain().debugMessage(sound.toString());
-        return sound;
+        return Sound.sound(bukkitSound, Sound.Source.RECORD, 1, 1);
     }
 
     public static void playSound(net.kyori.adventure.sound.Sound sound, Player player) {
@@ -65,6 +59,7 @@ public class Jukebox implements Listener {
                 event.setCancelled(true);
                 if(!canUse) return;
                 if(event.getInventory().getItem(13) == null) return;
+                if(upgrade.getSound() != null) return;
                 if(!checkDisk(event.getInventory().getItem(13))) return;
                 Sound sound = getSoundFromItem(event.getInventory().getItem(13));
                 if(backPack.getOwner() == null) playSound(sound, backPack);

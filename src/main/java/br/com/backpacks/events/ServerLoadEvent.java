@@ -23,14 +23,6 @@ public class ServerLoadEvent implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     private void onServerLoad(org.bukkit.event.server.ServerLoadEvent event){
-        VillagersFollow.tick();
-        for(Upgrade upgrade : Main.backPackManager.getUpgradeHashMap().values()){
-            if(upgrade.getType().equals(UpgradeType.FURNACE) || upgrade.getType().equals(UpgradeType.BLAST_FURNACE) || upgrade.getType().equals(UpgradeType.SMOKER)){
-                if(!((FurnaceUpgrade) upgrade).canTick()) continue;
-                Furnace.shouldTick.add(upgrade.getId());
-                Furnace.tick((FurnaceUpgrade) upgrade);
-            }
-        }
 
         //moved this to here to get the recipes after the server loads, resulting in possible more recipes from others plugins
         Iterator<Recipe> iterator = Bukkit.recipeIterator();
@@ -56,5 +48,14 @@ public class ServerLoadEvent implements Listener {
         Main.getMain().setBlastingRecipes(blastingRecipes);
         Main.getMain().setFurnaceRecipes(furnaceRecipes);
         Main.getMain().setSmokingRecipes(smokingRecipes);
+
+        VillagersFollow.tick();
+        for(Upgrade upgrade : Main.backPackManager.getUpgradeHashMap().values()){
+            if(upgrade.getType().equals(UpgradeType.FURNACE) || upgrade.getType().equals(UpgradeType.BLAST_FURNACE) || upgrade.getType().equals(UpgradeType.SMOKER)){
+                if(!((FurnaceUpgrade) upgrade).canTick()) continue;
+                Furnace.shouldTick.add(upgrade.getId());
+                Furnace.tick((FurnaceUpgrade) upgrade);
+            }
+        }
     }
 }
