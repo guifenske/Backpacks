@@ -2,7 +2,11 @@ package br.com.backpacks.events.player;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
+import br.com.backpacks.backpackUtils.UpgradeType;
+import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
+import br.com.backpacks.events.upgrades.Jukebox;
 import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.upgrades.JukeboxUpgrade;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Barrel;
@@ -29,9 +33,17 @@ public class PlayerDeathEvent implements Listener {
         //we need to do this to trigger the hopper event
         Barrel barrel = (Barrel) location.getBlock().getState();
         barrel.getInventory().addItem(new ItemStack(Material.STICK));
+        if(!backpack.getUpgradesFromType(UpgradeType.JUKEBOX).isEmpty()){
+            JukeboxUpgrade upgrade = (JukeboxUpgrade) backpack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
+            if(upgrade.getSound() != null){
+                Jukebox.stopSound(player, upgrade);
+            }
+        }
+        backpack.setOwner(null);
 
         backpack.setIsBlock(true);
         backpack.setLocation(location);
+        InventoryBuilder.updateConfigInv(backpack);
         Main.backPackManager.getBackpacksPlacedLocations().put(backpack.getLocation(), backpack.getId());
         player.getPersistentDataContainer().remove(new RecipesNamespaces().getHAS_BACKPACK());
         player.sendMessage(Main.PREFIX + "§cYou died and your backpack was placed on: " + backpack.getLocation().getX() + ", " + backpack.getLocation().getY() + ", " + backpack.getLocation().getZ() + "!");

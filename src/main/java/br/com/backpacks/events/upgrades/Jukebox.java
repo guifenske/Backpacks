@@ -79,10 +79,12 @@ public class Jukebox implements Listener {
 
     public static void stopSound(BackPack backPack, JukeboxUpgrade upgrade){
         backPack.getLocation().getWorld().stopSound(upgrade.getSound());
+        upgrade.setSound(null);
     }
 
     public static void stopSound(Player player, JukeboxUpgrade upgrade){
         player.stopSound(upgrade.getSound());
+        upgrade.setSound(null);
     }
 
     @EventHandler
