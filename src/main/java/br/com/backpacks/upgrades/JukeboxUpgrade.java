@@ -4,9 +4,9 @@ import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.backpackUtils.UpgradeType;
 import br.com.backpacks.backpackUtils.inventory.ItemCreator;
 import br.com.backpacks.events.upgrades.Jukebox;
+import net.kyori.adventure.sound.Sound;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -17,8 +17,6 @@ import java.util.List;
 import static br.com.backpacks.events.upgrades.Jukebox.discsSlots;
 
 public class JukeboxUpgrade extends Upgrade {
-    private ItemStack playing;
-    private Boolean isPlaying;
     private Sound sound;
 
     public Inventory getInventory() {
@@ -29,7 +27,6 @@ public class JukeboxUpgrade extends Upgrade {
 
     public JukeboxUpgrade(int id){
         super(UpgradeType.JUKEBOX, id);
-        this.isPlaying = false;
         this.inventory = Bukkit.createInventory(null, 27, "Jukebox");
         updateInventory();
     }
@@ -37,6 +34,7 @@ public class JukeboxUpgrade extends Upgrade {
     public HashMap<Integer, ItemStack> getDiscs() {
         HashMap<Integer, ItemStack> hashMap = new HashMap<>();
         for(int i : discsSlots){
+            if(inventory.getItem(i) == null) continue;
             hashMap.put(i, inventory.getItem(i));
         }
         return hashMap;
@@ -62,22 +60,6 @@ public class JukeboxUpgrade extends Upgrade {
         return discsSlots;
     }
 
-    public ItemStack getPlaying() {
-        return playing;
-    }
-
-    public void setPlaying(ItemStack playing) {
-        this.playing = playing;
-    }
-
-    public Boolean isPlaying() {
-        return isPlaying;
-    }
-
-    public void setIsPlaying(Boolean playing) {
-        isPlaying = playing;
-    }
-
     public Sound getSound() {
         return sound;
     }
@@ -100,6 +82,5 @@ public class JukeboxUpgrade extends Upgrade {
 
         inventory.setItem(10, play);
         inventory.setItem(11, stop);
-        inventory.setItem(13, getPlaying());
     }
 }

@@ -2,6 +2,7 @@ package br.com.backpacks.events.backpacks;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
+import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -40,6 +41,7 @@ public class BackpackPlace implements Listener {
             //we need to do this to trigger the hopper event
             Barrel barrel = (Barrel) event.getBlockPlaced().getState();
             barrel.getInventory().setItem(0, new ItemStack(Material.STICK));
+            InventoryBuilder.updateConfigInv(backPack);
             Main.backPackManager.getBackpacksPlacedLocations().put(backpackLocation, backPack.getId());
         }   else event.setCancelled(true);
     }

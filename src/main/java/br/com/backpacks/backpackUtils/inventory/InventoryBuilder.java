@@ -20,11 +20,6 @@ public class InventoryBuilder {
     private static final ConcurrentHashMap<Integer, Inventory> editIOMenu = new ConcurrentHashMap<>();
     private MenuType type;
     private Integer backpackId;
-
-    public static boolean containsEditIOMenu(BackPack backPack){
-        return editIOMenu.containsKey(backPack.getId());
-    }
-
     public static Inventory getConfigInv(BackPack backPack) {
         return configMenu.get(backPack.getId());
     }

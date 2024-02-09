@@ -4,9 +4,11 @@ import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.UpgradeType;
 import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
+import br.com.backpacks.events.upgrades.Jukebox;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
+import br.com.backpacks.upgrades.JukeboxUpgrade;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -36,8 +38,15 @@ public class BackpackBreak implements Listener {
         BackPack backPack = Main.backPackManager.getBackpackFromLocation(event.getBlock().getLocation());
         ItemStack backpackItem = RecipesUtils.getItemFromBackpack(backPack);
 
+        if(!backPack.getUpgradesFromType(UpgradeType.JUKEBOX).isEmpty()){
+            JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
+            if(upgrade.getSound() != null){
+                Jukebox.stopSound(backPack, upgrade);
+            }
+        }
         backPack.setLocation(null);
         backPack.setIsBlock(false);
+        InventoryBuilder.updateConfigInv(backPack);
         Location location = event.getBlock().getLocation();
         Main.backPackManager.getBackpacksPlacedLocations().remove(location);
         event.getPlayer().getWorld().dropItemNaturally(location, backpackItem);
@@ -60,8 +69,15 @@ public class BackpackBreak implements Listener {
             ItemStack backpackItem = RecipesUtils.getItemFromBackpack(backPack);
 
             Location location = block.getLocation();
+            if(!backPack.getUpgradesFromType(UpgradeType.JUKEBOX).isEmpty()){
+                JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
+                if(upgrade.getSound() != null){
+                    Jukebox.stopSound(backPack, upgrade);
+                }
+            }
             backPack.setLocation(null);
             backPack.setIsBlock(false);
+            InventoryBuilder.updateConfigInv(backPack);
             Main.backPackManager.getBackpacksPlacedLocations().remove(location);
             block.getWorld().dropItemNaturally(location, backpackItem);
             break;

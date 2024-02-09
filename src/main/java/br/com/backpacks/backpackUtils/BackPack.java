@@ -194,11 +194,15 @@ public class BackPack extends UpgradeManager {
         }
 
         if(config.isSet(s + ".out")){
-            this.setOutputUpgrade(config.getInt(s + ".out"));
+            setOutputUpgrade(config.getInt(s + ".out"));
         }
 
         if(config.isSet(s + ".inp")){
-            this.setInputUpgrade(config.getInt(s + ".inp"));
+            setInputUpgrade(config.getInt(s + ".inp"));
+        }
+
+        if(config.isSet(s + ".owner")){
+            setOwner(UUID.fromString(config.getString(s + ".owner")));
         }
 
         name = components.get(0);

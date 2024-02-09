@@ -9,7 +9,6 @@ import br.com.backpacks.upgrades.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
@@ -40,6 +39,9 @@ public final class YamlUtils {
             }
             config.set(backPack.getId() + ".i", backPack.serialize());
             saveStorageContents(backPack, config);
+            if(backPack.getOwner() != null){
+                config.set(backPack.getId() + ".owner", backPack.getOwner().toString());
+            }
             if (backPack.getUpgrades() != null && !backPack.getUpgrades().isEmpty()) {
                 serializeUpgrades(config, backPack);
             }
@@ -73,8 +75,7 @@ public final class YamlUtils {
                             config.set(upgrade.getId() + ".jukebox.discs." + item.getKey(), item.getValue().getType().name());
                         }
                     }
-                    if(jukeboxUpgrade.getPlaying() != null)    config.set(upgrade.getId() + ".jukebox.playing", jukeboxUpgrade.getPlaying().getType().name());
-                    if(jukeboxUpgrade.getSound() != null)  config.set(upgrade.getId() + ".jukebox.sound", jukeboxUpgrade.getSound().name().toUpperCase());
+                    if(jukeboxUpgrade.getInventory().getItem(13) != null)    config.set(upgrade.getId() + ".jukebox.playing", jukeboxUpgrade.getInventory().getItem(13).getType().name());
                 }
                 case AUTOFEED -> {
                     AutoFeedUpgrade autoFeedUpgrade = (AutoFeedUpgrade) upgrade;
@@ -150,20 +151,20 @@ public final class YamlUtils {
                 }
                 case JUKEBOX -> {
                     JukeboxUpgrade upgrade = new JukeboxUpgrade(id);
+                    upgrade.updateInventory();
+                    Main.getMain().debugMessage("loading jukebox: 0 " + i);
                     if(config.isSet(i + ".jukebox.discs")){
                         Set<String> keys = config.getConfigurationSection(i + ".jukebox.discs").getKeys(false);
                         for(String s : keys){
-                            upgrade.getDiscs().put(Integer.parseInt(s), new ItemStack(Material.getMaterial(config.getString(i + ".jukebox.discs." + s))));
+                            upgrade.getInventory().setItem(Integer.parseInt(s), new ItemStack(Material.getMaterial(config.getString(i + ".jukebox.discs." + s))));
                         }
                     }
+                    Main.getMain().debugMessage("loading jukebox: 1 " + i);
                     if(config.isSet(i + ".jukebox.playing")){
-                        upgrade.setPlaying(upgrade.getSoundFromName(config.getString(i + ".jukebox.playing")));
+                        upgrade.getInventory().setItem(13, upgrade.getSoundFromName(config.getString(i + ".jukebox.playing")));
                     }
-                    if(config.isSet(i + ".jukebox.sound")){
-                        upgrade.setSound(Sound.valueOf(config.getString(i + ".jukebox.sound")));
-                    }
+                    Main.getMain().debugMessage("loading jukebox: 2 " + i);
                     Main.getMain().debugMessage("loading jukebox: " + i);
-                    upgrade.updateInventory();
                     Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
                 }
                 case COLLECTOR -> {

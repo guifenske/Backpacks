@@ -83,7 +83,6 @@ br/com/backpacks/upgrades/VillagersFollowUpgrade.class
 br/com/backpacks/events/player/PlayerJoinLeaveEvent.class
 br/com/backpacks/events/upgrades/Furnace.class
 br/com/backpacks/events/backpacks/RenameBackpackChat.class
-br/com/backpacks/events/upgrades/Jukebox$1.class
 br/com/backpacks/events/player/CraftBackpack$1.class
 br/com/backpacks/events/upgrades/AutoFeed.class
 br/com/backpacks/recipes/UpgradesRecipesNamespaces.class

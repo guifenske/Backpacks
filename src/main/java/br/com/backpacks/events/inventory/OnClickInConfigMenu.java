@@ -4,6 +4,7 @@ import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.backpackUtils.BackpackAction;
 import br.com.backpacks.backpackUtils.Upgrade;
+import br.com.backpacks.backpackUtils.UpgradeType;
 import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import br.com.backpacks.events.upgrades.Furnace;
 import br.com.backpacks.events.upgrades.Jukebox;
@@ -137,6 +138,12 @@ public class OnClickInConfigMenu implements Listener {
                 if (backPack.getOwner() != null && backPack.getOwner().equals(player.getUniqueId())){
                     player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
                     player.getPersistentDataContainer().remove(new RecipesNamespaces().getHAS_BACKPACK());
+                    if(!backPack.getUpgradesFromType(UpgradeType.JUKEBOX).isEmpty()){
+                        JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
+                        if(upgrade.getSound() != null){
+                            Jukebox.stopSound(player, upgrade);
+                        }
+                    }
                     backPack.setOwner(null);
                 } else if(backPack.getOwner() == null){
                     player.getInventory().remove(RecipesUtils.getItemFromBackpack(backPack));
