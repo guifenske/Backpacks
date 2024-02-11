@@ -152,18 +152,15 @@ public final class YamlUtils {
                 case JUKEBOX -> {
                     JukeboxUpgrade upgrade = new JukeboxUpgrade(id);
                     upgrade.updateInventory();
-                    Main.getMain().debugMessage("loading jukebox: 0 " + i);
                     if(config.isSet(i + ".jukebox.discs")){
                         Set<String> keys = config.getConfigurationSection(i + ".jukebox.discs").getKeys(false);
                         for(String s : keys){
                             upgrade.getInventory().setItem(Integer.parseInt(s), new ItemStack(Material.getMaterial(config.getString(i + ".jukebox.discs." + s))));
                         }
                     }
-                    Main.getMain().debugMessage("loading jukebox: 1 " + i);
                     if(config.isSet(i + ".jukebox.playing")){
                         upgrade.getInventory().setItem(13, upgrade.getSoundFromName(config.getString(i + ".jukebox.playing")));
                     }
-                    Main.getMain().debugMessage("loading jukebox: 2 " + i);
                     Main.getMain().debugMessage("loading jukebox: " + i);
                     Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
                 }

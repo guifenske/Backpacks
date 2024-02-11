@@ -245,7 +245,7 @@ public class Furnace implements Listener {
                 @Override
                 public void run() {
                     if(!upgrade.canTick()){
-                        upgrade.getSubTickTask().cancel();
+                        upgrade.clearSubTickTask();
                         upgrade.setCookTime(0);
                         this.cancel();
                         upgrade.setBoundFakeBlock(null);
@@ -326,7 +326,7 @@ public class Furnace implements Listener {
                         taskMap.get(currentFurnace.get(player.getUniqueId()).getId()).cancel();
                         currentFurnace.get(player.getUniqueId()).setCookTime(0);
                         player.getOpenInventory().setProperty(InventoryView.Property.COOK_TIME, 0);
-                        currentFurnace.get(player.getUniqueId()).getSubTickTask().cancel();
+                        currentFurnace.get(player.getUniqueId()).clearSubTickTask();
                         if(currentFurnace.get(player.getUniqueId()).getBoundFakeBlock() != null) {
                             currentFurnace.get(player.getUniqueId()).setBoundFakeBlock(null);
                         }
@@ -356,7 +356,7 @@ public class Furnace implements Listener {
             if(currentFurnace.get(player.getUniqueId()).getBoundFakeBlock() != null) {
                 currentFurnace.get(player.getUniqueId()).setBoundFakeBlock(null);
             }
-            currentFurnace.get(player.getUniqueId()).getSubTickTask().cancel();
+            currentFurnace.get(player.getUniqueId()).clearSubTickTask();
             shouldTick.remove(currentFurnace.get(player.getUniqueId()).getId());
             currentFurnace.remove(player.getUniqueId());
         }

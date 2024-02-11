@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public class UpdateChecker {
     private static final String CURRENT_VERSION = Main.getMain().getPluginMeta().getVersion();
 
-    private static final String MODRINTH_API_URL = "https://api.modrinth.com/api/v2/project/advancedbackpacks/version";
+    private static final String MODRINTH_API_URL = "https://api.modrinth.com/v2/project/advancedbackpacks/version";
 
     public static void checkForUpdates() {
         try {
@@ -30,9 +30,10 @@ public class UpdateChecker {
             reader.close();
 
             String latestVersion = parseVersion(response.toString());
-            Main.getMain().debugMessage(latestVersion);
             if (!CURRENT_VERSION.equals(latestVersion)) {
                 Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "An update is available! Latest version: " + latestVersion);
+            }   else{
+                Main.getMain().getLogger().info("You are using the latest version");
             }
         } catch (IOException e) {
             Main.getMain().debugMessage(CURRENT_VERSION);

@@ -1,4 +1,4 @@
-package br.com.backpacks.events.player;
+package br.com.backpacks.events.entity;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;
@@ -20,10 +20,6 @@ public class CraftBackpack implements Listener {
 
     private static final String DONTHAVEBACKPACKMSG =  Main.PREFIX + "§cIt looks that you don't have a backpack to upgrade in the recipe!";
     private static final String NOTCORRECTTYPE =  Main.PREFIX + "§cYou don't have the correct type of backpack to upgrade!";
-
-    public static int generateId(){
-        return Main.backPackManager.getBackpackIds() + 1;
-    }
 
     @EventHandler
     private static void craftBackpackEvent(CraftItemEvent event){
@@ -83,7 +79,7 @@ public class CraftBackpack implements Listener {
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_LEATHER_BACKPACK())){
-            int id = generateId();
+            int id = Main.backPackManager.getBackpackIds() + 1;
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_IRON_BACKPACK());
             player.discoverRecipe(new UpgradesRecipesNamespaces().getCraftingGrid());
             BackPack backPack =  new BackPack("Leather Backpack", Bukkit.createInventory(null, 18, "Leather Backpack"), id, BackpackType.LEATHER);

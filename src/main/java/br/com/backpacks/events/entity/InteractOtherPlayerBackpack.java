@@ -1,4 +1,4 @@
-package br.com.backpacks.events.player;
+package br.com.backpacks.events.entity;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.backpackUtils.BackPack;

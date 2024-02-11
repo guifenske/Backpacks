@@ -147,6 +147,11 @@ public class FurnaceUpgrade extends Upgrade {
         inventory.setItem(2, getResult());
     }
 
+    public void clearSubTickTask(){
+        if(subTickTask != null) subTickTask.cancel();
+        subTickTask = null;
+    }
+
     public void startSubTick(){
         subTickTask = new BukkitRunnable() {
             @Override

@@ -36,6 +36,7 @@ public class BackpackPlace implements Listener {
             //enforce removal of the item from the player's inventory
             event.getPlayer().getInventory().remove(event.getItemInHand());
             backPack.setIsBlock(true);
+            backPack.setOwner(null);
             Location backpackLocation = event.getBlockPlaced().getLocation();
             backPack.setLocation(backpackLocation);
             //we need to do this to trigger the hopper event

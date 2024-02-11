@@ -4,19 +4,21 @@ import br.com.backpacks.backup.BackupHandler;
 import br.com.backpacks.backup.ScheduledBackup;
 import br.com.backpacks.commands.*;
 import br.com.backpacks.events.ConfigItemsEvents;
+import br.com.backpacks.events.EntitySpawnEvent;
 import br.com.backpacks.events.HopperEvents;
 import br.com.backpacks.events.ServerLoadEvent;
 import br.com.backpacks.events.backpacks.*;
+import br.com.backpacks.events.entity.*;
 import br.com.backpacks.events.inventory.*;
-import br.com.backpacks.events.player.*;
 import br.com.backpacks.events.upgrades.*;
 import br.com.backpacks.yaml.YamlUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
@@ -28,9 +30,12 @@ public class ThreadBackpacks {
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
     public ThreadBackpacks() throws IOException {
-        File file = new File(Main.getMain().getDataFolder().getCanonicalFile().getAbsolutePath() + "/config.yml");
-        if(file.exists()){
-            if(Main.getMain().getConfig().getInt("maxThreads") == 0){
+        String filePath = Main.getMain().getDataFolder().getCanonicalFile().getAbsolutePath() + "/config.yml";
+        if (Files.exists(Paths.get(filePath))) {
+            if (Main.getMain().getConfig().getInt("maxThreads") == 0) {
+                return;
+            }
+            if(Runtime.getRuntime().availableProcessors() < Main.getMain().getConfig().getInt("maxThreads")){
                 return;
             }
             executor = Executors.newScheduledThreadPool(Main.getMain().getConfig().getInt("maxThreads"));
@@ -40,7 +45,7 @@ public class ThreadBackpacks {
     public void registerAll() {
         executor.submit(() -> {
             //player
-            Bukkit.getPluginManager().registerEvents(new PlayerDeathEvent(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new EntityDeathEvent(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new CraftBackpack(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new Fishing(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new FinishedSmelting(), Main.getMain());
@@ -66,6 +71,7 @@ public class ThreadBackpacks {
             Bukkit.getPluginManager().registerEvents(new ConfigItemsEvents(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new ServerLoadEvent(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new BpList(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new EntitySpawnEvent(), Main.getMain());
 
             //Upgrades
             Bukkit.getPluginManager().registerEvents(new CraftingTable(), Main.getMain());

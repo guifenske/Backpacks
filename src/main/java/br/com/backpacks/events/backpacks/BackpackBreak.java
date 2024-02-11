@@ -41,11 +41,14 @@ public class BackpackBreak implements Listener {
         if(!backPack.getUpgradesFromType(UpgradeType.JUKEBOX).isEmpty()){
             JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
             if(upgrade.getSound() != null){
+                upgrade.clearLoopingTask();
+                upgrade.setIsLooping(false);
                 Jukebox.stopSound(backPack, upgrade);
             }
         }
         backPack.setLocation(null);
         backPack.setIsBlock(false);
+        backPack.setOwner(null);
         InventoryBuilder.updateConfigInv(backPack);
         Location location = event.getBlock().getLocation();
         Main.backPackManager.getBackpacksPlacedLocations().remove(location);
@@ -72,11 +75,14 @@ public class BackpackBreak implements Listener {
             if(!backPack.getUpgradesFromType(UpgradeType.JUKEBOX).isEmpty()){
                 JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
                 if(upgrade.getSound() != null){
+                    upgrade.clearLoopingTask();
+                    upgrade.setIsLooping(false);
                     Jukebox.stopSound(backPack, upgrade);
                 }
             }
             backPack.setLocation(null);
             backPack.setIsBlock(false);
+            backPack.setOwner(null);
             InventoryBuilder.updateConfigInv(backPack);
             Main.backPackManager.getBackpacksPlacedLocations().remove(location);
             block.getWorld().dropItemNaturally(location, backpackItem);
