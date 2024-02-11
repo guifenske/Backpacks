@@ -4,7 +4,6 @@ import br.com.backpacks.backup.BackupHandler;
 import br.com.backpacks.backup.ScheduledBackup;
 import br.com.backpacks.commands.*;
 import br.com.backpacks.events.ConfigItemsEvents;
-import br.com.backpacks.events.EntitySpawnEvent;
 import br.com.backpacks.events.HopperEvents;
 import br.com.backpacks.events.ServerLoadEvent;
 import br.com.backpacks.events.backpacks.*;
@@ -17,7 +16,6 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -45,7 +43,6 @@ public class ThreadBackpacks {
     public void registerAll() {
         executor.submit(() -> {
             //player
-            Bukkit.getPluginManager().registerEvents(new EntityDeathEvent(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new CraftBackpack(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new Fishing(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new FinishedSmelting(), Main.getMain());
@@ -71,7 +68,7 @@ public class ThreadBackpacks {
             Bukkit.getPluginManager().registerEvents(new ConfigItemsEvents(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new ServerLoadEvent(), Main.getMain());
             Bukkit.getPluginManager().registerEvents(new BpList(), Main.getMain());
-            Bukkit.getPluginManager().registerEvents(new EntitySpawnEvent(), Main.getMain());
+            Bukkit.getPluginManager().registerEvents(new EntityDeathEvent(), Main.getMain());
 
             //Upgrades
             Bukkit.getPluginManager().registerEvents(new CraftingTable(), Main.getMain());
@@ -143,28 +140,8 @@ public class ThreadBackpacks {
             Main.getMain().getLogger().warning("Invalid interval for autobackup, please use a number greater than 0.");
             return;
         }
+        scheduledBackup.setPath(Main.getMain().getDataFolder().getAbsolutePath() + "/Backups");
 
-        if(Main.getMain().getConfig().isSet("autobackup.path")){
-            if(Main.getMain().getConfig().getString("autobackup.path") != null){
-                String path = Main.getMain().getConfig().getString("autobackup.path");
-                if(path.equalsIgnoreCase("DEFAULT")){
-                    path = Main.getMain().getDataFolder().getAbsolutePath() + "/Backups";
-                }
-                try{
-                    Path.of(path);
-                }   catch (Exception e){
-                    path = Main.getMain().getDataFolder().getAbsolutePath() + "/Backups";
-                    Main.getMain().getLogger().warning("Invalid path for autobackup, please use this syntax: /path/to/backup/folder");
-                    Main.getMain().getLogger().info("Using default backups folder.");
-                }
-                scheduledBackup.setPath(path);
-            }   else{
-                Main.getMain().getLogger().warning("Invalid path for autobackup, please use this syntax: /path/to/backup/folder");
-                return;
-            }
-        }   else{
-            scheduledBackup.setPath(Main.getMain().getDataFolder().getAbsolutePath() + "/Backups");
-        }
 
         if(Main.getMain().getConfig().getString("autobackup.type") != null){
             try{

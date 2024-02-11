@@ -1,7 +1,7 @@
 package br.com.backpacks.commands;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackpackAction;
+import br.com.backpacks.utils.BackpackAction;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

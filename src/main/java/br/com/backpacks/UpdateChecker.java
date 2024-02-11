@@ -30,13 +30,16 @@ public class UpdateChecker {
             reader.close();
 
             String latestVersion = parseVersion(response.toString());
+            if(latestVersion == null || latestVersion.equals("null")){
+                Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Could not find versions for this plugin, aborting update check.");
+                return;
+            }
             if (!CURRENT_VERSION.equals(latestVersion)) {
                 Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "An update is available! Latest version: " + latestVersion);
             }   else{
                 Main.getMain().getLogger().info("You are using the latest version");
             }
         } catch (IOException e) {
-            Main.getMain().debugMessage(CURRENT_VERSION);
             Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Could not find versions for this plugin, aborting update check.");
         }
     }

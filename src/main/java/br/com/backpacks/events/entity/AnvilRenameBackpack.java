@@ -1,8 +1,8 @@
 package br.com.backpacks.events.entity;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.utils.BackPack;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;

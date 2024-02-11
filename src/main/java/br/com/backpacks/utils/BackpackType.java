@@ -1,4 +1,4 @@
-package br.com.backpacks.backpackUtils;
+package br.com.backpacks.utils;
 
 public enum BackpackType {
     LEATHER,

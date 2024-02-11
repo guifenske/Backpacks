@@ -1,12 +1,12 @@
 package br.com.backpacks.events.entity;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackPack;
-import br.com.backpacks.backpackUtils.BackpackType;
-import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
+import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.BackpackType;
+import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,7 +25,7 @@ public class CraftBackpack implements Listener {
     private static void craftBackpackEvent(CraftItemEvent event){
         if(!event.getRecipe().getResult().hasItemMeta()){
             switch (event.getRecipe().getResult().getType()){
-                case CHEST, BARREL -> {
+                case CHEST, BARREL, COMPOSTER -> {
                     if(!event.getWhoClicked().hasDiscoveredRecipe(new RecipesNamespaces().getNAMESPACE_LEATHER_BACKPACK())){
                         event.getWhoClicked().discoverRecipe(new RecipesNamespaces().getNAMESPACE_LEATHER_BACKPACK());
                     }   else{
@@ -33,26 +33,25 @@ public class CraftBackpack implements Listener {
                     }
                 }
                 case FURNACE, SMOKER, BLAST_FURNACE -> {
-                    if(!event.getWhoClicked().hasDiscoveredRecipe(new UpgradesRecipesNamespaces().getFurnace())){
-                        event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getFurnace());
-                        event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getBLASTFURNACE());
-                        event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getSMOKER());
-                    }
+                    event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getFurnace());
+                    event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getBLASTFURNACE());
+                    event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getSMOKER());
                 }
                 case JUKEBOX, NOTE_BLOCK -> {
-                    if(event.getWhoClicked().hasDiscoveredRecipe(new RecipesNamespaces().getNAMESPACE_LEATHER_BACKPACK()) && !event.getWhoClicked().hasDiscoveredRecipe(new UpgradesRecipesNamespaces().getJukebox())){
-                        event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getJukebox());
-                    }
+                    event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getJukebox());
                 }
-                case GOLDEN_CARROT, GOLDEN_APPLE, BREAD -> {
-                    if(event.getWhoClicked().hasDiscoveredRecipe(new RecipesNamespaces().getNAMESPACE_LEATHER_BACKPACK()) && !event.getWhoClicked().hasDiscoveredRecipe(new UpgradesRecipesNamespaces().getAutoFeed())){
-                        event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getAutoFeed());
-                    }
+                case GOLDEN_CARROT, GOLDEN_APPLE, BREAD, HAY_BLOCK, BEETROOT_SOUP, RABBIT_STEW, MUSHROOM_STEW, SUSPICIOUS_STEW -> {
+                    event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getAutoFeed());
                 }
-                case SMITHING_TABLE, FLETCHING_TABLE, CARTOGRAPHY_TABLE, LECTERN -> {
-                    if(!event.getWhoClicked().hasDiscoveredRecipe(new UpgradesRecipesNamespaces().getVillagersFollow())){
-                        event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getVillagersFollow());
-                    }
+                case SMITHING_TABLE, FLETCHING_TABLE, CARTOGRAPHY_TABLE, LECTERN, EMERALD_BLOCK, BREWING_STAND -> {
+                    event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getVillagersFollow());
+                }
+                case END_CRYSTAL, BEACON, NETHERITE_INGOT -> {
+                    event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getUNBREAKING());
+                    event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getENCAPSULATE());
+                }
+                case BUCKET, CAULDRON -> {
+                    event.getWhoClicked().discoverRecipe(new UpgradesRecipesNamespaces().getLiquidTank());
                 }
             }
             return;

@@ -1,8 +1,8 @@
-package br.com.backpacks.backpackUtils;
+package br.com.backpacks.utils;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.inventory.ItemCreator;
 import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.utils.inventory.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

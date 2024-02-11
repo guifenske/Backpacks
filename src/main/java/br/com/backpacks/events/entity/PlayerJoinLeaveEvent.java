@@ -1,6 +1,6 @@
 package br.com.backpacks.events.entity;
 
-import br.com.backpacks.backpackUtils.BackpackAction;
+import br.com.backpacks.utils.BackpackAction;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;

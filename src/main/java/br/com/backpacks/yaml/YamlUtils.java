@@ -1,11 +1,11 @@
 package br.com.backpacks.yaml;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackPack;
-import br.com.backpacks.backpackUtils.Upgrade;
-import br.com.backpacks.backpackUtils.UpgradeType;
-import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import br.com.backpacks.upgrades.*;
+import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.Upgrade;
+import br.com.backpacks.utils.UpgradeType;
+import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -151,7 +151,6 @@ public final class YamlUtils {
                 }
                 case JUKEBOX -> {
                     JukeboxUpgrade upgrade = new JukeboxUpgrade(id);
-                    upgrade.updateInventory();
                     if(config.isSet(i + ".jukebox.discs")){
                         Set<String> keys = config.getConfigurationSection(i + ".jukebox.discs").getKeys(false);
                         for(String s : keys){
@@ -196,6 +195,7 @@ public final class YamlUtils {
                             upgrade.getInventory().setItem(Integer.parseInt(s), config.getItemStack(i + ".autofeed.items." + s));
                         }
                     }
+                    upgrade.updateInventory();
 
                     Main.getMain().debugMessage("loading auto feed: " + i);
                     Main.backPackManager.getUpgradeHashMap().put(id, upgrade);

@@ -1,9 +1,9 @@
 package br.com.backpacks.commands;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackPack;
-import br.com.backpacks.backpackUtils.BackpackType;
 import br.com.backpacks.recipes.RecipesUtils;
+import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.BackpackType;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

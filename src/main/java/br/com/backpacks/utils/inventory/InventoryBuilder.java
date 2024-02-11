@@ -1,10 +1,10 @@
-package br.com.backpacks.backpackUtils.inventory;
+package br.com.backpacks.utils.inventory;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackPack;
-import br.com.backpacks.backpackUtils.BackpackType;
-import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.recipes.RecipesUtils;
+import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.BackpackType;
+import br.com.backpacks.utils.Upgrade;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;

@@ -1,14 +1,14 @@
 package br.com.backpacks.events.entity;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackPack;
-import br.com.backpacks.backpackUtils.RandomBackpack;
-import br.com.backpacks.backpackUtils.UpgradeType;
-import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import br.com.backpacks.events.upgrades.Jukebox;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
+import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.RandomBackpackBuilder;
+import br.com.backpacks.utils.UpgradeType;
+import br.com.backpacks.utils.inventory.InventoryBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Location;
@@ -21,6 +21,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class EntityDeathEvent implements Listener {
 
@@ -43,7 +45,6 @@ public class EntityDeathEvent implements Listener {
             JukeboxUpgrade upgrade = (JukeboxUpgrade) backpack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
             if(upgrade.getSound() != null){
                 upgrade.clearLoopingTask();
-                upgrade.setIsLooping(false);
                 Jukebox.stopSound(player, upgrade);
             }
         }
@@ -63,15 +64,17 @@ public class EntityDeathEvent implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void onEntityDeath(org.bukkit.event.entity.EntityDeathEvent event){
         if(!(event.getEntity() instanceof Monster)) return;
-        if(!event.getEntity().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) return;
-        RandomBackpack randomBackpack = new RandomBackpack("Unknown Backpack", Main.backPackManager.getBackpackIds() + 1);
-        BackPack backPack = randomBackpack.generateBackpack();
-        Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
-        new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
-        new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
-        new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
+        if(event.getEntity().getKiller() == null) return;
+        if(ThreadLocalRandom.current().nextInt(830) == 69) {
+            RandomBackpackBuilder randomBackpackBuilder = new RandomBackpackBuilder("Unknown Backpack", Main.backPackManager.getBackpackIds() + 1);
+            BackPack backPack = randomBackpackBuilder.generateBackpack();
+            Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
+            new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
 
-        event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), RecipesUtils.getItemFromBackpack(backPack));
+            event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), RecipesUtils.getItemFromBackpack(backPack));
+        }
     }
 
     private Location safeLocation(Location location){

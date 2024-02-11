@@ -1,6 +1,5 @@
 br/com/backpacks/events/entity/InteractOtherPlayerBackpack.class
 br/com/backpacks/commands/BpReload.class
-br/com/backpacks/backpackUtils/RandomBackpack.class
 br/com/backpacks/events/upgrades/VillagersFollow$1.class
 br/com/backpacks/events/entity/Fishing.class
 br/com/backpacks/events/inventory/IOMenu.class
@@ -18,6 +17,7 @@ br/com/backpacks/events/inventory/OnClickInConfigMenu$2.class
 br/com/backpacks/backup/ScheduledBackup.class
 br/com/backpacks/commands/BpGiveID.class
 br/com/backpacks/events/upgrades/Furnace$2.class
+br/com/backpacks/backpackUtils/RandomBackpackBuilder.class
 br/com/backpacks/events/entity/CraftBackpack$1.class
 br/com/backpacks/events/inventory/OnClickInConfigMenu.class
 br/com/backpacks/backpackUtils/BackPackManager.class
@@ -36,7 +36,6 @@ br/com/backpacks/UpdateChecker.class
 br/com/backpacks/recipes/RecipesUtils$1.class
 br/com/backpacks/yaml/YamlUtils$1.class
 br/com/backpacks/events/inventory/OnClickInConfigMenu$4.class
-br/com/backpacks/events/EntitySpawnEvent.class
 br/com/backpacks/events/inventory/OnClickBackpack.class
 br/com/backpacks/events/upgrades/AutoFeed$2.class
 br/com/backpacks/events/backpacks/RenameBackpackChat.class
@@ -48,6 +47,7 @@ br/com/backpacks/events/inventory/OnClickInConfigMenu$3.class
 br/com/backpacks/upgrades/FurnaceUpgrade$1.class
 br/com/backpacks/backpackUtils/BackpackAction$Action.class
 br/com/backpacks/backpackUtils/inventory/InventoryBuilder$1.class
+br/com/backpacks/backpackUtils/RandomBackpackBuilder$1.class
 br/com/backpacks/events/upgrades/Jukebox.class
 br/com/backpacks/events/upgrades/Furnace$Fuel.class
 br/com/backpacks/events/upgrades/Furnace$3.class

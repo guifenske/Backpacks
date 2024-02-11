@@ -1,4 +1,4 @@
-package br.com.backpacks.backpackUtils.inventory;
+package br.com.backpacks.utils.inventory;
 
 import br.com.backpacks.recipes.RecipesNamespaces;
 import org.bukkit.Material;

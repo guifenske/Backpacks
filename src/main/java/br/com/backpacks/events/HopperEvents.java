@@ -1,11 +1,11 @@
 package br.com.backpacks.events;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackPack;
-import br.com.backpacks.backpackUtils.Upgrade;
-import br.com.backpacks.backpackUtils.UpgradeManager;
 import br.com.backpacks.events.upgrades.Furnace;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
+import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.Upgrade;
+import br.com.backpacks.utils.UpgradeManager;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;

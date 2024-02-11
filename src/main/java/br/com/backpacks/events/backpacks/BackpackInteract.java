@@ -1,8 +1,8 @@
 package br.com.backpacks.events.backpacks;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.utils.BackPack;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -36,7 +36,7 @@ public class BackpackInteract implements Listener {
                 BackPack backPack = Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation());
                 backPack.open(player);
                 backPack.setIsBlock(true);
-                player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
+                player.getWorld().playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
             }
             return;
         }
@@ -58,7 +58,7 @@ public class BackpackInteract implements Listener {
             backPack.setIsBlock(false);
 
             backPack.open(player);
-            player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
+            player.getWorld().playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
         }
     }
 }
