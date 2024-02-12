@@ -84,6 +84,7 @@ public class ThreadBackpacks {
             Main.getMain().getCommand("bplist").setExecutor(new BpList());
             Main.getMain().getCommand("bpbackup").setExecutor(new BpBackup());
             Main.getMain().getCommand("bpreload").setExecutor(new BpReload());
+            Main.getMain().getCommand("bpupgbackpack").setExecutor(new BpUpgBackpack());
             return null;
         });
     }

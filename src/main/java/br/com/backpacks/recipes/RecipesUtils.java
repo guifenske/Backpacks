@@ -17,6 +17,13 @@ import java.util.List;
 
 public class RecipesUtils {
 
+    public static BackPack getBackpackFromItem(ItemStack itemStack){
+        ItemMeta meta = itemStack.getItemMeta();
+        if(!meta.getPersistentDataContainer().has(new RecipesNamespaces().isBackpack())) return null;
+
+        return Main.backPackManager.getBackpackFromId(meta.getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+    }
+
     public static ItemStack getItemFromBackpack(BackPack backPack) {
         ItemStack itemStack = new ItemStack(Material.BARREL);
         ItemMeta meta = itemStack.getItemMeta();

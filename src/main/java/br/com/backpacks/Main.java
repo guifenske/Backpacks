@@ -86,13 +86,19 @@ public final class Main extends JavaPlugin {
         saveDefaultConfig();
         String version = Bukkit.getBukkitVersion().split("-")[0];
         if(!version.contains("1.20")){
-            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§cThis plugin at the moment is only compatible with the 1.20.x versions.");
+            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§cThis plugin at the moment is only compatible with 1.20.x versions.");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
         setMain(this);
         if(getConfig().getBoolean("debug")){
             Constants.DEBUG_MODE = true;
+        }
+        if(getConfig().getBoolean("fish_backpack")){
+            Constants.CATCH_BACKPACK = true;
+        }
+        if(getConfig().getBoolean("kill_monster_backpack")){
+            Constants.MONSTER_DROPS_BACKPACK = true;
         }
         UpdateChecker.checkForUpdates();
 

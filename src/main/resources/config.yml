@@ -5,9 +5,15 @@ debug: false
 
 autobackup:
   enabled: true
-  #the type of backup to use. Valid values are: MINUTES, HOURS, SECONDS
+  #the type of backup to use, valid values are: MINUTES, HOURS, SECONDS
   type: HOURS
   #interval
   interval: 2
   #number of backups files to keep
   keep: 15
+
+#if fishing have a chance to catch a wet backpack
+fish_backpack: true
+
+#if killing a monster have a chance that him had a backpack, and will drop it
+kill_monster_backpack: true

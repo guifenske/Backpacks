@@ -6,6 +6,7 @@ import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
 import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.Constants;
 import br.com.backpacks.utils.RandomBackpackBuilder;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
@@ -45,7 +46,7 @@ public class EntityDeathEvent implements Listener {
             JukeboxUpgrade upgrade = (JukeboxUpgrade) backpack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
             if(upgrade.getSound() != null){
                 upgrade.clearLoopingTask();
-                Jukebox.stopSound(backpack, upgrade);
+                Jukebox.stopSound(player, upgrade);
             }
         }
         backpack.setOwner(null);
@@ -65,7 +66,7 @@ public class EntityDeathEvent implements Listener {
     private void onEntityDeath(org.bukkit.event.entity.EntityDeathEvent event){
         if(!(event.getEntity() instanceof Monster)) return;
         if(event.getEntity().getKiller() == null) return;
-        if(ThreadLocalRandom.current().nextInt(830) == 69) {
+        if(Constants.MONSTER_DROPS_BACKPACK && ThreadLocalRandom.current().nextInt(830) == 69) {
             RandomBackpackBuilder randomBackpackBuilder = new RandomBackpackBuilder("Unknown Backpack", Main.backPackManager.getBackpackIds() + 1);
             BackPack backPack = randomBackpackBuilder.generateBackpack();
             Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);

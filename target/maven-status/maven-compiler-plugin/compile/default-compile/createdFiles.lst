@@ -85,7 +85,6 @@ br/com/backpacks/events/HopperEvents.class
 br/com/backpacks/upgrades/TanksUpgrade.class
 br/com/backpacks/utils/BackPack.class
 br/com/backpacks/events/backpacks/BackpackPlace.class
-br/com/backpacks/commands/BpDebug.class
 br/com/backpacks/utils/inventory/ItemCreator.class
 br/com/backpacks/events/inventory/OnClickInConfigMenu$7.class
 br/com/backpacks/events/ServerLoadEvent.class
@@ -94,3 +93,4 @@ br/com/backpacks/backup/ZipUtils.class
 br/com/backpacks/upgrades/VillagersFollowUpgrade.class
 br/com/backpacks/events/upgrades/Furnace.class
 br/com/backpacks/events/inventory/OnClickInConfigMenu$1.class
+br/com/backpacks/commands/BpUpgBackpack.class

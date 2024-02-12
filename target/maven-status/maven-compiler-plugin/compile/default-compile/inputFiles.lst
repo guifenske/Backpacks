@@ -41,7 +41,7 @@
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/backpacks/BackpackPlace.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/CraftBackpack.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/OnClickUpgradesMenu.java
-/run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/commands/BpDebug.java
+/run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/commands/BpUpgBackpack.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/BackpackAction.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/ThreadBackpacks.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/IOMenu.java

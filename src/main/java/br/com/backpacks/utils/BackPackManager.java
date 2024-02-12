@@ -1,5 +1,6 @@
 package br.com.backpacks.utils;
 
+import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.HumanEntity;
@@ -99,6 +100,10 @@ public class BackPackManager {
                 backPack.setArrowsAndConfigOptionItems();
                 backPack.setUpgrades(oldBackpack.getUpgrades());
                 backpacks.put(oldId, backPack);
+                InventoryBuilder.deleteAllMenusFromBackpack(backPack);
+                new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+                new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+                new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
                 return backPack;
             }
             case IRON -> {
@@ -107,6 +112,10 @@ public class BackPackManager {
                 backPack.setArrowsAndConfigOptionItems();
                 backPack.setUpgrades(oldBackpack.getUpgrades());
                 backpacks.put(oldId, backPack);
+                InventoryBuilder.deleteAllMenusFromBackpack(backPack);
+                new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+                new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+                new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
                 return backPack;
             }
             case GOLD -> {
@@ -115,6 +124,10 @@ public class BackPackManager {
                 backPack.setArrowsAndConfigOptionItems();
                 backPack.setUpgrades(oldBackpack.getUpgrades());
                 backpacks.put(oldId, backPack);
+                InventoryBuilder.deleteAllMenusFromBackpack(backPack);
+                new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+                new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+                new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
                 return backPack;
             }
             case LAPIS -> {
@@ -123,6 +136,10 @@ public class BackPackManager {
                 backPack.setArrowsAndConfigOptionItems();
                 backPack.setUpgrades(oldBackpack.getUpgrades());
                 backpacks.put(oldId, backPack);
+                InventoryBuilder.deleteAllMenusFromBackpack(backPack);
+                new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+                new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+                new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
                 return backPack;
             }
             case AMETHYST -> {
@@ -131,6 +148,10 @@ public class BackPackManager {
                 backPack.setArrowsAndConfigOptionItems();
                 backPack.setUpgrades(oldBackpack.getUpgrades());
                 backpacks.put(oldId, backPack);
+                InventoryBuilder.deleteAllMenusFromBackpack(backPack);
+                new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+                new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+                new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
                 return backPack;
             }
             case DIAMOND -> {
@@ -140,6 +161,10 @@ public class BackPackManager {
                 backPack.setArrowsAndConfigOptionItems();
                 backPack.setUpgrades(oldBackpack.getUpgrades());
                 backpacks.put(oldId, backPack);
+                InventoryBuilder.deleteAllMenusFromBackpack(backPack);
+                new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+                new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+                new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
                 return backPack;
             }
         }
