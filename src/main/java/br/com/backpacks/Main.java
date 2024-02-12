@@ -1,10 +1,14 @@
 package br.com.backpacks;
 
-import br.com.backpacks.backpackUtils.BackPackManager;
 import br.com.backpacks.backup.BackupHandler;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
+import br.com.backpacks.utils.BackPackManager;
+import br.com.backpacks.utils.BackpackAction;
+import br.com.backpacks.utils.Constants;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.SmokingRecipe;
@@ -13,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public final class Main extends JavaPlugin {
     private static Main back;
@@ -44,8 +49,6 @@ public final class Main extends JavaPlugin {
     public List<FurnaceRecipe> getFurnaceRecipes() {
         return furnaceRecipes;
     }
-
-    public static Boolean debugMode = false;
 
     public static String PREFIX = "§8[§6BackPacks§8] ";
 
@@ -89,7 +92,7 @@ public final class Main extends JavaPlugin {
         }
         setMain(this);
         if(getConfig().getBoolean("debug")){
-            debugMode = true;
+            Constants.DEBUG_MODE = true;
         }
         UpdateChecker.checkForUpdates();
 
@@ -107,6 +110,13 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        //reload logic
+        for(UUID uuid : BackpackAction.getHashMap().keySet()){
+            Player player = Bukkit.getPlayer(uuid);
+            BackpackAction.getHashMap().remove(uuid);
+            if(player == null) continue;
+            player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
+        }
         Main.getMain().getLogger().info("Saving backpacks.");
         saveConfig();
         reloadConfig();
@@ -128,9 +138,9 @@ public final class Main extends JavaPlugin {
         }
     }
 
-    public void debugMessage(String message){
-        if(debugMode){
-            getLogger().info(message);
+    public static void debugMessage(String message){
+        if(Constants.DEBUG_MODE){
+            Main.getMain().getLogger().info(message);
         }
     }
 
@@ -158,7 +168,7 @@ public final class Main extends JavaPlugin {
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getEncapsulateRecipe());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getCollectorRecipe());
         Bukkit.addRecipe(new UpgradesRecipesNamespaces().getUnbreakableUpgradeRecipe());
-        //Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeLiquidTank());
+        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getLiquidTankRecipe());
     }
 
 }

@@ -1,14 +1,8 @@
 package br.com.backpacks.backup;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackPack;
-import br.com.backpacks.backpackUtils.BackpackAction;
-import br.com.backpacks.backpackUtils.Upgrade;
 import br.com.backpacks.yaml.YamlUtils;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +11,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class BackupHandler {
     public void setKeepBackups(int keepBackups) {
@@ -30,11 +23,7 @@ public class BackupHandler {
         return path;
     }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    private String path;
+    private final String path;
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
@@ -52,29 +41,23 @@ public class BackupHandler {
         return file.delete();
     }
 
-    public void backup(String path) throws IOException, InvalidConfigurationException {
-        if(!enabled) return;
+    public long backup(String path) throws IOException, InvalidConfigurationException {
+        if(!enabled) return -1L;
         Path source;
         try{
             source = Path.of(path);
         }   catch (Exception e){
             Main.getMain().getSLF4JLogger().error("Invalid path for backup, please use this syntax: /path/to/backup/folder");
             Main.getMain().getLogger().severe("Aborting backup task...");
-            return;
+            return -1L;
         }
         Instant start = Instant.now();
         source.toFile().mkdir();
 
         File backpackFile = new File(path + "/backpacks.yml");
         File upgradeFile = new File(path + "/upgrades.yml");
-        YamlConfiguration yaml = new YamlConfiguration();
-        YamlConfiguration yaml2 = new YamlConfiguration();
-        File backpacks = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
-        File upgrades = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
-        yaml.load(backpacks);
-        yaml.save(backpackFile);
-        yaml2.load(upgrades);
-        yaml2.save(upgradeFile);
+        YamlUtils.saveBackpacks(path + "/backpacks.yml");
+        YamlUtils.saveUpgrades(path + "/upgrades.yml");
 
         ZipUtils.zipAll(backpackFile.toPath(), upgradeFile.toPath(), path);
         while(getNumberOfFilesInPath(source) > keepBackups){
@@ -94,44 +77,26 @@ public class BackupHandler {
         Instant finish = Instant.now();
         long time = Duration.between(start, finish).toMillis();
         Main.getMain().debugMessage("Backup completed in " + time + " ms!");
+        return time;
     }
 
     public long restoreBackup(String path) throws IOException {
         try{
             Path.of(path);
         }   catch (Exception e){
-            Main.getMain().getSLF4JLogger().error("Cannot restore backup, invalid path or file not found.");
+            Main.backPackManager.setCanBeOpen(true);
+            Main.getMain().getLogger().severe("Cannot restore backup, invalid path or file not found.");
             Main.getMain().getLogger().severe("Aborting restore task...");
             return -1L;
         }
 
         Instant start = Instant.now();
-        Main.backPackManager.setCanBeOpen(false);
         File backpacksOriginal = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
         File upgradesOriginal = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
         backpacksOriginal.delete();
         upgradesOriginal.delete();
 
         ZipUtils.unzipAll(this.path + "/" + path);
-        //update backpacks
-        for(Map.Entry<Integer, BackPack> backPack : Main.backPackManager.getBackpacks().entrySet()){
-            for(HumanEntity player : backPack.getValue().getFirstPage().getViewers()){
-                player.closeInventory();
-            }
-            if(backPack.getValue().getSecondPage() != null){
-                for(HumanEntity player : backPack.getValue().getSecondPage().getViewers()){
-                    BackpackAction.removeAction((Player) player);
-                    player.closeInventory();
-                }
-            }
-        }
-
-        for(Map.Entry<Integer, Upgrade> upgrade : Main.backPackManager.getUpgradeHashMap().entrySet()){
-            for(HumanEntity player : upgrade.getValue().getInventory().getViewers()){
-                BackpackAction.removeAction((Player) player);
-                player.closeInventory();
-            }
-        }
 
         Main.backPackManager.getBackpacksPlacedLocations().clear();
         Main.backPackManager.getBackpacks().clear();

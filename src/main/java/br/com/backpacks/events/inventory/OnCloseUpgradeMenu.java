@@ -1,9 +1,12 @@
 package br.com.backpacks.events.inventory;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.*;
-import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
 import br.com.backpacks.recipes.RecipesUtils;
+import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.BackpackAction;
+import br.com.backpacks.utils.Upgrade;
+import br.com.backpacks.utils.UpgradeManager;
+import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,17 +27,16 @@ public class OnCloseUpgradeMenu implements Listener {
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         if(backPack == null) return;
 
-        List<Upgrade> upgrades = backPack.getUpgrades();
         List<Upgrade> newUpgrades = new ArrayList<>();
 
         for(int i = 0; i < InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i++){
             ItemStack item = event.getInventory().getItem(i);
             if(item == null) continue;
             if(RecipesUtils.isItemUpgrade(item)){
-                Upgrade upgrade = RecipesUtils.getUpgradeFromItem(item, backPack);
+                Upgrade upgrade = RecipesUtils.getUpgradeFromItem(item);
                 if(!UpgradeManager.canUpgradeStack(upgrade)){
                     boolean shouldSkip = false;
-                    for(Upgrade upgrade1 : upgrades){
+                    for(Upgrade upgrade1 : newUpgrades){
                         if(upgrade1.getType() == upgrade.getType()){
                             event.getInventory().remove(item);
                             event.getPlayer().getInventory().addItem(item);
@@ -55,7 +57,9 @@ public class OnCloseUpgradeMenu implements Listener {
             }
         }
         backPack.setUpgrades(newUpgrades);
-        backPack.setUnbreakable(!backPack.getUpgradesFromType(UpgradeType.UNBREAKABLE).isEmpty());
+        InventoryBuilder.updateConfigInv(backPack);
+        InventoryBuilder.updateEditIOInv(backPack);
+        InventoryBuilder.updateUpgradesInv(backPack);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

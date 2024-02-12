@@ -1,10 +1,11 @@
 package br.com.backpacks.events.inventory;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackPack;
-import br.com.backpacks.backpackUtils.BackpackAction;
-import br.com.backpacks.backpackUtils.UpgradeType;
 import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.BackpackAction;
+import br.com.backpacks.utils.UpgradeType;
+import org.bukkit.block.Barrel;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,8 +19,15 @@ public class OnCloseBackpack implements Listener {
         if(!BackpackAction.getAction((Player) event.getPlayer()).equals(BackpackAction.Action.OPENED)) return;
         BackpackAction.removeAction((Player) event.getPlayer());
 
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
+        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         shouldRemoveBackpack(event, backPack);
+        backPack.getViewersIds().remove(event.getPlayer().getUniqueId());
+        if(backPack.getViewersIds().isEmpty()){
+            if(backPack.isBlock()){
+                Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
+                barrel.close();
+            }
+        }
 
         Main.backPackManager.getCurrentPage().remove(event.getPlayer().getUniqueId());
         Main.backPackManager.getCurrentBackpackId().remove(event.getPlayer().getUniqueId());
@@ -29,7 +37,7 @@ public class OnCloseBackpack implements Listener {
         for(ItemStack itemStack : backPack.getFirstPage()){
             if(itemStack == null) continue;
             if(!itemStack.hasItemMeta()) continue;
-            if(itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK()) && !backPack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
+            if(itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack()) && !backPack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
                 if(!event.getPlayer().getInventory().addItem(itemStack).isEmpty()){
                     event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
                     event.getPlayer().sendMessage("§cYour inventory is full, the backpack was dropped on the ground.");
@@ -42,7 +50,7 @@ public class OnCloseBackpack implements Listener {
             for(ItemStack itemStack : backPack.getSecondPage()){
                 if(itemStack == null) continue;
                 if(!itemStack.hasItemMeta()) continue;
-                if(itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_BACKPACK()) && !backPack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
+                if(itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack()) && !backPack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
                     if(!event.getPlayer().getInventory().addItem(itemStack).isEmpty()){
                         event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
                         event.getPlayer().sendMessage("§cYour inventory is full, the backpack was dropped on the ground.");

@@ -1,4 +1,4 @@
-package br.com.backpacks.events.player;
+package br.com.backpacks.events.entity;
 
 import br.com.backpacks.recipes.RecipesNamespaces;
 import org.bukkit.Material;
@@ -25,7 +25,7 @@ public class Fishing implements Listener {
                ItemMeta meta = wetbackpack.getItemMeta();
                meta.setDisplayName("Wet Backpack");
                meta.setLore(Arrays.asList("Uhh, it looks really WET and unusable..", "Humm, what i could do with it?"));
-               meta.getPersistentDataContainer().set(new RecipesNamespaces().getIS_BACKPACK(), PersistentDataType.INTEGER, -1);
+               meta.getPersistentDataContainer().set(new RecipesNamespaces().isBackpack(), PersistentDataType.INTEGER, -1);
                meta.getPersistentDataContainer().set(new RecipesNamespaces().getNAMESPACE_WET_BACKPACK(), PersistentDataType.INTEGER, 1);
                wetbackpack.setItemMeta(meta);
                item.setItemStack(wetbackpack);

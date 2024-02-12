@@ -1,25 +1,69 @@
 package br.com.backpacks.upgrades;
 
-import br.com.backpacks.backpackUtils.Upgrade;
-import br.com.backpacks.backpackUtils.UpgradeType;
-import br.com.backpacks.backpackUtils.inventory.ItemCreator;
+import br.com.backpacks.Main;
 import br.com.backpacks.events.upgrades.Jukebox;
+import br.com.backpacks.utils.Upgrade;
+import br.com.backpacks.utils.UpgradeType;
+import br.com.backpacks.utils.inventory.ItemCreator;
+import net.kyori.adventure.sound.Sound;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 
 import static br.com.backpacks.events.upgrades.Jukebox.discsSlots;
 
 public class JukeboxUpgrade extends Upgrade {
-
-    private HashMap<Integer, ItemStack> discs = new HashMap<>();
-    private ItemStack playing;
-    private Boolean isPlaying;
     private Sound sound;
+
+    public static ItemStack getDisableLoopItem() {
+        return disableLoopItem;
+    }
+
+    private static final ItemStack disableLoopItem = new ItemCreator(Material.RED_STAINED_GLASS, "Disable loop").build();
+
+    public boolean isLooping() {
+        return isLooping;
+    }
+
+    public void setIsLooping(boolean looping) {
+        isLooping = looping;
+    }
+
+    private boolean isLooping = false;
+
+    private BukkitTask loopingTask;
+
+    public void clearLoopingTask(){
+        if(loopingTask != null) loopingTask.cancel();
+        loopingTask = null;
+    }
+
+    public void startLoopingTask(Entity entity){
+        loopingTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                entity.playSound(getSound(), Sound.Emitter.self());
+            }
+        }.runTaskTimer(Main.getMain(), 0L, (Jukebox.durationFromDisc(inventory.getItem(13)) * 20));
+    }
+
+    public void startLoopingTask(Location loc){
+        loopingTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                loc.getWorld().playSound(getSound());
+            }
+        }.runTaskTimer(Main.getMain(), 0L, (Jukebox.durationFromDisc(inventory.getItem(13)) * 20));
+    }
 
     public Inventory getInventory() {
         return inventory;
@@ -29,29 +73,37 @@ public class JukeboxUpgrade extends Upgrade {
 
     public JukeboxUpgrade(int id){
         super(UpgradeType.JUKEBOX, id);
-        this.isPlaying = false;
         this.inventory = Bukkit.createInventory(null, 27, "Jukebox");
         updateInventory();
     }
 
     public HashMap<Integer, ItemStack> getDiscs() {
-        return discs;
+        HashMap<Integer, ItemStack> hashMap = new HashMap<>();
+        for(int i : discsSlots){
+            if(inventory.getItem(i) == null) continue;
+            hashMap.put(i, inventory.getItem(i));
+        }
+        return hashMap;
     }
 
-    public ItemStack getPlaying() {
-        return playing;
+    @Override
+    public boolean canReceiveInput(@NotNull ItemStack itemStack) {
+        return Jukebox.checkDisk(itemStack);
     }
 
-    public void setPlaying(ItemStack playing) {
-        this.playing = playing;
+    @Override
+    public boolean isAdvanced() {
+        return true;
     }
 
-    public Boolean isPlaying() {
-        return isPlaying;
+    @Override
+    public List<Integer> inputSlots() {
+        return discsSlots;
     }
 
-    public void setIsPlaying(Boolean playing) {
-        isPlaying = playing;
+    @Override
+    public List<Integer> outputSlots() {
+        return discsSlots;
     }
 
     public Sound getSound() {
@@ -68,18 +120,15 @@ public class JukeboxUpgrade extends Upgrade {
     public void updateInventory(){
         ItemStack play = new ItemCreator(Material.GREEN_STAINED_GLASS_PANE, "Play Music").build();
         ItemStack stop = new ItemCreator(Material.RED_STAINED_GLASS_PANE, "Stop Music").build();
+        ItemStack enableLoop = new ItemCreator(Material.GREEN_STAINED_GLASS, "Enable loop").build();
         ItemStack blank = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").build();
 
         for (int i : Jukebox.blankSlots) {
             inventory.setItem(i, blank);
         }
 
-        for (int i : discsSlots) {
-            inventory.setItem(i, getDiscs().get(i));
-        }
-
+        inventory.setItem(9, enableLoop);
         inventory.setItem(10, play);
         inventory.setItem(11, stop);
-        inventory.setItem(13, getPlaying());
     }
 }

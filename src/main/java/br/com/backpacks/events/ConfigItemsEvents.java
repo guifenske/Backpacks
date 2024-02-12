@@ -21,6 +21,4 @@ public class ConfigItemsEvents implements Listener {
             event.setCancelled(true);
         }
     }
-
-
 }

@@ -1,12 +1,12 @@
 package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackPack;
-import br.com.backpacks.backpackUtils.BackpackAction;
-import br.com.backpacks.backpackUtils.Upgrade;
-import br.com.backpacks.backpackUtils.UpgradeType;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.upgrades.VillagersFollowUpgrade;
+import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.BackpackAction;
+import br.com.backpacks.utils.Upgrade;
+import br.com.backpacks.utils.UpgradeType;
 import com.destroystokyo.paper.entity.Pathfinder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -89,6 +89,7 @@ public class VillagersFollow implements Listener {
         World world = l.getWorld();
         for (int chX = -chunkRadius; chX <= chunkRadius; chX++) {
             for (int chZ = -chunkRadius; chZ <= chunkRadius; chZ++) {
+                if(!new Location(world, x + (chX * 16), 0, z + (chZ * 16)).isChunkLoaded()) continue;
                 for (Entity e : new Location(world, x + (chX * 16), 0, z + (chZ * 16)).getChunk().getEntities()) {
                     if (e.getLocation().distanceSquared(l) <= 100 && e.getType().equals(EntityType.VILLAGER)){
                         moveToPlayer((Mob) e, player);

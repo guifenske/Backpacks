@@ -1,8 +1,8 @@
-package br.com.backpacks.backpackUtils;
+package br.com.backpacks.utils;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.inventory.ItemCreator;
 import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.utils.inventory.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,9 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class BackPack extends UpgradeManager {
 
@@ -27,12 +25,6 @@ public class BackPack extends UpgradeManager {
     }
 
     private BackpackType backpackType;
-
-    public int getConfigItemsSpace() {
-        return configItemsSpace;
-    }
-
-    private int configItemsSpace = 0;
 
     public Location getLocation() {
         return location;
@@ -85,28 +77,33 @@ public class BackPack extends UpgradeManager {
     private int firstPageSize;
     private int secondPageSize;
 
-    public boolean isBeingWorn() {
-        return isWorn;
+    public boolean isOpen() {
+        return isOpen;
     }
 
-    public void setBeingWorn(boolean worn) {
-        isWorn = worn;
+    public void setOpen(boolean open) {
+        isOpen = open;
     }
 
-    private boolean isWorn = false;
+    private boolean isOpen = false;
 
-    public boolean isUnbreakable() {
-        return isUnbreakable;
+    public Set<UUID> getViewersIds() {
+        return viewersIds;
     }
 
-    public void setUnbreakable(boolean unbreakable) {
-        isUnbreakable = unbreakable;
-    }
+    private Set<UUID> viewersIds = new HashSet<>();
 
-    private boolean isUnbreakable = false;
-
+    private UUID owner;
     public String getName() {
         return name;
+    }
+
+    public void setOwner(UUID owner) {
+        this.owner = owner;
+    }
+
+    public UUID getOwner() {
+        return owner;
     }
 
     public void setName(String name) {
@@ -209,6 +206,18 @@ public class BackPack extends UpgradeManager {
             setUpgradesIds(upgradesIds);
         }
 
+        if(config.isSet(s + ".out")){
+            setOutputUpgrade(config.getInt(s + ".out"));
+        }
+
+        if(config.isSet(s + ".inp")){
+            setInputUpgrade(config.getInt(s + ".inp"));
+        }
+
+        if(config.isSet(s + ".owner")){
+            setOwner(UUID.fromString(config.getString(s + ".owner")));
+        }
+
         name = components.get(0);
         backpackType = BackpackType.valueOf(components.get(1));
         id = Integer.parseInt(s);
@@ -240,8 +249,7 @@ public class BackPack extends UpgradeManager {
         return this;
     }
 
-    public NamespacedKey getNamespaceOfBackpackType() {
-
+    public NamespacedKey getNamespace() {
         switch (getType()) {
             case LEATHER -> {
                 return new RecipesNamespaces().getNAMESPACE_LEATHER_BACKPACK();
@@ -288,6 +296,8 @@ public class BackPack extends UpgradeManager {
     }
 
     public void open(Player player){
+        setOpen(true);
+        getViewersIds().add(player.getUniqueId());
         Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 1);
         Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
         BackpackAction.removeAction(player);
@@ -296,6 +306,8 @@ public class BackPack extends UpgradeManager {
     }
 
     public void openSecondPage(Player player){
+        setOpen(true);
+        getViewersIds().add(player.getUniqueId());
         Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 2);
         Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
         BackpackAction.removeAction(player);
@@ -303,22 +315,22 @@ public class BackPack extends UpgradeManager {
         BackpackAction.setAction(player, BackpackAction.Action.OPENED);
     }
 
-    public List<ItemStack> getStorageContentsFirstPageWithoutNulls() {
-        List<ItemStack> list = new ArrayList<>();
-        for(ItemStack itemStack : firstPage.getStorageContents()){
+    public ItemStack getFirstItem(){
+        for(ItemStack itemStack : firstPage){
             if(itemStack == null) continue;
-            list.add(itemStack);
+            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM())) continue;
+            return itemStack;
         }
-        return list;
-    }
 
-    public List<ItemStack> getStorageContentsSecondPageWithoutNulls() {
-        List<ItemStack> list = new ArrayList<>();
-        for(ItemStack itemStack : secondPage.getStorageContents()){
-            if(itemStack == null) continue;
-            list.add(itemStack);
+        if(getSecondPage() != null){
+            for(ItemStack itemStack : secondPage){
+                if(itemStack == null) continue;
+                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM())) continue;
+                return itemStack;
+            }
         }
-        return list;
+
+        return null;
     }
 
     public ItemStack[] getStorageContentsFirstPage() {
@@ -352,13 +364,11 @@ public class BackPack extends UpgradeManager {
         ItemStack config = new ItemCreator(Material.NETHER_STAR, "§6Config").build();
 
         firstPage.setItem(firstPageSize - 1, config);
-        configItemsSpace = 1;
 
         if(secondPageSize > 0){
             firstPage.setItem(firstPageSize - 2, arrowRight);
             secondPage.setItem(secondPageSize - 2, arrowLeft);
             secondPage.setItem(secondPageSize - 1, config);
-            configItemsSpace = 2;
         }
     }
 

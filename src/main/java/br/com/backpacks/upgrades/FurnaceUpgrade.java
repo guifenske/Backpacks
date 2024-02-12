@@ -1,19 +1,20 @@
 package br.com.backpacks.upgrades;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.Upgrade;
-import br.com.backpacks.backpackUtils.UpgradeType;
 import br.com.backpacks.events.upgrades.Furnace;
+import br.com.backpacks.utils.Upgrade;
+import br.com.backpacks.utils.UpgradeType;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+
+import java.util.List;
 
 public class FurnaceUpgrade extends Upgrade {
     private ItemStack result;
@@ -90,6 +91,21 @@ public class FurnaceUpgrade extends Upgrade {
         return subTickTask;
     }
 
+    @Override
+    public boolean isAdvanced() {
+        return true;
+    }
+
+    @Override
+    public List<Integer> inputSlots() {
+        return List.of(0, 1);
+    }
+
+    @Override
+    public List<Integer> outputSlots() {
+        return List.of(2);
+    }
+
     private BukkitTask subTickTask = null;
 
     public ItemStack getResult() {
@@ -129,6 +145,11 @@ public class FurnaceUpgrade extends Upgrade {
         inventory.setItem(0, getSmelting());
         inventory.setItem(1, getFuel());
         inventory.setItem(2, getResult());
+    }
+
+    public void clearSubTickTask(){
+        if(subTickTask != null) subTickTask.cancel();
+        subTickTask = null;
     }
 
     public void startSubTick(){

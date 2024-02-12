@@ -1,4 +1,4 @@
-package br.com.backpacks.backpackUtils;
+package br.com.backpacks.utils;
 
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -18,6 +18,8 @@ public class BackpackAction {
 
         UPGMENU,
 
+        UPGTANKS,
+
         UPGFURNACE,
 
         UPGJUKEBOX,
@@ -30,10 +32,20 @@ public class BackpackAction {
 
         BPLIST,
 
+        IOMENU,
+
+        EDITINPUT,
+
+        EDITOUTPUT,
+
         OPENED;
     }
 
     private static final HashMap<UUID, Action> playerAction = new HashMap<>();
+
+    public static HashMap<UUID, Action> getHashMap(){
+        return playerAction;
+    }
 
     public static void removeAction(Player player){
         playerAction.remove(player.getUniqueId());

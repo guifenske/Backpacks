@@ -1,4 +1,4 @@
-package br.com.backpacks.backpackUtils.inventory;
+package br.com.backpacks.utils.inventory;
 
 import br.com.backpacks.recipes.RecipesNamespaces;
 import org.bukkit.Material;
@@ -9,7 +9,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.List;
 
 public class ItemCreator {
-    ItemStack itemStack;
+    private final ItemStack itemStack;
 
     public ItemCreator(Material material, String name){
         this.itemStack = new ItemStack(material, 1);

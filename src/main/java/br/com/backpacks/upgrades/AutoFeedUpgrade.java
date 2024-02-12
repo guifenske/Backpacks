@@ -1,14 +1,17 @@
 package br.com.backpacks.upgrades;
 
-import br.com.backpacks.backpackUtils.Upgrade;
-import br.com.backpacks.backpackUtils.UpgradeType;
-import br.com.backpacks.backpackUtils.inventory.ItemCreator;
+import br.com.backpacks.events.upgrades.AutoFeed;
+import br.com.backpacks.utils.Upgrade;
+import br.com.backpacks.utils.UpgradeType;
+import br.com.backpacks.utils.inventory.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 
 import static br.com.backpacks.events.upgrades.AutoFeed.fillSlots;
 
@@ -22,9 +25,32 @@ public class AutoFeedUpgrade extends Upgrade {
     private Inventory inventory;
 
     public HashMap<Integer, ItemStack> getItems() {
-        return items;
+        HashMap<Integer, ItemStack> hashMap = new HashMap<>();
+        for(int i : fillSlots){
+            hashMap.put(i, inventory.getItem(i));
+        }
+        return hashMap;
     }
-    private final HashMap<Integer, ItemStack> items = new HashMap<>();
+
+    @Override
+    public boolean canReceiveInput(@NotNull ItemStack itemStack) {
+        return AutoFeed.checkFood(itemStack);
+    }
+
+    @Override
+    public boolean isAdvanced() {
+        return true;
+    }
+
+    @Override
+    public List<Integer> inputSlots() {
+        return fillSlots;
+    }
+
+    @Override
+    public List<Integer> outputSlots() {
+        return fillSlots;
+    }
 
     public AutoFeedUpgrade(int id){
         super(UpgradeType.AUTOFEED, id);
@@ -55,12 +81,6 @@ public class AutoFeedUpgrade extends Upgrade {
         else{
             setEnabled(false);
             inventory.setItem(10, enable);
-        }
-
-        if(getItems() != null && !getItems().isEmpty()){
-            for(int i : fillSlots){
-                inventory.setItem(i, getItems().get(i));
-            }
         }
     }
 }

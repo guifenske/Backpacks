@@ -1,10 +1,9 @@
 package br.com.backpacks.commands;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackPack;
-import br.com.backpacks.backpackUtils.BackpackType;
-import br.com.backpacks.events.player.CraftBackpack;
 import br.com.backpacks.recipes.RecipesUtils;
+import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.BackpackType;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -43,7 +42,7 @@ public class BpGive implements CommandExecutor, TabCompleter {
         BackPack backPack;
         try{
             BackpackType backpackType = BackpackType.valueOf(args[1]);
-            backPack = new BackPack(backpackType, CraftBackpack.generateId());
+            backPack = new BackPack(backpackType, Main.backPackManager.getBackpackIds() + 1);
             Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
         }   catch (IllegalArgumentException e){
             sender.sendMessage(Main.PREFIX + "§cBackpack type not found!");

@@ -1,10 +1,10 @@
 package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackPack;
-import br.com.backpacks.backpackUtils.BackpackAction;
-import br.com.backpacks.backpackUtils.UpgradeType;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
+import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.BackpackAction;
+import br.com.backpacks.utils.UpgradeType;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -33,6 +33,24 @@ public class Furnace implements Listener {
     private static final HashMap<Material, Float> expPointsPerMaterial = new HashMap<>();
 
     static {
+        fuelMap.put(Material.BLACK_CARPET, Fuel.CARPET);
+        fuelMap.put(Material.BLUE_CARPET, Fuel.CARPET);
+        fuelMap.put(Material.BROWN_CARPET, Fuel.CARPET);
+        fuelMap.put(Material.CYAN_CARPET, Fuel.CARPET);
+        fuelMap.put(Material.GRAY_CARPET, Fuel.CARPET);
+        fuelMap.put(Material.GREEN_CARPET, Fuel.CARPET);
+        fuelMap.put(Material.LIGHT_BLUE_CARPET, Fuel.CARPET);
+        fuelMap.put(Material.LIGHT_GRAY_CARPET, Fuel.CARPET);
+        fuelMap.put(Material.LIME_CARPET, Fuel.CARPET);
+        fuelMap.put(Material.MAGENTA_CARPET, Fuel.CARPET);
+        fuelMap.put(Material.ORANGE_CARPET, Fuel.CARPET);
+        fuelMap.put(Material.PINK_CARPET, Fuel.CARPET);
+        fuelMap.put(Material.PURPLE_CARPET, Fuel.CARPET);
+        fuelMap.put(Material.RED_CARPET, Fuel.CARPET);
+        fuelMap.put(Material.WHITE_CARPET, Fuel.CARPET);
+        fuelMap.put(Material.YELLOW_CARPET, Fuel.CARPET);
+        fuelMap.put(Material.DRIED_KELP_BLOCK, Fuel.DRIED_KELP_BLOCK);
+        fuelMap.put(Material.LAVA_BUCKET, Fuel.LAVA_BUCKET);
         fuelMap.put(Material.COAL, Fuel.COAL);
         fuelMap.put(Material.CHARCOAL, Fuel.CHARCOAL);
         fuelMap.put(Material.COAL_BLOCK, Fuel.COAL_BLOCK);
@@ -145,6 +163,7 @@ public class Furnace implements Listener {
         maxOperationsMap.put(Fuel.SIGN, 1);
         maxOperationsMap.put(Fuel.HANGING_SIGN, 1);
         maxOperationsMap.put(Fuel.SAPLING, 1);
+        maxOperationsMap.put(Fuel.CARPET, 1);
 
         expPointsPerMaterial.put(Material.DRIED_KELP, 0.1f);
         expPointsPerMaterial.put(Material.COAL, 0.1f);
@@ -213,15 +232,20 @@ public class Furnace implements Listener {
 
         Main.getMain().getThreadBackpacks().getExecutor().submit(() ->{
             if(upgrade.getBoundFakeBlock() == null) {
-                Location tempLocation = new Location(Bukkit.getWorld("world"), ThreadLocalRandom.current().nextInt(-900, 900), -70, ThreadLocalRandom.current().nextInt(-900, 900));
+                Location tempLocation = new Location(Bukkit.getWorld("world"), ThreadLocalRandom.current().nextInt(-900, 900), -65, ThreadLocalRandom.current().nextInt(-900, 900));
                 Block tempBlock = tempLocation.getBlock();
+                switch (upgrade.getType()) {
+                    case FURNACE -> tempBlock.setType(Material.FURNACE);
+                    case SMOKER -> tempBlock.setType(Material.SMOKER);
+                    case BLAST_FURNACE -> tempBlock.setType(Material.BLAST_FURNACE);
+                }
                 upgrade.setBoundFakeBlock(tempBlock);
             }
             BukkitTask task = new BukkitRunnable() {
                 @Override
                 public void run() {
                     if(!upgrade.canTick()){
-                        upgrade.getSubTickTask().cancel();
+                        upgrade.clearSubTickTask();
                         upgrade.setCookTime(0);
                         this.cancel();
                         upgrade.setBoundFakeBlock(null);
@@ -230,24 +254,24 @@ public class Furnace implements Listener {
                     }
 
                     Fuel fuel = getFuelFromItem(upgrade.getFuel());
+                    int maxOperation = getMaxOperationsFromFuel(fuel);
+                    if(fuel.equals(Fuel.NOTHING)){
+                        if(upgrade.getLastMaxOperation() > 0 && upgrade.getOperation() > 0){
+                            if(upgrade.getLastMaxOperation() == 100 && upgrade.getFuel().getType().equals(Material.BUCKET)){
+                                fuel = Fuel.LAVA_BUCKET;
+                                maxOperation = 100;
+                                upgrade.setLastMaxOperation(maxOperation);
+                            }   else    maxOperation = upgrade.getLastMaxOperation();
+                        }   else   return;
+                    }
 
                     if(upgrade.getFuel() != null && fuel.equals(Fuel.NOTHING)){
                         this.cancel();
                         upgrade.setCookTime(0);
                         upgrade.getSubTickTask().cancel();
                         upgrade.setBoundFakeBlock(null);
-                        Main.getMain().getSLF4JLogger().warn("Furnace " + upgrade.getId() + " has a invalid fuel! Fuel = " + upgrade.getFuel() + ", if this is a bug or a valid fuel, report to the developer!");
+                        Main.getMain().getLogger().severe("Furnace " + upgrade.getId() + " has a invalid fuel! Fuel = " + upgrade.getFuel() + ", if this is a bug or a valid fuel, report to the developer!");
                         return;
-                    }
-
-                    int maxOperation = getMaxOperationsFromFuel(fuel);
-                    if(fuel.equals(Fuel.NOTHING)){
-                        if(upgrade.getLastMaxOperation() > 0 && upgrade.getOperation() > 0){
-                            if(upgrade.getLastMaxOperation() == 100 && upgrade.getFuel().getType().equals(Material.BUCKET)){
-                                maxOperation = 100;
-                                upgrade.setLastMaxOperation(maxOperation);
-                            }   else    maxOperation = upgrade.getLastMaxOperation();
-                        }   else   return;
                     }
 
                     if(upgrade.getLastMaxOperation() > 0){
@@ -302,6 +326,7 @@ public class Furnace implements Listener {
                         taskMap.get(currentFurnace.get(player.getUniqueId()).getId()).cancel();
                         currentFurnace.get(player.getUniqueId()).setCookTime(0);
                         player.getOpenInventory().setProperty(InventoryView.Property.COOK_TIME, 0);
+                        currentFurnace.get(player.getUniqueId()).clearSubTickTask();
                         if(currentFurnace.get(player.getUniqueId()).getBoundFakeBlock() != null) {
                             currentFurnace.get(player.getUniqueId()).setBoundFakeBlock(null);
                         }
@@ -331,6 +356,7 @@ public class Furnace implements Listener {
             if(currentFurnace.get(player.getUniqueId()).getBoundFakeBlock() != null) {
                 currentFurnace.get(player.getUniqueId()).setBoundFakeBlock(null);
             }
+            currentFurnace.get(player.getUniqueId()).clearSubTickTask();
             shouldTick.remove(currentFurnace.get(player.getUniqueId()).getId());
             currentFurnace.remove(player.getUniqueId());
         }
@@ -363,6 +389,7 @@ public class Furnace implements Listener {
         SIGN,
         HANGING_SIGN,
         SAPLING,
+        CARPET,
         NOTHING
     }
 

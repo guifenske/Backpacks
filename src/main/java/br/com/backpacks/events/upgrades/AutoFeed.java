@@ -1,12 +1,12 @@
 package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackPack;
-import br.com.backpacks.backpackUtils.BackpackAction;
-import br.com.backpacks.backpackUtils.Upgrade;
-import br.com.backpacks.backpackUtils.UpgradeType;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.upgrades.AutoFeedUpgrade;
+import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.BackpackAction;
+import br.com.backpacks.utils.Upgrade;
+import br.com.backpacks.utils.UpgradeType;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -24,12 +24,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AutoFeed implements Listener {
 
-    public static final Set<Integer> fillSlots = Set.of(3,4,5,12,13,14,21,22,23);
+    public static final List<Integer> fillSlots = List.of(3,4,5,12,13,14,21,22,23);
 
     @EventHandler
     private static void tick(FoodLevelChangeEvent event){
@@ -83,22 +82,16 @@ public class AutoFeed implements Listener {
     private static void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction((Player) event.getPlayer()).equals(BackpackAction.Action.UPGAUTOFEED)) return;
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
-        List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.AUTOFEED);
-        AutoFeedUpgrade upgrade = (AutoFeedUpgrade) list.get(0);
 
         for (int i : fillSlots) {
             ItemStack itemStack = event.getInventory().getItem(i);
             if (itemStack == null){
-                upgrade.getItems().put(i, null);
                 continue;
             }
             if (!checkFood(itemStack)) {
                 event.getPlayer().getInventory().addItem(itemStack);
                 event.getInventory().remove(itemStack);
-                upgrade.getItems().put(i, null);
-                continue;
             }
-            upgrade.getItems().put(i, itemStack);
         }
 
         BackpackAction.removeAction((Player) event.getPlayer());

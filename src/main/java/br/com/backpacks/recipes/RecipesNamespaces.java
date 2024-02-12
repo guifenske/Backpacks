@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class RecipesNamespaces {
 
-    public NamespacedKey getIS_BACKPACK() {
+    public NamespacedKey isBackpack() {
         return IS_BACKPACK;
     }
 

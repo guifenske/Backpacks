@@ -1,9 +1,9 @@
 package br.com.backpacks.events.inventory;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackPack;
-import br.com.backpacks.backpackUtils.BackpackAction;
-import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
+import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.BackpackAction;
+import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,7 +23,7 @@ public class OnClickBackpack implements Listener {
         if(event.getRawSlot() == event.getInventory().getSize() - 1){
             event.setCancelled(true);
             BackpackAction.removeAction(player);
-            player.openInventory(InventoryBuilder.mainConfigInv(player));
+            player.openInventory(InventoryBuilder.getConfigInv(backPack));
             Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> BackpackAction.setAction(player, BackpackAction.Action.CONFIGMENU), 1L);
         }   else if(event.getRawSlot() == event.getInventory().getSize() - 2){
             if(backPack.getSecondPageSize() == 0) return;

@@ -11,5 +11,3 @@ autobackup:
   interval: 2
   #number of backups files to keep
   keep: 15
-  #the path to create all the backups, default being on BackPacks/backups, remove the '#' to change the path.
-  #path: DEFAULT

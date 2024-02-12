@@ -1,4 +1,4 @@
-package br.com.backpacks.backpackUtils;
+package br.com.backpacks.utils;
 
 import br.com.backpacks.Main;
 
@@ -9,15 +9,14 @@ public class UpgradeManager {
     private List<Integer> upgrades = new ArrayList<>();
 
     public List<Integer> getUpgradesIds() {
-        if(upgrades.isEmpty())  return new ArrayList<>();
-        return new ArrayList<>(upgrades);
+        return upgrades;
     }
 
     public List<Upgrade> getUpgrades() {
         if(this.upgrades.isEmpty()) return new ArrayList<>();
         List<Upgrade> upgrades1 = new ArrayList<>();
-        for(int i = 0; i < upgrades.size(); i++){
-            upgrades1.add(getUpgradeFromId(upgrades.get(i)));
+        for (Integer upgrade : upgrades) {
+            upgrades1.add(getUpgradeFromId(upgrade));
         }
         return upgrades1;
     }
@@ -44,7 +43,7 @@ public class UpgradeManager {
     }
 
     //get the upgrade from all upgrades, in the backpack or not
-    public Upgrade getUpgradeFromId(int id) {
+    public static Upgrade getUpgradeFromId(int id) {
         if(Main.backPackManager.getUpgradeHashMap().containsKey(id)) return Main.backPackManager.getUpgradeHashMap().get(id);
         return null;
     }
@@ -67,5 +66,24 @@ public class UpgradeManager {
         }
 
         return false;
+    }
+
+    private Integer inputUpgrade = -1;
+    private Integer outputUpgrade = -1;
+
+    public Integer getInputUpgrade() {
+        return inputUpgrade;
+    }
+
+    public Integer getOutputUpgrade() {
+        return outputUpgrade;
+    }
+
+    public void setInputUpgrade(int inputUpgrade){
+        this.inputUpgrade = inputUpgrade;
+    }
+
+    public void setOutputUpgrade(int outputUpgrade){
+        this.outputUpgrade = outputUpgrade;
     }
 }

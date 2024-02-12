@@ -1,13 +1,16 @@
 package br.com.backpacks.events.backpacks;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackPack;
 import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Barrel;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -33,8 +36,14 @@ public class BackpackPlace implements Listener {
             //enforce removal of the item from the player's inventory
             event.getPlayer().getInventory().remove(event.getItemInHand());
             backPack.setIsBlock(true);
+            backPack.setOwner(null);
             Location backpackLocation = event.getBlockPlaced().getLocation();
             backPack.setLocation(backpackLocation);
+            //we need to do this to trigger the hopper event
+            Barrel barrel = (Barrel) event.getBlockPlaced().getState();
+            barrel.getInventory().setItem(0, new ItemStack(Material.STICK));
+
+            InventoryBuilder.updateConfigInv(backPack);
             Main.backPackManager.getBackpacksPlacedLocations().put(backpackLocation, backPack.getId());
         }   else event.setCancelled(true);
     }

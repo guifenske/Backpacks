@@ -1,17 +1,17 @@
 package br.com.backpacks.events.inventory;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.backpackUtils.BackPack;
-import br.com.backpacks.backpackUtils.BackpackAction;
-import br.com.backpacks.backpackUtils.Upgrade;
-import br.com.backpacks.backpackUtils.inventory.InventoryBuilder;
-import br.com.backpacks.backpackUtils.inventory.UpgradeMenu;
 import br.com.backpacks.events.upgrades.Furnace;
 import br.com.backpacks.events.upgrades.Jukebox;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
+import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.BackpackAction;
+import br.com.backpacks.utils.Upgrade;
+import br.com.backpacks.utils.UpgradeType;
+import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,7 +35,7 @@ public class OnClickInConfigMenu implements Listener {
 
         if(event.getRawSlot() < InventoryBuilder.getFreeUpgradesSlots(backPack.getType())){
             if(event.getCurrentItem() == null) return;
-            Upgrade upgrade = RecipesUtils.getUpgradeFromItem(event.getCurrentItem(), backPack);
+            Upgrade upgrade = RecipesUtils.getUpgradeFromItem(event.getCurrentItem());
             if(upgrade == null) return;
             if(!Main.backPackManager.getUpgradeHashMap().containsKey(upgrade.getId())){
                 Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);
@@ -69,7 +69,6 @@ public class OnClickInConfigMenu implements Listener {
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGJUKEBOX);
-                            Jukebox.currentJukebox.put(player.getUniqueId(), ((JukeboxUpgrade) upgrade));
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
@@ -110,6 +109,18 @@ public class OnClickInConfigMenu implements Listener {
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
                 }
+
+                case LIQUIDTANK -> {
+                    BackpackAction.removeAction(player);
+                    event.getWhoClicked().openInventory(upgrade.getInventory());
+                    BukkitTask task = new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            BackpackAction.setAction(player, BackpackAction.Action.UPGTANKS);
+                        }
+                    }.runTaskLater(Main.getMain(), 1L);
+                    event.setCancelled(true);
+                }
             }
 
             return;
@@ -123,17 +134,24 @@ public class OnClickInConfigMenu implements Listener {
                 if(backPack.isBlock())  return;
                 if(event.getClickedInventory().getItem(53).getType().equals(Material.GRAY_STAINED_GLASS_PANE)) return;
 
-                if (player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) {
+                if (backPack.getOwner() != null && backPack.getOwner().equals(player.getUniqueId())){
                     player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
                     player.getPersistentDataContainer().remove(new RecipesNamespaces().getHAS_BACKPACK());
-                    backPack.setBeingWorn(false);
-                } else {
+                    if(!backPack.getUpgradesFromType(UpgradeType.JUKEBOX).isEmpty()){
+                        JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
+                        if(upgrade.getSound() != null){
+                            upgrade.clearLoopingTask();
+                            Jukebox.stopSound(player, upgrade);
+                        }
+                    }
+                    backPack.setOwner(null);
+                } else if(backPack.getOwner() == null){
                     player.getInventory().remove(RecipesUtils.getItemFromBackpack(backPack));
                     player.getPersistentDataContainer().set(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER, backPack.getId());
-                    backPack.setBeingWorn(true);
+                    backPack.setOwner(player.getUniqueId());
                 }
 
-                player.closeInventory();
+                InventoryBuilder.updateConfigInv(backPack);
         }
             //rename backpack
             case 52 -> {
@@ -143,15 +161,22 @@ public class OnClickInConfigMenu implements Listener {
             }
 
             case 51 -> {
-                if (event.getClickedInventory().getItem(53) == null) return;
+                if (event.getClickedInventory().getItem(53).getType().equals(Material.GRAY_STAINED_GLASS_PANE)) return;
                 backPack.setLocked(!backPack.isLocked());
-                player.closeInventory();
+                InventoryBuilder.updateConfigInv(backPack);
             }
 
             case 36 ->{
                 BackpackAction.removeAction(player);
-                player.openInventory(UpgradeMenu.editUpgrades(player));
+                player.openInventory(InventoryBuilder.getUpgradesInv(backPack));
                 BackpackAction.setAction(player, BackpackAction.Action.UPGMENU);
+                event.setCancelled(true);
+            }
+
+            case 49 -> {
+                BackpackAction.removeAction(player);
+                player.openInventory(InventoryBuilder.getIOInv());
+                BackpackAction.setAction(player, BackpackAction.Action.IOMENU);
                 event.setCancelled(true);
             }
         }
