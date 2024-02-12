@@ -5,6 +5,7 @@ import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.utils.BackPack;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Barrel;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +22,7 @@ public class BackpackInteract implements Listener {
 
         Player player = event.getPlayer();
 
-        if(event.getAction().equals(RIGHT_CLICK_BLOCK) && (event.getClickedBlock().getType().equals(Material.BARREL) || event.getClickedBlock().getType().equals(Material.CHEST))){
+        if(event.getAction().equals(RIGHT_CLICK_BLOCK) && (event.getClickedBlock().getType().equals(Material.BARREL))){
             if(player.isSneaking()) return;
             if(event.getItem() != null){
                 if(event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack())){
@@ -35,6 +36,8 @@ public class BackpackInteract implements Listener {
             if(Main.backPackManager.canOpen()){
                 BackPack backPack = Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation());
                 backPack.open(player);
+                Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
+                barrel.open();
                 backPack.setIsBlock(true);
                 player.getWorld().playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
             }

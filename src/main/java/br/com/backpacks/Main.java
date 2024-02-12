@@ -5,6 +5,7 @@ import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
 import br.com.backpacks.utils.BackPackManager;
 import br.com.backpacks.utils.BackpackAction;
+import br.com.backpacks.utils.Constants;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -49,8 +50,6 @@ public final class Main extends JavaPlugin {
         return furnaceRecipes;
     }
 
-    public static Boolean debugMode = false;
-
     public static String PREFIX = "§8[§6BackPacks§8] ";
 
     public static final BackPackManager backPackManager = new BackPackManager();
@@ -93,7 +92,7 @@ public final class Main extends JavaPlugin {
         }
         setMain(this);
         if(getConfig().getBoolean("debug")){
-            debugMode = true;
+            Constants.DEBUG_MODE = true;
         }
         UpdateChecker.checkForUpdates();
 
@@ -139,9 +138,9 @@ public final class Main extends JavaPlugin {
         }
     }
 
-    public void debugMessage(String message){
-        if(debugMode){
-            getLogger().info(message);
+    public static void debugMessage(String message){
+        if(Constants.DEBUG_MODE){
+            Main.getMain().getLogger().info(message);
         }
     }
 

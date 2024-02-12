@@ -1,6 +1,7 @@
 package br.com.backpacks.commands;
 
 import br.com.backpacks.Main;
+import br.com.backpacks.utils.Constants;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,10 +22,9 @@ public class BpReload implements CommandExecutor {
 
         Main.getMain().saveDefaultConfig();
         Main.getMain().reloadConfig();
-        Main.debugMode = Main.getMain().getConfig().getBoolean("debug");
+        Constants.DEBUG_MODE = Main.getMain().getConfig().getBoolean("debug");
         if(Main.getMain().getConfig().isSet("autobackup.enabled")) Main.getMain().getBackupHandler().setEnabled(Main.getMain().getConfig().getBoolean("autobackup.enabled"));
         if(Main.getMain().getConfig().isSet("autobackup.keep")) Main.getMain().getBackupHandler().setKeepBackups(Main.getMain().getConfig().getInt("autobackup.keep"));
-        if(Main.getMain().getConfig().isSet("autobackup.path")) Main.getMain().getBackupHandler().setPath(Main.getMain().getConfig().getString("autobackup.path"));
         sender.sendMessage(Main.PREFIX + "§aConfig reloaded successfully.");
 
         return true;

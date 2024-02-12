@@ -4,19 +4,21 @@ import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.BackpackAction;
+import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class RenameBackpackChat implements Listener {
 
-    @EventHandler
-    private void onRename(AsyncPlayerChatEvent event){
+    @EventHandler(ignoreCancelled = true)
+    private void onRename(AsyncChatEvent event){
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.RENAMING)) return;
         Player player = event.getPlayer();
-        String newName = event.getMessage();
+        TextComponent textComponent = (TextComponent) event.originalMessage();
+        String newName = textComponent.content();
         event.setCancelled(true);
 
         BackpackAction.removeAction(player);

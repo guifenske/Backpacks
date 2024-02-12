@@ -6,6 +6,7 @@ import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.BackpackAction;
 import br.com.backpacks.utils.inventory.ItemCreator;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -19,6 +20,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
@@ -61,7 +63,15 @@ public class BpList implements CommandExecutor, Listener {
 
         for(int i = 0; i < backpacksIds.size(); i++){
             if(i == 52 || backpacksIds.size() < page.get(player.getUniqueId()) * 52 + i) break;
-            inventory.setItem(i, RecipesUtils.getItemFromBackpack(Main.backPackManager.getBackpackFromId(backpacksIds.get(page.get(player.getUniqueId()) * 52 + i))));
+            BackPack backPack = Main.backPackManager.getBackpackFromId(backpacksIds.get(page.get(player.getUniqueId()) * 52 + i));
+            ItemStack backpackItem = RecipesUtils.getItemFromBackpack(backPack);
+            ItemMeta meta = backpackItem.getItemMeta();
+            meta.lore(List.of(Component.text("Id: " + backPack.getId())));
+            if(backPack.isBlock()){
+                meta.lore(List.of(Component.text("Id: " + backPack.getId()) ,Component.text("Location: " + backPack.getLocation().getX() + " " + backPack.getLocation().getY() + " " + backPack.getLocation().getZ())));
+            }
+            backpackItem.setItemMeta(meta);
+            inventory.setItem(i, backpackItem);
         }
 
         return inventory;

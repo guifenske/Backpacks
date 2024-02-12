@@ -12,10 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class BackPack extends UpgradeManager {
 
@@ -79,6 +76,22 @@ public class BackPack extends UpgradeManager {
 
     private int firstPageSize;
     private int secondPageSize;
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(boolean open) {
+        isOpen = open;
+    }
+
+    private boolean isOpen = false;
+
+    public Set<UUID> getViewersIds() {
+        return viewersIds;
+    }
+
+    private Set<UUID> viewersIds = new HashSet<>();
 
     private UUID owner;
     public String getName() {
@@ -283,6 +296,8 @@ public class BackPack extends UpgradeManager {
     }
 
     public void open(Player player){
+        setOpen(true);
+        getViewersIds().add(player.getUniqueId());
         Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 1);
         Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
         BackpackAction.removeAction(player);
@@ -291,6 +306,8 @@ public class BackPack extends UpgradeManager {
     }
 
     public void openSecondPage(Player player){
+        setOpen(true);
+        getViewersIds().add(player.getUniqueId());
         Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 2);
         Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
         BackpackAction.removeAction(player);

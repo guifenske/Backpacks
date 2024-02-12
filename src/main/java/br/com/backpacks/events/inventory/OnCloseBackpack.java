@@ -5,6 +5,7 @@ import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.BackpackAction;
 import br.com.backpacks.utils.UpgradeType;
+import org.bukkit.block.Barrel;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,8 +19,15 @@ public class OnCloseBackpack implements Listener {
         if(!BackpackAction.getAction((Player) event.getPlayer()).equals(BackpackAction.Action.OPENED)) return;
         BackpackAction.removeAction((Player) event.getPlayer());
 
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
+        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         shouldRemoveBackpack(event, backPack);
+        backPack.getViewersIds().remove(event.getPlayer().getUniqueId());
+        if(backPack.getViewersIds().isEmpty()){
+            if(backPack.isBlock()){
+                Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
+                barrel.close();
+            }
+        }
 
         Main.backPackManager.getCurrentPage().remove(event.getPlayer().getUniqueId());
         Main.backPackManager.getCurrentBackpackId().remove(event.getPlayer().getUniqueId());

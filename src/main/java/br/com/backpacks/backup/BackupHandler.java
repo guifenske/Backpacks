@@ -23,11 +23,7 @@ public class BackupHandler {
         return path;
     }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    private String path;
+    private final String path;
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;

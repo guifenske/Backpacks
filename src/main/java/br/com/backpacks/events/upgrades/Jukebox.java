@@ -116,22 +116,26 @@ public class Jukebox implements Listener {
     private void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGJUKEBOX)) return;
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
+        JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
         for(int i : discsSlots){
             if(event.getInventory().getItem(i) == null) continue;
             if(!checkDisk(event.getInventory().getItem(i))){
-                List<ItemStack> itemStack = (List<ItemStack>) event.getPlayer().getInventory().addItem(event.getInventory().getItem(i)).values();
-                if(!itemStack.isEmpty()){
-                    event.getPlayer().getWorld().dropItemNaturally(event.getPlayer().getLocation(), itemStack.get(0));
+                ItemStack[] itemStack = event.getPlayer().getInventory().addItem(event.getInventory().getItem(i)).values().toArray(ItemStack[]::new);
+                if(itemStack.length > 0){
+                    event.getPlayer().getWorld().dropItemNaturally(event.getPlayer().getLocation(), itemStack[i]);
                 }
                 event.getInventory().setItem(i, null);
             }
         }
         if(event.getInventory().getItem(13) != null && !checkDisk(event.getInventory().getItem(13))){
-            List<ItemStack> itemStack = (List<ItemStack>) event.getPlayer().getInventory().addItem(event.getInventory().getItem(13)).values();
-            if(!itemStack.isEmpty()){
-                event.getPlayer().getWorld().dropItemNaturally(event.getPlayer().getLocation(), itemStack.get(0));
+            ItemStack[] itemStack = event.getPlayer().getInventory().addItem(event.getInventory().getItem(13)).values().toArray(ItemStack[]::new);
+            if(itemStack.length > 0){
+                event.getPlayer().getWorld().dropItemNaturally(event.getPlayer().getLocation(), itemStack[13]);
             }
             event.getInventory().setItem(13, null);
+        }   else if(event.getInventory().getItem(13) == null && upgrade.getSound() != null){
+            if(backPack.getOwner() == null) stopSound(backPack, upgrade);
+            else stopSound (event.getPlayer(), upgrade);
         }
 
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{

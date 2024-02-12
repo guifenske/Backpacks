@@ -246,13 +246,12 @@ public final class YamlUtils {
 
         for (String i : config.getKeys(false)) {
             BackPack backPack = new BackPack().deserialize(config, i);
-            backPack.setIsBlock(false);
             if(config.isSet(i + ".loc")){
                 backPack.setLocation(deserializeLocation(config.getStringList(i + ".loc")));
                 backPack.setIsBlock(true);
                 Main.backPackManager.getBackpacksPlacedLocations().put(backPack.getLocation(), backPack.getId());
             }
-            Main.getMain().debugMessage("Loading backpack " + backPack.getName() + " with id " + backPack.getId());
+            Main.getMain().debugMessage("Loading backpack " + backPack.getName() + " id " + backPack.getId());
             Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
 
             new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();

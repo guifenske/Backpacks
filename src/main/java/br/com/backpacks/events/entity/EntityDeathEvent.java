@@ -45,7 +45,7 @@ public class EntityDeathEvent implements Listener {
             JukeboxUpgrade upgrade = (JukeboxUpgrade) backpack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
             if(upgrade.getSound() != null){
                 upgrade.clearLoopingTask();
-                Jukebox.stopSound(player, upgrade);
+                Jukebox.stopSound(backpack, upgrade);
             }
         }
         backpack.setOwner(null);
@@ -58,7 +58,7 @@ public class EntityDeathEvent implements Listener {
         double y = backpack.getLocation().getY() + 1;
         Component component = Component.text(Main.PREFIX + "§cYou died and your backpack was placed on: " + backpack.getLocation().getX() + ", " + backpack.getLocation().getY() + ", " + backpack.getLocation().getZ() + "! Click to tp!")
                 .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + backpack.getLocation().getX() + " " + y + " " + backpack.getLocation().getZ()));
-        player.sendMessage(component);
+        player.sendMessage(component.toString());
     }
 
     @EventHandler(ignoreCancelled = true)

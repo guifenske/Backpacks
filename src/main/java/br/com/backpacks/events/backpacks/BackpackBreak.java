@@ -24,7 +24,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class BackpackBreak implements Listener {
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     private void playerBreak(BlockBreakEvent event){
         if(!event.getBlock().getType().equals(Material.BARREL)) return;
         if(!Main.backPackManager.canOpen()){
@@ -54,7 +54,7 @@ public class BackpackBreak implements Listener {
         event.getPlayer().getWorld().dropItemNaturally(location, backpackItem);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     private void explosionBreak(EntityExplodeEvent event){
         for(Block block : event.blockList()){
             if(!block.getType().equals(Material.BARREL)) continue;
@@ -88,8 +88,8 @@ public class BackpackBreak implements Listener {
        }
     }
 
-    @EventHandler
-    private void despawn(ItemDespawnEvent event){
+    @EventHandler(ignoreCancelled = true)
+    private void onItemDespawn(ItemDespawnEvent event){
         if(!event.getEntity().getItemStack().hasItemMeta())  return;
         if(!event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack())){
             if(event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade())){
@@ -121,7 +121,7 @@ public class BackpackBreak implements Listener {
         Main.backPackManager.getBackpacks().remove(id);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     private void onEntityDeath(EntityDeathEvent event){
         if(!(event.getEntity() instanceof Item)) return;
         Item eventItem = (Item) event.getEntity();

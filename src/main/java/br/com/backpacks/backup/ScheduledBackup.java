@@ -5,9 +5,6 @@ import br.com.backpacks.Main;
 import java.util.concurrent.TimeUnit;
 
 public class ScheduledBackup {
-    public int getInterval() {
-        return interval;
-    }
     public IntervalType getType() {
         return type;
     }
