@@ -166,6 +166,10 @@ public class InventoryBuilder {
         ItemStack editUpgrades = new ItemCreator(Material.ANVIL, "Edit Upgrades").build();
         ItemStack editIO = new ItemCreator(Material.HOPPER, "Sets the I/O inventory", Arrays.asList("§7Select upgrades to be the I/O inventories.")).build();
 
+        for(int i = 0; i < 9; i++){
+            inv.setItem(i, null);
+        }
+
         for(int i = InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i < 54; i++){
             inv.setItem(i, loremIpsum);
         }

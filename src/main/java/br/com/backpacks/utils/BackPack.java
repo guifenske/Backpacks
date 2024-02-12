@@ -385,21 +385,8 @@ public class BackPack extends UpgradeManager {
         }
         return false;
     }
-
-    //used in the PickupItemEvent
-    public List<ItemStack> getRemainingItems() {
-        return remainingItems;
-    }
-
-    public void setRemainingItems(List<ItemStack> remainingItems) {
-        this.remainingItems = remainingItems;
-    }
-
-    private List<ItemStack> remainingItems = new ArrayList<>();
-
     public List<ItemStack> tryAddItem(ItemStack itemStack){
         List<ItemStack> list = new ArrayList<>();
-        remainingItems = list;
         if(itemStack == null) return list;
 
         if(!firstPage.addItem(itemStack).isEmpty()){
@@ -411,12 +398,10 @@ public class BackPack extends UpgradeManager {
                         list2.addAll(secondPage.addItem(item).values());
                     }
                 }
-                remainingItems = list2;
                 return list2;
             }
         }
 
-        remainingItems = list;
         return list;
     }
 }

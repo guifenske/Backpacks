@@ -31,7 +31,9 @@ public class OnCloseUpgradeMenu implements Listener {
 
         for(int i = 0; i < InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i++){
             ItemStack item = event.getInventory().getItem(i);
-            if(item == null) continue;
+            if(item == null){
+                continue;
+            }
             if(RecipesUtils.isItemUpgrade(item)){
                 Upgrade upgrade = RecipesUtils.getUpgradeFromItem(item);
                 if(!UpgradeManager.canUpgradeStack(upgrade)){
@@ -59,7 +61,6 @@ public class OnCloseUpgradeMenu implements Listener {
         backPack.setUpgrades(newUpgrades);
         InventoryBuilder.updateConfigInv(backPack);
         InventoryBuilder.updateEditIOInv(backPack);
-        InventoryBuilder.updateUpgradesInv(backPack);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

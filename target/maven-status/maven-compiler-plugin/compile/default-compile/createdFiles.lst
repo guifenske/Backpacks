@@ -1,4 +1,5 @@
 br/com/backpacks/events/entity/InteractOtherPlayerBackpack.class
+br/com/backpacks/upgrades/JukeboxUpgrade$3.class
 br/com/backpacks/commands/BpReload.class
 br/com/backpacks/events/upgrades/VillagersFollow$1.class
 br/com/backpacks/events/entity/Fishing.class
@@ -55,6 +56,7 @@ br/com/backpacks/events/upgrades/Furnace$Fuel.class
 br/com/backpacks/events/upgrades/Furnace$3.class
 br/com/backpacks/events/entity/EntityDeathEvent.class
 br/com/backpacks/yaml/YamlUtils.class
+br/com/backpacks/commands/BpUpGive.class
 br/com/backpacks/recipes/RecipesUtils.class
 br/com/backpacks/commands/BpBackup.class
 br/com/backpacks/events/upgrades/Tanks.class
@@ -71,6 +73,7 @@ br/com/backpacks/utils/BackPack$1.class
 br/com/backpacks/utils/BackPackManager$1.class
 br/com/backpacks/upgrades/CollectorUpgrade.class
 br/com/backpacks/events/entity/PlayerJoinLeaveEvent.class
+br/com/backpacks/commands/BpUpGive$1.class
 br/com/backpacks/events/inventory/OnCloseBackpackConfigMenu$1.class
 br/com/backpacks/events/entity/FinishedSmelting.class
 br/com/backpacks/events/inventory/OnCloseUpgradeMenu.class
