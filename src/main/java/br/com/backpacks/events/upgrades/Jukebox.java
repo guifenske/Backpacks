@@ -17,6 +17,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Jukebox implements Listener {
@@ -43,10 +44,12 @@ public class Jukebox implements Listener {
     }
 
     public static void playSound(JukeboxUpgrade upgrade, BackPack backPack) {
+        upgrade.startParticleTask(backPack.getLocation().clone().add(0, 1, 0).toBlockLocation().toCenterLocation());
         if(upgrade.isLooping()){
             upgrade.startLoopingTask(backPack.getLocation());
             return;
         }
+
         backPack.getLocation().getWorld().playSound(upgrade.getSound());
     }
 
@@ -101,12 +104,14 @@ public class Jukebox implements Listener {
     }
 
     public static void stopSound(BackPack backPack, JukeboxUpgrade upgrade){
+        upgrade.clearParticleTask();
         upgrade.clearLoopingTask();
         backPack.getLocation().getWorld().stopSound(upgrade.getSound());
         upgrade.setSound(null);
     }
 
     public static void stopSound(Entity entity, JukeboxUpgrade upgrade){
+        upgrade.clearParticleTask();
         upgrade.clearLoopingTask();
         entity.stopSound(upgrade.getSound());
         upgrade.setSound(null);
@@ -120,17 +125,17 @@ public class Jukebox implements Listener {
         for(int i : discsSlots){
             if(event.getInventory().getItem(i) == null) continue;
             if(!checkDisk(event.getInventory().getItem(i))){
-                ItemStack[] itemStack = event.getPlayer().getInventory().addItem(event.getInventory().getItem(i)).values().toArray(ItemStack[]::new);
-                if(itemStack.length > 0){
-                    event.getPlayer().getWorld().dropItemNaturally(event.getPlayer().getLocation(), itemStack[i]);
+                List<ItemStack> itemStack = new ArrayList<>(event.getPlayer().getInventory().addItem(event.getInventory().getItem(i)).values());
+                if(!itemStack.isEmpty()){
+                    event.getPlayer().getWorld().dropItemNaturally(event.getPlayer().getLocation(), itemStack.get(0));
                 }
                 event.getInventory().setItem(i, null);
             }
         }
         if(event.getInventory().getItem(13) != null && !checkDisk(event.getInventory().getItem(13))){
-            ItemStack[] itemStack = event.getPlayer().getInventory().addItem(event.getInventory().getItem(13)).values().toArray(ItemStack[]::new);
-            if(itemStack.length > 0){
-                event.getPlayer().getWorld().dropItemNaturally(event.getPlayer().getLocation(), itemStack[13]);
+            List<ItemStack> itemStack = new ArrayList<>(event.getPlayer().getInventory().addItem(event.getInventory().getItem(13)).values());
+            if(!itemStack.isEmpty()){
+                event.getPlayer().getWorld().dropItemNaturally(event.getPlayer().getLocation(), itemStack.get(0));
             }
             event.getInventory().setItem(13, null);
         }   else if(event.getInventory().getItem(13) == null && upgrade.getSound() != null){

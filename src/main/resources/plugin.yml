@@ -35,3 +35,6 @@ commands:
     aliases:
       - 'bpupgbp'
     usage: '/bpupgbackpack'
+  bpupgive:
+    description: 'Give a new Backpack Upgrade to a player'
+    usage: '/bpupgive <upgradeType> <player>'

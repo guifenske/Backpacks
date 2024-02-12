@@ -69,7 +69,7 @@ public class FurnaceUpgrade extends Upgrade {
 
     private final long cookItemTicks;
 
-    public FurnaceUpgrade(int id, UpgradeType upgradeType){
+    public FurnaceUpgrade(UpgradeType upgradeType, int id){
         super(upgradeType, id);
         if(upgradeType.equals(UpgradeType.BLAST_FURNACE)){
             this.cookItemTicks = 100L;

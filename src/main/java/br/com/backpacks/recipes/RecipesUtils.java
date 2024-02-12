@@ -53,7 +53,7 @@ public class RecipesUtils {
         return itemStack;
     }
 
-    public static String getItemNameFromUpgrade(Upgrade upgrade){
+    private static String getItemNameFromUpgrade(Upgrade upgrade){
         switch (upgrade.getType()){
             case FURNACE: return "Furnace Upgrade";
             case SMOKER: return "Smoker Upgrade";
@@ -194,17 +194,17 @@ public class RecipesUtils {
         }
         if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getFurnace())) {
             if (UpgradeManager.getUpgradeFromId(id) != null) return ((FurnaceUpgrade) UpgradeManager.getUpgradeFromId(id));
-            Main.backPackManager.getUpgradeHashMap().put(id, new FurnaceUpgrade(id, UpgradeType.FURNACE));
+            Main.backPackManager.getUpgradeHashMap().put(id, new FurnaceUpgrade(UpgradeType.FURNACE, id));
             return Main.backPackManager.getUpgradeHashMap().get(id);
         }
         if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getBLASTFURNACE())) {
             if (UpgradeManager.getUpgradeFromId(id) != null) return ((FurnaceUpgrade) UpgradeManager.getUpgradeFromId(id));
-            Main.backPackManager.getUpgradeHashMap().put(id, new FurnaceUpgrade(id, UpgradeType.BLAST_FURNACE));
+            Main.backPackManager.getUpgradeHashMap().put(id, new FurnaceUpgrade(UpgradeType.BLAST_FURNACE, id));
             return Main.backPackManager.getUpgradeHashMap().get(id);
         }
         if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getSMOKER())) {
             if (UpgradeManager.getUpgradeFromId(id) != null) return ((FurnaceUpgrade) UpgradeManager.getUpgradeFromId(id));
-            Main.backPackManager.getUpgradeHashMap().put(id, new FurnaceUpgrade(id, UpgradeType.SMOKER));
+            Main.backPackManager.getUpgradeHashMap().put(id, new FurnaceUpgrade(UpgradeType.SMOKER, id));
             return Main.backPackManager.getUpgradeHashMap().get(id);
         }
         if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getCraftingGrid())) {

@@ -114,17 +114,17 @@ public class RandomBackpackBuilder {
                         upgrades.add(upgrade);
                     }
                     case SMOKER -> {
-                        FurnaceUpgrade upgrade = new FurnaceUpgrade(Main.backPackManager.getUpgradesIds() + 1, UpgradeType.SMOKER);
+                        FurnaceUpgrade upgrade = new FurnaceUpgrade(UpgradeType.SMOKER, Main.backPackManager.getUpgradesIds() + 1);
                         Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }
                     case BLAST_FURNACE ->  {
-                        FurnaceUpgrade upgrade = new FurnaceUpgrade(Main.backPackManager.getUpgradesIds() + 1, UpgradeType.BLAST_FURNACE);
+                        FurnaceUpgrade upgrade = new FurnaceUpgrade(UpgradeType.BLAST_FURNACE, Main.backPackManager.getUpgradesIds() + 1);
                         Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }
                     case FURNACE ->  {
-                        FurnaceUpgrade upgrade = new FurnaceUpgrade(Main.backPackManager.getUpgradesIds() + 1, UpgradeType.FURNACE);
+                        FurnaceUpgrade upgrade = new FurnaceUpgrade(UpgradeType.FURNACE, Main.backPackManager.getUpgradesIds() + 1);
                         Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }

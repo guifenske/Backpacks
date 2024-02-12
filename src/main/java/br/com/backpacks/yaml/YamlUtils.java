@@ -129,7 +129,7 @@ public final class YamlUtils {
             Main.backPackManager.setUpgradesIds(id);
             switch (type){
                 case FURNACE, BLAST_FURNACE, SMOKER -> {
-                    FurnaceUpgrade upgrade = new FurnaceUpgrade(id, type);
+                    FurnaceUpgrade upgrade = new FurnaceUpgrade(type, id);
                     if(config.isSet(i + ".furnace.result")){
                         upgrade.setResult(config.getItemStack(i + ".furnace.result"));
                     }

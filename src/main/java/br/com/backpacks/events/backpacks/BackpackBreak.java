@@ -41,6 +41,7 @@ public class BackpackBreak implements Listener {
         if(!backPack.getUpgradesFromType(UpgradeType.JUKEBOX).isEmpty()){
             JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
             if(upgrade.getSound() != null){
+                upgrade.clearParticleTask();
                 upgrade.clearLoopingTask();
                 Jukebox.stopSound(backPack, upgrade);
             }
@@ -74,6 +75,7 @@ public class BackpackBreak implements Listener {
             if(!backPack.getUpgradesFromType(UpgradeType.JUKEBOX).isEmpty()){
                 JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
                 if(upgrade.getSound() != null){
+                    upgrade.clearParticleTask();
                     upgrade.clearLoopingTask();
                     Jukebox.stopSound(backPack, upgrade);
                 }
