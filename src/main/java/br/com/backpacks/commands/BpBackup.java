@@ -1,8 +1,11 @@
 package br.com.backpacks.commands;
 
 import br.com.backpacks.Main;
+import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.BackpackAction;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class BpBackup implements CommandExecutor, TabCompleter {
@@ -63,6 +67,15 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                     player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
                 }
 
+                for(Map.Entry<Location, Integer> entry : Main.backPackManager.getBackpacksPlacedLocations().entrySet()){
+                    BackPack backPack = Main.backPackManager.getBackpackFromId(entry.getValue());
+                    if(backPack.isShowingNameAbove()){
+                        backPack.getMarker().remove();
+                        backPack.setMarker(null);
+                    }
+                    entry.getKey().getBlock().setType(Material.AIR);
+                }
+
                 Main.getMain().getThreadBackpacks().getExecutor().submit(() -> {
                     try{
                         long time = Main.getMain().getBackupHandler().undoRollback();
@@ -92,6 +105,15 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                 BackpackAction.getHashMap().remove(uuid);
                 if(player == null) continue;
                 player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
+            }
+
+            for(Map.Entry<Location, Integer> entry : Main.backPackManager.getBackpacksPlacedLocations().entrySet()){
+                BackPack backPack = Main.backPackManager.getBackpackFromId(entry.getValue());
+                if(backPack.isShowingNameAbove()){
+                    backPack.getMarker().remove();
+                    backPack.setMarker(null);
+                }
+                entry.getKey().getBlock().setType(Material.AIR);
             }
 
             Main.getMain().getThreadBackpacks().getExecutor().submit(() -> {

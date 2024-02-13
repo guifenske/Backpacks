@@ -4,7 +4,16 @@ import br.com.backpacks.Main;
 import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.yaml.YamlUtils;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Barrel;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +22,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BackupHandler {
@@ -78,8 +88,30 @@ public class BackupHandler {
         Instant start = Instant.now();
         YamlUtils.loadUpgrades(rollbackUpgrade);
         YamlUtils.loadBackpacks(rollbackBackpack);
-        YamlUtils.saveBackpacks(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
-        YamlUtils.saveUpgrades(Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
+        Bukkit.getScheduler().runTask(Main.getMain(), ()->{
+            for(Map.Entry<Location, Integer> entry : Main.backPackManager.getBackpacksPlacedLocations().entrySet()){
+                BackPack backPack = Main.backPackManager.getBackpackFromId(entry.getValue());
+                if(backPack.isShowingNameAbove()){
+                    ArmorStand marker = (ArmorStand) entry.getKey().getWorld().spawnEntity(backPack.getLocation().clone().add(0, 1, 0).toCenterLocation(), EntityType.ARMOR_STAND, CreatureSpawnEvent.SpawnReason.CUSTOM);
+                    marker.setVisible(false);
+                    marker.setSmall(true);
+                    marker.customName(Component.text(backPack.getName()));
+                    marker.setCustomNameVisible(true);
+                    marker.setCanTick(false);
+                    marker.setCanMove(false);
+                    marker.setCollidable(false);
+                    marker.setInvulnerable(true);
+                    marker.setBasePlate(false);
+                    marker.setMarker(true);
+                    backPack.setMarker(marker.getUniqueId());
+                }
+                entry.getKey().getBlock().setType(Material.BARREL);
+                Barrel barrel = (Barrel) entry.getKey().getBlock().getState();
+                barrel.update();
+                barrel.getInventory().setItem(0, new ItemStack(Material.STICK));
+            }
+        });
+
         Instant finish = Instant.now();
         Main.backPackManager.setCanBeOpen(true);
         return Duration.between(start, finish).toMillis();
@@ -111,6 +143,30 @@ public class BackupHandler {
 
         YamlUtils.loadUpgrades();
         YamlUtils.loadBackpacks();
+
+        Bukkit.getScheduler().runTask(Main.getMain(), ()->{
+            for(Map.Entry<Location, Integer> entry : Main.backPackManager.getBackpacksPlacedLocations().entrySet()){
+                BackPack backPack = Main.backPackManager.getBackpackFromId(entry.getValue());
+                if(backPack.isShowingNameAbove()){
+                    ArmorStand marker = (ArmorStand) entry.getKey().getWorld().spawnEntity(backPack.getLocation().clone().add(0, 1, 0).toCenterLocation(), EntityType.ARMOR_STAND, CreatureSpawnEvent.SpawnReason.CUSTOM);
+                    marker.setVisible(false);
+                    marker.setSmall(true);
+                    marker.customName(Component.text(backPack.getName()));
+                    marker.setCustomNameVisible(true);
+                    marker.setCanTick(false);
+                    marker.setCanMove(false);
+                    marker.setCollidable(false);
+                    marker.setInvulnerable(true);
+                    marker.setBasePlate(false);
+                    marker.setMarker(true);
+                    backPack.setMarker(marker.getUniqueId());
+                }
+                entry.getKey().getBlock().setType(Material.BARREL);
+                Barrel barrel = (Barrel) entry.getKey().getBlock().getState();
+                barrel.update();
+                barrel.getInventory().setItem(0, new ItemStack(Material.STICK));
+            }
+        });
 
         Main.backPackManager.setCanBeOpen(true);
         Instant finish = Instant.now();
