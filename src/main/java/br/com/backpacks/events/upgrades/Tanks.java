@@ -35,35 +35,41 @@ public class Tanks implements Listener {
         if(event.getRawSlot() > 27 && event.getAction().equals(MOVE_TO_OTHER_INVENTORY)) event.setCancelled(true);
 
         switch (event.getRawSlot()){
-            case 12, 14 -> {
+            case 12 -> {
                 BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
                 TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getUpgradesFromType(UpgradeType.LIQUIDTANK).get(0);
                 Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
-                    generalLogic(tanksUpgrade);
+                    generalLogic(tanksUpgrade, 1);
                 }, 1L);
             }
+            case 14 ->{
+                BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
+                TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getUpgradesFromType(UpgradeType.LIQUIDTANK).get(0);
+                Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
+                    generalLogic(tanksUpgrade, 2);
+                }, 1L);
+            }
+
         }
     }
 
-    public void generalLogic(TanksUpgrade tanksUpgrade){
-        for(int tank = 1; tank <= 2; tank++) {
-            int index = 12;
-            if(tank == 2) index = 14;
-            ItemStack currentItem = tanksUpgrade.getInventory().getItem(index);
-            if (currentItem == null) return;
-            if (!currentItem.getType().toString().contains("BUCKET")) return;
-            if (currentItem.getAmount() > 1) return;
-            if (currentItem.hasItemMeta()) {
-                if (!currentItem.getItemMeta().getDisplayName().equals(currentItem.getType().name()) || !currentItem.getItemMeta().getPersistentDataContainer().isEmpty())
-                    return;
-            }
-            if (currentItem.getType().equals(Material.BUCKET)) {
-                tanksUpgrade.removeFirstLiquidFromTank(tank);
+    public void generalLogic(TanksUpgrade tanksUpgrade, int tank){
+        int index = 12;
+        if(tank == 2) index = 14;
+        ItemStack currentItem = tanksUpgrade.getInventory().getItem(index);
+        if (currentItem == null) return;
+        if (!currentItem.getType().toString().contains("BUCKET")) return;
+        if (currentItem.getAmount() > 1) return;
+        if (currentItem.hasItemMeta()) {
+            if (!currentItem.getItemMeta().getDisplayName().equals(currentItem.getType().name()) || !currentItem.getItemMeta().getPersistentDataContainer().isEmpty())
                 return;
-            }
-            if (!tanksUpgrade.canFillTank(tank)) return;
-            tanksUpgrade.addLiquidToTank(currentItem, tank);
-            tanksUpgrade.getInventory().getItem(index).setType(Material.BUCKET);
         }
+        if (currentItem.getType().equals(Material.BUCKET)) {
+            tanksUpgrade.removeFirstLiquidFromTank(tank);
+            return;
+        }
+        if (!tanksUpgrade.canFillTank(tank)) return;
+        tanksUpgrade.addLiquidToTank(currentItem, tank);
+        currentItem.setType(Material.BUCKET);
     }
 }

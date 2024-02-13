@@ -22,7 +22,7 @@ public class ZipUtils {
         List<String> srcFiles = Arrays.asList(pathBackpacks.toString(), pathUpgrades.toString());
         long currentTimeMillis = System.currentTimeMillis();
         LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(currentTimeMillis), ZoneId.systemDefault());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyyHHmmss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH:mm:ss");
         String formattedDateTime = dateTime.format(formatter);
 
         String fileOutputName = "backup-" + formattedDateTime + ".zip";
