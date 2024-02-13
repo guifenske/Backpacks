@@ -1,6 +1,8 @@
 package br.com.backpacks.backup;
 
 import br.com.backpacks.Main;
+import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.yaml.YamlUtils;
 import org.bukkit.configuration.InvalidConfigurationException;
 
@@ -11,6 +13,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BackupHandler {
     public void setKeepBackups(int keepBackups) {
@@ -19,21 +22,14 @@ public class BackupHandler {
 
     private int keepBackups;
 
-    public String getPath() {
-        return path;
-    }
+    private final Path path;
 
-    private final String path;
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    private boolean enabled = true;
+    private ConcurrentHashMap<Integer, BackPack> rollbackBackpack;
+    private ConcurrentHashMap<Integer, Upgrade> rollbackUpgrade;
 
     public BackupHandler(int keepBackups, String path) {
         this.keepBackups = keepBackups;
-        this.path = path;
+        this.path = Path.of(path);
     }
 
     public boolean removeBackup(String name){
@@ -41,18 +37,9 @@ public class BackupHandler {
         return file.delete();
     }
 
-    public long backup(String path) throws IOException, InvalidConfigurationException {
-        if(!enabled) return -1L;
-        Path source;
-        try{
-            source = Path.of(path);
-        }   catch (Exception e){
-            Main.getMain().getSLF4JLogger().error("Invalid path for backup, please use this syntax: /path/to/backup/folder");
-            Main.getMain().getLogger().severe("Aborting backup task...");
-            return -1L;
-        }
+    public long backup() throws IOException, InvalidConfigurationException {
         Instant start = Instant.now();
-        source.toFile().mkdir();
+        path.toFile().mkdir();
 
         File backpackFile = new File(path + "/backpacks.yml");
         File upgradeFile = new File(path + "/upgrades.yml");
@@ -60,8 +47,17 @@ public class BackupHandler {
         YamlUtils.saveUpgrades(path + "/upgrades.yml");
 
         ZipUtils.zipAll(backpackFile.toPath(), upgradeFile.toPath(), path);
-        while(getNumberOfFilesInPath(source) > keepBackups){
-            File[] files = source.toFile().listFiles();
+        removeLeftoverFiles();
+
+        Instant finish = Instant.now();
+        long time = Duration.between(start, finish).toMillis();
+        Main.getMain().debugMessage("Backup completed in " + time + " ms!");
+        return time;
+    }
+
+    public void removeLeftoverFiles(){
+        while(getNumberOfFilesInPath(path) > keepBackups){
+            File[] files = path.toFile().listFiles();
             int index = 0;
             long oldestDate = files[0].lastModified();
             //remove the oldest file
@@ -74,10 +70,19 @@ public class BackupHandler {
             }
             files[index].delete();
         }
+    }
+
+    public long undoRollback() throws IOException {
+        if(rollbackUpgrade == null) return -1;
+        if(rollbackBackpack == null) return -1;
+        Instant start = Instant.now();
+        YamlUtils.loadUpgrades(rollbackUpgrade);
+        YamlUtils.loadBackpacks(rollbackBackpack);
+        YamlUtils.saveBackpacks(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
+        YamlUtils.saveUpgrades(Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
         Instant finish = Instant.now();
-        long time = Duration.between(start, finish).toMillis();
-        Main.getMain().debugMessage("Backup completed in " + time + " ms!");
-        return time;
+        Main.backPackManager.setCanBeOpen(true);
+        return Duration.between(start, finish).toMillis();
     }
 
     public long restoreBackup(String path) throws IOException {
@@ -93,6 +98,8 @@ public class BackupHandler {
         Instant start = Instant.now();
         File backpacksOriginal = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
         File upgradesOriginal = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
+        rollbackBackpack = new ConcurrentHashMap<>(Main.backPackManager.getBackpacks());
+        rollbackUpgrade = new ConcurrentHashMap<>(Main.backPackManager.getUpgradeHashMap());
         backpacksOriginal.delete();
         upgradesOriginal.delete();
 
@@ -116,8 +123,8 @@ public class BackupHandler {
 
     public List<String> getBackupsNames(){
         List<String> list = new ArrayList<>();
-        if(Path.of(path).toFile().listFiles() == null || Path.of(path).toFile().listFiles().length == 0) return list;
-        for(File file : Path.of(path).toFile().listFiles()){
+        if(path.toFile().listFiles() == null || path.toFile().listFiles().length == 0) return list;
+        for(File file : path.toFile().listFiles()){
             list.add(file.getName());
         }
         return list;

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class YamlUtils {
 
@@ -126,7 +127,10 @@ public final class YamlUtils {
         for(String i : config.getKeys(false)){
             UpgradeType type = UpgradeType.valueOf(config.getString(i + ".type"));
             int id = Integer.parseInt(i);
-            Main.backPackManager.setUpgradesIds(id);
+            if(Main.backPackManager.getUpgradesIds() == 0) Main.backPackManager.setUpgradesIds(id);
+            if(Main.backPackManager.getUpgradesIds() < id){
+                Main.backPackManager.setUpgradesIds(id);
+            }
             switch (type){
                 case FURNACE, BLAST_FURNACE, SMOKER -> {
                     FurnaceUpgrade upgrade = new FurnaceUpgrade(type, id);
@@ -265,6 +269,40 @@ public final class YamlUtils {
             }
         }
     }
+
+    public static void loadBackpacks(ConcurrentHashMap<Integer, BackPack> hashMap){
+        Main.backPackManager.setBackpackIds(0);
+        Main.backPackManager.setBackpacks(hashMap);
+        Main.backPackManager.getBackpacksPlacedLocations().clear();
+        for(BackPack backPack : hashMap.values()){
+            if(backPack.getLocation() != null){
+                Main.backPackManager.getBackpacksPlacedLocations().put(backPack.getLocation(), backPack.getId());
+            }
+
+            InventoryBuilder.deleteAllMenusFromBackpack(backPack);
+            new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
+
+            int id = backPack.getId();
+            if(Main.backPackManager.getBackpackIds() == 0) Main.backPackManager.setBackpackIds(id);
+            if(Main.backPackManager.getBackpackIds() < id){
+                Main.backPackManager.setBackpackIds(id);
+            }
+        }
+    }
+
+    public static void loadUpgrades(ConcurrentHashMap<Integer, Upgrade> hashMap){
+        Main.backPackManager.setUpgradesIds(0);
+        Main.backPackManager.setUpgradeHashMap(hashMap);
+        for(Integer id : hashMap.keySet()){
+            if(Main.backPackManager.getUpgradesIds() == 0) Main.backPackManager.setUpgradesIds(id);
+            if(Main.backPackManager.getUpgradesIds() < id){
+                Main.backPackManager.setUpgradesIds(id);
+            }
+        }
+    }
+
     private static void serializeUpgrades(YamlConfiguration config, BackPack backPack){
         config.set(backPack.getId() + ".u", null);
         config.set(backPack.getId() + ".u", backPack.getUpgradesIds());

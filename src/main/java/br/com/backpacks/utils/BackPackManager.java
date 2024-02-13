@@ -86,6 +86,14 @@ public class BackPackManager {
         throw new NullPointerException("Backpack with id " + id + " not found");
     }
 
+    public void setBackpacks(ConcurrentHashMap<Integer, BackPack> backpacks) {
+        this.backpacks = backpacks;
+    }
+
+    public void setUpgradeHashMap(ConcurrentHashMap<Integer, Upgrade> upgradeHashMap) {
+        this.upgradeHashMap = upgradeHashMap;
+    }
+
     public BackPack upgradeBackpack(BackpackType oldType, int oldId) {
         if(oldId == -1) return null;
 

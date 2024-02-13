@@ -39,7 +39,7 @@ public class ScheduledBackup {
         switch (type){
             case HOURS -> Main.getMain().getThreadBackpacks().getExecutor().scheduleAtFixedRate(() -> {
                 try {
-                    Main.getMain().getBackupHandler().backup(path);
+                    Main.getMain().getBackupHandler().backup();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -47,7 +47,7 @@ public class ScheduledBackup {
 
             case MINUTES -> Main.getMain().getThreadBackpacks().getExecutor().scheduleAtFixedRate(() -> {
                 try {
-                    Main.getMain().getBackupHandler().backup(path);
+                    Main.getMain().getBackupHandler().backup();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -55,7 +55,7 @@ public class ScheduledBackup {
 
             case SECONDS -> Main.getMain().getThreadBackpacks().getExecutor().scheduleAtFixedRate(() -> {
                 try {
-                    Main.getMain().getBackupHandler().backup(path);
+                    Main.getMain().getBackupHandler().backup();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -71,7 +71,7 @@ public class ScheduledBackup {
         switch (type){
             case HOURS -> Main.getMain().getThreadBackpacks().getExecutor().scheduleAtFixedRate(() -> {
                 try {
-                    Main.getMain().getBackupHandler().backup(path);
+                    Main.getMain().getBackupHandler().backup();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -79,7 +79,7 @@ public class ScheduledBackup {
 
             case MINUTES -> Main.getMain().getThreadBackpacks().getExecutor().scheduleAtFixedRate(() -> {
                 try {
-                    Main.getMain().getBackupHandler().backup(path);
+                    Main.getMain().getBackupHandler().backup();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -87,7 +87,7 @@ public class ScheduledBackup {
 
             case SECONDS -> Main.getMain().getThreadBackpacks().getExecutor().scheduleAtFixedRate(() -> {
                 try {
-                    Main.getMain().getBackupHandler().backup(path);
+                    Main.getMain().getBackupHandler().backup();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

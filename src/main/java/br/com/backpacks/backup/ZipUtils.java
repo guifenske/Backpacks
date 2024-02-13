@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -19,7 +18,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class ZipUtils {
-    public static void zipAll(Path pathBackpacks, Path pathUpgrades, String path) throws IOException {
+    public static void zipAll(Path pathBackpacks, Path pathUpgrades, Path path) throws IOException {
         List<String> srcFiles = Arrays.asList(pathBackpacks.toString(), pathUpgrades.toString());
         long currentTimeMillis = System.currentTimeMillis();
         LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(currentTimeMillis), ZoneId.systemDefault());
@@ -28,7 +27,7 @@ public class ZipUtils {
 
         String fileOutputName = "backup-" + formattedDateTime + ".zip";
 
-        FileOutputStream fos = new FileOutputStream(Paths.get(path) + "/" + fileOutputName);
+        FileOutputStream fos = new FileOutputStream(path + "/" + fileOutputName);
         ZipOutputStream zipOut = new ZipOutputStream(fos);
 
         for (String srcFile : srcFiles) {

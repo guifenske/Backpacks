@@ -21,7 +21,7 @@ import java.util.UUID;
 public class BpBackup implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(args.length < 1 || args.length > 2){
+        if(args.length < 1 || args.length > 3){
             sender.sendMessage("§cUse: /bpbackup <create|remove|rollback>");
             return true;
         }
@@ -31,7 +31,7 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                 Main.getMain().getThreadBackpacks().getExecutor().submit(() ->{
                     long time;
                     try {
-                        time = Main.getMain().getBackupHandler().backup(Main.getMain().getBackupHandler().getPath());
+                        time = Main.getMain().getBackupHandler().backup();
                         if(time != -1L){
                             sender.sendMessage("§aBackup created successfully in " + time + " ms!");
                         }   else{
@@ -54,6 +54,33 @@ public class BpBackup implements CommandExecutor, TabCompleter {
         }
 
         if(args[0].equalsIgnoreCase("rollback")){
+            if(args[1].equalsIgnoreCase("undo")){
+                Main.backPackManager.setCanBeOpen(false);
+                for(UUID uuid : BackpackAction.getHashMap().keySet()){
+                    Player player = Bukkit.getPlayer(uuid);
+                    BackpackAction.getHashMap().remove(uuid);
+                    if(player == null) continue;
+                    player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
+                }
+
+                Main.getMain().getThreadBackpacks().getExecutor().submit(() -> {
+                    try{
+                        long time = Main.getMain().getBackupHandler().undoRollback();
+                        if(time != -1L){
+                            sender.sendMessage("§aBackup restored successfully in " + time + " ms!");
+                        }   else{
+                            sender.sendMessage("§cYou never did a rollback to undo it.");
+                        }
+                        return true;
+                    }   catch (IOException e){
+                        Main.backPackManager.setCanBeOpen(true);
+                        sender.sendMessage("§cAn error occurred while restoring the backup, please check the console for more information.");
+                        throw new RuntimeException(e);
+                    }
+                });
+                return true;
+            }
+
             if(!Main.getMain().getBackupHandler().getBackupsNames().contains(args[1])){
                 sender.sendMessage("§cBackup not found.");
                 return true;
@@ -111,6 +138,7 @@ public class BpBackup implements CommandExecutor, TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         List<String> stringList = new ArrayList<>();
         List<String> backups = Main.getMain().getBackupHandler().getBackupsNames();
+        backups.add("undo");
         if(args.length == 1){
             if(args[0].isEmpty()){
                 stringList.add("create");
