@@ -37,19 +37,22 @@ public class Jukebox implements Listener {
 
     public static void playSound(JukeboxUpgrade upgrade, Entity entity) {
         if(upgrade.isLooping()){
+            upgrade.setOwner(entity);
             upgrade.startLoopingTask(entity);
             return;
         }
+        upgrade.setOwner(entity);
         entity.playSound(upgrade.getSound(), Sound.Emitter.self());
     }
 
     public static void playSound(JukeboxUpgrade upgrade, BackPack backPack) {
         upgrade.startParticleTask(backPack.getLocation().clone().add(0, 1, 0).toBlockLocation().toCenterLocation());
         if(upgrade.isLooping()){
+            upgrade.setBackpackId(backPack.getId());
             upgrade.startLoopingTask(backPack.getLocation());
             return;
         }
-
+        upgrade.setBackpackId(backPack.getId());
         backPack.getLocation().getWorld().playSound(upgrade.getSound());
     }
 

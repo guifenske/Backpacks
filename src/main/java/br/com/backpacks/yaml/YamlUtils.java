@@ -149,7 +149,7 @@ public final class YamlUtils {
                     if(config.isSet(i + ".furnace.maxoperation")){
                         upgrade.setLastMaxOperation(config.getInt(i + ".furnace.maxoperation"));
                     }
-                    Main.getMain().debugMessage("furnace loaded: " + i);
+                    Main.debugMessage("furnace loaded: " + i);
                     upgrade.updateInventory();
                     Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
                 }
@@ -164,7 +164,7 @@ public final class YamlUtils {
                     if(config.isSet(i + ".jukebox.playing")){
                         upgrade.getInventory().setItem(13, upgrade.getSoundFromName(config.getString(i + ".jukebox.playing")));
                     }
-                    Main.getMain().debugMessage("loading jukebox: " + i);
+                    Main.debugMessage("loading jukebox: " + i);
                     Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
                 }
                 case COLLECTOR -> {
@@ -175,7 +175,7 @@ public final class YamlUtils {
                     if(config.isSet(i + ".collector.mode")){
                         upgrade.setMode(config.getInt(i + ".collector.mode"));
                     }
-                    Main.getMain().debugMessage("loading collector: " + i);
+                    Main.debugMessage("loading collector: " + i);
                     upgrade.updateInventory();
                     Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
                 }
@@ -184,7 +184,7 @@ public final class YamlUtils {
                     if (config.isSet(i + ".villager.enabled")) {
                         upgrade.setEnabled(config.getBoolean(i + ".villager.enabled"));
                     }
-                    Main.getMain().debugMessage("loading villagers follow: " + i);
+                    Main.debugMessage("loading villagers follow: " + i);
                     upgrade.updateInventory();
                     Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
                 }
@@ -201,20 +201,23 @@ public final class YamlUtils {
                     }
                     upgrade.updateInventory();
 
-                    Main.getMain().debugMessage("loading auto feed: " + i);
+                    Main.debugMessage("loading auto feed: " + i);
                     Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
                 }
                 case CRAFTING -> {
                     Upgrade upgrade = new Upgrade(UpgradeType.CRAFTING, id);
                     Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    Main.debugMessage("loading crafting upgrade: " + i);
                 }
                 case ENCAPSULATE -> {
                     Upgrade upgrade = new Upgrade(UpgradeType.ENCAPSULATE, id);
                     Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    Main.debugMessage("loading encapsulate upgrade: " + i);
                 }
                 case UNBREAKABLE -> {
                     Upgrade upgrade = new Upgrade(UpgradeType.UNBREAKABLE, id);
                     Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    Main.debugMessage("loading unbreakable upgrade: " + i);
                 }
                 case LIQUIDTANK -> {
                     TanksUpgrade upgrade = new TanksUpgrade(id);

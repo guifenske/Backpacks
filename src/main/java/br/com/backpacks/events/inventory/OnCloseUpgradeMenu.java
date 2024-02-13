@@ -28,6 +28,7 @@ public class OnCloseUpgradeMenu implements Listener {
         if(backPack == null) return;
 
         List<Upgrade> newUpgrades = new ArrayList<>();
+        List<Integer> newUpgradesIds = new ArrayList<>();
 
         for(int i = 0; i < InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i++){
             ItemStack item = event.getInventory().getItem(i);
@@ -53,11 +54,27 @@ public class OnCloseUpgradeMenu implements Listener {
                     event.getInventory().setItem(i, item.asOne());
                 }
                 newUpgrades.add(upgrade);
+                newUpgradesIds.add(upgrade.getId());
             }   else{
                 event.getInventory().remove(item);
                 event.getPlayer().getInventory().addItem(item);
             }
         }
+
+        //stop ticking upgrades when not in the backpack
+        if(!backPack.getUpgrades().isEmpty()){
+            if(newUpgrades.isEmpty()){
+                backPack.stopTickingAllUpgrades();
+            }   else{
+                for(Upgrade upgrade : backPack.getUpgrades()){
+                    //was removed
+                    if(!newUpgradesIds.contains(upgrade.getId())){
+                        backPack.stopTickingUpgrade(upgrade.getId());
+                    }
+                }
+            }
+        }
+
         backPack.setUpgrades(newUpgrades);
         InventoryBuilder.updateConfigInv(backPack);
         InventoryBuilder.updateEditIOInv(backPack);

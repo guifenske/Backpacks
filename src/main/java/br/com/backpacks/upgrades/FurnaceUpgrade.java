@@ -106,6 +106,16 @@ public class FurnaceUpgrade extends Upgrade {
         return List.of(2);
     }
 
+    @Override
+    public void stopTickingUpgrade() {
+        if(Furnace.shouldTick.contains(getId())) Furnace.shouldTick.remove(getId());
+        setCookTime(0);
+        Furnace.taskMap.get(getId()).cancel();
+        Furnace.taskMap.remove(getId());
+        setBoundFakeBlock(null);
+        clearSubTickTask();
+    }
+
     private BukkitTask subTickTask = null;
 
     public ItemStack getResult() {

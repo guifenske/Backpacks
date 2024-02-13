@@ -68,6 +68,16 @@ public class UpgradeManager {
         return false;
     }
 
+    public void stopTickingAllUpgrades(){
+        for(Upgrade upgrade : getUpgrades()){
+            upgrade.stopTickingUpgrade();
+        }
+    }
+
+    public void stopTickingUpgrade(int upgradeID){
+        UpgradeManager.getUpgradeFromId(upgradeID).stopTickingUpgrade();
+    }
+
     private Integer inputUpgrade = -1;
     private Integer outputUpgrade = -1;
 

@@ -68,11 +68,10 @@ public class AutoFeed implements Listener {
     private static void onClick(InventoryClickEvent event){
         if(!BackpackAction.getAction((Player) event.getWhoClicked()).equals(BackpackAction.Action.UPGAUTOFEED)) return;
         if(event.getRawSlot() < 27 && !fillSlots.contains(event.getRawSlot()))  event.setCancelled(true);
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-        List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.AUTOFEED);
-        AutoFeedUpgrade upgrade = (AutoFeedUpgrade) list.get(0);
-
         if(event.getRawSlot() == 10){
+            BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
+            List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.AUTOFEED);
+            AutoFeedUpgrade upgrade = (AutoFeedUpgrade) list.get(0);
             upgrade.setEnabled(!upgrade.isEnabled());
             upgrade.updateInventory();
         }
@@ -94,7 +93,6 @@ public class AutoFeed implements Listener {
             }
         }
 
-        BackpackAction.removeAction((Player) event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

@@ -33,14 +33,15 @@ public class Tanks implements Listener {
         if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGTANKS)) return;
         if(event.getRawSlot() < 27 && event.getRawSlot() != 12 && event.getRawSlot() != 14) event.setCancelled(true);
         if(event.getRawSlot() > 27 && event.getAction().equals(MOVE_TO_OTHER_INVENTORY)) event.setCancelled(true);
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-        if(backPack.getUpgradesFromType(UpgradeType.LIQUIDTANK).isEmpty()) return;
-        TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getUpgradesFromType(UpgradeType.LIQUIDTANK).get(0);
 
         switch (event.getRawSlot()){
-            case 12, 14 -> Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
-                generalLogic(tanksUpgrade);
-            }, 1L);
+            case 12, 14 -> {
+                BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
+                TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getUpgradesFromType(UpgradeType.LIQUIDTANK).get(0);
+                Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
+                    generalLogic(tanksUpgrade);
+                }, 1L);
+            }
         }
     }
 

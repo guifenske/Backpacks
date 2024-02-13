@@ -43,6 +43,35 @@ public class JukeboxUpgrade extends Upgrade {
 
     private BukkitTask loopingTask;
     private BukkitTask particleTask;
+    private Integer backpackId;
+
+    public Integer getBackpackId() {
+        return backpackId;
+    }
+
+    public void setBackpackId(Integer backpackId) {
+        this.backpackId = backpackId;
+    }
+
+    public Entity getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Entity owner) {
+        this.owner = owner;
+    }
+
+    private Entity owner;
+
+    @Override
+    public void stopTickingUpgrade() {
+        clearLoopingTask();
+        clearParticleTask();
+        if(owner != null) Jukebox.stopSound(owner, this);
+        if(backpackId != null) Jukebox.stopSound(Main.backPackManager.getBackpackFromId(backpackId), this);
+        backpackId = null;
+        owner = null;
+    }
 
     public void clearLoopingTask(){
         if(loopingTask != null) loopingTask.cancel();

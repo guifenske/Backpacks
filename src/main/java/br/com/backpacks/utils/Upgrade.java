@@ -63,4 +63,5 @@ public class Upgrade {
     }
 
     public boolean canReceiveInput(@NotNull ItemStack itemStack){return false;}
+    public void stopTickingUpgrade(){};
 }

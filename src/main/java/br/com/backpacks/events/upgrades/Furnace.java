@@ -26,7 +26,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Furnace implements Listener {
     public static final ConcurrentHashMap<UUID, FurnaceUpgrade> currentFurnace = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<Integer, BukkitTask> taskMap = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<Integer, BukkitTask> taskMap = new ConcurrentHashMap<>();
     public static final IntOpenHashSet shouldTick = new IntOpenHashSet();
     private static final EnumMap<Material, Fuel> fuelMap = new EnumMap<>(Material.class);
     private static final EnumMap<Fuel, Integer> maxOperationsMap = new EnumMap<>(Fuel.class);

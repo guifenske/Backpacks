@@ -45,6 +45,7 @@ public class TanksUpgrade extends Upgrade {
         updateInventory();
     }
 
+
     public void updateInventory(){
         ItemStack loremIpsum = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE," ").build();
         for(int i = 0; i < inventory.getSize(); i++){
@@ -156,7 +157,6 @@ public class TanksUpgrade extends Upgrade {
             }
             if(inventory.getItem(26) == null){
                 inventory.setItem(26, item);
-                return;
             }
         }
     }

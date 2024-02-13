@@ -56,7 +56,10 @@ public class AutoFeedUpgrade extends Upgrade {
         super(UpgradeType.AUTOFEED, id);
         this.enabled = false;
         this.inventory = Bukkit.createInventory(null, 27, "Auto Feed");
-        updateInventory();
+        ItemStack blank = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, "Put your food in the empty 9x9 space").build();
+        for (int i = 0; i < 27; i++) {
+            if(!fillSlots.contains(i)) inventory.setItem(i, blank);
+        }
     }
 
     public boolean isEnabled() {
@@ -68,14 +71,8 @@ public class AutoFeedUpgrade extends Upgrade {
     }
 
     public void updateInventory(){
-        ItemStack blank = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, "Put your food in the empty 9x9 space").build();
         ItemStack enable = new ItemCreator(Material.GREEN_STAINED_GLASS_PANE, "Enable").build();
         ItemStack disable = new ItemCreator(Material.RED_STAINED_GLASS_PANE, "Disable").build();
-
-
-        for (int i = 0; i < 27; i++) {
-            if(!fillSlots.contains(i)) inventory.setItem(i, blank);
-        }
 
         if(isEnabled())    inventory.setItem(10, disable);
         else{
