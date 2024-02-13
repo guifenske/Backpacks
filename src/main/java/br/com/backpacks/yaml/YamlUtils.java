@@ -38,6 +38,9 @@ public final class YamlUtils {
             if(backPack.getInputUpgrade() != -1){
                 config.set(backPack.getId() + ".inp", backPack.getInputUpgrade());
             }
+            if(backPack.isShowingNameAbove()){
+                config.set(backPack.getId() + ".shownameabove", backPack.isShowingNameAbove());
+            }
             config.set(backPack.getId() + ".i", backPack.serialize());
             saveStorageContents(backPack, config);
             if(backPack.getOwner() != null){
@@ -256,6 +259,9 @@ public final class YamlUtils {
             if(config.isSet(i + ".loc")){
                 backPack.setLocation(deserializeLocation(config.getStringList(i + ".loc")));
                 backPack.setIsBlock(true);
+                if(config.isSet(i + ".shownameabove")){
+                    backPack.setShowNameAbove(true);
+                }
                 Main.backPackManager.getBackpacksPlacedLocations().put(backPack.getLocation(), backPack.getId());
             }
             Main.getMain().debugMessage("Loading backpack " + backPack.getName() + " id " + backPack.getId());

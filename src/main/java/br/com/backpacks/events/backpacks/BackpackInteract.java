@@ -23,6 +23,7 @@ public class BackpackInteract implements Listener {
         Player player = event.getPlayer();
 
         if(event.getAction().equals(RIGHT_CLICK_BLOCK) && (event.getClickedBlock().getType().equals(Material.BARREL))){
+            if(Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
             if(event.getItem() != null){
                 if(event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack())){
                     //activate the backpackPlaceEvent
@@ -30,9 +31,8 @@ public class BackpackInteract implements Listener {
 
                     event.setCancelled(true);
                     return;
-                }
+                }   else if(event.getItem().getType().isBlock() && player.isSneaking()) return;
             }
-            if(Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
 
             event.setCancelled(true);
             if(Main.backPackManager.canOpen()){

@@ -46,6 +46,9 @@ public class BackpackBreak implements Listener {
                 Jukebox.stopSound(backPack, upgrade);
             }
         }
+        backPack.setShowNameAbove(false);
+        if(backPack.getMarker() != null) backPack.getMarker().remove();
+        backPack.setMarker(null);
         backPack.setLocation(null);
         backPack.setIsBlock(false);
         backPack.setOwner(null);
@@ -80,6 +83,10 @@ public class BackpackBreak implements Listener {
                     Jukebox.stopSound(backPack, upgrade);
                 }
             }
+
+            backPack.setShowNameAbove(false);
+            if(backPack.getMarker() != null) backPack.getMarker().remove();
+            backPack.setMarker(null);
             backPack.setLocation(null);
             backPack.setIsBlock(false);
             backPack.setOwner(null);

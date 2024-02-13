@@ -84,13 +84,14 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        setMain(this);
         String version = Bukkit.getBukkitVersion().split("-")[0];
+        Constants.VERSION = version;
         if(!version.contains("1.20")){
             Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§cThis plugin at the moment is only compatible with 1.20.x versions.");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-        setMain(this);
         if(getConfig().getBoolean("debug")){
             Constants.DEBUG_MODE = true;
         }
@@ -126,6 +127,7 @@ public final class Main extends JavaPlugin {
         Main.getMain().getLogger().info("Saving backpacks.");
         saveConfig();
         reloadConfig();
+        if(threadBackpacks == null) return;
 
         try {
             threadBackpacks.saveAll();

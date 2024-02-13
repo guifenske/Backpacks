@@ -5,4 +5,5 @@ public class Constants {
     public static boolean IS_FOLIA = false;
     public static boolean MONSTER_DROPS_BACKPACK = true;
     public static boolean CATCH_BACKPACK = true;
+    public static String VERSION = "";
 }

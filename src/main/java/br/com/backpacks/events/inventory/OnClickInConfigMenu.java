@@ -12,10 +12,15 @@ import br.com.backpacks.utils.BackpackAction;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.block.Barrel;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -132,7 +137,6 @@ public class OnClickInConfigMenu implements Listener {
             //equip or un-equip backpack in the back
             case 53 -> {
                 if(backPack.isBlock())  return;
-                if(event.getClickedInventory().getItem(53).getType().equals(Material.GRAY_STAINED_GLASS_PANE)) return;
 
                 if (backPack.getOwner() != null && backPack.getOwner().equals(player.getUniqueId())){
                     player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
@@ -144,6 +148,7 @@ public class OnClickInConfigMenu implements Listener {
                             Jukebox.stopSound(player, upgrade);
                         }
                     }
+
                     backPack.setOwner(null);
                 } else if(backPack.getOwner() == null){
                     player.getInventory().remove(RecipesUtils.getItemFromBackpack(backPack));
@@ -155,6 +160,14 @@ public class OnClickInConfigMenu implements Listener {
         }
             //rename backpack
             case 52 -> {
+                backPack.getViewersIds().remove(player.getUniqueId());
+                backPack.setOpen(false);
+                if(backPack.getViewersIds().isEmpty()){
+                    if(backPack.isBlock()){
+                        Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
+                        barrel.close();
+                    }
+                }
                 BackpackAction.setAction(player, BackpackAction.Action.RENAMING);
                 player.sendMessage(Main.PREFIX + "§eType the new name of the backpack");
                 player.closeInventory();
@@ -178,6 +191,30 @@ public class OnClickInConfigMenu implements Listener {
                 player.openInventory(InventoryBuilder.getIOInv());
                 BackpackAction.setAction(player, BackpackAction.Action.IOMENU);
                 event.setCancelled(true);
+            }
+
+            case 48 ->{
+                if(!backPack.isBlock()) return;
+                if(!backPack.isShowingNameAbove()){
+                    ArmorStand marker = (ArmorStand) player.getWorld().spawnEntity(backPack.getLocation().clone().add(0, 1, 0).toCenterLocation(), EntityType.ARMOR_STAND, CreatureSpawnEvent.SpawnReason.CUSTOM);
+                    marker.setVisible(false);
+                    marker.setSmall(true);
+                    marker.customName(Component.text(backPack.getName()));
+                    marker.setCustomNameVisible(true);
+                    marker.setCanTick(false);
+                    marker.setCanMove(false);
+                    marker.setCollidable(false);
+                    marker.setInvulnerable(true);
+                    marker.setBasePlate(false);
+                    marker.setMarker(true);
+                    backPack.setMarker(marker.getUniqueId());
+                    backPack.setShowNameAbove(true);
+                }   else{
+                    backPack.getMarker().remove();
+                    backPack.setMarker(null);
+                    backPack.setShowNameAbove(false);
+                }
+                InventoryBuilder.updateConfigInv(backPack);
             }
         }
     }

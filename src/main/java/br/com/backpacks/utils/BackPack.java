@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -105,6 +106,26 @@ public class BackPack extends UpgradeManager {
     public UUID getOwner() {
         return owner;
     }
+
+    public boolean isShowingNameAbove() {
+        return showNameAbove;
+    }
+
+    public void setShowNameAbove(boolean showNameAbove) {
+        this.showNameAbove = showNameAbove;
+    }
+
+    private boolean showNameAbove = false;
+
+    public ArmorStand getMarker() {
+        return (ArmorStand) Bukkit.getEntity(marker);
+    }
+
+    public void setMarker(UUID uuid) {
+        this.marker = uuid;
+    }
+
+    private UUID marker;
 
     public void setName(String name) {
         this.name = name;

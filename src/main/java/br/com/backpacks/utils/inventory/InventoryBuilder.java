@@ -67,6 +67,8 @@ public class InventoryBuilder {
                 ItemStack unlock = new ItemCreator(Material.WRITTEN_BOOK, "Unlock Backpack", Arrays.asList("§7§nUnlock the access to this backpack", "§7§n from other players when in your back.")).build();
                 ItemStack editUpgrades = new ItemCreator(Material.ANVIL, "Edit Upgrades").build();
                 ItemStack editIO = new ItemCreator(Material.HOPPER, "Sets the I/O inventory", Arrays.asList("§7Select upgrades to be the I/O inventories.")).build();
+                ItemStack enableNameAbove = new ItemCreator(Material.POTATO, "Show name above backpack block").build();
+                ItemStack disableNameAbove = new ItemCreator(Material.POISONOUS_POTATO, "Don't show name above backpack block").build();
 
                 for(int i = InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i < 54; i++){
                     inv.setItem(i, loremIpsum);
@@ -92,6 +94,12 @@ public class InventoryBuilder {
                         inv.setItem(53, unequipBackpack);
                     } else{
                         inv.setItem(53, equipBackpack);
+                    }
+                }   else{
+                    if(!backPack.isShowingNameAbove()){
+                        inv.setItem(48, enableNameAbove);
+                    }   else{
+                        inv.setItem(48, disableNameAbove);
                     }
                 }
 
@@ -165,6 +173,8 @@ public class InventoryBuilder {
         ItemStack unlock = new ItemCreator(Material.WRITTEN_BOOK, "Unlock Backpack", Arrays.asList("§7§nUnlock the access to this backpack", "§7§n from other players when in your back.")).build();
         ItemStack editUpgrades = new ItemCreator(Material.ANVIL, "Edit Upgrades").build();
         ItemStack editIO = new ItemCreator(Material.HOPPER, "Sets the I/O inventory", Arrays.asList("§7Select upgrades to be the I/O inventories.")).build();
+        ItemStack enableNameAbove = new ItemCreator(Material.POTATO, "Show name above backpack block").build();
+        ItemStack disableNameAbove = new ItemCreator(Material.POISONOUS_POTATO, "Don't show name above backpack block").build();
 
         for(int i = 0; i < 9; i++){
             inv.setItem(i, null);
@@ -194,6 +204,12 @@ public class InventoryBuilder {
                 inv.setItem(53, unequipBackpack);
             } else{
                 inv.setItem(53, equipBackpack);
+            }
+        }   else{
+            if(!backPack.isShowingNameAbove()){
+                inv.setItem(48, enableNameAbove);
+            }   else{
+                inv.setItem(48, disableNameAbove);
             }
         }
 
