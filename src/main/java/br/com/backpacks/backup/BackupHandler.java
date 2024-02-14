@@ -112,6 +112,9 @@ public class BackupHandler {
             }
         });
 
+        rollbackBackpack = null;
+        rollbackUpgrade = null;
+
         Instant finish = Instant.now();
         Main.backPackManager.setCanBeOpen(true);
         return Duration.between(start, finish).toMillis();

@@ -32,7 +32,7 @@ public class Jukebox implements Listener {
 
     public static net.kyori.adventure.sound.Sound getSoundFromItem(@NotNull ItemStack itemStack){
         org.bukkit.Sound bukkitSound = org.bukkit.Sound.valueOf(itemStack.getType().name());
-        return Sound.sound(bukkitSound, Sound.Source.RECORD, 1, 1);
+        return Sound.sound().type(bukkitSound).seed(-69).source(Sound.Source.VOICE).volume(1).pitch(1).build();
     }
 
     public static void playSound(JukeboxUpgrade upgrade, Entity entity) {

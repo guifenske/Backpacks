@@ -210,7 +210,7 @@ public class OnClickInConfigMenu implements Listener {
                     backPack.setMarker(marker.getUniqueId());
                     backPack.setShowNameAbove(true);
                 }   else{
-                    backPack.getMarker().remove();
+                    backPack.getMarkerEntity().remove();
                     backPack.setMarker(null);
                     backPack.setShowNameAbove(false);
                 }

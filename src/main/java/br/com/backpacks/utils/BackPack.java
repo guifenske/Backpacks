@@ -77,17 +77,6 @@ public class BackPack extends UpgradeManager {
 
     private int firstPageSize;
     private int secondPageSize;
-
-    public boolean isOpen() {
-        return isOpen;
-    }
-
-    public void setOpen(boolean open) {
-        isOpen = open;
-    }
-
-    private boolean isOpen = false;
-
     public Set<UUID> getViewersIds() {
         return viewersIds;
     }
@@ -117,7 +106,11 @@ public class BackPack extends UpgradeManager {
 
     private boolean showNameAbove = false;
 
-    public ArmorStand getMarker() {
+    public UUID getMarker() {
+        return marker;
+    }
+
+    public ArmorStand getMarkerEntity(){
         return (ArmorStand) Bukkit.getEntity(marker);
     }
 
@@ -317,7 +310,6 @@ public class BackPack extends UpgradeManager {
     }
 
     public void open(Player player){
-        setOpen(true);
         getViewersIds().add(player.getUniqueId());
         Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 1);
         Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
@@ -327,7 +319,6 @@ public class BackPack extends UpgradeManager {
     }
 
     public void openSecondPage(Player player){
-        setOpen(true);
         getViewersIds().add(player.getUniqueId());
         Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 2);
         Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);

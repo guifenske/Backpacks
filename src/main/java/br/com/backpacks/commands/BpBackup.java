@@ -70,7 +70,7 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                 for(Map.Entry<Location, Integer> entry : Main.backPackManager.getBackpacksPlacedLocations().entrySet()){
                     BackPack backPack = Main.backPackManager.getBackpackFromId(entry.getValue());
                     if(backPack.isShowingNameAbove()){
-                        backPack.getMarker().remove();
+                        backPack.getMarkerEntity().remove();
                         backPack.setMarker(null);
                     }
                     entry.getKey().getBlock().setType(Material.AIR);
@@ -110,7 +110,7 @@ public class BpBackup implements CommandExecutor, TabCompleter {
             for(Map.Entry<Location, Integer> entry : Main.backPackManager.getBackpacksPlacedLocations().entrySet()){
                 BackPack backPack = Main.backPackManager.getBackpackFromId(entry.getValue());
                 if(backPack.isShowingNameAbove()){
-                    backPack.getMarker().remove();
+                    backPack.getMarkerEntity().remove();
                     backPack.setMarker(null);
                 }
                 entry.getKey().getBlock().setType(Material.AIR);

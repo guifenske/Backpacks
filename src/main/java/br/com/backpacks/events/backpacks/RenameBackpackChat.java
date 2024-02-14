@@ -9,12 +9,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
+
+import java.util.UUID;
 
 public class RenameBackpackChat implements Listener {
 
@@ -27,35 +26,55 @@ public class RenameBackpackChat implements Listener {
         event.setCancelled(true);
 
         BackpackAction.removeAction(player);
+        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(player);
 
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(player.getUniqueId()));
+        Bukkit.getScheduler().runTask(Main.getMain(), ()->{
+            for(UUID uuid : backPack.getViewersIds()){
+                if(Main.backPackManager.getCurrentPage().containsKey(uuid)){
+                    Player player1 = Bukkit.getPlayer(uuid);
+                    if(player1 == null) continue;
+                    BackpackAction.removeAction(player1);
+                    player1.closeInventory();
+                }
+            }
+        });
+
         if(!backPack.isBlock() && backPack.getOwner() == null) {
             player.getInventory().remove(RecipesUtils.getItemFromBackpack(backPack));
             backPack.setName(newName);
+            Bukkit.getScheduler().runTask(Main.getMain(), ()->{
+                for(UUID uuid : backPack.getViewersIds()){
+                    if(Main.backPackManager.getCurrentPage().containsKey(uuid)){
+                        Player player1 = Bukkit.getPlayer(uuid);
+                        if(player1 == null) continue;
+                        if(Main.backPackManager.getCurrentPage().get(uuid) == 1) backPack.open(player1);
+                        else backPack.openSecondPage(player1);
+                    }
+                }
+            });
             player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
             player.sendMessage(Main.PREFIX + "§aRenamed backpack to " + newName);
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
             return;
         }
 
-        Bukkit.getScheduler().runTask(Main.getMain(), ()->{
-            backPack.getMarker().remove();
-            backPack.setMarker(null);
-            ArmorStand marker = (ArmorStand) player.getWorld().spawnEntity(backPack.getLocation().clone().add(0, 1, 0).toCenterLocation(), EntityType.ARMOR_STAND, CreatureSpawnEvent.SpawnReason.CUSTOM);
-            marker.setVisible(false);
-            marker.setSmall(true);
-            marker.customName(Component.text(newName));
-            marker.setCustomNameVisible(true);
-            marker.setCanTick(false);
-            marker.setCanMove(false);
-            marker.setCollidable(false);
-            marker.setInvulnerable(true);
-            marker.setBasePlate(false);
-            marker.setMarker(true);
-            backPack.setMarker(marker.getUniqueId());
-        });
+        if(backPack.isShowingNameAbove()) {
+            Bukkit.getScheduler().runTask(Main.getMain(), () -> {
+                backPack.getMarkerEntity().customName(Component.text(newName));
+            });
+        }
 
         backPack.setName(newName);
+        Bukkit.getScheduler().runTask(Main.getMain(), ()->{
+            for(UUID uuid : backPack.getViewersIds()){
+                if(Main.backPackManager.getCurrentPage().containsKey(uuid)){
+                    Player player1 = Bukkit.getPlayer(uuid);
+                    if(player1 == null) continue;
+                    if(Main.backPackManager.getCurrentPage().get(uuid) == 1) backPack.open(player1);
+                    else backPack.openSecondPage(player1);
+                }
+            }
+        });
         player.sendMessage(Main.PREFIX + "§aRenamed backpack to " + newName);
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
     }

@@ -7,20 +7,26 @@ import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
 import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.BackpackAction;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.UUID;
 
 public class BackpackBreak implements Listener {
 
@@ -46,8 +52,19 @@ public class BackpackBreak implements Listener {
                 Jukebox.stopSound(backPack, upgrade);
             }
         }
+        for(UUID uuid : BackpackAction.getHashMap().keySet()){
+            Player player = Bukkit.getPlayer(uuid);
+            BackpackAction.getHashMap().remove(uuid);
+            if(player == null) continue;
+            BackpackAction.removeAction(player);
+            Main.backPackManager.getCurrentPage().remove(uuid);
+            Main.backPackManager.getCurrentBackpackId().remove(uuid);
+            backPack.getViewersIds().remove(uuid);
+            player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
+        }
+
         backPack.setShowNameAbove(false);
-        if(backPack.getMarker() != null) backPack.getMarker().remove();
+        if(backPack.getMarker() != null) backPack.getMarkerEntity().remove();
         backPack.setMarker(null);
         backPack.setLocation(null);
         backPack.setIsBlock(false);
@@ -84,8 +101,19 @@ public class BackpackBreak implements Listener {
                 }
             }
 
+            for(UUID uuid : BackpackAction.getHashMap().keySet()){
+                Player player = Bukkit.getPlayer(uuid);
+                BackpackAction.getHashMap().remove(uuid);
+                if(player == null) continue;
+                BackpackAction.removeAction(player);
+                Main.backPackManager.getCurrentPage().remove(uuid);
+                Main.backPackManager.getCurrentBackpackId().remove(uuid);
+                backPack.getViewersIds().remove(uuid);
+                player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
+            }
+
             backPack.setShowNameAbove(false);
-            if(backPack.getMarker() != null) backPack.getMarker().remove();
+            if(backPack.getMarker() != null) backPack.getMarkerEntity().remove();
             backPack.setMarker(null);
             backPack.setLocation(null);
             backPack.setIsBlock(false);

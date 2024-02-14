@@ -45,16 +45,8 @@ public class JukeboxUpgrade extends Upgrade {
     private BukkitTask particleTask;
     private Integer backpackId;
 
-    public Integer getBackpackId() {
-        return backpackId;
-    }
-
     public void setBackpackId(Integer backpackId) {
         this.backpackId = backpackId;
-    }
-
-    public Entity getOwner() {
-        return owner;
     }
 
     public void setOwner(Entity owner) {
