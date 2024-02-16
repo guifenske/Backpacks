@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UpdateChecker {
-    private static final String CURRENT_VERSION = Main.getMain().getPluginMeta().getVersion();
+    private static final String CURRENT_VERSION = Main.getMain().getDescription().getVersion();
 
     private static final String MODRINTH_API_URL = "https://api.modrinth.com/v2/project/advancedbackpacks/version";
 

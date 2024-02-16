@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 public class OnCloseBackpack implements Listener {
 
@@ -37,7 +38,7 @@ public class OnCloseBackpack implements Listener {
         for(ItemStack itemStack : backPack.getFirstPage()){
             if(itemStack == null) continue;
             if(!itemStack.hasItemMeta()) continue;
-            if(itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack()) && !backPack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
+            if(itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack(), PersistentDataType.INTEGER) && !backPack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
                 if(!event.getPlayer().getInventory().addItem(itemStack).isEmpty()){
                     event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
                     event.getPlayer().sendMessage("§cYour inventory is full, the backpack was dropped on the ground.");
@@ -50,7 +51,7 @@ public class OnCloseBackpack implements Listener {
             for(ItemStack itemStack : backPack.getSecondPage()){
                 if(itemStack == null) continue;
                 if(!itemStack.hasItemMeta()) continue;
-                if(itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack()) && !backPack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
+                if(itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack(), PersistentDataType.INTEGER) && !backPack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
                     if(!event.getPlayer().getInventory().addItem(itemStack).isEmpty()){
                         event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
                         event.getPlayer().sendMessage("§cYour inventory is full, the backpack was dropped on the ground.");

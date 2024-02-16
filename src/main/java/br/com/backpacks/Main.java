@@ -1,6 +1,14 @@
 package br.com.backpacks;
 
 import br.com.backpacks.backup.BackupHandler;
+import br.com.backpacks.commands.*;
+import br.com.backpacks.events.ConfigItemsEvents;
+import br.com.backpacks.events.HopperEvents;
+import br.com.backpacks.events.ServerLoadEvent;
+import br.com.backpacks.events.backpacks.*;
+import br.com.backpacks.events.entity.*;
+import br.com.backpacks.events.inventory.*;
+import br.com.backpacks.events.upgrades.*;
 import br.com.backpacks.recipes.RecipesNamespaces;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
 import br.com.backpacks.utils.BackPackManager;
@@ -85,10 +93,9 @@ public final class Main extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         setMain(this);
-        String version = Bukkit.getBukkitVersion().split("-")[0];
-        Constants.VERSION = version;
-        if(!version.contains("1.20")){
-            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§cThis plugin at the moment is only compatible with 1.20.x versions.");
+        Constants.VERSION = Bukkit.getMinecraftVersion();
+        if(!Constants.VERSION.contains("1.20") && !Constants.VERSION.contains("1.19") && !Constants.VERSION.contains("1.18")){
+            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§cThis plugin at the moment is only compatible with 1.20.x, 1.19.x, 1.18.x versions.");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
@@ -108,7 +115,51 @@ public final class Main extends JavaPlugin {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        threadBackpacks.registerAll();
+
+        //player
+        Bukkit.getPluginManager().registerEvents(new CraftBackpack(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new Fishing(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new FinishedSmelting(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new InteractOtherPlayerBackpack(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new AnvilRenameBackpack(), Main.getMain());
+
+        //backpack
+        Bukkit.getPluginManager().registerEvents(new BackpackInteract(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new BackpackBreak(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new BackpackPlace(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new OnClickBackpack(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new OnClickInConfigMenu(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new OnCloseBackpackConfigMenu(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new RenameBackpackChat(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new OpenBackpackOfTheBack(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new OnCloseBackpack(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new OnCloseUpgradeMenu(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new OnClickUpgradesMenu(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new IOMenu(), Main.getMain());
+
+        //others
+        Bukkit.getPluginManager().registerEvents(new HopperEvents(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new ConfigItemsEvents(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new ServerLoadEvent(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new BpList(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new EntityDeathEvent(), Main.getMain());
+
+        //Upgrades
+        Bukkit.getPluginManager().registerEvents(new CraftingTable(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new Furnace(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new Jukebox(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new AutoFeed(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new VillagersFollow(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new Collector(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new Tanks(), Main.getMain());
+
+        Main.getMain().getCommand("bpgive").setExecutor(new BpGive());
+        Main.getMain().getCommand("bpgiveid").setExecutor(new BpGiveID());
+        Main.getMain().getCommand("bplist").setExecutor(new BpList());
+        Main.getMain().getCommand("bpbackup").setExecutor(new BpBackup());
+        Main.getMain().getCommand("bpreload").setExecutor(new BpReload());
+        Main.getMain().getCommand("bpupgbackpack").setExecutor(new BpUpgBackpack());
+        Main.getMain().getCommand("bpupgive").setExecutor(new BpUpGive());
         registerRecipes();
         Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Hello from BackPacks");
 

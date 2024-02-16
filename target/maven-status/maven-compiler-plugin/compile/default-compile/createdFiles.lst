@@ -41,6 +41,7 @@ br/com/backpacks/yaml/YamlUtils$1.class
 br/com/backpacks/events/inventory/OnClickInConfigMenu$4.class
 br/com/backpacks/events/inventory/OnClickBackpack.class
 br/com/backpacks/events/upgrades/AutoFeed$2.class
+br/com/backpacks/utils/others/JukeboxUtils$Sound.class
 br/com/backpacks/utils/UpgradeManager$1.class
 br/com/backpacks/events/backpacks/RenameBackpackChat.class
 br/com/backpacks/events/upgrades/Jukebox$1.class
@@ -49,11 +50,12 @@ br/com/backpacks/recipes/UpgradesRecipesNamespaces.class
 br/com/backpacks/events/upgrades/Furnace$4.class
 br/com/backpacks/events/inventory/OnClickInConfigMenu$3.class
 br/com/backpacks/upgrades/FurnaceUpgrade$1.class
+br/com/backpacks/utils/others/FurnaceUtils.class
 br/com/backpacks/utils/RandomBackpackBuilder.class
 br/com/backpacks/utils/BackpackType.class
 br/com/backpacks/events/upgrades/Jukebox.class
-br/com/backpacks/events/upgrades/Furnace$Fuel.class
 br/com/backpacks/events/upgrades/Furnace$3.class
+br/com/backpacks/utils/others/JukeboxUtils.class
 br/com/backpacks/events/entity/EntityDeathEvent.class
 br/com/backpacks/yaml/YamlUtils.class
 br/com/backpacks/commands/BpUpGive.class
@@ -77,6 +79,7 @@ br/com/backpacks/commands/BpUpGive$1.class
 br/com/backpacks/events/inventory/OnCloseBackpackConfigMenu$1.class
 br/com/backpacks/events/entity/FinishedSmelting.class
 br/com/backpacks/events/inventory/OnCloseUpgradeMenu.class
+br/com/backpacks/utils/others/FurnaceUtils$Material.class
 br/com/backpacks/events/upgrades/Furnace$1.class
 br/com/backpacks/upgrades/FurnaceUpgrade.class
 br/com/backpacks/events/entity/CraftBackpack.class
@@ -91,6 +94,7 @@ br/com/backpacks/events/backpacks/BackpackPlace.class
 br/com/backpacks/utils/inventory/ItemCreator.class
 br/com/backpacks/events/inventory/OnClickInConfigMenu$7.class
 br/com/backpacks/events/ServerLoadEvent.class
+br/com/backpacks/utils/others/FurnaceUtils$Fuel.class
 br/com/backpacks/events/inventory/OnCloseBackpack.class
 br/com/backpacks/backup/ZipUtils.class
 br/com/backpacks/upgrades/VillagersFollowUpgrade.class

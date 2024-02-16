@@ -58,7 +58,7 @@ public class CraftBackpack implements Listener {
         }
 
         Player player = (Player) event.getWhoClicked();
-        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade())){
+        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade(), PersistentDataType.INTEGER)){
             ItemStack itemStack = event.getRecipe().getResult();
             ItemMeta meta = itemStack.getItemMeta();
             meta.getPersistentDataContainer().set(new UpgradesRecipesNamespaces().getUPGRADEID(), PersistentDataType.INTEGER, Main.backPackManager.getUpgradesIds() + 1);
@@ -69,15 +69,15 @@ public class CraftBackpack implements Listener {
         }
 
         int oldId = -1;
-        if(!event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack())) return;
+        if(!event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack(), PersistentDataType.INTEGER)) return;
 
-        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getFurnace())){
+        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getFurnace(), PersistentDataType.INTEGER)){
             player.discoverRecipe(new UpgradesRecipesNamespaces().getSMOKER());
             player.discoverRecipe(new UpgradesRecipesNamespaces().getBLASTFURNACE());
             return;
         }
 
-        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_LEATHER_BACKPACK())){
+        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_LEATHER_BACKPACK(), PersistentDataType.INTEGER)){
             int id = Main.backPackManager.getBackpackIds() + 1;
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_IRON_BACKPACK());
             player.discoverRecipe(new UpgradesRecipesNamespaces().getCraftingGrid());
@@ -91,7 +91,7 @@ public class CraftBackpack implements Listener {
             return;
         }
 
-        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_IRON_BACKPACK())){
+        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_IRON_BACKPACK(), PersistentDataType.INTEGER)){
             oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.IRON);
             if(oldId == -1) return;
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_GOLD_BACKPACK());
@@ -105,7 +105,7 @@ public class CraftBackpack implements Listener {
             return;
         }
 
-        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_GOLD_BACKPACK())){
+        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_GOLD_BACKPACK(), PersistentDataType.INTEGER)){
             oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.GOLD);
             if(oldId == -1) return;
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_LAPIS_BACKPACK());
@@ -119,7 +119,7 @@ public class CraftBackpack implements Listener {
             return;
         }
 
-        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_LAPIS_BACKPACK())){
+        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_LAPIS_BACKPACK(), PersistentDataType.INTEGER)){
             oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.LAPIS);
             if(oldId == -1) return;
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_AMETHYST_BACKPACK());
@@ -133,7 +133,7 @@ public class CraftBackpack implements Listener {
             return;
         }
 
-        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_AMETHYST_BACKPACK())){
+        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_AMETHYST_BACKPACK(), PersistentDataType.INTEGER)){
             oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.AMETHYST);
             if(oldId == -1) return;
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_DIAMOND_BACKPACK());
@@ -146,7 +146,7 @@ public class CraftBackpack implements Listener {
             return;
         }
 
-        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_DIAMOND_BACKPACK())){
+        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_DIAMOND_BACKPACK(), PersistentDataType.INTEGER)){
             oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.DIAMOND);
             if(oldId == -1) return;
             player.discoverRecipe(new RecipesNamespaces().getNAMESPACE_NETHERITE_BACKPACK());
@@ -159,7 +159,7 @@ public class CraftBackpack implements Listener {
             return;
         }
 
-        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_NETHERITE_BACKPACK())){
+        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_NETHERITE_BACKPACK(), PersistentDataType.INTEGER)){
             oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.NETHERITE);
             if(oldId == -1) return;
             updateResult(event, oldId);
@@ -174,13 +174,13 @@ public class CraftBackpack implements Listener {
     private static int checkBackpackInTheMatrix(CraftItemEvent event, int oldId, BackpackType type) {
         ItemStack backpack = event.getInventory().getItem(5);
 
-        if(backpack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack())){
+        if(backpack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack(), PersistentDataType.INTEGER)){
             oldId = backpack.getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
         }
 
         switch (type){
             case IRON -> {
-                if(!backpack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_LEATHER_BACKPACK())){
+                if(!backpack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_LEATHER_BACKPACK(), PersistentDataType.INTEGER)){
                     event.getWhoClicked().sendMessage(NOTCORRECTTYPE);
                     event.setCancelled(true);
                     return -1;
@@ -188,7 +188,7 @@ public class CraftBackpack implements Listener {
             }
 
             case GOLD -> {
-                if(!backpack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_IRON_BACKPACK())){
+                if(!backpack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_IRON_BACKPACK(), PersistentDataType.INTEGER)){
                     event.getWhoClicked().sendMessage(NOTCORRECTTYPE);
                     event.setCancelled(true);
                     return -1;
@@ -196,7 +196,7 @@ public class CraftBackpack implements Listener {
             }
 
             case LAPIS -> {
-                if(!backpack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_GOLD_BACKPACK())){
+                if(!backpack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_GOLD_BACKPACK(), PersistentDataType.INTEGER)){
                     event.getWhoClicked().sendMessage(NOTCORRECTTYPE);
                     event.setCancelled(true);
                     return -1;
@@ -204,7 +204,7 @@ public class CraftBackpack implements Listener {
             }
 
             case AMETHYST -> {
-                if(!backpack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_LAPIS_BACKPACK())){
+                if(!backpack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_LAPIS_BACKPACK(), PersistentDataType.INTEGER)){
                     event.getWhoClicked().sendMessage(NOTCORRECTTYPE);
                     event.setCancelled(true);
                     return -1;
@@ -212,7 +212,7 @@ public class CraftBackpack implements Listener {
             }
 
             case DIAMOND -> {
-                if(!backpack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_AMETHYST_BACKPACK())){
+                if(!backpack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_AMETHYST_BACKPACK(), PersistentDataType.INTEGER)){
                     event.getWhoClicked().sendMessage(NOTCORRECTTYPE);
                     event.setCancelled(true);
                     return -1;
@@ -220,7 +220,7 @@ public class CraftBackpack implements Listener {
             }
 
             case NETHERITE -> {
-                if(!backpack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_DIAMOND_BACKPACK())){
+                if(!backpack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_DIAMOND_BACKPACK(), PersistentDataType.INTEGER)){
                     event.getWhoClicked().sendMessage(NOTCORRECTTYPE);
                     event.setCancelled(true);
                     return -1;

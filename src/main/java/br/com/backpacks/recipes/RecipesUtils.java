@@ -19,7 +19,7 @@ public class RecipesUtils {
 
     public static BackPack getBackpackFromItem(ItemStack itemStack){
         ItemMeta meta = itemStack.getItemMeta();
-        if(!meta.getPersistentDataContainer().has(new RecipesNamespaces().isBackpack())) return null;
+        if(!meta.getPersistentDataContainer().has(new RecipesNamespaces().isBackpack(), PersistentDataType.INTEGER)) return null;
 
         return Main.backPackManager.getBackpackFromId(meta.getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
     }
@@ -37,7 +37,7 @@ public class RecipesUtils {
     }
 
     public static boolean isItemUpgrade(ItemStack itemStack){
-        return itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade());
+        return itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade(), PersistentDataType.INTEGER);
     }
 
     public static ItemStack getItemFromUpgrade(Upgrade upgrade) {
@@ -182,62 +182,62 @@ public class RecipesUtils {
     public static Upgrade getUpgradeFromItem(ItemStack itemStack) {
         int id = itemStack.getItemMeta().getPersistentDataContainer().get(new UpgradesRecipesNamespaces().getUPGRADEID(), PersistentDataType.INTEGER);
 
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getAutoFill())) {
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getAutoFill(), PersistentDataType.INTEGER)) {
             if (UpgradeManager.getUpgradeFromId(id) != null) return UpgradeManager.getUpgradeFromId(id);
             Main.backPackManager.getUpgradeHashMap().put(id, new Upgrade(UpgradeType.AUTOFILL, id));
             return Main.backPackManager.getUpgradeHashMap().get(id);
         }
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getAutoFeed())) {
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getAutoFeed(), PersistentDataType.INTEGER)) {
             if (UpgradeManager.getUpgradeFromId(id) != null) return ((AutoFeedUpgrade) UpgradeManager.getUpgradeFromId(id));
             Main.backPackManager.getUpgradeHashMap().put(id, new AutoFeedUpgrade(id));
             return Main.backPackManager.getUpgradeHashMap().get(id);
         }
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getFurnace())) {
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getFurnace(), PersistentDataType.INTEGER)) {
             if (UpgradeManager.getUpgradeFromId(id) != null) return ((FurnaceUpgrade) UpgradeManager.getUpgradeFromId(id));
             Main.backPackManager.getUpgradeHashMap().put(id, new FurnaceUpgrade(UpgradeType.FURNACE, id));
             return Main.backPackManager.getUpgradeHashMap().get(id);
         }
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getBLASTFURNACE())) {
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getBLASTFURNACE(), PersistentDataType.INTEGER)) {
             if (UpgradeManager.getUpgradeFromId(id) != null) return ((FurnaceUpgrade) UpgradeManager.getUpgradeFromId(id));
             Main.backPackManager.getUpgradeHashMap().put(id, new FurnaceUpgrade(UpgradeType.BLAST_FURNACE, id));
             return Main.backPackManager.getUpgradeHashMap().get(id);
         }
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getSMOKER())) {
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getSMOKER(), PersistentDataType.INTEGER)) {
             if (UpgradeManager.getUpgradeFromId(id) != null) return ((FurnaceUpgrade) UpgradeManager.getUpgradeFromId(id));
             Main.backPackManager.getUpgradeHashMap().put(id, new FurnaceUpgrade(UpgradeType.SMOKER, id));
             return Main.backPackManager.getUpgradeHashMap().get(id);
         }
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getCraftingGrid())) {
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getCraftingGrid(), PersistentDataType.INTEGER)) {
             if(UpgradeManager.getUpgradeFromId(id) != null) return UpgradeManager.getUpgradeFromId(id);
             Main.backPackManager.getUpgradeHashMap().put(id, new Upgrade(UpgradeType.CRAFTING, id));
             return Main.backPackManager.getUpgradeHashMap().get(id);
         }
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getJukebox())){
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getJukebox(), PersistentDataType.INTEGER)){
             if(UpgradeManager.getUpgradeFromId(id) != null) return ((JukeboxUpgrade) UpgradeManager.getUpgradeFromId(id));
             Main.backPackManager.getUpgradeHashMap().put(id, new JukeboxUpgrade(id));
             return Main.backPackManager.getUpgradeHashMap().get(id);
         }
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getVillagersFollow())){
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getVillagersFollow(), PersistentDataType.INTEGER)){
             if(UpgradeManager.getUpgradeFromId(id) != null) return ((VillagersFollowUpgrade) UpgradeManager.getUpgradeFromId(id));
             Main.backPackManager.getUpgradeHashMap().put(id, new VillagersFollowUpgrade(id));
             return Main.backPackManager.getUpgradeHashMap().get(id);
         }
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getLiquidTank())) {
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getLiquidTank(), PersistentDataType.INTEGER)) {
             if(UpgradeManager.getUpgradeFromId(id) != null) return (TanksUpgrade) UpgradeManager.getUpgradeFromId(id);
             Main.backPackManager.getUpgradeHashMap().put(id, new TanksUpgrade(id));
             return Main.backPackManager.getUpgradeHashMap().get(id);
         }
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getENCAPSULATE())) {
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getENCAPSULATE(), PersistentDataType.INTEGER)) {
             if(UpgradeManager.getUpgradeFromId(id) != null) return UpgradeManager.getUpgradeFromId(id);
             Main.backPackManager.getUpgradeHashMap().put(id, new Upgrade(UpgradeType.ENCAPSULATE, id));
             return Main.backPackManager.getUpgradeHashMap().get(id);
         }
-        if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getCOLLECTOR())){
+        if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getCOLLECTOR(), PersistentDataType.INTEGER)){
             if(UpgradeManager.getUpgradeFromId(id) != null) return ((CollectorUpgrade) UpgradeManager.getUpgradeFromId(id));
             Main.backPackManager.getUpgradeHashMap().put(id, new CollectorUpgrade(id));
             return Main.backPackManager.getUpgradeHashMap().get(id);
         }
-        if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getUNBREAKING())){
+        if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().getUNBREAKING(), PersistentDataType.INTEGER)){
             if(UpgradeManager.getUpgradeFromId(id) != null) return  UpgradeManager.getUpgradeFromId(id);
             Main.backPackManager.getUpgradeHashMap().put(id, new Upgrade(UpgradeType.UNBREAKABLE, id));
             return Main.backPackManager.getUpgradeHashMap().get(id);

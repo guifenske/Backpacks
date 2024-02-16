@@ -1,7 +1,7 @@
 name: Backpacks
 version: '${project.version}'
 main: br.com.backpacks.Main
-api-version: '1.20'
+api-version: '1.18'
 
 commands:
   bpgive:

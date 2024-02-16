@@ -12,6 +12,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
@@ -330,14 +331,14 @@ public class BackPack extends UpgradeManager {
     public ItemStack getFirstItem(){
         for(ItemStack itemStack : firstPage){
             if(itemStack == null) continue;
-            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM())) continue;
+            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
             return itemStack;
         }
 
         if(getSecondPage() != null){
             for(ItemStack itemStack : secondPage){
                 if(itemStack == null) continue;
-                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM())) continue;
+                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
                 return itemStack;
             }
         }

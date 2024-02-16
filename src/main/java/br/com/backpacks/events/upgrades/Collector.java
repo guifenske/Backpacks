@@ -22,7 +22,7 @@ import java.util.List;
 public class Collector implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void onPickUp(PlayerAttemptPickupItemEvent event){
-        if(!event.getPlayer().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) return;
+        if(!event.getPlayer().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
         BackPack backPack = Main.backPackManager.getBackpackFromId(event.getPlayer().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER));
         if(backPack == null) return;
         List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.COLLECTOR);

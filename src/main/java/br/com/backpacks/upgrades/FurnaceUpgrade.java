@@ -110,7 +110,7 @@ public class FurnaceUpgrade extends Upgrade {
     public void stopTickingUpgrade() {
         if(Furnace.shouldTick.contains(getId())) Furnace.shouldTick.remove(getId());
         setCookTime(0);
-        Furnace.taskMap.get(getId()).cancel();
+        if(Furnace.taskMap.containsKey(getId())) Furnace.taskMap.get(getId()).cancel();
         Furnace.taskMap.remove(getId());
         setBoundFakeBlock(null);
         clearSubTickTask();

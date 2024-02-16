@@ -31,7 +31,7 @@ public class VillagersFollow implements Listener {
     public static void tick() {
         Main.getMain().getThreadBackpacks().getExecutor().scheduleAtFixedRate(() ->{
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (!player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) continue;
+                if (!player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER)) continue;
                 if (!player.getInventory().getItemInMainHand().getType().equals(Material.EMERALD_BLOCK) && !player.getInventory().getItemInOffHand().getType().equals(Material.EMERALD_BLOCK)) {
                     continue;
                 }

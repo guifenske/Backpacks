@@ -33,7 +33,7 @@ public class AutoFeed implements Listener {
     @EventHandler
     private static void tick(FoodLevelChangeEvent event){
         Player player = (Player) event.getEntity();
-        if(!player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) return;
+        if(!player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
         BackPack backPack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER));
         List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.AUTOFEED);
         if(list.isEmpty()) return;

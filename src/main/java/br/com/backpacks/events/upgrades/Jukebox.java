@@ -6,6 +6,7 @@ import br.com.backpacks.upgrades.JukeboxUpgrade;
 import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.BackpackAction;
 import br.com.backpacks.utils.UpgradeType;
+import br.com.backpacks.utils.others.JukeboxUtils;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -15,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -32,7 +34,7 @@ public class Jukebox implements Listener {
 
     public static net.kyori.adventure.sound.Sound getSoundFromItem(@NotNull ItemStack itemStack){
         org.bukkit.Sound bukkitSound = org.bukkit.Sound.valueOf(itemStack.getType().name());
-        return Sound.sound().type(bukkitSound).seed(-69).source(Sound.Source.VOICE).volume(1).pitch(1).build();
+        return Sound.sound(bukkitSound, Sound.Source.VOICE, 1, 1);
     }
 
     public static void playSound(JukeboxUpgrade upgrade, Entity entity) {
@@ -67,7 +69,7 @@ public class Jukebox implements Listener {
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
         if(backPack.getUpgradesFromType(UpgradeType.JUKEBOX).isEmpty()) return;
         JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
-        boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK()) || backPack.isBlock();
+        boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER) || backPack.isBlock();
 
         switch (event.getRawSlot()){
             case 9 ->{
@@ -153,7 +155,7 @@ public class Jukebox implements Listener {
 
 
     public static int durationFromDisc(@NotNull ItemStack disc){
-        switch (disc.getType()){
+        switch (JukeboxUtils.Sound.valueOf(disc.getType().name())){
             case MUSIC_DISC_13, MUSIC_DISC_5 -> {
                 return 178;
             }

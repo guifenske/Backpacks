@@ -29,7 +29,7 @@ public class EntityDeathEvent implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     private void onPlayerDeath(org.bukkit.event.entity.PlayerDeathEvent event){
-        if(!event.getPlayer().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) return;
+        if(!event.getPlayer().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
         BackPack backpack = Main.backPackManager.getBackpackFromId(event.getPlayer().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER));
         Player player = event.getPlayer();
         Location location = safeLocation(player.getLocation().toBlockLocation());
@@ -37,7 +37,6 @@ public class EntityDeathEvent implements Listener {
         location.setYaw(0.0f);
         location.setPitch(0.0f);
         location.getBlock().setType(Material.BARREL);
-        location.getBlock().tick();
         //we need to do this to trigger the hopper event
         Barrel barrel = (Barrel) location.getBlock().getState();
         barrel.getInventory().addItem(new ItemStack(Material.STICK));

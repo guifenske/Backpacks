@@ -10,6 +10,7 @@
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/backpacks/OpenBackpackOfTheBack.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/BackPackManager.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/OnClickInConfigMenu.java
+/run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/others/FurnaceUtils.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/upgrades/VillagersFollowUpgrade.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/Furnace.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/PlayerJoinLeaveEvent.java
@@ -54,6 +55,7 @@
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/FinishedSmelting.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/RandomBackpackBuilder.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/Constants.java
+/run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/others/JukeboxUtils.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/CraftingTable.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/backup/ZipUtils.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/HopperEvents.java

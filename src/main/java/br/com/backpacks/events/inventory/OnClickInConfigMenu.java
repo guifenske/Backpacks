@@ -161,7 +161,6 @@ public class OnClickInConfigMenu implements Listener {
             //rename backpack
             case 52 -> {
                 backPack.getViewersIds().remove(player.getUniqueId());
-                backPack.setOpen(false);
                 if(backPack.getViewersIds().isEmpty()){
                     if(backPack.isBlock()){
                         Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
