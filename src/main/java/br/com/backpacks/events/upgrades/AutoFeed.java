@@ -39,8 +39,7 @@ public class AutoFeed implements Listener {
         if(list.isEmpty()) return;
         AutoFeedUpgrade upgrade = (AutoFeedUpgrade) list.get(0);
 
-        if(upgrade.isEnabled()){
-            if(upgrade.getItems() == null || upgrade.getItems().isEmpty()) return;
+        if(upgrade.isEnabled() && !upgrade.getItems().isEmpty()){
             int need = 20 - player.getFoodLevel();
             if(event.getFoodLevel() < 20){
                 for(int index : upgrade.getItems().keySet()){

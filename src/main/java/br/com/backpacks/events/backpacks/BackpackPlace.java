@@ -34,6 +34,15 @@ public class BackpackPlace implements Listener {
             BackPack backPack = Main.backPackManager.getBackpackFromId(itemData.get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
             if (backPack == null) return;
             //enforce removal of the item from the player's inventory
+            //for some reason, Inventory.remove() doesn't remove from offHand slot.
+            if(event.getPlayer().getInventory().getItemInOffHand().hasItemMeta() && event.getPlayer().getInventory().getItemInOffHand().getType().equals(Material.BARREL)){
+                if(event.getPlayer().getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack(), PersistentDataType.INTEGER)){
+                    int id = event.getPlayer().getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
+                    if(backPack.getId() == id){
+                        event.getPlayer().getInventory().setItemInOffHand(null);
+                    }
+                }
+            }
             event.getPlayer().getInventory().remove(event.getItemInHand());
             backPack.setIsBlock(true);
             backPack.setOwner(null);

@@ -94,7 +94,7 @@ public final class Main extends JavaPlugin {
         saveDefaultConfig();
         setMain(this);
         Constants.VERSION = Bukkit.getMinecraftVersion();
-        if(!Constants.VERSION.contains("1.20") && !Constants.VERSION.contains("1.19") && !Constants.VERSION.contains("1.18")){
+        if(!Constants.SUPPORTED_VERSIONS.contains(Constants.VERSION)){
             Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§cThis plugin at the moment is only compatible with 1.20.x, 1.19.x, 1.18.x versions.");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
@@ -113,6 +113,8 @@ public final class Main extends JavaPlugin {
         try {
             threadBackpacks = new ThreadBackpacks();
         } catch (IOException e) {
+            Main.getMain().getLogger().severe("Something went wrong, please report to the developer, disabling plugin.");
+            Bukkit.getPluginManager().disablePlugin(this);
             throw new RuntimeException(e);
         }
 
@@ -183,6 +185,7 @@ public final class Main extends JavaPlugin {
         try {
             threadBackpacks.saveAll();
         } catch (IOException e) {
+            Main.getMain().getLogger().severe("Something went wrong, please report to the developer!");
             throw new RuntimeException(e);
         }
 
@@ -191,6 +194,7 @@ public final class Main extends JavaPlugin {
                 try {
                     lock.wait();
                 } catch (InterruptedException e) {
+                    Main.getMain().getLogger().severe("Something went wrong, please report to the developer!");
                     throw new RuntimeException(e);
                 }
             }
