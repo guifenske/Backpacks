@@ -73,7 +73,7 @@ public class Furnace implements Listener {
                     if(upgrade.getFuel() != null && fuel.equals(FurnaceUtils.Fuel.NOTHING)){
                         this.cancel();
                         upgrade.setCookTime(0);
-                        upgrade.getSubTickTask().cancel();
+                        if(upgrade.getSubTickTask() != null) upgrade.getSubTickTask().cancel();
                         upgrade.setBoundFakeBlock(null);
                         Main.getMain().getLogger().severe("Furnace " + upgrade.getId() + " has a invalid fuel! Fuel = " + upgrade.getFuel() + ", if this is a bug or a valid fuel, report to the developer!");
                         return;

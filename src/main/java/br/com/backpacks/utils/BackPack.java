@@ -417,4 +417,21 @@ public class BackPack extends UpgradeManager {
 
         return list;
     }
+
+    public List<ItemStack> getBackpackItems(){
+        List<ItemStack> list = new ArrayList<>();
+        for(ItemStack itemStack : firstPage){
+            if(itemStack == null) continue;
+            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
+            list.add(itemStack);
+        }
+        if(secondPage != null){
+            for(ItemStack itemStack : secondPage){
+                if(itemStack == null) continue;
+                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
+                list.add(itemStack);
+            }
+        }
+        return list;
+    }
 }

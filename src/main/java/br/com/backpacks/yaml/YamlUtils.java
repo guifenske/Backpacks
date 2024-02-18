@@ -85,11 +85,6 @@ public final class YamlUtils {
                     AutoFeedUpgrade autoFeedUpgrade = (AutoFeedUpgrade) upgrade;
                     Main.getMain().debugMessage("Saving auto feed upgrade " + autoFeedUpgrade.getId());
                     config.set(upgrade.getId() + ".autofeed.enabled", autoFeedUpgrade.isEnabled());
-                    if(!autoFeedUpgrade.getItems().isEmpty()){
-                        for(Map.Entry<Integer, ItemStack> item : autoFeedUpgrade.getItems().entrySet()){
-                            config.set(upgrade.getId() + ".autofeed.items." + item.getKey(), item.getValue());
-                        }
-                    }
                 }
                 case VILLAGERSFOLLOW -> {
                     VillagersFollowUpgrade followUpgrade = (VillagersFollowUpgrade) upgrade;
@@ -196,14 +191,7 @@ public final class YamlUtils {
                     if(config.isSet(i + ".autofeed.enabled")){
                         upgrade.setEnabled(config.getBoolean(i + ".autofeed.enabled"));
                     }
-                    if(config.isSet(i + ".autofeed.items")){
-                        Set<String> keys = config.getConfigurationSection(i + ".autofeed.items").getKeys(false);
-                        for(String s : keys){
-                            upgrade.getInventory().setItem(Integer.parseInt(s), config.getItemStack(i + ".autofeed.items." + s));
-                        }
-                    }
                     upgrade.updateInventory();
-
                     Main.debugMessage("loading auto feed: " + i);
                     Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
                 }
