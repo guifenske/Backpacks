@@ -124,7 +124,7 @@ public class JukeboxUpgrade extends Upgrade {
     }
 
     @Override
-    public boolean canReceiveInput(@NotNull ItemStack itemStack) {
+    public boolean canReceiveSpecificItemAsInput(@NotNull ItemStack itemStack) {
         return Jukebox.checkDisk(itemStack);
     }
 

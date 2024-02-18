@@ -25,7 +25,7 @@ public class TanksUpgrade extends Upgrade {
     }
 
     @Override
-    public boolean canReceiveInput(@NotNull ItemStack itemStack) {
+    public boolean canReceiveSpecificItemAsInput(@NotNull ItemStack itemStack) {
         return itemStack.getType().toString().contains("BUCKET");
     }
 

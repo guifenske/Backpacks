@@ -30,6 +30,11 @@ public class HopperEvents implements Listener {
             BackPack backPack = Main.backPackManager.getBackpackFromLocation(destinationLocation);
             if(backPack.getInputUpgrade() != -1){
                 Upgrade upgrade = UpgradeManager.getUpgradeFromId(backPack.getInputUpgrade());
+                if(!backPack.getUpgradesIds().contains(backPack.getInputUpgrade()) || upgrade == null){
+                    backPack.setInputUpgrade(-1);
+                    event.setCancelled(true);
+                    return;
+                }
                 //special case of furnace upgrade that have 2 ways of input
                 if(upgrade instanceof FurnaceUpgrade){
                     if(sideOfInput.equals(BlockFace.DOWN)){
@@ -54,7 +59,7 @@ public class HopperEvents implements Listener {
                     return;
                 }
 
-                if(!upgrade.canReceiveInput(event.getItem().asOne())){
+                if(!upgrade.canReceiveSpecificItemAsInput(event.getItem().asOne())){
                     event.setCancelled(true);
                     return;
                 }
@@ -79,6 +84,12 @@ public class HopperEvents implements Listener {
 
             if(backPack.getOutputUpgrade() != -1){
                 Upgrade upgrade = UpgradeManager.getUpgradeFromId(backPack.getOutputUpgrade());
+                if(!backPack.getUpgradesIds().contains(backPack.getInputUpgrade()) || upgrade == null){
+                    backPack.setOutputUpgrade(-1);
+                    event.setCancelled(true);
+                    return;
+                }
+
                 if(upgrade.getFirstOutputItem() == null){
                     return;
                 }
