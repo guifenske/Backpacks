@@ -1,6 +1,7 @@
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/upgrades/FurnaceUpgrade.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/AutoFeed.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/OnClickBackpack.java
+/run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/OnDimensionSwitch.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/ServerLoadEvent.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/Main.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/recipes/RecipesUtils.java

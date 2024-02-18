@@ -4,6 +4,7 @@ import br.com.backpacks.backup.BackupHandler;
 import br.com.backpacks.commands.*;
 import br.com.backpacks.events.ConfigItemsEvents;
 import br.com.backpacks.events.HopperEvents;
+import br.com.backpacks.events.OnDimensionSwitch;
 import br.com.backpacks.events.ServerLoadEvent;
 import br.com.backpacks.events.backpacks.*;
 import br.com.backpacks.events.entity.*;
@@ -145,6 +146,7 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ServerLoadEvent(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new BpList(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new EntityDeathEvent(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new OnDimensionSwitch(), Main.getMain());
 
         //Upgrades
         Bukkit.getPluginManager().registerEvents(new CraftingTable(), Main.getMain());

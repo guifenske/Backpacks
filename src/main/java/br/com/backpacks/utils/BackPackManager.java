@@ -1,5 +1,6 @@
 package br.com.backpacks.utils;
 
+import br.com.backpacks.Main;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -83,7 +84,8 @@ public class BackPackManager {
 
     public BackPack getBackpackFromId(int id) {
         if(backpacks.containsKey(id)) return backpacks.get(id);
-        throw new NullPointerException("Backpack with id " + id + " not found");
+        Main.getMain().getLogger().severe("Backpack with id " + id + " not found!");
+        return null;
     }
 
     public void setBackpacks(ConcurrentHashMap<Integer, BackPack> backpacks) {

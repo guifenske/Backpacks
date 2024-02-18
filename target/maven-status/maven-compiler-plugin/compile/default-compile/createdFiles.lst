@@ -36,6 +36,7 @@ br/com/backpacks/events/inventory/OnClickInConfigMenu$5.class
 br/com/backpacks/recipes/RecipesNamespaces.class
 br/com/backpacks/events/upgrades/Collector.class
 br/com/backpacks/UpdateChecker.class
+br/com/backpacks/events/OnDimensionSwitch.class
 br/com/backpacks/recipes/RecipesUtils$1.class
 br/com/backpacks/yaml/YamlUtils$1.class
 br/com/backpacks/events/inventory/OnClickInConfigMenu$4.class
