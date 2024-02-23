@@ -16,7 +16,6 @@ br/com/backpacks/utils/BackpackAction.class
 br/com/backpacks/events/backpacks/OpenBackpackOfTheBack.class
 br/com/backpacks/events/inventory/OnClickInConfigMenu$2.class
 br/com/backpacks/backup/ScheduledBackup.class
-br/com/backpacks/commands/BpGiveID.class
 br/com/backpacks/utils/BackpackAction$Action.class
 br/com/backpacks/events/upgrades/Furnace$2.class
 br/com/backpacks/utils/UpgradeManager.class

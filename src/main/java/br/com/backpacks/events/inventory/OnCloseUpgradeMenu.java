@@ -22,7 +22,7 @@ public class OnCloseUpgradeMenu implements Listener {
 
     @EventHandler
     private void onClose(InventoryCloseEvent event){
-        if(BackpackAction.getAction((Player) event.getPlayer()) != BackpackAction.Action.UPGMENU) return;
+        if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.UPGMENU)) return;
 
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         if(backPack == null) return;
@@ -62,11 +62,11 @@ public class OnCloseUpgradeMenu implements Listener {
         }
 
         //stop ticking upgrades when not in the backpack
-        if(!backPack.getUpgrades().isEmpty()){
+        if(!backPack.getBackpackUpgrade().isEmpty()){
             if(newUpgrades.isEmpty()){
                 backPack.stopTickingAllUpgrades();
             }   else{
-                for(Upgrade upgrade : backPack.getUpgrades()){
+                for(Upgrade upgrade : backPack.getBackpackUpgrade()){
                     //was removed
                     if(!newUpgradesIds.contains(upgrade.getId())){
                         backPack.stopTickingUpgrade(upgrade.getId());
@@ -75,9 +75,10 @@ public class OnCloseUpgradeMenu implements Listener {
             }
         }
 
-        backPack.setUpgrades(newUpgrades);
+        backPack.setBackpackUpgrade(newUpgrades);
         InventoryBuilder.updateConfigInv(backPack);
         InventoryBuilder.updateEditIOInv(backPack);
+        BackpackAction.clearPlayerActions(event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

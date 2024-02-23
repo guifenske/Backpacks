@@ -103,7 +103,7 @@ public class Furnace implements Listener {
 
     @EventHandler
     private void onClick(InventoryClickEvent event){
-        if(!BackpackAction.getAction((Player) event.getWhoClicked()).equals(BackpackAction.Action.UPGFURNACE)) return;
+        if(!BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.UPGFURNACE)) return;
         Player player = (Player) event.getWhoClicked();
 
         if(event.getRawSlot() == 2){
@@ -145,7 +145,7 @@ public class Furnace implements Listener {
 
     @EventHandler
     private void onClose(InventoryCloseEvent event){
-        if(!BackpackAction.getAction((Player) event.getPlayer()).equals(BackpackAction.Action.UPGFURNACE)) return;
+        if(!BackpackAction.getActions((Player) event.getPlayer()).contains(BackpackAction.Action.UPGFURNACE)) return;
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         Player player = (Player) event.getPlayer();
 
@@ -167,6 +167,7 @@ public class Furnace implements Listener {
             currentFurnace.remove(player.getUniqueId());
         }
 
+        BackpackAction.clearPlayerActions(player);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

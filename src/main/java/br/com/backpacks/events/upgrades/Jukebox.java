@@ -60,7 +60,7 @@ public class Jukebox implements Listener {
 
     @EventHandler
     private void onClick(InventoryClickEvent event){
-        if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGJUKEBOX)) return;
+        if(!BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.UPGJUKEBOX)) return;
         if(blankSlots.contains(event.getRawSlot())){
             event.setCancelled(true);
             return;
@@ -124,7 +124,7 @@ public class Jukebox implements Listener {
 
     @EventHandler
     private void onClose(InventoryCloseEvent event){
-        if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGJUKEBOX)) return;
+        if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.UPGJUKEBOX)) return;
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
         for(int i : discsSlots){
@@ -148,6 +148,7 @@ public class Jukebox implements Listener {
             else stopSound (event.getPlayer(), upgrade);
         }
 
+        BackpackAction.clearPlayerActions(event.getPlayer());
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
             backPack.open((Player) event.getPlayer());
         }, 1L);

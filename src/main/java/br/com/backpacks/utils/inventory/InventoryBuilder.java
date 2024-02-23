@@ -74,8 +74,8 @@ public class InventoryBuilder {
                     inv.setItem(i, loremIpsum);
                 }
 
-                if(!backPack.getUpgrades().isEmpty()) {
-                    List<Upgrade> upgrades = backPack.getUpgrades();
+                if(!backPack.getBackpackUpgrade().isEmpty()) {
+                    List<Upgrade> upgrades = backPack.getBackpackUpgrade();
 
                     int i = 0;
                     for(Upgrade upgrade : upgrades) {
@@ -121,8 +121,8 @@ public class InventoryBuilder {
                 }
 
                 int i = 0;
-                List<Upgrade> upgrades = backPack.getUpgrades();
-                if (!backPack.getUpgrades().isEmpty()) {
+                List<Upgrade> upgrades = backPack.getBackpackUpgrade();
+                if (!backPack.getBackpackUpgrade().isEmpty()) {
                     for (Upgrade upgrade : upgrades) {
                         inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));
                         i++;
@@ -142,8 +142,8 @@ public class InventoryBuilder {
                 }
 
                 int i = 0;
-                List<Upgrade> upgrades = backPack.getUpgrades();
-                if (!backPack.getUpgrades().isEmpty()) {
+                List<Upgrade> upgrades = backPack.getBackpackUpgrade();
+                if (!backPack.getBackpackUpgrade().isEmpty()) {
                     for (Upgrade upgrade : upgrades) {
                         if(!upgrade.isAdvanced()) continue;
                         inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));
@@ -184,8 +184,8 @@ public class InventoryBuilder {
             inv.setItem(i, loremIpsum);
         }
 
-        if(!backPack.getUpgrades().isEmpty()) {
-            List<Upgrade> upgrades = backPack.getUpgrades();
+        if(!backPack.getBackpackUpgrade().isEmpty()) {
+            List<Upgrade> upgrades = backPack.getBackpackUpgrade();
 
             int i = 0;
             for(Upgrade upgrade : upgrades) {
@@ -231,8 +231,8 @@ public class InventoryBuilder {
         }
 
         int i = 0;
-        List<Upgrade> upgrades = backPack.getUpgrades();
-        if (!backPack.getUpgrades().isEmpty()) {
+        List<Upgrade> upgrades = backPack.getBackpackUpgrade();
+        if (!backPack.getBackpackUpgrade().isEmpty()) {
             for (Upgrade upgrade : upgrades) {
                 inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));
                 i++;
@@ -252,8 +252,8 @@ public class InventoryBuilder {
         }
 
         int i = 0;
-        List<Upgrade> upgrades = backPack.getUpgrades();
-        if (!backPack.getUpgrades().isEmpty()) {
+        List<Upgrade> upgrades = backPack.getBackpackUpgrade();
+        if (!backPack.getBackpackUpgrade().isEmpty()) {
             for (Upgrade upgrade : upgrades) {
                 if(!upgrade.isAdvanced()) continue;
                 inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));

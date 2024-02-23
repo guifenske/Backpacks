@@ -8,6 +8,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class PlayerJoinLeaveEvent implements Listener {
     @EventHandler
     private void onLeave(PlayerQuitEvent event){
-        BackpackAction.removeAction(event.getPlayer());
+        BackpackAction.clearPlayerActions(event.getPlayer());
     }
 }

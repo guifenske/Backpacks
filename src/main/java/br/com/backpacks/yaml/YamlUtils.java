@@ -4,6 +4,7 @@ import br.com.backpacks.Main;
 import br.com.backpacks.upgrades.*;
 import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.Upgrade;
+import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
@@ -46,7 +47,7 @@ public final class YamlUtils {
             if(backPack.getOwner() != null){
                 config.set(backPack.getId() + ".owner", backPack.getOwner().toString());
             }
-            if (backPack.getUpgrades() != null && !backPack.getUpgrades().isEmpty()) {
+            if (backPack.getBackpackUpgrade() != null && !backPack.getBackpackUpgrade().isEmpty()) {
                 serializeUpgrades(config, backPack);
             }
         }
@@ -58,7 +59,7 @@ public final class YamlUtils {
         File file = new File(path);
         YamlConfiguration config = new YamlConfiguration();
 
-        for(Upgrade upgrade : Main.backPackManager.getUpgradeHashMap().values()){
+        for(Upgrade upgrade : UpgradeManager.getUpgrades().values()){
             config.set(upgrade.getId() + ".type", upgrade.getType().toString());
             UpgradeType type = upgrade.getType();
             switch (type){
@@ -121,13 +122,14 @@ public final class YamlUtils {
     public static void loadUpgrades(){
         File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        UpgradeManager.lastUpgradeID = 0;
 
         for(String i : config.getKeys(false)){
             UpgradeType type = UpgradeType.valueOf(config.getString(i + ".type"));
             int id = Integer.parseInt(i);
-            if(Main.backPackManager.getUpgradesIds() == 0) Main.backPackManager.setUpgradesIds(id);
-            if(Main.backPackManager.getUpgradesIds() < id){
-                Main.backPackManager.setUpgradesIds(id);
+            if(UpgradeManager.lastUpgradeID == 0) UpgradeManager.lastUpgradeID = id;
+            if(UpgradeManager.lastUpgradeID < id){
+                UpgradeManager.lastUpgradeID = id;
             }
             switch (type){
                 case FURNACE, BLAST_FURNACE, SMOKER -> {
@@ -149,7 +151,7 @@ public final class YamlUtils {
                     }
                     Main.debugMessage("furnace loaded: " + i);
                     upgrade.updateInventory();
-                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
                 }
                 case JUKEBOX -> {
                     JukeboxUpgrade upgrade = new JukeboxUpgrade(id);
@@ -163,7 +165,7 @@ public final class YamlUtils {
                         upgrade.getInventory().setItem(13, upgrade.getSoundFromName(config.getString(i + ".jukebox.playing")));
                     }
                     Main.debugMessage("loading jukebox: " + i);
-                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
                 }
                 case COLLECTOR -> {
                     CollectorUpgrade upgrade = new CollectorUpgrade(id);
@@ -175,7 +177,7 @@ public final class YamlUtils {
                     }
                     Main.debugMessage("loading collector: " + i);
                     upgrade.updateInventory();
-                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
                 }
                 case VILLAGERSFOLLOW -> {
                     VillagersFollowUpgrade upgrade = new VillagersFollowUpgrade(id);
@@ -184,7 +186,7 @@ public final class YamlUtils {
                     }
                     Main.debugMessage("loading villagers follow: " + i);
                     upgrade.updateInventory();
-                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
                 }
                 case AUTOFEED -> {
                     AutoFeedUpgrade upgrade = new AutoFeedUpgrade(id);
@@ -193,21 +195,21 @@ public final class YamlUtils {
                     }
                     upgrade.updateInventory();
                     Main.debugMessage("loading auto feed: " + i);
-                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
                 }
                 case CRAFTING -> {
                     Upgrade upgrade = new Upgrade(UpgradeType.CRAFTING, id);
-                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
                     Main.debugMessage("loading crafting upgrade: " + i);
                 }
                 case ENCAPSULATE -> {
                     Upgrade upgrade = new Upgrade(UpgradeType.ENCAPSULATE, id);
-                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
                     Main.debugMessage("loading encapsulate upgrade: " + i);
                 }
                 case UNBREAKABLE -> {
                     Upgrade upgrade = new Upgrade(UpgradeType.UNBREAKABLE, id);
-                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
                     Main.debugMessage("loading unbreakable upgrade: " + i);
                 }
                 case LIQUIDTANK -> {
@@ -232,7 +234,7 @@ public final class YamlUtils {
                     }
 
                     Main.getMain().debugMessage("loading tank upgrade: " + i);
-                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
                 }
             }
         }
@@ -241,6 +243,7 @@ public final class YamlUtils {
     public static void loadBackpacks() {
         File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        Main.backPackManager.setBackpackIds(0);
 
         for (String i : config.getKeys(false)) {
             BackPack backPack = new BackPack().deserialize(config, i);
@@ -291,13 +294,13 @@ public final class YamlUtils {
     }
 
     public static void loadUpgrades(ConcurrentHashMap<Integer, Upgrade> hashMap){
-        Main.backPackManager.setUpgradesIds(0);
-        Main.backPackManager.setUpgradeHashMap(hashMap);
+        UpgradeManager.lastUpgradeID = 0;
+        UpgradeManager.setUpgrades(hashMap);
         if(hashMap.isEmpty()) return;
         for(Integer id : hashMap.keySet()){
-            if(Main.backPackManager.getUpgradesIds() == 0) Main.backPackManager.setUpgradesIds(id);
-            if(Main.backPackManager.getUpgradesIds() < id){
-                Main.backPackManager.setUpgradesIds(id);
+            if(UpgradeManager.lastUpgradeID == 0) UpgradeManager.lastUpgradeID = id;
+            if(UpgradeManager.lastUpgradeID < id){
+                UpgradeManager.lastUpgradeID = id;
             }
         }
     }

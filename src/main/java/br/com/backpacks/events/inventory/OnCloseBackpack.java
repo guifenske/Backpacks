@@ -6,7 +6,6 @@ import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.BackpackAction;
 import br.com.backpacks.utils.UpgradeType;
 import org.bukkit.block.Barrel;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -17,8 +16,8 @@ public class OnCloseBackpack implements Listener {
 
     @EventHandler
     private void OnClose(InventoryCloseEvent event){
-        if(!BackpackAction.getAction((Player) event.getPlayer()).equals(BackpackAction.Action.OPENED)) return;
-        BackpackAction.removeAction((Player) event.getPlayer());
+        if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.OPENED)) return;
+        BackpackAction.clearPlayerActions(event.getPlayer());
 
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         shouldRemoveBackpack(event, backPack);

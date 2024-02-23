@@ -4,6 +4,7 @@ import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.upgrades.*;
 import br.com.backpacks.utils.Upgrade;
+import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -43,46 +44,46 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
         Upgrade upgrade = null;
         switch (type){
             case CRAFTING -> {
-                upgrade = new Upgrade(CRAFTING, Main.backPackManager.getUpgradesIds() + 1);
+                upgrade = new Upgrade(CRAFTING, UpgradeManager.lastUpgradeID + 1);
             }
 
             case UNBREAKABLE -> {
-                upgrade = new Upgrade(UNBREAKABLE, Main.backPackManager.getUpgradesIds() + 1);
+                upgrade = new Upgrade(UNBREAKABLE, UpgradeManager.lastUpgradeID + 1);
             }
 
             case JUKEBOX -> {
-                upgrade = new JukeboxUpgrade(Main.backPackManager.getUpgradesIds() + 1);
+                upgrade = new JukeboxUpgrade(UpgradeManager.lastUpgradeID + 1);
             }
 
             case VILLAGERSFOLLOW -> {
-                upgrade = new VillagersFollowUpgrade(Main.backPackManager.getUpgradesIds() + 1);
+                upgrade = new VillagersFollowUpgrade(UpgradeManager.lastUpgradeID + 1);
             }
 
             case AUTOFEED -> {
-                upgrade = new AutoFeedUpgrade(Main.backPackManager.getUpgradesIds() + 1);
+                upgrade = new AutoFeedUpgrade(UpgradeManager.lastUpgradeID + 1);
             }
 
             case FURNACE -> {
-                upgrade = new FurnaceUpgrade(FURNACE, Main.backPackManager.getUpgradesIds() + 1);
+                upgrade = new FurnaceUpgrade(FURNACE, UpgradeManager.lastUpgradeID + 1);
             }
 
             case SMOKER -> {
-                upgrade = new FurnaceUpgrade(SMOKER, Main.backPackManager.getUpgradesIds() + 1);
+                upgrade = new FurnaceUpgrade(SMOKER, UpgradeManager.lastUpgradeID + 1);
             }
 
             case BLAST_FURNACE -> {
-                upgrade = new FurnaceUpgrade(BLAST_FURNACE, Main.backPackManager.getUpgradesIds() + 1);
+                upgrade = new FurnaceUpgrade(BLAST_FURNACE, UpgradeManager.lastUpgradeID + 1);
             }
 
             case LIQUIDTANK -> {
-                upgrade = new TanksUpgrade(Main.backPackManager.getUpgradesIds() + 1);
+                upgrade = new TanksUpgrade(UpgradeManager.lastUpgradeID + 1);
             }
             case ENCAPSULATE -> {
-                upgrade = new Upgrade(ENCAPSULATE, Main.backPackManager.getUpgradesIds() + 1);
+                upgrade = new Upgrade(ENCAPSULATE, UpgradeManager.lastUpgradeID + 1);
             }
 
             case COLLECTOR -> {
-                upgrade = new CollectorUpgrade(Main.backPackManager.getUpgradesIds() + 1);
+                upgrade = new CollectorUpgrade(UpgradeManager.lastUpgradeID + 1);
             }
 
             case AUTOFILL -> {
@@ -105,8 +106,8 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
                 player.sendMessage(Main.PREFIX + "Your inventory is full!");
                 return true;
             }
-            Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);
-            Main.backPackManager.setUpgradesIds(Main.backPackManager.getUpgradesIds() + 1);
+            UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
+            UpgradeManager.lastUpgradeID++;
             player.playSound(net.kyori.adventure.sound.Sound.sound(Sound.ENTITY_PLAYER_LEVELUP, net.kyori.adventure.sound.Sound.Source.MASTER, 1, 1));
             return true;
         }
@@ -122,8 +123,8 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        Main.backPackManager.getUpgradeHashMap().put(upgrade.getId(), upgrade);
-        Main.backPackManager.setUpgradesIds(Main.backPackManager.getUpgradesIds() + 1);
+        UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
+        UpgradeManager.lastUpgradeID++;
         player.playSound(net.kyori.adventure.sound.Sound.sound(Sound.ENTITY_PLAYER_LEVELUP, net.kyori.adventure.sound.Sound.Source.MASTER, 1, 1));
         return true;
     }

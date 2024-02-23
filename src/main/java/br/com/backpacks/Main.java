@@ -95,6 +95,13 @@ public final class Main extends JavaPlugin {
         saveDefaultConfig();
         setMain(this);
         Constants.VERSION = Bukkit.getMinecraftVersion();
+
+        if(Bukkit.getPluginManager().getPlugin("BKCommonLib") == null){
+            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§Plugin BKCommonLib not found, disabling plugin.");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+
         if(!Constants.SUPPORTED_VERSIONS.contains(Constants.VERSION)){
             Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§cThis plugin at the moment is only compatible with 1.20.x, 1.19.x, 1.18.x versions.");
             Bukkit.getPluginManager().disablePlugin(this);
@@ -158,7 +165,6 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new Tanks(), Main.getMain());
 
         Main.getMain().getCommand("bpgive").setExecutor(new BpGive());
-        Main.getMain().getCommand("bpgiveid").setExecutor(new BpGiveID());
         Main.getMain().getCommand("bplist").setExecutor(new BpList());
         Main.getMain().getCommand("bpbackup").setExecutor(new BpBackup());
         Main.getMain().getCommand("bpreload").setExecutor(new BpReload());

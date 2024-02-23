@@ -1,40 +1,49 @@
 package br.com.backpacks.utils;
 
-import br.com.backpacks.Main;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class UpgradeManager {
-    private List<Integer> upgrades = new ArrayList<>();
+    private List<Integer> backpackUpgrade = new ArrayList<>();
+    private static ConcurrentHashMap<Integer, Upgrade> upgrades = new ConcurrentHashMap<>();
+    public static int lastUpgradeID = 0;
 
-    public List<Integer> getUpgradesIds() {
+    public static void setUpgrades(ConcurrentHashMap<Integer, Upgrade> upgradesList){
+        upgrades = upgradesList;
+    }
+
+    public static ConcurrentHashMap<Integer, Upgrade> getUpgrades(){
         return upgrades;
     }
 
-    public List<Upgrade> getUpgrades() {
-        if(this.upgrades.isEmpty()) return new ArrayList<>();
+    public List<Integer> getUpgradesIds() {
+        return backpackUpgrade;
+    }
+
+    public List<Upgrade> getBackpackUpgrade() {
+        if(this.backpackUpgrade.isEmpty()) return new ArrayList<>();
         List<Upgrade> upgrades1 = new ArrayList<>();
-        for (Integer upgrade : upgrades) {
+        for (Integer upgrade : backpackUpgrade) {
             upgrades1.add(getUpgradeFromId(upgrade));
         }
         return upgrades1;
     }
 
     public void setUpgradesIds(List<Integer> list){
-        this.upgrades.clear();
-        this.upgrades.addAll(list);
+        this.backpackUpgrade.clear();
+        this.backpackUpgrade.addAll(list);
     }
 
-    public void setUpgrades(List<Upgrade> upgradeList){
-        this.upgrades.clear();
+    public void setBackpackUpgrade(List<Upgrade> upgradeList){
+        this.backpackUpgrade.clear();
         for(Upgrade upgrade : upgradeList) {
-            this.upgrades.add(upgrade.getId());
+            this.backpackUpgrade.add(upgrade.getId());
         }
     }
 
     public Boolean containsUpgradeType(UpgradeType upgradeType) {
-        for(Upgrade upgrade1 : getUpgrades()) {
+        for(Upgrade upgrade1 : getBackpackUpgrade()) {
             if(upgrade1.getType() == upgradeType) {
                 return true;
             }
@@ -44,13 +53,13 @@ public class UpgradeManager {
 
     //get the upgrade from all upgrades, in the backpack or not
     public static Upgrade getUpgradeFromId(int id) {
-        if(Main.backPackManager.getUpgradeHashMap().containsKey(id)) return Main.backPackManager.getUpgradeHashMap().get(id);
+        if(upgrades.containsKey(id)) return upgrades.get(id);
         return null;
     }
 
     public List<Upgrade> getUpgradesFromType(UpgradeType type){
         List<Upgrade> upgrades1 = new ArrayList<>();
-        for(Upgrade upgrade : getUpgrades()) {
+        for(Upgrade upgrade : getBackpackUpgrade()) {
             if(upgrade.getType() == type) {
                upgrades1.add(upgrade);
             }
@@ -69,7 +78,7 @@ public class UpgradeManager {
     }
 
     public void stopTickingAllUpgrades(){
-        for(Upgrade upgrade : getUpgrades()){
+        for(Upgrade upgrade : getBackpackUpgrade()){
             upgrade.stopTickingUpgrade();
         }
     }

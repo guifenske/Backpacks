@@ -15,17 +15,17 @@ public class OnClickBackpack implements Listener {
     @EventHandler
     private void onClick(InventoryClickEvent event){
         if(event.getClickedInventory() == null) return;
-        if(!BackpackAction.getAction((Player) event.getWhoClicked()).equals(BackpackAction.Action.OPENED)) return;
+        if(!BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.OPENED)) return;
         Player player = (Player) event.getWhoClicked();
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(player);
         if(backPack == null) return;
 
         if(event.getRawSlot() == event.getInventory().getSize() - 1){
             event.setCancelled(true);
-            BackpackAction.removeAction(player);
+            BackpackAction.clearPlayerActions(player);
             Main.backPackManager.getCurrentPage().remove(player.getUniqueId());
             player.openInventory(InventoryBuilder.getConfigInv(backPack));
-            Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> BackpackAction.setAction(player, BackpackAction.Action.CONFIGMENU), 1L);
+            Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> BackpackAction.addAction(player, BackpackAction.Action.CONFIGMENU), 1L);
         }   else if(event.getRawSlot() == event.getInventory().getSize() - 2){
             if(backPack.getSecondPageSize() == 0) return;
             event.setCancelled(true);

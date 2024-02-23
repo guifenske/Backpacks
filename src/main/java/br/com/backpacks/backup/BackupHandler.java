@@ -3,6 +3,7 @@ package br.com.backpacks.backup;
 import br.com.backpacks.Main;
 import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.Upgrade;
+import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.yaml.YamlUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -134,7 +135,7 @@ public class BackupHandler {
         File backpacksOriginal = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
         File upgradesOriginal = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
         rollbackBackpack = new ConcurrentHashMap<>(Main.backPackManager.getBackpacks());
-        rollbackUpgrade = new ConcurrentHashMap<>(Main.backPackManager.getUpgradeHashMap());
+        rollbackUpgrade = new ConcurrentHashMap<>(UpgradeManager.getUpgrades());
         backpacksOriginal.delete();
         upgradesOriginal.delete();
 
@@ -142,7 +143,7 @@ public class BackupHandler {
 
         Main.backPackManager.getBackpacksPlacedLocations().clear();
         Main.backPackManager.getBackpacks().clear();
-        Main.backPackManager.getUpgradeHashMap().clear();
+        UpgradeManager.getUpgrades().clear();
 
         YamlUtils.loadUpgrades();
         YamlUtils.loadBackpacks();

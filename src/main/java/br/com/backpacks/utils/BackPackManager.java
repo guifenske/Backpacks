@@ -26,16 +26,6 @@ public class BackPackManager {
     }
 
     private int backpackIds = 0;
-
-    public int getUpgradesIds() {
-        return upgradesIds;
-    }
-
-    public void setUpgradesIds(int upgradesIds) {
-        this.upgradesIds = upgradesIds;
-    }
-
-    private int upgradesIds = 0;
     public int getBackpackIds() {
         return backpackIds;
     }
@@ -43,12 +33,6 @@ public class BackPackManager {
     public void setBackpackIds(int backpackIds) {
         this.backpackIds = backpackIds;
     }
-
-    public ConcurrentHashMap<Integer, Upgrade> getUpgradeHashMap() {
-        return upgradeHashMap;
-    }
-
-    private ConcurrentHashMap<Integer, Upgrade> upgradeHashMap = new ConcurrentHashMap<>();
 
     private ConcurrentHashMap<Integer, BackPack> backpacks = new ConcurrentHashMap<>();
 
@@ -92,10 +76,6 @@ public class BackPackManager {
         this.backpacks = backpacks;
     }
 
-    public void setUpgradeHashMap(ConcurrentHashMap<Integer, Upgrade> upgradeHashMap) {
-        this.upgradeHashMap = upgradeHashMap;
-    }
-
     public BackPack upgradeBackpack(BackpackType oldType, int oldId) {
         if(oldId == -1) return null;
 
@@ -108,7 +88,7 @@ public class BackPackManager {
                 BackPack backPack = new BackPack("Iron Backpack", Bukkit.createInventory(null, 27, "Iron Backpack"), oldId, BackpackType.IRON);
                 backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
                 backPack.setArrowsAndConfigOptionItems();
-                backPack.setUpgrades(oldBackpack.getUpgrades());
+                backPack.setBackpackUpgrade(oldBackpack.getBackpackUpgrade());
                 backpacks.put(oldId, backPack);
                 InventoryBuilder.deleteAllMenusFromBackpack(backPack);
                 new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
@@ -120,7 +100,7 @@ public class BackPackManager {
                 BackPack backPack = new BackPack("Gold Backpack", Bukkit.createInventory(null, 36, "Gold Backpack"), oldId, BackpackType.GOLD);
                 backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
                 backPack.setArrowsAndConfigOptionItems();
-                backPack.setUpgrades(oldBackpack.getUpgrades());
+                backPack.setBackpackUpgrade(oldBackpack.getBackpackUpgrade());
                 backpacks.put(oldId, backPack);
                 InventoryBuilder.deleteAllMenusFromBackpack(backPack);
                 new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
@@ -132,7 +112,7 @@ public class BackPackManager {
                 BackPack backPack = new BackPack("Lapis Backpack", Bukkit.createInventory(null, 45, "Lapis Backpack"), oldId, BackpackType.LAPIS);
                 backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
                 backPack.setArrowsAndConfigOptionItems();
-                backPack.setUpgrades(oldBackpack.getUpgrades());
+                backPack.setBackpackUpgrade(oldBackpack.getBackpackUpgrade());
                 backpacks.put(oldId, backPack);
                 InventoryBuilder.deleteAllMenusFromBackpack(backPack);
                 new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
@@ -144,7 +124,7 @@ public class BackPackManager {
                 BackPack backPack = new BackPack("Amethyst Backpack", Bukkit.createInventory(null, 54, "Amethyst Backpack"), oldId, BackpackType.AMETHYST);
                 backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
                 backPack.setArrowsAndConfigOptionItems();
-                backPack.setUpgrades(oldBackpack.getUpgrades());
+                backPack.setBackpackUpgrade(oldBackpack.getBackpackUpgrade());
                 backpacks.put(oldId, backPack);
                 InventoryBuilder.deleteAllMenusFromBackpack(backPack);
                 new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
@@ -156,7 +136,7 @@ public class BackPackManager {
                 BackPack backPack = new BackPack("Diamond Backpack", Bukkit.createInventory(null, 54, "Diamond Backpack"), Bukkit.createInventory(null, 27, "Diamond Backpack"), oldId, BackpackType.DIAMOND);
                 backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
                 backPack.setArrowsAndConfigOptionItems();
-                backPack.setUpgrades(oldBackpack.getUpgrades());
+                backPack.setBackpackUpgrade(oldBackpack.getBackpackUpgrade());
                 backpacks.put(oldId, backPack);
                 InventoryBuilder.deleteAllMenusFromBackpack(backPack);
                 new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
@@ -169,7 +149,7 @@ public class BackPackManager {
                 backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
                 backPack.getSecondPage().setStorageContents(oldBackpack.getStorageContentsSecondPage());
                 backPack.setArrowsAndConfigOptionItems();
-                backPack.setUpgrades(oldBackpack.getUpgrades());
+                backPack.setBackpackUpgrade(oldBackpack.getBackpackUpgrade());
                 backpacks.put(oldId, backPack);
                 InventoryBuilder.deleteAllMenusFromBackpack(backPack);
                 new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();

@@ -19,13 +19,13 @@ public class RenameBackpackChat implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     private void onRename(AsyncChatEvent event){
-        if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.RENAMING)) return;
+        if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.RENAMING)) return;
         Player player = event.getPlayer();
         TextComponent textComponent = (TextComponent) event.originalMessage();
         String newName = textComponent.content();
         event.setCancelled(true);
 
-        BackpackAction.removeAction(player);
+        BackpackAction.clearPlayerActions(player);
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(player);
 
         Bukkit.getScheduler().runTask(Main.getMain(), ()->{
@@ -33,7 +33,7 @@ public class RenameBackpackChat implements Listener {
                 if(Main.backPackManager.getCurrentPage().containsKey(uuid)){
                     Player player1 = Bukkit.getPlayer(uuid);
                     if(player1 == null) continue;
-                    BackpackAction.removeAction(player1);
+                    BackpackAction.clearPlayerActions(player1);
                     player1.closeInventory();
                 }
             }

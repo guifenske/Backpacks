@@ -2,6 +2,8 @@ name: Backpacks
 version: '1.0'
 main: br.com.backpacks.Main
 api-version: '1.18'
+depend:
+  - BKCommonLib
 
 commands:
   bpgive:
@@ -14,11 +16,6 @@ commands:
     aliases:
       - 'bplist'
     usage: '/backpacklist'
-  bpgiveid:
-    description: 'Give a existent backpack to a player'
-    aliases:
-      - 'bpgiveid'
-    usage: '/backpackgiveid <player> <backpackId>'
   bpbackup:
     description: 'Make a new backup file'
     aliases:

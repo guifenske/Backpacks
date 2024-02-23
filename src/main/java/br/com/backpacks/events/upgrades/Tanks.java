@@ -20,8 +20,8 @@ public class Tanks implements Listener {
 
     @EventHandler
     private void onClose(InventoryCloseEvent event){
-        if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGTANKS)) return;
-        BackpackAction.removeAction((Player) event.getPlayer());
+        if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.UPGTANKS)) return;
+        BackpackAction.clearPlayerActions(event.getPlayer());
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
             backPack.open((Player) event.getPlayer());
@@ -30,7 +30,7 @@ public class Tanks implements Listener {
 
     @EventHandler
     private void onClick(InventoryClickEvent event){
-        if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGTANKS)) return;
+        if(!BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.UPGTANKS)) return;
         if(event.getRawSlot() < 27 && event.getRawSlot() != 12 && event.getRawSlot() != 14) event.setCancelled(true);
         if(event.getRawSlot() > 27 && event.getAction().equals(MOVE_TO_OTHER_INVENTORY)) event.setCancelled(true);
 

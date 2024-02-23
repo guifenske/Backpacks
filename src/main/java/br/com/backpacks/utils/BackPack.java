@@ -314,18 +314,16 @@ public class BackPack extends UpgradeManager {
         getViewersIds().add(player.getUniqueId());
         Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 1);
         Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
-        BackpackAction.removeAction(player);
         player.openInventory(firstPage);
-        BackpackAction.setAction(player, BackpackAction.Action.OPENED);
+        BackpackAction.addAction(player, BackpackAction.Action.OPENED);
     }
 
     public void openSecondPage(Player player){
         getViewersIds().add(player.getUniqueId());
         Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 2);
         Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
-        BackpackAction.removeAction(player);
         player.openInventory(secondPage);
-        BackpackAction.setAction(player, BackpackAction.Action.OPENED);
+        BackpackAction.addAction(player, BackpackAction.Action.OPENED);
     }
 
     public ItemStack getFirstItem(){

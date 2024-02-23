@@ -48,7 +48,7 @@ public class BpList implements CommandExecutor, Listener {
         }
         page.put(player.getUniqueId(), 0);
         player.openInventory(inventory(player));
-        Bukkit.getScheduler().runTaskLater(Main.getMain(), ()-> BackpackAction.setAction(player, BackpackAction.Action.BPLIST), 1L);
+        Bukkit.getScheduler().runTaskLater(Main.getMain(), ()-> BackpackAction.addAction(player, BackpackAction.Action.BPLIST), 1L);
 
         return true;
     }
@@ -79,7 +79,7 @@ public class BpList implements CommandExecutor, Listener {
 
     @EventHandler
     private void onClick(InventoryClickEvent event){
-        if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.BPLIST)) return;
+        if(!BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.BPLIST)) return;
         Player player = (Player) event.getWhoClicked();
         event.setCancelled(true);
 
@@ -94,10 +94,9 @@ public class BpList implements CommandExecutor, Listener {
                 return;
             }
             page.put(player.getUniqueId(), page.get(player.getUniqueId()) - 1);
-            BackpackAction.removeAction(player);
             Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
                 player.openInventory(inventory(player));
-                BackpackAction.setAction(player, BackpackAction.Action.BPLIST);
+                BackpackAction.addAction(player, BackpackAction.Action.BPLIST);
             }, 1L);
             return;
         }
@@ -107,10 +106,9 @@ public class BpList implements CommandExecutor, Listener {
                 return;
             }
             page.put(player.getUniqueId(), page.get(player.getUniqueId()) + 1);
-            BackpackAction.removeAction(player);
             Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
                 player.openInventory(inventory(player));
-                BackpackAction.setAction(player, BackpackAction.Action.BPLIST);
+                BackpackAction.addAction(player, BackpackAction.Action.BPLIST);
             }, 1L);
             return;
         }
@@ -118,7 +116,7 @@ public class BpList implements CommandExecutor, Listener {
         if(event.getCurrentItem() == null) return;
         BackPack backPack = Main.backPackManager.getBackpackFromId(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
 
-        BackpackAction.removeAction(player);
+        BackpackAction.clearPlayerActions(player);
         Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
             backPack.open(player);
         }, 1L);
@@ -126,8 +124,8 @@ public class BpList implements CommandExecutor, Listener {
 
     @EventHandler
     private void onClose(InventoryCloseEvent event){
-        if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.BPLIST)) return;
-        BackpackAction.removeAction((Player) event.getPlayer());
+        if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.BPLIST)) return;
+        BackpackAction.clearPlayerActions(event.getPlayer());
         page.remove(event.getPlayer().getUniqueId());
     }
 }

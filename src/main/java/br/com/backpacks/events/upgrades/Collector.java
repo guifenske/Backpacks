@@ -51,7 +51,7 @@ public class Collector implements Listener {
 
     @EventHandler
     private static void onClick(InventoryClickEvent event){
-        if(BackpackAction.getAction((Player) event.getWhoClicked()).equals(BackpackAction.Action.UPGCOLLECTOR)){
+        if(BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.UPGCOLLECTOR)){
             event.setCancelled(true);
 
             switch (event.getRawSlot()){
@@ -75,9 +75,9 @@ public class Collector implements Listener {
 
     @EventHandler
     private void onClose(InventoryCloseEvent event){
-        if(BackpackAction.getAction((Player) event.getPlayer()).equals(BackpackAction.Action.UPGCOLLECTOR)){
+        if(BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.UPGCOLLECTOR)){
             BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
-            BackpackAction.removeAction((Player) event.getPlayer());
+            BackpackAction.clearPlayerActions(event.getPlayer());
             Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> backPack.open((Player) event.getPlayer()), 1L);
         }
     }

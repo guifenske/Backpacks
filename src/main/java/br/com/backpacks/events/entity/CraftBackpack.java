@@ -6,6 +6,7 @@ import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
 import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.BackpackType;
+import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -61,10 +62,10 @@ public class CraftBackpack implements Listener {
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade(), PersistentDataType.INTEGER)){
             ItemStack itemStack = event.getRecipe().getResult();
             ItemMeta meta = itemStack.getItemMeta();
-            meta.getPersistentDataContainer().set(new UpgradesRecipesNamespaces().getUPGRADEID(), PersistentDataType.INTEGER, Main.backPackManager.getUpgradesIds() + 1);
+            meta.getPersistentDataContainer().set(new UpgradesRecipesNamespaces().getUPGRADEID(), PersistentDataType.INTEGER, UpgradeManager.lastUpgradeID + 1);
             itemStack.setItemMeta(meta);
             event.getInventory().setResult(itemStack);
-            Main.backPackManager.setUpgradesIds(Main.backPackManager.getUpgradesIds() + 1);
+            UpgradeManager.lastUpgradeID++;
             RecipesUtils.getUpgradeFromItem(itemStack);
         }
 
