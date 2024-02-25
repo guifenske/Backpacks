@@ -14,7 +14,7 @@ public class OpenBackpackOfTheBack implements Listener {
     @EventHandler
     private static void onSwap(PlayerSwapHandItemsEvent event){
         if(!event.getPlayer().isSneaking()) return;
-        if(!event.getPlayer().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) return;
+        if(!event.getPlayer().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
         if(!Main.backPackManager.getBackpacks().containsKey(event.getPlayer().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER))){
             event.getPlayer().getPersistentDataContainer().remove(new RecipesNamespaces().getHAS_BACKPACK());
             return;

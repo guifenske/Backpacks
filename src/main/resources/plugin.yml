@@ -1,13 +1,11 @@
 name: Backpacks
 version: '${project.version}'
 main: br.com.backpacks.Main
-api-version: '1.20'
+api-version: '1.18'
+depend:
+  - BKCommonLib
 
 commands:
-  bpdebug:
-    description: 'Just to make easy debugging'
-    aliases:
-      - 'bbug'
   bpgive:
     description: 'Give a backpack to a player'
     aliases:
@@ -18,11 +16,6 @@ commands:
     aliases:
       - 'bplist'
     usage: '/backpacklist'
-  bpgiveid:
-    description: 'Give a existent backpack to a player'
-    aliases:
-      - 'bpgiveid'
-    usage: '/backpackgiveid <player> <backpackId>'
   bpbackup:
     description: 'Make a new backup file'
     aliases:
@@ -33,4 +26,12 @@ commands:
     aliases:
       - 'bpreload'
       - 'bprl'
-    usage: '/reload'
+    usage: '/bpreload'
+  bpupgbackpack:
+    description: 'Upgrade the holding backpack'
+    aliases:
+      - 'bpupgbp'
+    usage: '/bpupgbackpack'
+  bpupgive:
+    description: 'Give a new Backpack Upgrade to a player'
+    usage: '/bpupgive <upgradeType> <player>'

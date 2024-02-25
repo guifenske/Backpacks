@@ -14,10 +14,11 @@ public class CraftingTable implements Listener {
 
     @EventHandler
     private void onClose(InventoryCloseEvent event){
-        if(BackpackAction.getAction((Player) event.getPlayer()) != BackpackAction.Action.UPGCRAFTINGGRID) return;
+        if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.UPGCRAFTINGGRID)) return;
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         if(backPack == null) return;
 
+        BackpackAction.clearPlayerActions(event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

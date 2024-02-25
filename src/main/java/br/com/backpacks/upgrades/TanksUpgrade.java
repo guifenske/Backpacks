@@ -25,7 +25,7 @@ public class TanksUpgrade extends Upgrade {
     }
 
     @Override
-    public boolean canReceiveInput(@NotNull ItemStack itemStack) {
+    public boolean canReceiveSpecificItemAsInput(@NotNull ItemStack itemStack) {
         return itemStack.getType().toString().contains("BUCKET");
     }
 
@@ -44,6 +44,7 @@ public class TanksUpgrade extends Upgrade {
         this.inventory = Bukkit.createInventory(null, 27, "Tanks Upgrade");
         updateInventory();
     }
+
 
     public void updateInventory(){
         ItemStack loremIpsum = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE," ").build();
@@ -156,7 +157,6 @@ public class TanksUpgrade extends Upgrade {
             }
             if(inventory.getItem(26) == null){
                 inventory.setItem(26, item);
-                return;
             }
         }
     }

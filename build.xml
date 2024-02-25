@@ -2,7 +2,7 @@
 
 <project name="Backpacks">
     <target name="Build">
-        <jar jarfile="/home/guilherme/Área de trabalho/PaperServer/plugins/${ant.project.name}.jar"
+        <jar jarfile="/home/guilherme/Área de trabalho/Paper1.19/plugins/${ant.project.name}.jar"
              basedir="./target/classes"
              includes="**/*">
         </jar>

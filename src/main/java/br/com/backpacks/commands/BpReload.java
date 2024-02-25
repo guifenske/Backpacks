@@ -23,7 +23,9 @@ public class BpReload implements CommandExecutor {
         Main.getMain().saveDefaultConfig();
         Main.getMain().reloadConfig();
         Constants.DEBUG_MODE = Main.getMain().getConfig().getBoolean("debug");
-        if(Main.getMain().getConfig().isSet("autobackup.enabled")) Main.getMain().getBackupHandler().setEnabled(Main.getMain().getConfig().getBoolean("autobackup.enabled"));
+        Constants.CATCH_BACKPACK = Main.getMain().getConfig().getBoolean("fish_backpack");
+        Constants.MONSTER_DROPS_BACKPACK = Main.getMain().getConfig().getBoolean("kill_monster_backpack");
+
         if(Main.getMain().getConfig().isSet("autobackup.keep")) Main.getMain().getBackupHandler().setKeepBackups(Main.getMain().getConfig().getInt("autobackup.keep"));
         sender.sendMessage(Main.PREFIX + "§aConfig reloaded successfully.");
 

@@ -9,6 +9,7 @@ import net.kyori.adventure.sound.Sound;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -41,10 +42,37 @@ public class JukeboxUpgrade extends Upgrade {
     private boolean isLooping = false;
 
     private BukkitTask loopingTask;
+    private BukkitTask particleTask;
+    private Integer backpackId;
+
+    public void setBackpackId(Integer backpackId) {
+        this.backpackId = backpackId;
+    }
+
+    public void setOwner(Entity owner) {
+        this.owner = owner;
+    }
+
+    private Entity owner;
+
+    @Override
+    public void stopTickingUpgrade() {
+        clearLoopingTask();
+        clearParticleTask();
+        if(owner != null) Jukebox.stopSound(owner, this);
+        if(backpackId != null) Jukebox.stopSound(Main.backPackManager.getBackpackFromId(backpackId), this);
+        backpackId = null;
+        owner = null;
+    }
 
     public void clearLoopingTask(){
         if(loopingTask != null) loopingTask.cancel();
         loopingTask = null;
+    }
+
+    public void clearParticleTask(){
+        if(particleTask != null) particleTask.cancel();
+        particleTask = null;
     }
 
     public void startLoopingTask(Entity entity){
@@ -63,6 +91,15 @@ public class JukeboxUpgrade extends Upgrade {
                 loc.getWorld().playSound(getSound());
             }
         }.runTaskTimer(Main.getMain(), 0L, (Jukebox.durationFromDisc(inventory.getItem(13)) * 20));
+    }
+
+    public void startParticleTask(Location loc){
+        particleTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                loc.getWorld().spawnParticle(Particle.NOTE, loc, 1);
+            }
+        }.runTaskTimer(Main.getMain(), 3L, 20L);
     }
 
     public Inventory getInventory() {
@@ -87,7 +124,7 @@ public class JukeboxUpgrade extends Upgrade {
     }
 
     @Override
-    public boolean canReceiveInput(@NotNull ItemStack itemStack) {
+    public boolean canReceiveSpecificItemAsInput(@NotNull ItemStack itemStack) {
         return Jukebox.checkDisk(itemStack);
     }
 

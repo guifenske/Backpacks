@@ -69,7 +69,7 @@ public class FurnaceUpgrade extends Upgrade {
 
     private final long cookItemTicks;
 
-    public FurnaceUpgrade(int id, UpgradeType upgradeType){
+    public FurnaceUpgrade(UpgradeType upgradeType, int id){
         super(upgradeType, id);
         if(upgradeType.equals(UpgradeType.BLAST_FURNACE)){
             this.cookItemTicks = 100L;
@@ -104,6 +104,16 @@ public class FurnaceUpgrade extends Upgrade {
     @Override
     public List<Integer> outputSlots() {
         return List.of(2);
+    }
+
+    @Override
+    public void stopTickingUpgrade() {
+        if(Furnace.shouldTick.contains(getId())) Furnace.shouldTick.remove(getId());
+        setCookTime(0);
+        if(Furnace.taskMap.containsKey(getId())) Furnace.taskMap.get(getId()).cancel();
+        Furnace.taskMap.remove(getId());
+        setBoundFakeBlock(null);
+        clearSubTickTask();
     }
 
     private BukkitTask subTickTask = null;

@@ -331,7 +331,7 @@ public class UpgradesRecipesNamespaces {
         ItemMeta meta = unbreak.getItemMeta();
 
         meta.setDisplayName("Unbreakable Upgrade");
-        meta.setLore(Arrays.asList("§Unbreakable Upgrade", "§7§nMake the backpack unbreakable."));
+        meta.setLore(Arrays.asList("§7Unbreakable Upgrade", "§7§nMake the backpack unbreakable."));
         meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
         meta.getPersistentDataContainer().set(UNBREAKING, PersistentDataType.INTEGER, 1);
         unbreak.setItemMeta(meta);

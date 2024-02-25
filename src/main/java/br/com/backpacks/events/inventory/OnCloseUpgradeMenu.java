@@ -22,16 +22,19 @@ public class OnCloseUpgradeMenu implements Listener {
 
     @EventHandler
     private void onClose(InventoryCloseEvent event){
-        if(BackpackAction.getAction((Player) event.getPlayer()) != BackpackAction.Action.UPGMENU) return;
+        if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.UPGMENU)) return;
 
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         if(backPack == null) return;
 
         List<Upgrade> newUpgrades = new ArrayList<>();
+        List<Integer> newUpgradesIds = new ArrayList<>();
 
         for(int i = 0; i < InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i++){
             ItemStack item = event.getInventory().getItem(i);
-            if(item == null) continue;
+            if(item == null){
+                continue;
+            }
             if(RecipesUtils.isItemUpgrade(item)){
                 Upgrade upgrade = RecipesUtils.getUpgradeFromItem(item);
                 if(!UpgradeManager.canUpgradeStack(upgrade)){
@@ -51,15 +54,31 @@ public class OnCloseUpgradeMenu implements Listener {
                     event.getInventory().setItem(i, item.asOne());
                 }
                 newUpgrades.add(upgrade);
+                newUpgradesIds.add(upgrade.getId());
             }   else{
                 event.getInventory().remove(item);
                 event.getPlayer().getInventory().addItem(item);
             }
         }
-        backPack.setUpgrades(newUpgrades);
+
+        //stop ticking upgrades when not in the backpack
+        if(!backPack.getBackpackUpgrade().isEmpty()){
+            if(newUpgrades.isEmpty()){
+                backPack.stopTickingAllUpgrades();
+            }   else{
+                for(Upgrade upgrade : backPack.getBackpackUpgrade()){
+                    //was removed
+                    if(!newUpgradesIds.contains(upgrade.getId())){
+                        backPack.stopTickingUpgrade(upgrade.getId());
+                    }
+                }
+            }
+        }
+
+        backPack.setBackpackUpgrade(newUpgrades);
         InventoryBuilder.updateConfigInv(backPack);
         InventoryBuilder.updateEditIOInv(backPack);
-        InventoryBuilder.updateUpgradesInv(backPack);
+        BackpackAction.clearPlayerActions(event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

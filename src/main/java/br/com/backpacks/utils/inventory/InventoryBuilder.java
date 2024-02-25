@@ -67,13 +67,15 @@ public class InventoryBuilder {
                 ItemStack unlock = new ItemCreator(Material.WRITTEN_BOOK, "Unlock Backpack", Arrays.asList("§7§nUnlock the access to this backpack", "§7§n from other players when in your back.")).build();
                 ItemStack editUpgrades = new ItemCreator(Material.ANVIL, "Edit Upgrades").build();
                 ItemStack editIO = new ItemCreator(Material.HOPPER, "Sets the I/O inventory", Arrays.asList("§7Select upgrades to be the I/O inventories.")).build();
+                ItemStack enableNameAbove = new ItemCreator(Material.POTATO, "Show name above backpack block").build();
+                ItemStack disableNameAbove = new ItemCreator(Material.POISONOUS_POTATO, "Don't show name above backpack block").build();
 
                 for(int i = InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i < 54; i++){
                     inv.setItem(i, loremIpsum);
                 }
 
-                if(!backPack.getUpgrades().isEmpty()) {
-                    List<Upgrade> upgrades = backPack.getUpgrades();
+                if(!backPack.getBackpackUpgrade().isEmpty()) {
+                    List<Upgrade> upgrades = backPack.getBackpackUpgrade();
 
                     int i = 0;
                     for(Upgrade upgrade : upgrades) {
@@ -92,6 +94,12 @@ public class InventoryBuilder {
                         inv.setItem(53, unequipBackpack);
                     } else{
                         inv.setItem(53, equipBackpack);
+                    }
+                }   else{
+                    if(!backPack.isShowingNameAbove()){
+                        inv.setItem(48, enableNameAbove);
+                    }   else{
+                        inv.setItem(48, disableNameAbove);
                     }
                 }
 
@@ -113,8 +121,8 @@ public class InventoryBuilder {
                 }
 
                 int i = 0;
-                List<Upgrade> upgrades = backPack.getUpgrades();
-                if (!backPack.getUpgrades().isEmpty()) {
+                List<Upgrade> upgrades = backPack.getBackpackUpgrade();
+                if (!backPack.getBackpackUpgrade().isEmpty()) {
                     for (Upgrade upgrade : upgrades) {
                         inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));
                         i++;
@@ -134,8 +142,8 @@ public class InventoryBuilder {
                 }
 
                 int i = 0;
-                List<Upgrade> upgrades = backPack.getUpgrades();
-                if (!backPack.getUpgrades().isEmpty()) {
+                List<Upgrade> upgrades = backPack.getBackpackUpgrade();
+                if (!backPack.getBackpackUpgrade().isEmpty()) {
                     for (Upgrade upgrade : upgrades) {
                         if(!upgrade.isAdvanced()) continue;
                         inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));
@@ -165,13 +173,19 @@ public class InventoryBuilder {
         ItemStack unlock = new ItemCreator(Material.WRITTEN_BOOK, "Unlock Backpack", Arrays.asList("§7§nUnlock the access to this backpack", "§7§n from other players when in your back.")).build();
         ItemStack editUpgrades = new ItemCreator(Material.ANVIL, "Edit Upgrades").build();
         ItemStack editIO = new ItemCreator(Material.HOPPER, "Sets the I/O inventory", Arrays.asList("§7Select upgrades to be the I/O inventories.")).build();
+        ItemStack enableNameAbove = new ItemCreator(Material.POTATO, "Show name above backpack block").build();
+        ItemStack disableNameAbove = new ItemCreator(Material.POISONOUS_POTATO, "Don't show name above backpack block").build();
+
+        for(int i = 0; i < 9; i++){
+            inv.setItem(i, null);
+        }
 
         for(int i = InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i < 54; i++){
             inv.setItem(i, loremIpsum);
         }
 
-        if(!backPack.getUpgrades().isEmpty()) {
-            List<Upgrade> upgrades = backPack.getUpgrades();
+        if(!backPack.getBackpackUpgrade().isEmpty()) {
+            List<Upgrade> upgrades = backPack.getBackpackUpgrade();
 
             int i = 0;
             for(Upgrade upgrade : upgrades) {
@@ -191,6 +205,12 @@ public class InventoryBuilder {
             } else{
                 inv.setItem(53, equipBackpack);
             }
+        }   else{
+            if(!backPack.isShowingNameAbove()){
+                inv.setItem(48, enableNameAbove);
+            }   else{
+                inv.setItem(48, disableNameAbove);
+            }
         }
 
         inv.setItem(36, editUpgrades);
@@ -202,14 +222,17 @@ public class InventoryBuilder {
     public static void updateUpgradesInv(BackPack backPack){
         Inventory inv = upgradesMenu.get(backPack.getId());
         ItemStack item = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").build();
+        for(int i = 0; i < 9; i++){
+            inv.setItem(i, null);
+        }
 
         for(int i = InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i < 9; i++){
             inv.setItem(i, item);
         }
 
         int i = 0;
-        List<Upgrade> upgrades = backPack.getUpgrades();
-        if (!backPack.getUpgrades().isEmpty()) {
+        List<Upgrade> upgrades = backPack.getBackpackUpgrade();
+        if (!backPack.getBackpackUpgrade().isEmpty()) {
             for (Upgrade upgrade : upgrades) {
                 inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));
                 i++;
@@ -220,14 +243,17 @@ public class InventoryBuilder {
     public static void updateEditIOInv(BackPack backPack){
         Inventory inv = editIOMenu.get(backPack.getId());
         ItemStack item = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").build();
+        for(int i = 0; i < 9; i++){
+            inv.setItem(i, null);
+        }
 
         for(int i = InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i < 9; i++){
             inv.setItem(i, item);
         }
 
         int i = 0;
-        List<Upgrade> upgrades = backPack.getUpgrades();
-        if (!backPack.getUpgrades().isEmpty()) {
+        List<Upgrade> upgrades = backPack.getBackpackUpgrade();
+        if (!backPack.getBackpackUpgrade().isEmpty()) {
             for (Upgrade upgrade : upgrades) {
                 if(!upgrade.isAdvanced()) continue;
                 inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));

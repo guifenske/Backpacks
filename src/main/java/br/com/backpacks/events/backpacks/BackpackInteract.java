@@ -23,14 +23,16 @@ public class BackpackInteract implements Listener {
         Player player = event.getPlayer();
 
         if(event.getAction().equals(RIGHT_CLICK_BLOCK) && (event.getClickedBlock().getType().equals(Material.BARREL))){
-            if(player.isSneaking()) return;
+            if(Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
             if(event.getItem() != null){
-                if(event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack())){
+                if(event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack(), PersistentDataType.INTEGER)){
+                    //activate the backpackPlaceEvent
+                    if(player.isSneaking()) return;
+
                     event.setCancelled(true);
                     return;
-                }
+                }   else if(event.getItem().getType().isBlock() && player.isSneaking()) return;
             }
-            if(Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
 
             event.setCancelled(true);
             if(Main.backPackManager.canOpen()){
@@ -46,8 +48,8 @@ public class BackpackInteract implements Listener {
         if(!event.getAction().equals(RIGHT_CLICK_BLOCK) && !event.getAction().equals(RIGHT_CLICK_AIR)) return;
         if(event.getItem() == null) return;
         if(player.isSneaking() && event.getAction().equals(RIGHT_CLICK_BLOCK)) return;
-        if(!event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID())){
-            if(event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_WET_BACKPACK())){
+        if(!event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER)){
+            if(event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_WET_BACKPACK(), PersistentDataType.INTEGER)){
                 event.getPlayer().sendMessage(Main.PREFIX + "§cHumm, this thing is too wet to be used as a backpack.");
                 event.setCancelled(true);
             }

@@ -7,20 +7,28 @@ import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
 import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.BackpackAction;
+import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
+import com.bergerkiller.bukkit.common.events.EntityRemoveEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.UUID;
 
 public class BackpackBreak implements Listener {
 
@@ -41,10 +49,24 @@ public class BackpackBreak implements Listener {
         if(!backPack.getUpgradesFromType(UpgradeType.JUKEBOX).isEmpty()){
             JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
             if(upgrade.getSound() != null){
+                upgrade.clearParticleTask();
                 upgrade.clearLoopingTask();
                 Jukebox.stopSound(backPack, upgrade);
             }
         }
+        for(UUID uuid : BackpackAction.getHashMap().keySet()){
+            Player player = Bukkit.getPlayer(uuid);
+            if(player == null) continue;
+            BackpackAction.clearPlayerActions(player);
+            Main.backPackManager.getCurrentPage().remove(uuid);
+            Main.backPackManager.getCurrentBackpackId().remove(uuid);
+            backPack.getViewersIds().remove(uuid);
+            player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
+        }
+
+        backPack.setShowNameAbove(false);
+        if(backPack.getMarker() != null) backPack.getMarkerEntity().remove();
+        backPack.setMarker(null);
         backPack.setLocation(null);
         backPack.setIsBlock(false);
         backPack.setOwner(null);
@@ -74,10 +96,25 @@ public class BackpackBreak implements Listener {
             if(!backPack.getUpgradesFromType(UpgradeType.JUKEBOX).isEmpty()){
                 JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
                 if(upgrade.getSound() != null){
+                    upgrade.clearParticleTask();
                     upgrade.clearLoopingTask();
                     Jukebox.stopSound(backPack, upgrade);
                 }
             }
+
+            for(UUID uuid : BackpackAction.getHashMap().keySet()){
+                Player player = Bukkit.getPlayer(uuid);
+                if(player == null) continue;
+                BackpackAction.clearPlayerActions(player);
+                Main.backPackManager.getCurrentPage().remove(uuid);
+                Main.backPackManager.getCurrentBackpackId().remove(uuid);
+                backPack.getViewersIds().remove(uuid);
+                player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
+            }
+
+            backPack.setShowNameAbove(false);
+            if(backPack.getMarker() != null) backPack.getMarkerEntity().remove();
+            backPack.setMarker(null);
             backPack.setLocation(null);
             backPack.setIsBlock(false);
             backPack.setOwner(null);
@@ -91,14 +128,14 @@ public class BackpackBreak implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void onItemDespawn(ItemDespawnEvent event){
         if(!event.getEntity().getItemStack().hasItemMeta())  return;
-        if(!event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack())){
-            if(event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade())){
+        if(!event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack(), PersistentDataType.INTEGER)){
+            if(event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade(), PersistentDataType.INTEGER)){
                 if(!Main.backPackManager.canOpen()){
                     event.setCancelled(true);
                     return;
                 }
                 int id = event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().get(new UpgradesRecipesNamespaces().getUPGRADEID(), PersistentDataType.INTEGER);
-                Main.backPackManager.getUpgradeHashMap().remove(id);
+                UpgradeManager.getUpgrades().remove(id);
             }
             return;
         }
@@ -111,9 +148,16 @@ public class BackpackBreak implements Listener {
         int id = event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
         if(!Main.backPackManager.getBackpacks().containsKey(id)) return;
         BackPack backPack = Main.backPackManager.getBackpacks().get(id);
+
+        if(!backPack.getUpgradesFromType(UpgradeType.UNBREAKABLE).isEmpty()){
+            event.setCancelled(true);
+            event.getEntity().setInvulnerable(true);
+            return;
+        }
+
         if(!backPack.getUpgradesIds().isEmpty()){
             for(int i : backPack.getUpgradesIds()){
-                Main.backPackManager.getUpgradeHashMap().remove(i);
+                UpgradeManager.getUpgrades().remove(i);
             }
         }
 
@@ -122,24 +166,21 @@ public class BackpackBreak implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    private void onEntityDeath(EntityDeathEvent event){
-        if(!(event.getEntity() instanceof Item)) return;
-        Item eventItem = (Item) event.getEntity();
+    private void onEntityDeath(EntityRemoveEvent event){
+        if(!(event.getEntity() instanceof Item eventItem)) return;
         if(!eventItem.getItemStack().hasItemMeta())  return;
-        if(!eventItem.getItemStack().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack())){
-            if(eventItem.getItemStack().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade())){
+        if(!eventItem.getItemStack().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack(), PersistentDataType.INTEGER)){
+            if(eventItem.getItemStack().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade(), PersistentDataType.INTEGER)){
                 if(!Main.backPackManager.canOpen()){
-                    event.setCancelled(true);
                     return;
                 }
                 int id = eventItem.getItemStack().getItemMeta().getPersistentDataContainer().get(new UpgradesRecipesNamespaces().getUPGRADEID(), PersistentDataType.INTEGER);
-                Main.backPackManager.getUpgradeHashMap().remove(id);
+                UpgradeManager.getUpgrades().remove(id);
             }
             return;
         }
 
         if(!Main.backPackManager.canOpen()){
-            event.setCancelled(true);
             return;
         }
 
@@ -147,15 +188,15 @@ public class BackpackBreak implements Listener {
         if(!Main.backPackManager.getBackpacks().containsKey(id)) return;
         BackPack backPack = Main.backPackManager.getBackpacks().get(id);
 
-        if(backPack.getUpgradesFromType(UpgradeType.UNBREAKABLE).isEmpty()){
-            event.setCancelled(true);
-            event.getEntity().setInvulnerable(true);
+        if(!backPack.getUpgradesFromType(UpgradeType.UNBREAKABLE).isEmpty()){
+            Entity entity = eventItem.getWorld().dropItemNaturally(eventItem.getLocation(), RecipesUtils.getItemFromBackpack(backPack));
+            entity.setInvulnerable(true);
             return;
         }
 
         if(!backPack.getUpgradesIds().isEmpty()){
             for(int i : backPack.getUpgradesIds()){
-                Main.backPackManager.getUpgradeHashMap().remove(i);
+                UpgradeManager.getUpgrades().remove(i);
             }
         }
 

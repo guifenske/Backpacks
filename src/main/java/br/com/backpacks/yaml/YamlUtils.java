@@ -4,6 +4,7 @@ import br.com.backpacks.Main;
 import br.com.backpacks.upgrades.*;
 import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.Upgrade;
+import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class YamlUtils {
 
@@ -37,12 +39,15 @@ public final class YamlUtils {
             if(backPack.getInputUpgrade() != -1){
                 config.set(backPack.getId() + ".inp", backPack.getInputUpgrade());
             }
+            if(backPack.isShowingNameAbove()){
+                config.set(backPack.getId() + ".shownameabove", backPack.isShowingNameAbove());
+            }
             config.set(backPack.getId() + ".i", backPack.serialize());
             saveStorageContents(backPack, config);
             if(backPack.getOwner() != null){
                 config.set(backPack.getId() + ".owner", backPack.getOwner().toString());
             }
-            if (backPack.getUpgrades() != null && !backPack.getUpgrades().isEmpty()) {
+            if (backPack.getBackpackUpgrade() != null && !backPack.getBackpackUpgrade().isEmpty()) {
                 serializeUpgrades(config, backPack);
             }
         }
@@ -54,7 +59,7 @@ public final class YamlUtils {
         File file = new File(path);
         YamlConfiguration config = new YamlConfiguration();
 
-        for(Upgrade upgrade : Main.backPackManager.getUpgradeHashMap().values()){
+        for(Upgrade upgrade : UpgradeManager.getUpgrades().values()){
             config.set(upgrade.getId() + ".type", upgrade.getType().toString());
             UpgradeType type = upgrade.getType();
             switch (type){
@@ -81,11 +86,6 @@ public final class YamlUtils {
                     AutoFeedUpgrade autoFeedUpgrade = (AutoFeedUpgrade) upgrade;
                     Main.getMain().debugMessage("Saving auto feed upgrade " + autoFeedUpgrade.getId());
                     config.set(upgrade.getId() + ".autofeed.enabled", autoFeedUpgrade.isEnabled());
-                    if(!autoFeedUpgrade.getItems().isEmpty()){
-                        for(Map.Entry<Integer, ItemStack> item : autoFeedUpgrade.getItems().entrySet()){
-                            config.set(upgrade.getId() + ".autofeed.items." + item.getKey(), item.getValue());
-                        }
-                    }
                 }
                 case VILLAGERSFOLLOW -> {
                     VillagersFollowUpgrade followUpgrade = (VillagersFollowUpgrade) upgrade;
@@ -122,14 +122,18 @@ public final class YamlUtils {
     public static void loadUpgrades(){
         File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        UpgradeManager.lastUpgradeID = 0;
 
         for(String i : config.getKeys(false)){
             UpgradeType type = UpgradeType.valueOf(config.getString(i + ".type"));
             int id = Integer.parseInt(i);
-            Main.backPackManager.setUpgradesIds(id);
+            if(UpgradeManager.lastUpgradeID == 0) UpgradeManager.lastUpgradeID = id;
+            if(UpgradeManager.lastUpgradeID < id){
+                UpgradeManager.lastUpgradeID = id;
+            }
             switch (type){
                 case FURNACE, BLAST_FURNACE, SMOKER -> {
-                    FurnaceUpgrade upgrade = new FurnaceUpgrade(id, type);
+                    FurnaceUpgrade upgrade = new FurnaceUpgrade(type, id);
                     if(config.isSet(i + ".furnace.result")){
                         upgrade.setResult(config.getItemStack(i + ".furnace.result"));
                     }
@@ -145,9 +149,9 @@ public final class YamlUtils {
                     if(config.isSet(i + ".furnace.maxoperation")){
                         upgrade.setLastMaxOperation(config.getInt(i + ".furnace.maxoperation"));
                     }
-                    Main.getMain().debugMessage("furnace loaded: " + i);
+                    Main.debugMessage("furnace loaded: " + i);
                     upgrade.updateInventory();
-                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
                 }
                 case JUKEBOX -> {
                     JukeboxUpgrade upgrade = new JukeboxUpgrade(id);
@@ -160,8 +164,8 @@ public final class YamlUtils {
                     if(config.isSet(i + ".jukebox.playing")){
                         upgrade.getInventory().setItem(13, upgrade.getSoundFromName(config.getString(i + ".jukebox.playing")));
                     }
-                    Main.getMain().debugMessage("loading jukebox: " + i);
-                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    Main.debugMessage("loading jukebox: " + i);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
                 }
                 case COLLECTOR -> {
                     CollectorUpgrade upgrade = new CollectorUpgrade(id);
@@ -171,46 +175,42 @@ public final class YamlUtils {
                     if(config.isSet(i + ".collector.mode")){
                         upgrade.setMode(config.getInt(i + ".collector.mode"));
                     }
-                    Main.getMain().debugMessage("loading collector: " + i);
+                    Main.debugMessage("loading collector: " + i);
                     upgrade.updateInventory();
-                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
                 }
                 case VILLAGERSFOLLOW -> {
                     VillagersFollowUpgrade upgrade = new VillagersFollowUpgrade(id);
                     if (config.isSet(i + ".villager.enabled")) {
                         upgrade.setEnabled(config.getBoolean(i + ".villager.enabled"));
                     }
-                    Main.getMain().debugMessage("loading villagers follow: " + i);
+                    Main.debugMessage("loading villagers follow: " + i);
                     upgrade.updateInventory();
-                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
                 }
                 case AUTOFEED -> {
                     AutoFeedUpgrade upgrade = new AutoFeedUpgrade(id);
                     if(config.isSet(i + ".autofeed.enabled")){
                         upgrade.setEnabled(config.getBoolean(i + ".autofeed.enabled"));
                     }
-                    if(config.isSet(i + ".autofeed.items")){
-                        Set<String> keys = config.getConfigurationSection(i + ".autofeed.items").getKeys(false);
-                        for(String s : keys){
-                            upgrade.getInventory().setItem(Integer.parseInt(s), config.getItemStack(i + ".autofeed.items." + s));
-                        }
-                    }
                     upgrade.updateInventory();
-
-                    Main.getMain().debugMessage("loading auto feed: " + i);
-                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    Main.debugMessage("loading auto feed: " + i);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
                 }
                 case CRAFTING -> {
                     Upgrade upgrade = new Upgrade(UpgradeType.CRAFTING, id);
-                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
+                    Main.debugMessage("loading crafting upgrade: " + i);
                 }
                 case ENCAPSULATE -> {
                     Upgrade upgrade = new Upgrade(UpgradeType.ENCAPSULATE, id);
-                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
+                    Main.debugMessage("loading encapsulate upgrade: " + i);
                 }
                 case UNBREAKABLE -> {
                     Upgrade upgrade = new Upgrade(UpgradeType.UNBREAKABLE, id);
-                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
+                    Main.debugMessage("loading unbreakable upgrade: " + i);
                 }
                 case LIQUIDTANK -> {
                     TanksUpgrade upgrade = new TanksUpgrade(id);
@@ -234,7 +234,7 @@ public final class YamlUtils {
                     }
 
                     Main.getMain().debugMessage("loading tank upgrade: " + i);
-                    Main.backPackManager.getUpgradeHashMap().put(id, upgrade);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
                 }
             }
         }
@@ -243,12 +243,16 @@ public final class YamlUtils {
     public static void loadBackpacks() {
         File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        Main.backPackManager.setBackpackIds(0);
 
         for (String i : config.getKeys(false)) {
             BackPack backPack = new BackPack().deserialize(config, i);
             if(config.isSet(i + ".loc")){
                 backPack.setLocation(deserializeLocation(config.getStringList(i + ".loc")));
                 backPack.setIsBlock(true);
+                if(config.isSet(i + ".shownameabove")){
+                    backPack.setShowNameAbove(true);
+                }
                 Main.backPackManager.getBackpacksPlacedLocations().put(backPack.getLocation(), backPack.getId());
             }
             Main.getMain().debugMessage("Loading backpack " + backPack.getName() + " id " + backPack.getId());
@@ -265,6 +269,42 @@ public final class YamlUtils {
             }
         }
     }
+
+    public static void loadBackpacks(ConcurrentHashMap<Integer, BackPack> hashMap){
+        Main.backPackManager.setBackpackIds(0);
+        Main.backPackManager.setBackpacks(hashMap);
+        Main.backPackManager.getBackpacksPlacedLocations().clear();
+        if(hashMap.isEmpty()) return;
+        for(BackPack backPack : hashMap.values()){
+            if(backPack.getLocation() != null){
+                Main.backPackManager.getBackpacksPlacedLocations().put(backPack.getLocation(), backPack.getId());
+            }
+
+            InventoryBuilder.deleteAllMenusFromBackpack(backPack);
+            new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+            new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
+
+            int id = backPack.getId();
+            if(Main.backPackManager.getBackpackIds() == 0) Main.backPackManager.setBackpackIds(id);
+            if(Main.backPackManager.getBackpackIds() < id){
+                Main.backPackManager.setBackpackIds(id);
+            }
+        }
+    }
+
+    public static void loadUpgrades(ConcurrentHashMap<Integer, Upgrade> hashMap){
+        UpgradeManager.lastUpgradeID = 0;
+        UpgradeManager.setUpgrades(hashMap);
+        if(hashMap.isEmpty()) return;
+        for(Integer id : hashMap.keySet()){
+            if(UpgradeManager.lastUpgradeID == 0) UpgradeManager.lastUpgradeID = id;
+            if(UpgradeManager.lastUpgradeID < id){
+                UpgradeManager.lastUpgradeID = id;
+            }
+        }
+    }
+
     private static void serializeUpgrades(YamlConfiguration config, BackPack backPack){
         config.set(backPack.getId() + ".u", null);
         config.set(backPack.getId() + ".u", backPack.getUpgradesIds());

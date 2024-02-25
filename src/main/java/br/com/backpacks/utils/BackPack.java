@@ -8,9 +8,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
@@ -76,17 +78,6 @@ public class BackPack extends UpgradeManager {
 
     private int firstPageSize;
     private int secondPageSize;
-
-    public boolean isOpen() {
-        return isOpen;
-    }
-
-    public void setOpen(boolean open) {
-        isOpen = open;
-    }
-
-    private boolean isOpen = false;
-
     public Set<UUID> getViewersIds() {
         return viewersIds;
     }
@@ -105,6 +96,30 @@ public class BackPack extends UpgradeManager {
     public UUID getOwner() {
         return owner;
     }
+
+    public boolean isShowingNameAbove() {
+        return showNameAbove;
+    }
+
+    public void setShowNameAbove(boolean showNameAbove) {
+        this.showNameAbove = showNameAbove;
+    }
+
+    private boolean showNameAbove = false;
+
+    public UUID getMarker() {
+        return marker;
+    }
+
+    public ArmorStand getMarkerEntity(){
+        return (ArmorStand) Bukkit.getEntity(marker);
+    }
+
+    public void setMarker(UUID uuid) {
+        this.marker = uuid;
+    }
+
+    private UUID marker;
 
     public void setName(String name) {
         this.name = name;
@@ -296,36 +311,32 @@ public class BackPack extends UpgradeManager {
     }
 
     public void open(Player player){
-        setOpen(true);
         getViewersIds().add(player.getUniqueId());
         Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 1);
         Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
-        BackpackAction.removeAction(player);
         player.openInventory(firstPage);
-        BackpackAction.setAction(player, BackpackAction.Action.OPENED);
+        BackpackAction.addAction(player, BackpackAction.Action.OPENED);
     }
 
     public void openSecondPage(Player player){
-        setOpen(true);
         getViewersIds().add(player.getUniqueId());
         Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 2);
         Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
-        BackpackAction.removeAction(player);
         player.openInventory(secondPage);
-        BackpackAction.setAction(player, BackpackAction.Action.OPENED);
+        BackpackAction.addAction(player, BackpackAction.Action.OPENED);
     }
 
     public ItemStack getFirstItem(){
         for(ItemStack itemStack : firstPage){
             if(itemStack == null) continue;
-            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM())) continue;
+            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
             return itemStack;
         }
 
         if(getSecondPage() != null){
             for(ItemStack itemStack : secondPage){
                 if(itemStack == null) continue;
-                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM())) continue;
+                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
                 return itemStack;
             }
         }
@@ -385,21 +396,8 @@ public class BackPack extends UpgradeManager {
         }
         return false;
     }
-
-    //used in the PickupItemEvent
-    public List<ItemStack> getRemainingItems() {
-        return remainingItems;
-    }
-
-    public void setRemainingItems(List<ItemStack> remainingItems) {
-        this.remainingItems = remainingItems;
-    }
-
-    private List<ItemStack> remainingItems = new ArrayList<>();
-
     public List<ItemStack> tryAddItem(ItemStack itemStack){
         List<ItemStack> list = new ArrayList<>();
-        remainingItems = list;
         if(itemStack == null) return list;
 
         if(!firstPage.addItem(itemStack).isEmpty()){
@@ -411,12 +409,27 @@ public class BackPack extends UpgradeManager {
                         list2.addAll(secondPage.addItem(item).values());
                     }
                 }
-                remainingItems = list2;
                 return list2;
             }
         }
 
-        remainingItems = list;
+        return list;
+    }
+
+    public List<ItemStack> getBackpackItems(){
+        List<ItemStack> list = new ArrayList<>();
+        for(ItemStack itemStack : firstPage){
+            if(itemStack == null) continue;
+            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
+            list.add(itemStack);
+        }
+        if(secondPage != null){
+            for(ItemStack itemStack : secondPage){
+                if(itemStack == null) continue;
+                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
+                list.add(itemStack);
+            }
+        }
         return list;
     }
 }

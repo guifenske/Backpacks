@@ -17,7 +17,7 @@ public class FinishedSmelting implements Listener {
 
     @EventHandler
     private void onSmelt(BlockCookEvent event){
-        if(!event.getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_DRIED_BACKPACK())) return;
+        if(!event.getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_DRIED_BACKPACK(), PersistentDataType.INTEGER)) return;
 
         ItemStack driedBackpack = new ItemStack(Material.BARREL);
         ItemMeta meta = driedBackpack.getItemMeta();

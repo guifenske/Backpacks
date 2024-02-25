@@ -8,8 +8,9 @@ import br.com.backpacks.utils.BackpackAction;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeType;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,56 +24,80 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AutoFeed implements Listener {
-
-    public static final List<Integer> fillSlots = List.of(3,4,5,12,13,14,21,22,23);
-
     @EventHandler
     private static void tick(FoodLevelChangeEvent event){
         Player player = (Player) event.getEntity();
-        if(!player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK())) return;
+        if(!player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
         BackPack backPack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER));
         List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.AUTOFEED);
         if(list.isEmpty()) return;
         AutoFeedUpgrade upgrade = (AutoFeedUpgrade) list.get(0);
+        if(!upgrade.isEnabled() || backPack.getBackpackItems().isEmpty()) return;
+        int need = 20 - player.getFoodLevel();
 
-        if(upgrade.isEnabled()){
-            if(upgrade.getItems() == null || upgrade.getItems().isEmpty()) return;
-            int need = 20 - player.getFoodLevel();
-            if(event.getFoodLevel() < 20){
-                for(int index : upgrade.getItems().keySet()){
-                    ItemStack itemStack = upgrade.getItems().get(index);
-                    if(itemStack == null) continue;
-                    if(need < hungerPointsPerFood(itemStack) && player.getHealth() == player.getMaxHealth()) continue;
-
-                    if(itemStack.getAmount() == 1) upgrade.getItems().put(index, null);
-                    else itemStack.subtract();
-
-                    event.setCancelled(true);
-
-                    Main.getMain().debugMessage("Auto feed-ed " + player.getName() + ", backpack id " + backPack.getId());
-                    player.setFoodLevel(player.getFoodLevel() + hungerPointsPerFood(itemStack));
-                    player.setSaturation(player.getSaturation() + saturationPointsPerFood(itemStack));
-                    applyEffectPerFood(player, itemStack);
-                    player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, SoundCategory.MASTER ,1, 1);
-                    return;
-                }
+        HashMap<Integer, ItemStack> foods = new HashMap<>();
+        ItemStack optionalFood = null;
+        for(ItemStack itemStack : backPack.getBackpackItems()){
+            if(!checkFood(itemStack)) continue;
+            int hungerPoints = hungerPointsPerFood(itemStack);
+            if(hungerPoints == need){
+                if(itemStack.getAmount() == 1) itemStack.setType(Material.AIR);
+                else itemStack.subtract();
+                event.setCancelled(true);
+                player.setFoodLevel(player.getFoodLevel() + hungerPoints);
+                player.setSaturation(player.getSaturation() + saturationPointsPerFood(itemStack));
+                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1, 1);
+                applyEffectPerFood(player, itemStack);
+                return;
+            }   else if(hungerPoints < need){
+                foods.put(hungerPoints, itemStack);
+            }   else{
+                optionalFood = itemStack;
             }
         }
+        if(foods.isEmpty()){
+            if(player.getHealth() < player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() - 1 && optionalFood != null){
+                if(optionalFood.getAmount() == 1) optionalFood.setType(Material.AIR);
+                else optionalFood.subtract();
+                event.setCancelled(true);
+                player.setFoodLevel(player.getFoodLevel() + hungerPointsPerFood(optionalFood));
+                player.setSaturation(player.getSaturation() + saturationPointsPerFood(optionalFood));
+                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1, 1);
+                applyEffectPerFood(player, optionalFood);
+                return;
+            }
+            return;
+        }
+        int maxValue = 0;
+        for(Map.Entry<Integer, ItemStack> entry : foods.entrySet()){
+            if(maxValue < entry.getKey()){
+                maxValue = entry.getKey();
+            }
+        }
+        ItemStack itemStack = foods.get(maxValue);
+        if(itemStack.getAmount() == 1) itemStack.setType(Material.AIR);
+        else itemStack.subtract();
+        event.setCancelled(true);
+        player.setFoodLevel(player.getFoodLevel() + maxValue);
+        player.setSaturation(player.getSaturation() + saturationPointsPerFood(itemStack));
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1, 1);
+        applyEffectPerFood(player, itemStack);
     }
 
     @EventHandler
     private static void onClick(InventoryClickEvent event){
-        if(!BackpackAction.getAction((Player) event.getWhoClicked()).equals(BackpackAction.Action.UPGAUTOFEED)) return;
-        if(event.getRawSlot() < 27 && !fillSlots.contains(event.getRawSlot()))  event.setCancelled(true);
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-        List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.AUTOFEED);
-        AutoFeedUpgrade upgrade = (AutoFeedUpgrade) list.get(0);
-
-        if(event.getRawSlot() == 10){
+        if(!BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.UPGAUTOFEED)) return;
+        event.setCancelled(true);
+        if(event.getRawSlot() == 13){
+            BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
+            List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.AUTOFEED);
+            AutoFeedUpgrade upgrade = (AutoFeedUpgrade) list.get(0);
             upgrade.setEnabled(!upgrade.isEnabled());
             upgrade.updateInventory();
         }
@@ -80,21 +105,9 @@ public class AutoFeed implements Listener {
 
     @EventHandler
     private static void onClose(InventoryCloseEvent event){
-        if(!BackpackAction.getAction((Player) event.getPlayer()).equals(BackpackAction.Action.UPGAUTOFEED)) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
-
-        for (int i : fillSlots) {
-            ItemStack itemStack = event.getInventory().getItem(i);
-            if (itemStack == null){
-                continue;
-            }
-            if (!checkFood(itemStack)) {
-                event.getPlayer().getInventory().addItem(itemStack);
-                event.getInventory().remove(itemStack);
-            }
-        }
-
-        BackpackAction.removeAction((Player) event.getPlayer());
+        if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.UPGAUTOFEED)) return;
+        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
+        BackpackAction.clearPlayerActions(event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
@@ -262,6 +275,7 @@ public class AutoFeed implements Listener {
             case CHORUS_FRUIT -> {
                 Location location = player.getLocation().add(ThreadLocalRandom.current().nextInt(-8, 8), 0, ThreadLocalRandom.current().nextInt(-8, 8));
                 player.teleportAsync(player.getWorld().getHighestBlockAt(location).getLocation());
+                player.getWorld().playSound(player.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1,1);
             }
         }
     }

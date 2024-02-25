@@ -4,6 +4,7 @@ import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.BackpackType;
+import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -43,11 +44,15 @@ public class BpGive implements CommandExecutor, TabCompleter {
         try{
             BackpackType backpackType = BackpackType.valueOf(args[1]);
             backPack = new BackPack(backpackType, Main.backPackManager.getBackpackIds() + 1);
-            Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
         }   catch (IllegalArgumentException e){
             sender.sendMessage(Main.PREFIX + "§cBackpack type not found!");
             return true;
         }
+        Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
+        Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
+        new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+        new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+        new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
 
         if(!target.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack)).isEmpty()){
             sender.sendMessage(Main.PREFIX + "§cPlayer inventory is full! Dropped item on the ground.");

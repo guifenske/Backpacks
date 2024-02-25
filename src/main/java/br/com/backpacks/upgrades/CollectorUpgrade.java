@@ -21,7 +21,7 @@ public class CollectorUpgrade extends Upgrade {
         super(UpgradeType.COLLECTOR, id);
         this.enabled = false;
         this.mode = 0;
-        this.inventory = Bukkit.createInventory(null, 27, "§6Collector: mode " + this.mode);
+        this.inventory = Bukkit.createInventory(null, 27, "§6Collector");
         updateInventory();
     }
 
