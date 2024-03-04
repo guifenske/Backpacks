@@ -3,6 +3,14 @@ maxThreads: 1
 
 debug: false
 
+#MySQL
+mysql:
+    enabled: false
+    url: "jdbc:mysql://localhost:3306/"
+    database: "backpacks"
+    username: "root"
+    password: ""
+
 autobackup:
   enabled: true
   #the type of backup to use, valid values are: MINUTES, HOURS, SECONDS

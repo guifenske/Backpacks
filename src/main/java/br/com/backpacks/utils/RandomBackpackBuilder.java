@@ -33,7 +33,7 @@ public class RandomBackpackBuilder {
             BackPack backPack = new BackPack(name, generateFistPage(), id, type);
             backPack.setIsBlock(false);
             if(shouldGenerateUpgrades()){
-                backPack.setBackpackUpgrade(generateUpgrades());
+                backPack.setBackpackUpgrades(generateUpgrades());
             }
             Main.backPackManager.getBackpacks().put(id, backPack);
             return backPack;
@@ -42,7 +42,7 @@ public class RandomBackpackBuilder {
         BackPack backPack = new BackPack(name, generateFistPage(), generateSecondPage(), id, type);
         backPack.setIsBlock(false);
         if(shouldGenerateUpgrades()){
-            backPack.setBackpackUpgrade(generateUpgrades());
+            backPack.setBackpackUpgrades(generateUpgrades());
         }
         Main.backPackManager.getBackpacks().put(id, backPack);
         return backPack;

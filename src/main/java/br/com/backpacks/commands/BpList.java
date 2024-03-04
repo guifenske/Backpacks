@@ -1,7 +1,7 @@
 package br.com.backpacks.commands;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.BackpackAction;
@@ -114,7 +114,7 @@ public class BpList implements CommandExecutor, Listener {
         }
         if(event.getRawSlot() > 52) return;
         if(event.getCurrentItem() == null) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+        BackPack backPack = Main.backPackManager.getBackpackFromId(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
 
         BackpackAction.clearPlayerActions(player);
         Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{

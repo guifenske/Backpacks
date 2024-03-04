@@ -30,14 +30,19 @@ public class OnClickBackpack implements Listener {
             if(backPack.getSecondPageSize() == 0) return;
             event.setCancelled(true);
 
-
             switch (Main.backPackManager.getCurrentPage().get(player.getUniqueId())) {
                 case 1 ->{
-                    backPack.openSecondPage(player);
+                    BackpackAction.getActions(player).remove(BackpackAction.Action.OPENED);
+                    Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
+                        backPack.openSecondPage(player);
+                    }, 1L);
                     event.setCancelled(true);
                 }
                 case 2 -> {
-                    backPack.open(player);
+                    BackpackAction.getActions(player).remove(BackpackAction.Action.OPENED);
+                    Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
+                        backPack.open(player);
+                    }, 1L);
                     event.setCancelled(true);
                 }
             }

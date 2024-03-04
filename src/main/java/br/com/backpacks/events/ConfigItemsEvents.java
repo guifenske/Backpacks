@@ -1,6 +1,6 @@
 package br.com.backpacks.events;
 
-import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
+import br.com.backpacks.recipes.UpgradesRecipes;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,21 +14,21 @@ public class ConfigItemsEvents implements Listener {
 
     @EventHandler
     private void onPlace(BlockPlaceEvent event){
-        if(event.getItemInHand().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade(), PersistentDataType.INTEGER)){
+        if(event.getItemInHand().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().isUpgrade(), PersistentDataType.INTEGER)){
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     private void onEat(PlayerItemConsumeEvent event){
-        if(event.getItem().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade(), PersistentDataType.INTEGER)){
+        if(event.getItem().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().isUpgrade(), PersistentDataType.INTEGER)){
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     private void onItemDispense(BlockDispenseEvent event){
-        if(event.getItem().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade(), PersistentDataType.INTEGER)){
+        if(event.getItem().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().isUpgrade(), PersistentDataType.INTEGER)){
             event.setCancelled(true);
         }
     }
@@ -37,7 +37,7 @@ public class ConfigItemsEvents implements Listener {
     private void onUse(PlayerInteractEvent event){
         if(event.getItem() == null) return;
         if(event.getItem().getType().equals(Material.BUCKET) && event.getItem().hasItemMeta()){
-            if(event.getItem().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipesNamespaces().isUpgrade(), PersistentDataType.INTEGER)){
+            if(event.getItem().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().isUpgrade(), PersistentDataType.INTEGER)){
                 event.setCancelled(true);
             }
         }

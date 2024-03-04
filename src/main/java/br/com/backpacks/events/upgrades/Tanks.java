@@ -37,14 +37,14 @@ public class Tanks implements Listener {
         switch (event.getRawSlot()){
             case 12 -> {
                 BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-                TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getUpgradesFromType(UpgradeType.LIQUIDTANK).get(0);
+                TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getUpgradeFromType(UpgradeType.LIQUIDTANK);
                 Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
                     generalLogic(tanksUpgrade, 1);
                 }, 1L);
             }
             case 14 ->{
                 BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-                TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getUpgradesFromType(UpgradeType.LIQUIDTANK).get(0);
+                TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getUpgradeFromType(UpgradeType.LIQUIDTANK);
                 Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
                     generalLogic(tanksUpgrade, 2);
                 }, 1L);

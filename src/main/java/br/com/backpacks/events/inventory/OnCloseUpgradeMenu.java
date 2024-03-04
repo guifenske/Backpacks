@@ -62,11 +62,11 @@ public class OnCloseUpgradeMenu implements Listener {
         }
 
         //stop ticking upgrades when not in the backpack
-        if(!backPack.getBackpackUpgrade().isEmpty()){
+        if(!backPack.getBackpackUpgrades().isEmpty()){
             if(newUpgrades.isEmpty()){
                 backPack.stopTickingAllUpgrades();
             }   else{
-                for(Upgrade upgrade : backPack.getBackpackUpgrade()){
+                for(Upgrade upgrade : backPack.getBackpackUpgrades()){
                     //was removed
                     if(!newUpgradesIds.contains(upgrade.getId())){
                         backPack.stopTickingUpgrade(upgrade.getId());
@@ -75,7 +75,7 @@ public class OnCloseUpgradeMenu implements Listener {
             }
         }
 
-        backPack.setBackpackUpgrade(newUpgrades);
+        backPack.setBackpackUpgrades(newUpgrades);
         InventoryBuilder.updateConfigInv(backPack);
         InventoryBuilder.updateEditIOInv(backPack);
         BackpackAction.clearPlayerActions(event.getPlayer());

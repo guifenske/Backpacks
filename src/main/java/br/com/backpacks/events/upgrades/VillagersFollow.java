@@ -1,11 +1,10 @@
 package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.upgrades.VillagersFollowUpgrade;
 import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.BackpackAction;
-import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeType;
 import com.destroystokyo.paper.entity.Pathfinder;
 import org.bukkit.Bukkit;
@@ -24,21 +23,19 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class VillagersFollow implements Listener {
     public static void tick() {
         Main.getMain().getThreadBackpacks().getExecutor().scheduleAtFixedRate(() ->{
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (!player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER)) continue;
+                if (!player.getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) continue;
                 if (!player.getInventory().getItemInMainHand().getType().equals(Material.EMERALD_BLOCK) && !player.getInventory().getItemInOffHand().getType().equals(Material.EMERALD_BLOCK)) {
                     continue;
                 }
-                BackPack backpack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER));
-                List<Upgrade> list = backpack.getUpgradesFromType(UpgradeType.VILLAGERSFOLLOW);
-                if (list.isEmpty()) continue;
-                VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) list.get(0);
+                BackPack backpack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+                if(backpack.getUpgradeFromType(UpgradeType.VILLAGERSFOLLOW) == null) continue;
+                VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) backpack.getUpgradeFromType(UpgradeType.VILLAGERSFOLLOW);
 
                 if (!upgrade.isEnabled()) {
                     continue;
@@ -56,8 +53,7 @@ public class VillagersFollow implements Listener {
         }
         event.setCancelled(true);
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
-        List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.VILLAGERSFOLLOW);
-        VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) list.get(0);
+        VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) backPack.getUpgradeFromType(UpgradeType.VILLAGERSFOLLOW);
 
         if (event.getRawSlot() == 13) {
             upgrade.setEnabled(!upgrade.isEnabled());

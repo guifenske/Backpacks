@@ -3,7 +3,7 @@ package br.com.backpacks.events.inventory;
 import br.com.backpacks.Main;
 import br.com.backpacks.events.upgrades.Furnace;
 import br.com.backpacks.events.upgrades.Jukebox;
-import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
@@ -137,9 +137,9 @@ public class OnClickInConfigMenu implements Listener {
                 if(BackpackAction.getActions(player).contains(BackpackAction.Action.BPLIST)) return;
                 if (backPack.getOwner() != null && backPack.getOwner().equals(player.getUniqueId())){
                     player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
-                    player.getPersistentDataContainer().remove(new RecipesNamespaces().getHAS_BACKPACK());
-                    if(!backPack.getUpgradesFromType(UpgradeType.JUKEBOX).isEmpty()){
-                        JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
+                    player.getPersistentDataContainer().remove(new BackpackRecipes().getHAS_BACKPACK());
+                    if(backPack.getUpgradeFromType(UpgradeType.JUKEBOX) != null){
+                        JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradeFromType(UpgradeType.JUKEBOX);
                         if(upgrade.getSound() != null){
                             upgrade.clearLoopingTask();
                             Jukebox.stopSound(player, upgrade);
@@ -148,9 +148,9 @@ public class OnClickInConfigMenu implements Listener {
 
                     backPack.setOwner(null);
                 } else if(backPack.getOwner() == null){
-                    if(player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
+                    if(player.getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
                     player.getInventory().remove(RecipesUtils.getItemFromBackpack(backPack));
-                    player.getPersistentDataContainer().set(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER, backPack.getId());
+                    player.getPersistentDataContainer().set(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER, backPack.getId());
                     backPack.setOwner(player.getUniqueId());
                 }
 

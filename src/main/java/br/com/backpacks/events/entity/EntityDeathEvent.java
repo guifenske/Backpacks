@@ -2,7 +2,7 @@ package br.com.backpacks.events.entity;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.events.upgrades.Jukebox;
-import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
 import br.com.backpacks.utils.BackPack;
@@ -29,8 +29,8 @@ public class EntityDeathEvent implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     private void onPlayerDeath(org.bukkit.event.entity.PlayerDeathEvent event){
-        if(!event.getPlayer().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
-        BackPack backpack = Main.backPackManager.getBackpackFromId(event.getPlayer().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        if(!event.getPlayer().getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
+        BackPack backpack = Main.backPackManager.getBackpackFromId(event.getPlayer().getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
         Player player = event.getPlayer();
         Location location = safeLocation(player.getLocation().toBlockLocation());
 
@@ -41,8 +41,8 @@ public class EntityDeathEvent implements Listener {
         Barrel barrel = (Barrel) location.getBlock().getState();
         barrel.getInventory().addItem(new ItemStack(Material.STICK));
 
-        if(!backpack.getUpgradesFromType(UpgradeType.JUKEBOX).isEmpty()){
-            JukeboxUpgrade upgrade = (JukeboxUpgrade) backpack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
+        if(backpack.getUpgradeFromType(UpgradeType.JUKEBOX) != null){
+            JukeboxUpgrade upgrade = (JukeboxUpgrade) backpack.getUpgradeFromType(UpgradeType.JUKEBOX);
             if(upgrade.getSound() != null){
                 upgrade.clearLoopingTask();
                 Jukebox.stopSound(player, upgrade);
@@ -54,7 +54,7 @@ public class EntityDeathEvent implements Listener {
         backpack.setLocation(location);
         InventoryBuilder.updateConfigInv(backpack);
         Main.backPackManager.getBackpacksPlacedLocations().put(backpack.getLocation(), backpack.getId());
-        player.getPersistentDataContainer().remove(new RecipesNamespaces().getHAS_BACKPACK());
+        player.getPersistentDataContainer().remove(new BackpackRecipes().getHAS_BACKPACK());
         double y = backpack.getLocation().getY() + 1;
         Component component = Component.text(Main.PREFIX + "§cYou died and your backpack was placed on: " + backpack.getLocation().getX() + ", " + backpack.getLocation().getY() + ", " + backpack.getLocation().getZ() + "! Click to tp!")
                 .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + backpack.getLocation().getX() + " " + y + " " + backpack.getLocation().getZ()));

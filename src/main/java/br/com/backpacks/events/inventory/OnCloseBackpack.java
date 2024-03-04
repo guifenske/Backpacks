@@ -1,7 +1,7 @@
 package br.com.backpacks.events.inventory;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.BackpackAction;
 import br.com.backpacks.utils.UpgradeType;
@@ -15,7 +15,7 @@ import org.bukkit.persistence.PersistentDataType;
 public class OnCloseBackpack implements Listener {
 
     @EventHandler
-    private void OnClose(InventoryCloseEvent event){
+    private void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.OPENED)) return;
         BackpackAction.clearPlayerActions(event.getPlayer());
 
@@ -37,7 +37,7 @@ public class OnCloseBackpack implements Listener {
         for(ItemStack itemStack : backPack.getFirstPage()){
             if(itemStack == null) continue;
             if(!itemStack.hasItemMeta()) continue;
-            if(itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack(), PersistentDataType.INTEGER) && !backPack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
+            if(itemStack.getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER) && !backPack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
                 if(!event.getPlayer().getInventory().addItem(itemStack).isEmpty()){
                     event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
                     event.getPlayer().sendMessage("§cYour inventory is full, the backpack was dropped on the ground.");
@@ -50,7 +50,7 @@ public class OnCloseBackpack implements Listener {
             for(ItemStack itemStack : backPack.getSecondPage()){
                 if(itemStack == null) continue;
                 if(!itemStack.hasItemMeta()) continue;
-                if(itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack(), PersistentDataType.INTEGER) && !backPack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
+                if(itemStack.getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER) && !backPack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
                     if(!event.getPlayer().getInventory().addItem(itemStack).isEmpty()){
                         event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
                         event.getPlayer().sendMessage("§cYour inventory is full, the backpack was dropped on the ground.");

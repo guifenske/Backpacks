@@ -1,4 +1,4 @@
-package br.com.backpacks.yaml;
+package br.com.backpacks.storage;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.upgrades.*;
@@ -7,30 +7,52 @@ import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class YamlUtils {
+public final class YamlProvider extends StorageProvider {
+    private String backpacksPath;
+    private String upgradesPath;
 
-    public static void saveBackpacks(String path) throws IOException {
-        File file = new File(path);
+    public YamlProvider(String backpacksPath, String upgradesPath) {
+        super(StorageManager.StorageProviderType.YAML);
+        this.backpacksPath = backpacksPath;
+        this.upgradesPath = upgradesPath;
+    }
+
+    public String getBackpacksPath() {
+        return backpacksPath;
+    }
+
+    public void setBackpacksPath(String backpacksPath) {
+        this.backpacksPath = backpacksPath;
+    }
+
+    public String getUpgradesPath() {
+        return upgradesPath;
+    }
+
+    public void setUpgradesPath(String upgradesPath) {
+        this.upgradesPath = upgradesPath;
+    }
+
+    @Override
+    public void saveBackpacks() throws IOException {
+        File file = new File(backpacksPath);
         YamlConfiguration config = new YamlConfiguration();
 
         for (BackPack backPack : Main.backPackManager.getBackpacks().values()) {
             config.set(backPack.getId() + ".loc", null);
             if(backPack.getLocation() != null){
-                List<String> data = serializeLocation(backPack.getLocation());
+                List<String> data = SerializationUtils.serializeLocationToList(backPack.getLocation());
                 config.set(backPack.getId() + ".loc", data);
             }
             if(backPack.getOutputUpgrade() != -1){
@@ -40,14 +62,14 @@ public final class YamlUtils {
                 config.set(backPack.getId() + ".inp", backPack.getInputUpgrade());
             }
             if(backPack.isShowingNameAbove()){
-                config.set(backPack.getId() + ".shownameabove", backPack.isShowingNameAbove());
+                config.set(backPack.getId() + ".shownameabove", true);
             }
             config.set(backPack.getId() + ".i", backPack.serialize());
             saveStorageContents(backPack, config);
             if(backPack.getOwner() != null){
                 config.set(backPack.getId() + ".owner", backPack.getOwner().toString());
             }
-            if (backPack.getBackpackUpgrade() != null && !backPack.getBackpackUpgrade().isEmpty()) {
+            if (backPack.getBackpackUpgrades() != null && !backPack.getBackpackUpgrades().isEmpty()) {
                 serializeUpgrades(config, backPack);
             }
         }
@@ -55,8 +77,9 @@ public final class YamlUtils {
         config.save(file);
     }
 
-    public static void saveUpgrades(String path) throws IOException {
-        File file = new File(path);
+    @Override
+    public void saveUpgrades() throws IOException {
+        File file = new File(upgradesPath);
         YamlConfiguration config = new YamlConfiguration();
 
         for(Upgrade upgrade : UpgradeManager.getUpgrades().values()){
@@ -64,7 +87,7 @@ public final class YamlUtils {
             UpgradeType type = upgrade.getType();
             switch (type){
                 case FURNACE, BLAST_FURNACE, SMOKER -> {
-                    Main.getMain().debugMessage("Saving furnace upgrade " + upgrade.getId());
+                    Main.debugMessage("Saving furnace upgrade " + upgrade.getId());
                     FurnaceUpgrade furnaceUpgrade = (FurnaceUpgrade) upgrade;
                     if(furnaceUpgrade.getResult() != null)  config.set(upgrade.getId() + ".furnace.result", furnaceUpgrade.getResult());
                     if(furnaceUpgrade.getFuel() != null)  config.set(upgrade.getId() + ".furnace.fuel", furnaceUpgrade.getFuel());
@@ -74,7 +97,7 @@ public final class YamlUtils {
                 }
                 case JUKEBOX -> {
                     JukeboxUpgrade jukeboxUpgrade = (JukeboxUpgrade) upgrade;
-                    Main.getMain().debugMessage("Saving jukebox upgrade " + jukeboxUpgrade.getId());
+                    Main.debugMessage("Saving jukebox upgrade " + jukeboxUpgrade.getId());
                     if(!jukeboxUpgrade.getDiscs().isEmpty()){
                         for(Map.Entry<Integer, ItemStack> item : jukeboxUpgrade.getDiscs().entrySet()){
                             config.set(upgrade.getId() + ".jukebox.discs." + item.getKey(), item.getValue().getType().name());
@@ -84,23 +107,23 @@ public final class YamlUtils {
                 }
                 case AUTOFEED -> {
                     AutoFeedUpgrade autoFeedUpgrade = (AutoFeedUpgrade) upgrade;
-                    Main.getMain().debugMessage("Saving auto feed upgrade " + autoFeedUpgrade.getId());
+                    Main.debugMessage("Saving auto feed upgrade " + autoFeedUpgrade.getId());
                     config.set(upgrade.getId() + ".autofeed.enabled", autoFeedUpgrade.isEnabled());
                 }
                 case VILLAGERSFOLLOW -> {
                     VillagersFollowUpgrade followUpgrade = (VillagersFollowUpgrade) upgrade;
-                    Main.getMain().debugMessage("Saving villager upgrade " + followUpgrade.getId());
+                    Main.debugMessage("Saving villager upgrade " + followUpgrade.getId());
                     config.set(upgrade.getId() + ".villager.enabled", followUpgrade.isEnabled());
                 }
                 case COLLECTOR -> {
                     CollectorUpgrade collectorUpgrade = (CollectorUpgrade) upgrade;
-                    Main.getMain().debugMessage("Saving collector upgrade " + collectorUpgrade.getId());
+                    Main.debugMessage("Saving collector upgrade " + collectorUpgrade.getId());
                     config.set(upgrade.getId() + ".collector.enabled", collectorUpgrade.isEnabled());
                     config.set(upgrade.getId() + ".collector.mode", collectorUpgrade.getMode());
                 }
                 case LIQUIDTANK -> {
                     TanksUpgrade tanksUpgrade = (TanksUpgrade) upgrade;
-                    Main.getMain().debugMessage("Saving tank upgrade " + tanksUpgrade.getId());
+                    Main.debugMessage("Saving tank upgrade " + tanksUpgrade.getId());
                     if(!tanksUpgrade.getItemsPerTank(1).isEmpty()){
                         for(Map.Entry<Integer, ItemStack> item : tanksUpgrade.getItemsPerTank(1).entrySet()){
                             config.set(upgrade.getId() + ".tank1." + item.getKey(), item.getValue());
@@ -119,7 +142,8 @@ public final class YamlUtils {
         config.save(file);
     }
 
-    public static void loadUpgrades(){
+    @Override
+    public void loadUpgrades(){
         File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         UpgradeManager.lastUpgradeID = 0;
@@ -233,14 +257,15 @@ public final class YamlUtils {
                         upgrade.getInventory().setItem(14, config.getItemStack(i + ".14"));
                     }
 
-                    Main.getMain().debugMessage("loading tank upgrade: " + i);
+                    Main.debugMessage("loading tank upgrade: " + i);
                     UpgradeManager.getUpgrades().put(id, upgrade);
                 }
             }
         }
     }
 
-    public static void loadBackpacks() {
+    @Override
+    public void loadBackpacks() {
         File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         Main.backPackManager.setBackpackIds(0);
@@ -248,14 +273,14 @@ public final class YamlUtils {
         for (String i : config.getKeys(false)) {
             BackPack backPack = new BackPack().deserialize(config, i);
             if(config.isSet(i + ".loc")){
-                backPack.setLocation(deserializeLocation(config.getStringList(i + ".loc")));
+                backPack.setLocation(SerializationUtils.deserializeLocationAsList(config.getStringList(i + ".loc")));
                 backPack.setIsBlock(true);
                 if(config.isSet(i + ".shownameabove")){
                     backPack.setShowNameAbove(true);
                 }
                 Main.backPackManager.getBackpacksPlacedLocations().put(backPack.getLocation(), backPack.getId());
             }
-            Main.getMain().debugMessage("Loading backpack " + backPack.getName() + " id " + backPack.getId());
+            Main.debugMessage("Loading backpack " + backPack.getName() + " id " + backPack.getId());
             Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
 
             new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
@@ -270,7 +295,7 @@ public final class YamlUtils {
         }
     }
 
-    public static void loadBackpacks(ConcurrentHashMap<Integer, BackPack> hashMap){
+    public void loadBackpacks(ConcurrentHashMap<Integer, BackPack> hashMap){
         Main.backPackManager.setBackpackIds(0);
         Main.backPackManager.setBackpacks(hashMap);
         Main.backPackManager.getBackpacksPlacedLocations().clear();
@@ -293,7 +318,7 @@ public final class YamlUtils {
         }
     }
 
-    public static void loadUpgrades(ConcurrentHashMap<Integer, Upgrade> hashMap){
+    public void loadUpgrades(ConcurrentHashMap<Integer, Upgrade> hashMap){
         UpgradeManager.lastUpgradeID = 0;
         UpgradeManager.setUpgrades(hashMap);
         if(hashMap.isEmpty()) return;
@@ -305,30 +330,12 @@ public final class YamlUtils {
         }
     }
 
-    private static void serializeUpgrades(YamlConfiguration config, BackPack backPack){
+    private void serializeUpgrades(YamlConfiguration config, BackPack backPack){
         config.set(backPack.getId() + ".u", null);
         config.set(backPack.getId() + ".u", backPack.getUpgradesIds());
     }
 
-    private static List<String> serializeLocation(Location location) {
-        List<String> data = new ArrayList<>();
-        data.add(location.getWorld().getName());
-        data.add(String.valueOf(location.getX()));
-        data.add(String.valueOf(location.getY()));
-        data.add(String.valueOf(location.getZ()));
-        return data;
-    }
-
-    private static Location deserializeLocation(List<String> oldData) {
-        String world = oldData.get(0);
-        double x = Double.parseDouble(oldData.get(1));
-        double y = Double.parseDouble(oldData.get(2));
-        double z = Double.parseDouble(oldData.get(3));
-
-        return new Location(Bukkit.getServer().getWorld(world), x, y, z);
-    }
-
-    private static void saveStorageContents(BackPack backPack, YamlConfiguration config){
+    private void saveStorageContents(BackPack backPack, YamlConfiguration config){
         int i = 0;
         int i1 = 0;
         config.set(backPack.getId() + ".1", null);

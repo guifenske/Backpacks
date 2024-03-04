@@ -1,11 +1,10 @@
 package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.upgrades.AutoFeedUpgrade;
 import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.BackpackAction;
-import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeType;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -24,24 +23,20 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AutoFeed implements Listener {
     @EventHandler
     private static void tick(FoodLevelChangeEvent event){
         Player player = (Player) event.getEntity();
-        if(!player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER));
-        List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.AUTOFEED);
-        if(list.isEmpty()) return;
-        AutoFeedUpgrade upgrade = (AutoFeedUpgrade) list.get(0);
+        if(!player.getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
+        BackPack backPack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        if(backPack.getUpgradeFromType(UpgradeType.AUTOFEED) == null) return;
+        AutoFeedUpgrade upgrade = (AutoFeedUpgrade) backPack.getUpgradeFromType(UpgradeType.AUTOFEED);
         if(!upgrade.isEnabled() || backPack.getBackpackItems().isEmpty()) return;
         int need = 20 - player.getFoodLevel();
 
-        HashMap<Integer, ItemStack> foods = new HashMap<>();
+        ItemStack lesserHungerPointsItem = null;
         ItemStack optionalFood = null;
         for(ItemStack itemStack : backPack.getBackpackItems()){
             if(!checkFood(itemStack)) continue;
@@ -56,12 +51,15 @@ public class AutoFeed implements Listener {
                 applyEffectPerFood(player, itemStack);
                 return;
             }   else if(hungerPoints < need){
-                foods.put(hungerPoints, itemStack);
+                if(lesserHungerPointsItem == null) lesserHungerPointsItem = itemStack;
+                else if(hungerPoints > hungerPointsPerFood(lesserHungerPointsItem)){
+                    lesserHungerPointsItem = itemStack;
+                }
             }   else{
                 optionalFood = itemStack;
             }
         }
-        if(foods.isEmpty()){
+        if(lesserHungerPointsItem == null){
             if(player.getHealth() < player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() - 1 && optionalFood != null){
                 if(optionalFood.getAmount() == 1) optionalFood.setType(Material.AIR);
                 else optionalFood.subtract();
@@ -74,17 +72,11 @@ public class AutoFeed implements Listener {
             }
             return;
         }
-        int maxValue = 0;
-        for(Map.Entry<Integer, ItemStack> entry : foods.entrySet()){
-            if(maxValue < entry.getKey()){
-                maxValue = entry.getKey();
-            }
-        }
-        ItemStack itemStack = foods.get(maxValue);
+        ItemStack itemStack = lesserHungerPointsItem;
         if(itemStack.getAmount() == 1) itemStack.setType(Material.AIR);
         else itemStack.subtract();
         event.setCancelled(true);
-        player.setFoodLevel(player.getFoodLevel() + maxValue);
+        player.setFoodLevel(player.getFoodLevel() + hungerPointsPerFood(itemStack));
         player.setSaturation(player.getSaturation() + saturationPointsPerFood(itemStack));
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1, 1);
         applyEffectPerFood(player, itemStack);
@@ -96,8 +88,7 @@ public class AutoFeed implements Listener {
         event.setCancelled(true);
         if(event.getRawSlot() == 13){
             BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-            List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.AUTOFEED);
-            AutoFeedUpgrade upgrade = (AutoFeedUpgrade) list.get(0);
+            AutoFeedUpgrade upgrade = (AutoFeedUpgrade) backPack.getUpgradeFromType(UpgradeType.AUTOFEED);
             upgrade.setEnabled(!upgrade.isEnabled());
             upgrade.updateInventory();
         }

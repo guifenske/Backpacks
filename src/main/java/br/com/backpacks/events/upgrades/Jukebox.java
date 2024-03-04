@@ -1,7 +1,7 @@
 package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
 import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.BackpackAction;
@@ -67,9 +67,8 @@ public class Jukebox implements Listener {
         }
 
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-        if(backPack.getUpgradesFromType(UpgradeType.JUKEBOX).isEmpty()) return;
-        JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
-        boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER) || backPack.isBlock();
+        JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradeFromType(UpgradeType.JUKEBOX);
+        boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER) || backPack.isBlock();
 
         switch (event.getRawSlot()){
             case 9 ->{
@@ -126,7 +125,7 @@ public class Jukebox implements Listener {
     private void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.UPGJUKEBOX)) return;
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
-        JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradesFromType(UpgradeType.JUKEBOX).get(0);
+        JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradeFromType(UpgradeType.JUKEBOX);
         for(int i : discsSlots){
             if(event.getInventory().getItem(i) == null) continue;
             if(!checkDisk(event.getInventory().getItem(i))){

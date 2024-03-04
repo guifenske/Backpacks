@@ -9,7 +9,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
 
-public class RecipesNamespaces {
+public class BackpackRecipes {
 
     public NamespacedKey isBackpack() {
         return IS_BACKPACK;

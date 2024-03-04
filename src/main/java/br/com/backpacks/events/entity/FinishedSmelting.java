@@ -1,7 +1,7 @@
 package br.com.backpacks.events.entity;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.RandomBackpackBuilder;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
@@ -17,14 +17,14 @@ public class FinishedSmelting implements Listener {
 
     @EventHandler
     private void onSmelt(BlockCookEvent event){
-        if(!event.getResult().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_DRIED_BACKPACK(), PersistentDataType.INTEGER)) return;
+        if(!event.getResult().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getNAMESPACE_DRIED_BACKPACK(), PersistentDataType.INTEGER)) return;
 
         ItemStack driedBackpack = new ItemStack(Material.BARREL);
         ItemMeta meta = driedBackpack.getItemMeta();
         meta.setDisplayName("Unknown Backpack");
-        meta.getPersistentDataContainer().set(new RecipesNamespaces().isBackpack(), PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER, Main.backPackManager.getBackpackIds() + 1);
-        RandomBackpackBuilder randomBackpackBuilder = new RandomBackpackBuilder("Unknown Backpack", meta.getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+        meta.getPersistentDataContainer().set(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER, Main.backPackManager.getBackpackIds() + 1);
+        RandomBackpackBuilder randomBackpackBuilder = new RandomBackpackBuilder("Unknown Backpack", meta.getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
         BackPack backPack = randomBackpackBuilder.generateBackpack();
         meta.getPersistentDataContainer().set(backPack.getNamespace(), PersistentDataType.INTEGER, 1);
         driedBackpack.setItemMeta(meta);

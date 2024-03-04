@@ -1,11 +1,10 @@
 package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.upgrades.CollectorUpgrade;
 import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.BackpackAction;
-import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -22,12 +21,11 @@ import java.util.List;
 public class Collector implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void onPickUp(PlayerAttemptPickupItemEvent event){
-        if(!event.getPlayer().getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(event.getPlayer().getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        if(!event.getPlayer().getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
+        BackPack backPack = Main.backPackManager.getBackpackFromId(event.getPlayer().getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
         if(backPack == null) return;
-        List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.COLLECTOR);
-        if(list.isEmpty()) return;
-        CollectorUpgrade upgrade = (CollectorUpgrade) list.get(0);
+        if(backPack.getUpgradeFromType(UpgradeType.COLLECTOR) == null) return;
+        CollectorUpgrade upgrade = (CollectorUpgrade) backPack.getUpgradeFromType(UpgradeType.COLLECTOR);
 
         if(!upgrade.isEnabled()) return;
         if(upgrade.getMode() == 0){
@@ -57,15 +55,13 @@ public class Collector implements Listener {
             switch (event.getRawSlot()){
                 case 11 -> {
                     BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-                    List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.COLLECTOR);
-                    CollectorUpgrade upgrade = (CollectorUpgrade) list.get(0);
+                    CollectorUpgrade upgrade = (CollectorUpgrade) backPack.getUpgradeFromType(UpgradeType.COLLECTOR);
                     upgrade.setEnabled(!upgrade.isEnabled());
                     upgrade.updateInventory();
                 }
                 case 13 -> {
                     BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-                    List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.COLLECTOR);
-                    CollectorUpgrade upgrade = (CollectorUpgrade) list.get(0);
+                    CollectorUpgrade upgrade = (CollectorUpgrade) backPack.getUpgradeFromType(UpgradeType.COLLECTOR);
                     upgrade.setMode(upgrade.getMode() == 0 ? 1 : 0);
                     upgrade.updateInventory();
                 }
