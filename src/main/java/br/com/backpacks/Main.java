@@ -108,7 +108,7 @@ public final class Main extends JavaPlugin {
         }
 
         if(getConfig().getBoolean("mysql.enabled")){
-            StorageManager.setProvider(new MySQLProvider(getConfig().getString("mysql.url"), getConfig().getString("mysql.username"), getConfig().getString("mysql.password"), getConfig().getString("mysql.database")));
+            StorageManager.setProvider(new MySQLProvider(getConfig().getString("mysql.url"), getConfig().getString("mysql.username"), getConfig().getString("mysql.password")));
         }   else{
             StorageManager.setProvider(new YamlProvider(getDataFolder().getAbsolutePath() + "/backpacks.yml", getDataFolder().getAbsolutePath() + "/upgrades.yml"));
         }

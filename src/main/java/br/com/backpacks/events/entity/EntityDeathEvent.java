@@ -66,9 +66,9 @@ public class EntityDeathEvent implements Listener {
         if(!(event.getEntity() instanceof Monster)) return;
         if(event.getEntity().getKiller() == null) return;
         if(Constants.MONSTER_DROPS_BACKPACK && ThreadLocalRandom.current().nextInt(830) == 69) {
-            RandomBackpackBuilder randomBackpackBuilder = new RandomBackpackBuilder("Unknown Backpack", Main.backPackManager.getBackpackIds() + 1);
+            RandomBackpackBuilder randomBackpackBuilder = new RandomBackpackBuilder("Unknown Backpack", Main.backPackManager.getLastBackpackID() + 1);
             BackPack backPack = randomBackpackBuilder.generateBackpack();
-            Main.backPackManager.setBackpackIds(Main.backPackManager.getBackpackIds() + 1);
+            Main.backPackManager.setLastBackpackID(Main.backPackManager.getLastBackpackID() + 1);
             new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
             new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
             new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();

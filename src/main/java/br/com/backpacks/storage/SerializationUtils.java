@@ -1,10 +1,12 @@
 package br.com.backpacks.storage;
 
+import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.utils.BackPack;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
@@ -13,7 +15,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SerializationUtils {
 
@@ -69,7 +73,7 @@ public class SerializationUtils {
         return new Location(Bukkit.getServer().getWorld(world), x, y, z);
     }
 
-    public static ByteArrayInputStream serializeInventory(Inventory inventory) throws IOException {
+    public static ByteArrayInputStream serializeBackpackInventory(Inventory inventory) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
 
@@ -82,6 +86,9 @@ public class SerializationUtils {
 
         dataOutput.writeInt(inventory.getSize());
         for(int i = 0; i < inventory.getSize(); i++){
+            if(inventory.getItem(i) == null) continue;
+            if(inventory.getItem(i).hasItemMeta() && inventory.getItem(i).getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
+            dataOutput.writeInt(i);
             dataOutput.writeObject(inventory.getItem(i));
         }
 
@@ -100,11 +107,75 @@ public class SerializationUtils {
             return;
         }
         for (int i = 0; i < size; i++) {
-            inventory.setItem(i, (ItemStack) dataInput.readObject());
+            int slot = dataInput.readInt();
+            ItemStack item = (ItemStack) dataInput.readObject();
+            inventory.setItem(slot, item);
+            if(dataInput.available() == 0) break;
         }
 
         dataInput.close();
     }
+
+    public static ByteArrayInputStream serializeItem(ItemStack itemStack) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
+        if(itemStack == null){
+            dataOutput.close();
+            return new ByteArrayInputStream(outputStream.toByteArray());
+        }
+        dataOutput.writeObject(itemStack);
+
+        dataOutput.close();
+        return new ByteArrayInputStream(outputStream.toByteArray());
+    }
+
+
+    public static ItemStack deserializeItem(InputStream inputStream) throws IOException, ClassNotFoundException {
+        if (inputStream == null || inputStream.available() == 0) return null;
+        BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
+        ItemStack itemStack = (ItemStack) dataInput.readObject();
+        dataInput.close();
+        return itemStack;
+    }
+
+    public static ByteArrayInputStream serializeHashMapItem(HashMap<Integer, ItemStack> hashMap) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
+        if(hashMap.isEmpty()){
+            dataOutput.close();
+            return new ByteArrayInputStream(outputStream.toByteArray());
+        }
+
+        dataOutput.writeInt(hashMap.size());
+        for(Map.Entry<Integer, ItemStack> entry : hashMap.entrySet()){
+            if(entry.getValue() == null) continue;
+            dataOutput.writeInt(entry.getKey());
+            dataOutput.writeObject(entry.getValue());
+        }
+
+        dataOutput.close();
+        return new ByteArrayInputStream(outputStream.toByteArray());
+    }
+
+    public static HashMap<Integer, ItemStack> deserializeHashMapItem(InputStream inputStream) throws IOException, ClassNotFoundException {
+        if (inputStream == null || inputStream.available() == 0) return new HashMap<>();
+        BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
+        HashMap<Integer, ItemStack> hashMap = new HashMap<>();
+
+        int size = dataInput.readInt();
+        if(size == 0){
+            dataInput.close();
+            return hashMap;
+        }
+
+        for(int i = 0; i < size; i++){
+            hashMap.put(dataInput.readInt(), (ItemStack) dataInput.readObject());
+        }
+
+        dataInput.close();
+        return hashMap;
+    }
+
 
     public static ByteArrayInputStream serializeUpgradesIds(BackPack backPack) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

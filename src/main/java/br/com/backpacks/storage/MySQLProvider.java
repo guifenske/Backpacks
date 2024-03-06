@@ -1,10 +1,11 @@
 package br.com.backpacks.storage;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.upgrades.FurnaceUpgrade;
+import br.com.backpacks.upgrades.*;
 import br.com.backpacks.utils.*;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
-import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 import java.sql.*;
@@ -14,26 +15,24 @@ public class MySQLProvider extends StorageProvider{
     private String url;
     private String user;
     private String password;
-    private String databaseName;
+    private final String databaseName;
 
-    public MySQLProvider(String url, String user, String password, String databaseName) {
+    public MySQLProvider(String url, String user, String password) {
         super(StorageManager.StorageProviderType.MYSQL);
         this.url = url;
         this.user = user;
         this.password = password;
-        this.databaseName = databaseName;
+        this.databaseName = "advbackpacks";
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
             DriverManager.getConnection(url, user, password);
-        }   catch (SQLException | ClassNotFoundException e) {
+        }   catch (SQLException e) {
             Main.getMain().getLogger().severe("Could not connect to MySQL... Using YAML as default storage provider.");
             StorageManager.setProvider(new YamlProvider(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml", Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml"));
             return;
         }
 
         createDatabase();
-        Main.getMain().getLogger().info("Connected to MySQL.");
     }
 
     public String getUrl() {
@@ -60,14 +59,6 @@ public class MySQLProvider extends StorageProvider{
         this.password = password;
     }
 
-    public String getDatabaseName() {
-        return databaseName;
-    }
-
-    public void setDatabaseName(String databaseName) {
-        this.databaseName = databaseName;
-    }
-
     public void createDatabase() {
         String createDatabase = "CREATE DATABASE IF NOT EXISTS " + databaseName + ";";
         try {
@@ -75,11 +66,14 @@ public class MySQLProvider extends StorageProvider{
             connection.prepareStatement(createDatabase).execute();
             connection.prepareStatement("USE " + databaseName + ";").execute();
             connection.prepareStatement("CREATE TABLE IF NOT EXISTS backpacks (id INT, bpType VARCHAR(255), loc BLOB, outputId INT, inputId INT, shownameabove BOOLEAN, bpname VARCHAR(255), owner VARCHAR(255), firstPage BLOB, secondPage BLOB, upgradesIds BLOB);").execute();
-            connection.prepareStatement("CREATE TABLE IF NOT EXISTS upgrades (id INT, upgradeType VARCHAR(255));").execute();
+            connection.prepareStatement("CREATE TABLE IF NOT EXISTS upgrades (id INT, upgradeType VARCHAR(255), enabled BOOLEAN, furnace_smelting BLOB, furnace_fuel BLOB, furnace_result BLOB, furnace_operation INT, furnace_maxoperation INT, jukebox_discs BLOB, jukebox_playing VARCHAR(255), collector_mode INT, tank_1 BLOB, tank_2 BLOB, tank_input_1 BLOB, tank_input_2 BLOB);").execute();
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            Main.getMain().getLogger().severe("Could not connect to MySQL... Using YAML as default storage provider.");
+            StorageManager.setProvider(new YamlProvider(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml", Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml"));
+            return;
         }
+        Main.getMain().getLogger().info("Connected to MySQL.");
     }
    @Override
    public void saveBackpacks() {
@@ -106,8 +100,8 @@ public class MySQLProvider extends StorageProvider{
                }    else{
                    preparedStatement.setString(8, backPack.getOwner().toString());
                }
-               preparedStatement.setBlob(9, SerializationUtils.serializeInventory(backPack.getFirstPage()));
-               preparedStatement.setBlob(10, SerializationUtils.serializeInventory(backPack.getSecondPage()));
+               preparedStatement.setBlob(9, SerializationUtils.serializeBackpackInventory(backPack.getFirstPage()));
+               preparedStatement.setBlob(10, SerializationUtils.serializeBackpackInventory(backPack.getSecondPage()));
                preparedStatement.setBlob(11, SerializationUtils.serializeUpgradesIds(backPack));
                preparedStatement.execute();
            }
@@ -129,14 +123,54 @@ public class MySQLProvider extends StorageProvider{
                return;
            }
            for(Upgrade upgrade : UpgradeManager.getUpgrades().values()){
-               PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO upgrades (id, upgradeType) VALUES (?, ?);");
+               PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO upgrades (id, upgradeType, enabled, furnace_smelting, furnace_fuel, furnace_result, furnace_operation, furnace_maxoperation, jukebox_discs, jukebox_playing, collector_mode, tank_1, tank_2, tank_input_1, tank_input_2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
                preparedStatement.setInt(1, upgrade.getId());
                preparedStatement.setString(2, upgrade.getType().toString());
+               switch (upgrade.getType()){
+                   case FURNACE, BLAST_FURNACE, SMOKER -> {
+                       FurnaceUpgrade furnaceUpgrade = (FurnaceUpgrade) upgrade;
+                       preparedStatement.setBlob(4, SerializationUtils.serializeItem(furnaceUpgrade.getSmelting()));
+                       preparedStatement.setBlob(5, SerializationUtils.serializeItem(furnaceUpgrade.getFuel()));
+                       preparedStatement.setBlob(6, SerializationUtils.serializeItem(furnaceUpgrade.getResult()));
+                       preparedStatement.setInt(7, furnaceUpgrade.getOperation());
+                       preparedStatement.setInt(8, furnaceUpgrade.getLastMaxOperation());
+                       Main.debugMessage("Saving furnace upgrade " + upgrade.getId());
+                   }
+                   case JUKEBOX -> {
+                       JukeboxUpgrade jukeboxUpgrade = (JukeboxUpgrade) upgrade;
+                       preparedStatement.setBlob(9, jukeboxUpgrade.serializeDiscs());
+                       if(jukeboxUpgrade.getInventory().getItem(13) != null)    preparedStatement.setString(10, jukeboxUpgrade.getInventory().getItem(13).getType().name());
+                       Main.debugMessage("Saving jukebox upgrade " + jukeboxUpgrade.getId());
+                   }
+                   case AUTOFEED -> {
+                       AutoFeedUpgrade autoFeedUpgrade = (AutoFeedUpgrade) upgrade;
+                       preparedStatement.setBoolean(3, autoFeedUpgrade.isEnabled());
+                       Main.debugMessage("Saving auto feed upgrade " + autoFeedUpgrade.getId());
+                   }
+                   case VILLAGERSFOLLOW -> {
+                       VillagersFollowUpgrade followUpgrade = (VillagersFollowUpgrade) upgrade;
+                       preparedStatement.setBoolean(3, followUpgrade.isEnabled());
+                       Main.debugMessage("Saving villager upgrade " + followUpgrade.getId());
+                   }
+                   case COLLECTOR -> {
+                       CollectorUpgrade collectorUpgrade = (CollectorUpgrade) upgrade;
+                       preparedStatement.setInt(11, collectorUpgrade.getMode());
+                       preparedStatement.setBoolean(3, collectorUpgrade.isEnabled());
+                       Main.debugMessage("Saving collector upgrade " + collectorUpgrade.getId());
+                   }
+                   case LIQUIDTANK -> {
+                       TanksUpgrade tanksUpgrade = (TanksUpgrade) upgrade;
+                       preparedStatement.setBlob(12, tanksUpgrade.serializeTank(1));
+                       preparedStatement.setBlob(13, tanksUpgrade.serializeTank(2));
+                       if(tanksUpgrade.getInventory().getItem(12) != null) preparedStatement.setBlob(14, SerializationUtils.serializeItem(tanksUpgrade.getInventory().getItem(12)));
+                       if(tanksUpgrade.getInventory().getItem(14) != null) preparedStatement.setBlob(15, SerializationUtils.serializeItem(tanksUpgrade.getInventory().getItem(14)));
+                       Main.debugMessage("Saving tank upgrade " + tanksUpgrade.getId());
+                   }
+               }
                preparedStatement.execute();
-               //TODO: save upgrades items, fuel, etc..
            }
            connection.close();
-       }    catch (SQLException e) {
+       }    catch (SQLException | IOException e) {
            e.printStackTrace();
        }
    }
@@ -150,16 +184,76 @@ public class MySQLProvider extends StorageProvider{
             Statement statement = connection.createStatement();
             ResultSet upgradeSet = statement.executeQuery("SELECT * FROM upgrades;");
             while(upgradeSet.next()){
-                switch (upgradeSet.getString("upgradeType")){
-                    case "FURNACE" -> {
-                        UpgradeManager.getUpgrades().put(upgradeSet.getInt("id"), new FurnaceUpgrade(UpgradeType.FURNACE, upgradeSet.getInt("id")));
+                int id = upgradeSet.getInt("id");
+                UpgradeType type = UpgradeType.valueOf(upgradeSet.getString("upgradeType"));
+                switch (type){
+                    case FURNACE, BLAST_FURNACE, SMOKER -> {
+                        FurnaceUpgrade upgrade = new FurnaceUpgrade(type, id);
+                        upgrade.setSmelting(SerializationUtils.deserializeItem(upgradeSet.getBlob("furnace_smelting").getBinaryStream()));
+                        upgrade.setFuel(SerializationUtils.deserializeItem(upgradeSet.getBlob("furnace_fuel").getBinaryStream()));
+                        upgrade.setResult(SerializationUtils.deserializeItem(upgradeSet.getBlob("furnace_result").getBinaryStream()));
+                        upgrade.setOperation(upgradeSet.getInt("furnace_operation"));
+                        upgrade.setLastMaxOperation(upgradeSet.getInt("furnace_max_operation"));
+                        upgrade.updateInventory();
+                        UpgradeManager.getUpgrades().put(id, upgrade);
+                        Main.debugMessage("loaded furnace upgrade " + id);
+                    }
+                    case JUKEBOX -> {
+                        JukeboxUpgrade upgrade = new JukeboxUpgrade(id);
+                        upgrade.deserializeDiscs(upgradeSet.getBlob("jukebox_discs").getBinaryStream());
+                        if(upgradeSet.getString("jukebox_playing") != null) upgrade.getInventory().setItem(13, new ItemStack(Material.valueOf(upgradeSet.getString("jukebox_playing"))));
+                        upgrade.updateInventory();
+                        UpgradeManager.getUpgrades().put(id, upgrade);
+                        Main.debugMessage("loaded jukebox upgrade " + id);
+                    }
+                    case COLLECTOR -> {
+                        CollectorUpgrade upgrade = new CollectorUpgrade(id);
+                        upgrade.setMode(upgradeSet.getInt("collector_mode"));
+                        upgrade.setEnabled(upgradeSet.getBoolean("enabled"));
+                        upgrade.updateInventory();
+                        UpgradeManager.getUpgrades().put(id, upgrade);
+                        Main.debugMessage("loaded collector upgrade " + id);
+                    }
+                    case VILLAGERSFOLLOW -> {
+                        VillagersFollowUpgrade upgrade = new VillagersFollowUpgrade(id);
+                        upgrade.setEnabled(upgradeSet.getBoolean("enabled"));
+                        upgrade.updateInventory();
+                        UpgradeManager.getUpgrades().put(id, upgrade);
+                        Main.debugMessage("loaded villager upgrade " + id);
+                    }
+                    case AUTOFEED -> {
+                        AutoFeedUpgrade upgrade = new AutoFeedUpgrade(id);
+                        upgrade.setEnabled(upgradeSet.getBoolean("enabled"));
+                        upgrade.updateInventory();
+                        UpgradeManager.getUpgrades().put(id, upgrade);
+                        Main.debugMessage("loaded auto feed upgrade " + id);
+                    }
+                    case LIQUIDTANK -> {
+                        TanksUpgrade upgrade = new TanksUpgrade(id);
+                        upgrade.deserializeTank(upgradeSet.getBlob("tank_1").getBinaryStream());
+                        upgrade.deserializeTank(upgradeSet.getBlob("tank_2").getBinaryStream());
+                        upgrade.getInventory().setItem(12, SerializationUtils.deserializeItem(upgradeSet.getBlob("tank_1_input").getBinaryStream()));
+                        upgrade.getInventory().setItem(14, SerializationUtils.deserializeItem(upgradeSet.getBlob("tank_2_input").getBinaryStream()));
+                        upgrade.updateInventory();
+                        UpgradeManager.getUpgrades().put(id, upgrade);
+                        Main.debugMessage("loaded liquid tank upgrade " + id);
+                    }
+                    default -> {
+                        Upgrade upgrade = new Upgrade(type, id);
+                        UpgradeManager.getUpgrades().put(id, upgrade);
+                        Main.debugMessage("loaded " + type.toString().toLowerCase() + " upgrade: " + id);
                     }
                 }
-                UpgradeManager.getUpgrades().put(upgradeSet.getInt("id"), new Upgrade(UpgradeType.valueOf(upgradeSet.getString("upgradeType")), upgradeSet.getInt("id")));
+
+                if(UpgradeManager.lastUpgradeID == 0) UpgradeManager.lastUpgradeID = id;
+                if(UpgradeManager.lastUpgradeID < id){
+                    UpgradeManager.lastUpgradeID = id;
+                }
+
             }
             statement.close();
             connection.close();
-        } catch (SQLException e) {
+        } catch (SQLException | IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
 
@@ -189,7 +283,6 @@ public class MySQLProvider extends StorageProvider{
                if(backpackSet.getString("owner") != null){
                    backPack.setOwner(UUID.fromString(backpackSet.getString("owner")));
                }
-               Bukkit.getConsoleSender().sendMessage("test");
                SerializationUtils.deserializeItemsToInventory(backpackSet.getBlob("firstPage").getBinaryStream(), backPack.getFirstPage());
                SerializationUtils.deserializeItemsToInventory(backpackSet.getBlob("secondPage").getBinaryStream(), backPack.getSecondPage());
                backPack.setUpgradesIds(SerializationUtils.deserializeUpgradesIds(backpackSet.getBlob("upgradesIds").getBinaryStream()));
@@ -197,6 +290,12 @@ public class MySQLProvider extends StorageProvider{
                new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
                new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
                new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+
+               int id = backPack.getId();
+               if(Main.backPackManager.getLastBackpackID() == 0) Main.backPackManager.setLastBackpackID(id);
+               if(Main.backPackManager.getLastBackpackID() < id){
+                   Main.backPackManager.setLastBackpackID(id);
+               }
            }
 
            statement.close();

@@ -22,7 +22,7 @@ public class OnClickBackpack implements Listener {
 
         if(event.getRawSlot() == event.getInventory().getSize() - 1){
             event.setCancelled(true);
-            BackpackAction.clearPlayerActions(player);
+            BackpackAction.getActions(player).remove(BackpackAction.Action.OPENED);
             Main.backPackManager.getCurrentPage().remove(player.getUniqueId());
             player.openInventory(InventoryBuilder.getConfigInv(backPack));
             Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> BackpackAction.addAction(player, BackpackAction.Action.CONFIGMENU), 1L);
@@ -33,16 +33,12 @@ public class OnClickBackpack implements Listener {
             switch (Main.backPackManager.getCurrentPage().get(player.getUniqueId())) {
                 case 1 ->{
                     BackpackAction.getActions(player).remove(BackpackAction.Action.OPENED);
-                    Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
-                        backPack.openSecondPage(player);
-                    }, 1L);
+                    backPack.openSecondPage(player);
                     event.setCancelled(true);
                 }
                 case 2 -> {
                     BackpackAction.getActions(player).remove(BackpackAction.Action.OPENED);
-                    Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
-                        backPack.open(player);
-                    }, 1L);
+                    backPack.open(player);
                     event.setCancelled(true);
                 }
             }

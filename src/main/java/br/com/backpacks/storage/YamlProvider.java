@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 public final class YamlProvider extends StorageProvider {
     private String backpacksPath;
@@ -221,21 +220,6 @@ public final class YamlProvider extends StorageProvider {
                     Main.debugMessage("loading auto feed: " + i);
                     UpgradeManager.getUpgrades().put(id, upgrade);
                 }
-                case CRAFTING -> {
-                    Upgrade upgrade = new Upgrade(UpgradeType.CRAFTING, id);
-                    UpgradeManager.getUpgrades().put(id, upgrade);
-                    Main.debugMessage("loading crafting upgrade: " + i);
-                }
-                case ENCAPSULATE -> {
-                    Upgrade upgrade = new Upgrade(UpgradeType.ENCAPSULATE, id);
-                    UpgradeManager.getUpgrades().put(id, upgrade);
-                    Main.debugMessage("loading encapsulate upgrade: " + i);
-                }
-                case UNBREAKABLE -> {
-                    Upgrade upgrade = new Upgrade(UpgradeType.UNBREAKABLE, id);
-                    UpgradeManager.getUpgrades().put(id, upgrade);
-                    Main.debugMessage("loading unbreakable upgrade: " + i);
-                }
                 case LIQUIDTANK -> {
                     TanksUpgrade upgrade = new TanksUpgrade(id);
                     if(config.isSet(i + ".tank1")){
@@ -260,6 +244,11 @@ public final class YamlProvider extends StorageProvider {
                     Main.debugMessage("loading tank upgrade: " + i);
                     UpgradeManager.getUpgrades().put(id, upgrade);
                 }
+                default -> {
+                    Upgrade upgrade = new Upgrade(type, id);
+                    UpgradeManager.getUpgrades().put(id, upgrade);
+                    Main.debugMessage("loading " + type.toString().toLowerCase() + " upgrade: " + i);
+                }
             }
         }
     }
@@ -268,7 +257,7 @@ public final class YamlProvider extends StorageProvider {
     public void loadBackpacks() {
         File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        Main.backPackManager.setBackpackIds(0);
+        Main.backPackManager.setLastBackpackID(0);
 
         for (String i : config.getKeys(false)) {
             BackPack backPack = new BackPack().deserialize(config, i);
@@ -288,44 +277,9 @@ public final class YamlProvider extends StorageProvider {
             new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
 
             int id = backPack.getId();
-            if(Main.backPackManager.getBackpackIds() == 0) Main.backPackManager.setBackpackIds(id);
-            if(Main.backPackManager.getBackpackIds() < id){
-                Main.backPackManager.setBackpackIds(id);
-            }
-        }
-    }
-
-    public void loadBackpacks(ConcurrentHashMap<Integer, BackPack> hashMap){
-        Main.backPackManager.setBackpackIds(0);
-        Main.backPackManager.setBackpacks(hashMap);
-        Main.backPackManager.getBackpacksPlacedLocations().clear();
-        if(hashMap.isEmpty()) return;
-        for(BackPack backPack : hashMap.values()){
-            if(backPack.getLocation() != null){
-                Main.backPackManager.getBackpacksPlacedLocations().put(backPack.getLocation(), backPack.getId());
-            }
-
-            InventoryBuilder.deleteAllMenusFromBackpack(backPack);
-            new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
-            new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
-            new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
-
-            int id = backPack.getId();
-            if(Main.backPackManager.getBackpackIds() == 0) Main.backPackManager.setBackpackIds(id);
-            if(Main.backPackManager.getBackpackIds() < id){
-                Main.backPackManager.setBackpackIds(id);
-            }
-        }
-    }
-
-    public void loadUpgrades(ConcurrentHashMap<Integer, Upgrade> hashMap){
-        UpgradeManager.lastUpgradeID = 0;
-        UpgradeManager.setUpgrades(hashMap);
-        if(hashMap.isEmpty()) return;
-        for(Integer id : hashMap.keySet()){
-            if(UpgradeManager.lastUpgradeID == 0) UpgradeManager.lastUpgradeID = id;
-            if(UpgradeManager.lastUpgradeID < id){
-                UpgradeManager.lastUpgradeID = id;
+            if(Main.backPackManager.getLastBackpackID() == 0) Main.backPackManager.setLastBackpackID(id);
+            if(Main.backPackManager.getLastBackpackID() < id){
+                Main.backPackManager.setLastBackpackID(id);
             }
         }
     }

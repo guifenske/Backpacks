@@ -25,13 +25,13 @@ public class BackPackManager {
         return backpacks;
     }
 
-    private int backpackIds = 0;
-    public int getBackpackIds() {
-        return backpackIds;
+    private int lastBackpackID = 0;
+    public int getLastBackpackID() {
+        return lastBackpackID;
     }
 
-    public void setBackpackIds(int backpackIds) {
-        this.backpackIds = backpackIds;
+    public void setLastBackpackID(int lastBackpackID) {
+        this.lastBackpackID = lastBackpackID;
     }
 
     private ConcurrentHashMap<Integer, BackPack> backpacks = new ConcurrentHashMap<>();
