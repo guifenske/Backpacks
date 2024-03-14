@@ -173,6 +173,7 @@ public class TanksUpgrade extends Upgrade {
         BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
         if(tank == 1){
             if(getItemsPerTank(1).isEmpty()){
+                dataOutput.writeInt(0);
                 dataOutput.close();
                 return new ByteArrayInputStream(outputStream.toByteArray());
             }
@@ -187,6 +188,7 @@ public class TanksUpgrade extends Upgrade {
         }
         if(tank == 2){
             if(getItemsPerTank(2).isEmpty()){
+                dataOutput.writeInt(0);
                 dataOutput.close();
                 return new ByteArrayInputStream(outputStream.toByteArray());
             }
@@ -209,6 +211,10 @@ public class TanksUpgrade extends Upgrade {
         int size = dataInput.readInt();
         int tank = dataInput.readInt();
 
+        if(size == 0){
+            dataInput.close();
+            return;
+        }
         for(int i = 0; i < size; i++){
             ItemStack item = (ItemStack) dataInput.readObject();
             addLiquidToTank(item, tank);

@@ -14,7 +14,7 @@ public class OnClickUpgradesMenu implements Listener {
     @EventHandler
     private void onClick(InventoryClickEvent event){
         if(event.getClickedInventory() == null) return;
-        if(!BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.UPGMENU)) return;
+        if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGMENU)) return;
 
         Player player = (Player) event.getWhoClicked();
 

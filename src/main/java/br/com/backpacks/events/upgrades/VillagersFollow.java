@@ -48,7 +48,7 @@ public class VillagersFollow implements Listener {
 
     @EventHandler
     private static void onClick(InventoryClickEvent event) {
-        if (!BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.UPGVILLAGERSFOLLOW)) {
+        if (!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGVILLAGERSFOLLOW)) {
             return;
         }
         event.setCancelled(true);
@@ -63,11 +63,11 @@ public class VillagersFollow implements Listener {
 
     @EventHandler
     private static void onClose(InventoryCloseEvent event) {
-        if (!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.UPGVILLAGERSFOLLOW)) {
+        if (!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGVILLAGERSFOLLOW)) {
             return;
         }
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
-        BackpackAction.clearPlayerActions(event.getPlayer());
+        BackpackAction.clearPlayerAction(event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

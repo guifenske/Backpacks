@@ -15,29 +15,29 @@ public class OnClickBackpack implements Listener {
     @EventHandler
     private void onClick(InventoryClickEvent event){
         if(event.getClickedInventory() == null) return;
-        if(!BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.OPENED)) return;
+        if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.OPENED)) return;
         Player player = (Player) event.getWhoClicked();
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(player);
         if(backPack == null) return;
 
         if(event.getRawSlot() == event.getInventory().getSize() - 1){
             event.setCancelled(true);
-            BackpackAction.getActions(player).remove(BackpackAction.Action.OPENED);
+            BackpackAction.clearPlayerAction(player);
             Main.backPackManager.getCurrentPage().remove(player.getUniqueId());
             player.openInventory(InventoryBuilder.getConfigInv(backPack));
-            Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> BackpackAction.addAction(player, BackpackAction.Action.CONFIGMENU), 1L);
+            Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> BackpackAction.setAction(player, BackpackAction.Action.CONFIGMENU), 1L);
         }   else if(event.getRawSlot() == event.getInventory().getSize() - 2){
             if(backPack.getSecondPageSize() == 0) return;
             event.setCancelled(true);
 
             switch (Main.backPackManager.getCurrentPage().get(player.getUniqueId())) {
                 case 1 ->{
-                    BackpackAction.getActions(player).remove(BackpackAction.Action.OPENED);
+                    BackpackAction.clearPlayerAction(player);
                     backPack.openSecondPage(player);
                     event.setCancelled(true);
                 }
                 case 2 -> {
-                    BackpackAction.getActions(player).remove(BackpackAction.Action.OPENED);
+                    BackpackAction.clearPlayerAction(player);
                     backPack.open(player);
                     event.setCancelled(true);
                 }

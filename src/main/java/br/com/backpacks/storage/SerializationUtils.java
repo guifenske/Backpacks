@@ -15,9 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SerializationUtils {
 
@@ -101,8 +99,13 @@ public class SerializationUtils {
         BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
 
         int size = dataInput.readInt();
-        // Read the serialized inventory
         if(size == 0){
+            dataInput.close();
+            return;
+        }
+
+        //if inventory is empty
+        if(dataInput.available() == 0){
             dataInput.close();
             return;
         }
@@ -138,45 +141,6 @@ public class SerializationUtils {
         return itemStack;
     }
 
-    public static ByteArrayInputStream serializeHashMapItem(HashMap<Integer, ItemStack> hashMap) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
-        if(hashMap.isEmpty()){
-            dataOutput.close();
-            return new ByteArrayInputStream(outputStream.toByteArray());
-        }
-
-        dataOutput.writeInt(hashMap.size());
-        for(Map.Entry<Integer, ItemStack> entry : hashMap.entrySet()){
-            if(entry.getValue() == null) continue;
-            dataOutput.writeInt(entry.getKey());
-            dataOutput.writeObject(entry.getValue());
-        }
-
-        dataOutput.close();
-        return new ByteArrayInputStream(outputStream.toByteArray());
-    }
-
-    public static HashMap<Integer, ItemStack> deserializeHashMapItem(InputStream inputStream) throws IOException, ClassNotFoundException {
-        if (inputStream == null || inputStream.available() == 0) return new HashMap<>();
-        BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
-        HashMap<Integer, ItemStack> hashMap = new HashMap<>();
-
-        int size = dataInput.readInt();
-        if(size == 0){
-            dataInput.close();
-            return hashMap;
-        }
-
-        for(int i = 0; i < size; i++){
-            hashMap.put(dataInput.readInt(), (ItemStack) dataInput.readObject());
-        }
-
-        dataInput.close();
-        return hashMap;
-    }
-
-
     public static ByteArrayInputStream serializeUpgradesIds(BackPack backPack) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
@@ -195,22 +159,34 @@ public class SerializationUtils {
         return new ByteArrayInputStream(outputStream.toByteArray());
     }
 
-    public static List<Integer> deserializeUpgradesIds(InputStream inputStream) throws IOException, ClassNotFoundException {
-        if (inputStream == null || inputStream.available() == 0) return new ArrayList<>();
+    public static void deserializeUpgradesIds(InputStream inputStream, BackPack backPack) throws IOException, ClassNotFoundException {
+        if (inputStream == null || inputStream.available() == 0) return;
         BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
         List<Integer> list = new ArrayList<>();
         int size = dataInput.readInt();
         if(size == 0){
             dataInput.close();
-            return list;
+            return;
         }
 
+        if(dataInput.available() == 0){
+            dataInput.close();
+            return;
+        }
         for(int i = 0; i < size; i++){
             list.add(dataInput.readInt());
         }
 
+        backPack.setUpgradesIds(list);
         dataInput.close();
-        return list;
+    }
+
+    public static ByteArrayInputStream nullBlob() throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
+        dataOutput.writeObject(null);
+        dataOutput.close();
+        return new ByteArrayInputStream(outputStream.toByteArray());
     }
 
 }

@@ -34,7 +34,6 @@
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/UpgradeManager.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/upgrades/AutoFeedUpgrade.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/Tanks.java
-/run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/backpacks/RenameBackpackChat.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/OnCloseBackpackConfigMenu.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/backpacks/BackpackInteract.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/BackPack.java
@@ -53,6 +52,7 @@
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/ThreadBackpacks.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/IOMenu.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/ConfigItemsEvents.java
+/run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/backpacks/RenameBackpack.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/EntityDeathEvent.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/Upgrade.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/backup/BackupHandler.java

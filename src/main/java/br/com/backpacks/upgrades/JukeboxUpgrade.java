@@ -181,6 +181,7 @@ public class JukeboxUpgrade extends Upgrade {
         BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
 
         if (getDiscs().isEmpty()) {
+            dataOutput.writeInt(0);
             dataOutput.close();
             return new ByteArrayInputStream(outputStream.toByteArray());
         }
@@ -201,6 +202,10 @@ public class JukeboxUpgrade extends Upgrade {
         BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
 
         int size = dataInput.readInt();
+        if(size == 0){
+            dataInput.close();
+            return;
+        }
         for (int i = 0; i < size; i++) {
             int slot = dataInput.readInt();
             String name = dataInput.readUTF();

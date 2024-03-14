@@ -137,7 +137,7 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new OnClickBackpack(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new OnClickInConfigMenu(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new OnCloseBackpackConfigMenu(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new RenameBackpackChat(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new RenameBackpack(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new OpenBackpackOfTheBack(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new OnCloseBackpack(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new OnCloseUpgradeMenu(), Main.getMain());
@@ -177,6 +177,7 @@ public final class Main extends JavaPlugin {
         for(UUID uuid : BackpackAction.getHashMap().keySet()){
             Player player = Bukkit.getPlayer(uuid);
             BackpackAction.getHashMap().remove(uuid);
+            BackpackAction.getSpectators().remove(uuid);
             if(player == null) continue;
             player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
         }

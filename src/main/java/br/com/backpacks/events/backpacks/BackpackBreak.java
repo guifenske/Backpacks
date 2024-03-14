@@ -57,7 +57,8 @@ public class BackpackBreak implements Listener {
         for(UUID uuid : BackpackAction.getHashMap().keySet()){
             Player player = Bukkit.getPlayer(uuid);
             if(player == null) continue;
-            BackpackAction.clearPlayerActions(player);
+            BackpackAction.clearPlayerAction(player);
+            BackpackAction.getSpectators().remove(uuid);
             Main.backPackManager.getCurrentPage().remove(uuid);
             Main.backPackManager.getCurrentBackpackId().remove(uuid);
             backPack.getViewersIds().remove(uuid);
@@ -105,7 +106,8 @@ public class BackpackBreak implements Listener {
             for(UUID uuid : BackpackAction.getHashMap().keySet()){
                 Player player = Bukkit.getPlayer(uuid);
                 if(player == null) continue;
-                BackpackAction.clearPlayerActions(player);
+                BackpackAction.clearPlayerAction(player);
+                BackpackAction.getSpectators().remove(uuid);
                 Main.backPackManager.getCurrentPage().remove(uuid);
                 Main.backPackManager.getCurrentBackpackId().remove(uuid);
                 backPack.getViewersIds().remove(uuid);

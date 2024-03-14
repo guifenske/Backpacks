@@ -63,6 +63,7 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                 for(UUID uuid : BackpackAction.getHashMap().keySet()){
                     Player player = Bukkit.getPlayer(uuid);
                     BackpackAction.getHashMap().remove(uuid);
+                    BackpackAction.getSpectators().remove(uuid);
                     if(player == null) continue;
                     player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
                 }
@@ -103,6 +104,7 @@ public class BpBackup implements CommandExecutor, TabCompleter {
             for(UUID uuid : BackpackAction.getHashMap().keySet()){
                 Player player = Bukkit.getPlayer(uuid);
                 BackpackAction.getHashMap().remove(uuid);
+                BackpackAction.getSpectators().remove(uuid);
                 if(player == null) continue;
                 player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
             }

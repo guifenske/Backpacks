@@ -16,8 +16,8 @@ public class OnCloseBackpack implements Listener {
 
     @EventHandler
     private void onClose(InventoryCloseEvent event){
-        if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.OPENED)) return;
-        BackpackAction.clearPlayerActions(event.getPlayer());
+        if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.OPENED)) return;
+        BackpackAction.clearPlayerAction(event.getPlayer());
 
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         shouldRemoveBackpack(event, backPack);

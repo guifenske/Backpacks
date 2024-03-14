@@ -23,9 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Jukebox implements Listener {
-
     public static List<Integer> blankSlots = List.of(0,1,2,3,4,5,12,14,18,19,20,21,22,23);
-
     public static List<Integer> discsSlots = List.of(6,7,8,15,16,17,24,25,26);
 
     public static Boolean checkDisk(@NotNull ItemStack itemStack){
@@ -60,7 +58,7 @@ public class Jukebox implements Listener {
 
     @EventHandler
     private void onClick(InventoryClickEvent event){
-        if(!BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.UPGJUKEBOX)) return;
+        if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGJUKEBOX)) return;
         if(blankSlots.contains(event.getRawSlot())){
             event.setCancelled(true);
             return;
@@ -123,7 +121,7 @@ public class Jukebox implements Listener {
 
     @EventHandler
     private void onClose(InventoryCloseEvent event){
-        if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.UPGJUKEBOX)) return;
+        if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGJUKEBOX)) return;
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradeFromType(UpgradeType.JUKEBOX);
         for(int i : discsSlots){
@@ -147,7 +145,7 @@ public class Jukebox implements Listener {
             else stopSound (event.getPlayer(), upgrade);
         }
 
-        BackpackAction.clearPlayerActions(event.getPlayer());
+        BackpackAction.clearPlayerAction(event.getPlayer());
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
             backPack.open((Player) event.getPlayer());
         }, 1L);

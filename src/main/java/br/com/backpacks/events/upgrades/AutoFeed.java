@@ -84,7 +84,7 @@ public class AutoFeed implements Listener {
 
     @EventHandler
     private static void onClick(InventoryClickEvent event){
-        if(!BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.UPGAUTOFEED)) return;
+        if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGAUTOFEED)) return;
         event.setCancelled(true);
         if(event.getRawSlot() == 13){
             BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
@@ -96,9 +96,9 @@ public class AutoFeed implements Listener {
 
     @EventHandler
     private static void onClose(InventoryCloseEvent event){
-        if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.UPGAUTOFEED)) return;
+        if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGAUTOFEED)) return;
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
-        BackpackAction.clearPlayerActions(event.getPlayer());
+        BackpackAction.clearPlayerAction(event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

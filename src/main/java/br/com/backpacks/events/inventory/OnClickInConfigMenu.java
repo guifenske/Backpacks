@@ -28,7 +28,7 @@ public class OnClickInConfigMenu implements Listener {
     @EventHandler
     private void onClick(InventoryClickEvent event){
         if(event.getClickedInventory() == null) return;
-        if(!BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.CONFIGMENU)) return;
+        if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.CONFIGMENU)) return;
         event.setCancelled(true);
 
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
@@ -45,19 +45,19 @@ public class OnClickInConfigMenu implements Listener {
 
             switch (upgrade.getType()) {
                 case CRAFTING -> {
-                    BackpackAction.clearPlayerActions(player);
+                    BackpackAction.clearPlayerAction(player);
                     event.getWhoClicked().openWorkbench(null, true);
-                    BackpackAction.addAction(player, BackpackAction.Action.UPGCRAFTINGGRID);
+                    BackpackAction.setAction(player, BackpackAction.Action.UPGCRAFTINGGRID);
                     event.setCancelled(true);
                 }
 
                 case FURNACE, SMOKER, BLAST_FURNACE -> {
-                    BackpackAction.clearPlayerActions(player);
+                    BackpackAction.clearPlayerAction(player);
                     event.getWhoClicked().openInventory(upgrade.getInventory());
                     BukkitTask task = new BukkitRunnable(){
                         @Override
                         public void run() {
-                            BackpackAction.addAction(player, BackpackAction.Action.UPGFURNACE);
+                            BackpackAction.setAction(player, BackpackAction.Action.UPGFURNACE);
                             Furnace.currentFurnace.put(player.getUniqueId(), ((FurnaceUpgrade) upgrade));
                         }
                     }.runTaskLater(Main.getMain(), 1L);
@@ -65,60 +65,60 @@ public class OnClickInConfigMenu implements Listener {
                 }
 
                 case JUKEBOX -> {
-                    BackpackAction.clearPlayerActions(player);
+                    BackpackAction.clearPlayerAction(player);
                     event.getWhoClicked().openInventory(upgrade.getInventory());
                     BukkitTask task = new BukkitRunnable(){
                         @Override
                         public void run() {
-                            BackpackAction.addAction(player, BackpackAction.Action.UPGJUKEBOX);
+                            BackpackAction.setAction(player, BackpackAction.Action.UPGJUKEBOX);
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
                 }
 
                 case AUTOFEED -> {
-                    BackpackAction.clearPlayerActions(player);
+                    BackpackAction.clearPlayerAction(player);
                     event.getWhoClicked().openInventory(upgrade.getInventory());
                     BukkitTask task = new BukkitRunnable(){
                         @Override
                         public void run() {
-                            BackpackAction.addAction(player, BackpackAction.Action.UPGAUTOFEED);
+                            BackpackAction.setAction(player, BackpackAction.Action.UPGAUTOFEED);
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
                 }
 
                 case VILLAGERSFOLLOW -> {
-                    BackpackAction.clearPlayerActions(player);
+                    BackpackAction.clearPlayerAction(player);
                     event.getWhoClicked().openInventory(upgrade.getInventory());
                     BukkitTask task = new BukkitRunnable(){
                         @Override
                         public void run() {
-                            BackpackAction.addAction(player, BackpackAction.Action.UPGVILLAGERSFOLLOW);
+                            BackpackAction.setAction(player, BackpackAction.Action.UPGVILLAGERSFOLLOW);
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
                 }
 
                 case COLLECTOR -> {
-                    BackpackAction.clearPlayerActions(player);
+                    BackpackAction.clearPlayerAction(player);
                     event.getWhoClicked().openInventory(upgrade.getInventory());
                     BukkitTask task = new BukkitRunnable(){
                         @Override
                         public void run() {
-                            BackpackAction.addAction(player, BackpackAction.Action.UPGCOLLECTOR);
+                            BackpackAction.setAction(player, BackpackAction.Action.UPGCOLLECTOR);
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
                 }
 
                 case LIQUIDTANK -> {
-                    BackpackAction.clearPlayerActions(player);
+                    BackpackAction.clearPlayerAction(player);
                     event.getWhoClicked().openInventory(upgrade.getInventory());
                     BukkitTask task = new BukkitRunnable(){
                         @Override
                         public void run() {
-                            BackpackAction.addAction(player, BackpackAction.Action.UPGTANKS);
+                            BackpackAction.setAction(player, BackpackAction.Action.UPGTANKS);
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
@@ -127,6 +127,7 @@ public class OnClickInConfigMenu implements Listener {
 
             return;
         }
+        if(BackpackAction.getSpectators().containsKey(event.getWhoClicked().getUniqueId())) return;
 
         switch (event.getRawSlot()) {
             //go back to the previous page
@@ -134,7 +135,6 @@ public class OnClickInConfigMenu implements Listener {
             //equip or un-equip backpack in the back
             case 53 -> {
                 if(backPack.isBlock())  return;
-                if(BackpackAction.getActions(player).contains(BackpackAction.Action.BPLIST)) return;
                 if (backPack.getOwner() != null && backPack.getOwner().equals(player.getUniqueId())){
                     player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
                     player.getPersistentDataContainer().remove(new BackpackRecipes().getHAS_BACKPACK());
@@ -165,7 +165,8 @@ public class OnClickInConfigMenu implements Listener {
                         barrel.close();
                     }
                 }
-                BackpackAction.addAction(player, BackpackAction.Action.RENAMING);
+                BackpackAction.clearPlayerAction(player);
+                BackpackAction.setAction(player, BackpackAction.Action.RENAMING);
                 player.sendMessage(Main.PREFIX + "§eType the new name of the backpack");
                 player.closeInventory();
             }
@@ -177,16 +178,16 @@ public class OnClickInConfigMenu implements Listener {
             }
 
             case 36 ->{
-                BackpackAction.clearPlayerActions(player);
+                BackpackAction.clearPlayerAction(player);
                 player.openInventory(InventoryBuilder.getUpgradesInv(backPack));
-                BackpackAction.addAction(player, BackpackAction.Action.UPGMENU);
+                BackpackAction.setAction(player, BackpackAction.Action.UPGMENU);
                 event.setCancelled(true);
             }
 
             case 49 -> {
-                BackpackAction.clearPlayerActions(player);
+                BackpackAction.clearPlayerAction(player);
                 player.openInventory(InventoryBuilder.getIOInv());
-                BackpackAction.addAction(player, BackpackAction.Action.IOMENU);
+                BackpackAction.setAction(player, BackpackAction.Action.IOMENU);
                 event.setCancelled(true);
             }
 

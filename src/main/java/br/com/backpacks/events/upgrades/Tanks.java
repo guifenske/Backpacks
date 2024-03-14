@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 
 import static org.bukkit.event.inventory.InventoryAction.MOVE_TO_OTHER_INVENTORY;
@@ -20,8 +21,8 @@ public class Tanks implements Listener {
 
     @EventHandler
     private void onClose(InventoryCloseEvent event){
-        if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.UPGTANKS)) return;
-        BackpackAction.clearPlayerActions(event.getPlayer());
+        if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGTANKS)) return;
+        BackpackAction.clearPlayerAction(event.getPlayer());
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
             backPack.open((Player) event.getPlayer());
@@ -29,8 +30,21 @@ public class Tanks implements Listener {
     }
 
     @EventHandler
+    private void onDrag(InventoryDragEvent event){
+        if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGTANKS)) return;
+        event.setCancelled(true);
+        if(!event.getRawSlots().contains(12) && !event.getRawSlots().contains(14)) return;
+        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
+        TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getUpgradeFromType(UpgradeType.LIQUIDTANK);
+        Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
+            generalLogic(tanksUpgrade, 1);
+            generalLogic(tanksUpgrade, 2);
+        }, 1L);
+    }
+
+    @EventHandler
     private void onClick(InventoryClickEvent event){
-        if(!BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.UPGTANKS)) return;
+        if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGTANKS)) return;
         if(event.getRawSlot() < 27 && event.getRawSlot() != 12 && event.getRawSlot() != 14) event.setCancelled(true);
         if(event.getRawSlot() > 27 && event.getAction().equals(MOVE_TO_OTHER_INVENTORY)) event.setCancelled(true);
 

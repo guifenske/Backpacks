@@ -23,6 +23,7 @@ br/com/backpacks/storage/StorageProvider.class
 br/com/backpacks/events/entity/CraftBackpack$1.class
 br/com/backpacks/events/inventory/OnClickInConfigMenu.class
 br/com/backpacks/utils/inventory/InventoryBuilder$1.class
+br/com/backpacks/events/backpacks/RenameBackpack.class
 br/com/backpacks/backup/BackupHandler.class
 br/com/backpacks/events/inventory/OnCloseBackpackConfigMenu.class
 br/com/backpacks/utils/Constants.class
@@ -40,12 +41,12 @@ br/com/backpacks/events/OnDimensionSwitch.class
 br/com/backpacks/recipes/RecipesUtils$1.class
 br/com/backpacks/events/inventory/OnClickInConfigMenu$4.class
 br/com/backpacks/recipes/BackpackRecipes.class
+br/com/backpacks/storage/MySQLProvider$1.class
 br/com/backpacks/events/inventory/OnClickBackpack.class
 br/com/backpacks/events/upgrades/AutoFeed$2.class
 br/com/backpacks/utils/others/JukeboxUtils$Sound.class
 br/com/backpacks/recipes/UpgradesRecipes.class
 br/com/backpacks/utils/UpgradeManager$1.class
-br/com/backpacks/events/backpacks/RenameBackpackChat.class
 br/com/backpacks/events/upgrades/Jukebox$1.class
 br/com/backpacks/events/upgrades/AutoFeed.class
 br/com/backpacks/events/upgrades/Furnace$4.class

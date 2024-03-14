@@ -2,9 +2,7 @@ package br.com.backpacks.utils;
 
 import org.bukkit.entity.HumanEntity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public class BackpackAction {
@@ -31,8 +29,6 @@ public class BackpackAction {
 
         UPGCOLLECTOR,
 
-        BPLIST,
-
         IOMENU,
 
         EDITINPUT,
@@ -42,27 +38,27 @@ public class BackpackAction {
         OPENED;
     }
 
-    private static final HashMap<UUID, List<Action>> playerAction = new HashMap<>();
+    private static final HashMap<UUID, Action> playerAction = new HashMap<>();
+    private static final HashMap<UUID, Boolean> spectators = new HashMap<>();
 
-    public static HashMap<UUID, List<Action>> getHashMap(){
+    public static HashMap<UUID, Action> getHashMap(){
         return playerAction;
     }
 
-    public static void clearPlayerActions(HumanEntity player){
+    public static HashMap<UUID, Boolean> getSpectators(){
+        return spectators;
+    }
+
+    public static void clearPlayerAction(HumanEntity player){
         playerAction.remove(player.getUniqueId());
     }
 
-    public static void addAction(HumanEntity player, Action action){
-        if(!playerAction.containsKey(player.getUniqueId())){
-            playerAction.put(player.getUniqueId(), new ArrayList<>());
-            playerAction.get(player.getUniqueId()).add(action);
-            return;
-        }
-        playerAction.get(player.getUniqueId()).add(action);
+    public static void setAction(HumanEntity player, Action action){
+        playerAction.put(player.getUniqueId(), action);
     }
 
-    public static List<Action> getActions(HumanEntity player) {
-        if(!playerAction.containsKey(player.getUniqueId())) return new ArrayList<>();
+    public static Action getAction(HumanEntity player) {
+        if(!playerAction.containsKey(player.getUniqueId())) return Action.NOTHING;
         return playerAction.get(player.getUniqueId());
     }
 }
