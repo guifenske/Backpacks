@@ -28,11 +28,19 @@ public class MySQLProvider extends StorageProvider{
             DriverManager.getConnection(url, user, password);
         }   catch (SQLException e) {
             Main.getMain().getLogger().severe("Could not connect to MySQL... Using YAML as default storage provider.");
-            StorageManager.setProvider(new YamlProvider(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml", Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml"));
             return;
         }
 
         createDatabase();
+    }
+
+    public boolean canConnect() {
+        try {
+            DriverManager.getConnection(url, user, password);
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
     }
 
     public String getUrl() {
@@ -70,7 +78,6 @@ public class MySQLProvider extends StorageProvider{
             connection.close();
         } catch (SQLException e) {
             Main.getMain().getLogger().severe("Could not connect to MySQL... Using YAML as default storage provider.");
-            StorageManager.setProvider(new YamlProvider(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml", Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml"));
             return;
         }
         Main.getMain().getLogger().info("Connected to MySQL.");
@@ -201,7 +208,7 @@ public class MySQLProvider extends StorageProvider{
                         upgrade.setFuel(SerializationUtils.deserializeItem(upgradeSet.getBlob("furnace_fuel").getBinaryStream()));
                         upgrade.setResult(SerializationUtils.deserializeItem(upgradeSet.getBlob("furnace_result").getBinaryStream()));
                         upgrade.setOperation(upgradeSet.getInt("furnace_operation"));
-                        upgrade.setLastMaxOperation(upgradeSet.getInt("furnace_max_operation"));
+                        upgrade.setLastMaxOperation(upgradeSet.getInt("furnace_maxoperation"));
                         upgrade.updateInventory();
                         UpgradeManager.getUpgrades().put(id, upgrade);
                     }

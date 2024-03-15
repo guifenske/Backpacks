@@ -123,11 +123,11 @@ public class SerializationUtils {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
         if(itemStack == null){
+            dataOutput.writeObject(null);
             dataOutput.close();
             return new ByteArrayInputStream(outputStream.toByteArray());
         }
         dataOutput.writeObject(itemStack);
-
         dataOutput.close();
         return new ByteArrayInputStream(outputStream.toByteArray());
     }

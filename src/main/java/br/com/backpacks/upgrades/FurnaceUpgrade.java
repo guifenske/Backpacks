@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -22,6 +23,15 @@ public class FurnaceUpgrade extends Upgrade {
     private ItemStack smelting;
     private int lastMaxOperation = -1;
     private final Inventory inventory;
+    private CookingRecipe<?> recipe;
+
+    public CookingRecipe<?> getRecipe() {
+        return recipe;
+    }
+
+    public void setRecipe(CookingRecipe<?> recipe) {
+        this.recipe = recipe;
+    }
     public int getCookTime() {
         return cookTime;
     }
@@ -143,6 +153,10 @@ public class FurnaceUpgrade extends Upgrade {
     }
 
     public void clearSubTickTask(){
+        for(HumanEntity player : getInventory().getViewers()){
+            InventoryView view = player.getOpenInventory();
+            view.setProperty(InventoryView.Property.COOK_TIME, 0);
+        }
         if(subTickTask != null) subTickTask.cancel();
         subTickTask = null;
     }
