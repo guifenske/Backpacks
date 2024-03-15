@@ -180,7 +180,6 @@ public class TanksUpgrade extends Upgrade {
             dataOutput.writeInt(getItemsPerTank(1).size());
             dataOutput.writeInt(1);
             for(Map.Entry<Integer, ItemStack> entry : getItemsPerTank(1).entrySet()){
-                if(entry.getValue() == null) continue;
                 dataOutput.writeObject(entry.getValue());
             }
             dataOutput.close();
@@ -195,7 +194,6 @@ public class TanksUpgrade extends Upgrade {
             dataOutput.writeInt(getItemsPerTank(2).size());
             dataOutput.writeInt(2);
             for(Map.Entry<Integer, ItemStack> entry : getItemsPerTank(2).entrySet()){
-                if(entry.getValue() == null) continue;
                 dataOutput.writeObject(entry.getValue());
             }
             dataOutput.close();
@@ -218,7 +216,6 @@ public class TanksUpgrade extends Upgrade {
         for(int i = 0; i < size; i++){
             ItemStack item = (ItemStack) dataInput.readObject();
             addLiquidToTank(item, tank);
-            if(dataInput.available() == 0) break;
         }
         dataInput.close();
     }

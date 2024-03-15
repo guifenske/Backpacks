@@ -136,7 +136,12 @@ public class SerializationUtils {
     public static ItemStack deserializeItem(InputStream inputStream) throws IOException, ClassNotFoundException {
         if (inputStream == null || inputStream.available() == 0) return null;
         BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
-        ItemStack itemStack = (ItemStack) dataInput.readObject();
+        Object object = dataInput.readObject();
+        if(object == null){
+            dataInput.close();
+            return null;
+        }
+        ItemStack itemStack = (ItemStack) object;
         dataInput.close();
         return itemStack;
     }

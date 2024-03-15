@@ -177,8 +177,8 @@ public class MySQLProvider extends StorageProvider{
                        TanksUpgrade tanksUpgrade = (TanksUpgrade) upgrade;
                        preparedStatement.setBlob(12, tanksUpgrade.serializeTank(1));
                        preparedStatement.setBlob(13, tanksUpgrade.serializeTank(2));
-                       if(tanksUpgrade.getInventory().getItem(12) != null) preparedStatement.setBlob(14, SerializationUtils.serializeItem(tanksUpgrade.getInventory().getItem(12)));
-                       if(tanksUpgrade.getInventory().getItem(14) != null) preparedStatement.setBlob(15, SerializationUtils.serializeItem(tanksUpgrade.getInventory().getItem(14)));
+                       preparedStatement.setBlob(14, SerializationUtils.serializeItem(tanksUpgrade.getInventory().getItem(12)));
+                       preparedStatement.setBlob(15, SerializationUtils.serializeItem(tanksUpgrade.getInventory().getItem(14)));
                    }
                }
                Main.debugMessage("Saving " + upgrade.getType() + " upgrade " + upgrade.getId());
@@ -242,8 +242,8 @@ public class MySQLProvider extends StorageProvider{
                         TanksUpgrade upgrade = new TanksUpgrade(id);
                         upgrade.deserializeTank(upgradeSet.getBlob("tank_1").getBinaryStream());
                         upgrade.deserializeTank(upgradeSet.getBlob("tank_2").getBinaryStream());
-                        upgrade.getInventory().setItem(12, SerializationUtils.deserializeItem(upgradeSet.getBlob("tank_1_input").getBinaryStream()));
-                        upgrade.getInventory().setItem(14, SerializationUtils.deserializeItem(upgradeSet.getBlob("tank_2_input").getBinaryStream()));
+                        upgrade.getInventory().setItem(12, SerializationUtils.deserializeItem(upgradeSet.getBlob("tank_input_1").getBinaryStream()));
+                        upgrade.getInventory().setItem(14, SerializationUtils.deserializeItem(upgradeSet.getBlob("tank_input_2").getBinaryStream()));
                         upgrade.updateInventory();
                         UpgradeManager.getUpgrades().put(id, upgrade);
                     }

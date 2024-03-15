@@ -32,7 +32,6 @@ public class Tanks implements Listener {
     @EventHandler
     private void onDrag(InventoryDragEvent event){
         if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGTANKS)) return;
-        event.setCancelled(true);
         if(!event.getRawSlots().contains(12) && !event.getRawSlots().contains(14)) return;
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
         TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getUpgradeFromType(UpgradeType.LIQUIDTANK);
