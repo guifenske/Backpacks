@@ -2,11 +2,12 @@ package br.com.backpacks;
 
 import org.bukkit.Bukkit;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,31 +17,32 @@ public class UpdateChecker {
     private static final String MODRINTH_API_URL = "https://api.modrinth.com/v2/project/advancedbackpacks/version";
 
     public static void checkForUpdates() {
+        HttpClient client = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(10))
+                .build();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(MODRINTH_API_URL))
+                .GET()
+                .build();
+
+        String latestVersion;
+
         try {
-            URL url = new URL(MODRINTH_API_URL);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            latestVersion = parseVersion(response.body());
+        } catch (IOException | InterruptedException e) {
+            return;
+        }
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line;
-            StringBuilder response = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
-            }
-            reader.close();
-
-            String latestVersion = parseVersion(response.toString());
-            if(latestVersion == null || latestVersion.equals("null")){
-                Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Could not find versions for this plugin, aborting update check.");
-                return;
-            }
-            if (!CURRENT_VERSION.equals(latestVersion)) {
-                Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "An update is available! Latest version: " + latestVersion);
-            }   else{
-                Main.getMain().getLogger().info("You are using the latest version");
-            }
-        } catch (IOException e) {
+        if (latestVersion == null || latestVersion.equals("null")) {
             Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Could not find versions for this plugin, aborting update check.");
+            return;
+        }
+        if (!CURRENT_VERSION.equals(latestVersion)) {
+            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "An update is available! Latest version: " + latestVersion);
+        } else {
+            Main.getMain().getLogger().info("You are using the latest version");
         }
     }
 

@@ -224,7 +224,6 @@ public final class Main extends JavaPlugin {
 
 
         //Upgrades
-      //  Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeAutoFill());
         Bukkit.addRecipe(new UpgradesRecipes().getAutoFeedRecipe());
         Bukkit.addRecipe(new UpgradesRecipes().getJukeboxRecipe());
         Bukkit.addRecipe(new UpgradesRecipes().getFurnaceRecipe());

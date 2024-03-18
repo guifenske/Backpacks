@@ -5,7 +5,8 @@
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/ServerLoadEvent.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/Main.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/recipes/RecipesUtils.java
-/run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/backup/ScheduledBackup.java
+/run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/AutoSaveManager.java
+/run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/backup/ScheduledBackupService.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/upgrades/JukeboxUpgrade.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/storage/StorageManager.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/commands/BpUpGive.java
@@ -46,6 +47,7 @@
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/storage/MySQLProvider.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/backpacks/BackpackPlace.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/CraftBackpack.java
+/run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/Config.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/OnClickUpgradesMenu.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/commands/BpUpgBackpack.java
 /run/media/guilherme/Windows-SSD/Users/Guilherme Melo/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/BackpackAction.java

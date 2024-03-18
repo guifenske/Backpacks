@@ -1,6 +1,7 @@
 br/com/backpacks/events/entity/InteractOtherPlayerBackpack.class
 br/com/backpacks/upgrades/JukeboxUpgrade$3.class
 br/com/backpacks/commands/BpReload.class
+br/com/backpacks/backup/ScheduledBackupService.class
 br/com/backpacks/events/upgrades/VillagersFollow$1.class
 br/com/backpacks/events/entity/Fishing.class
 br/com/backpacks/events/inventory/IOMenu.class
@@ -13,9 +14,10 @@ br/com/backpacks/events/inventory/OnCloseUpgradeMenu$1.class
 br/com/backpacks/commands/BpGive.class
 br/com/backpacks/events/inventory/OnClickUpgradesMenu.class
 br/com/backpacks/utils/BackpackAction.class
+br/com/backpacks/AutoSaveManager$1.class
 br/com/backpacks/events/backpacks/OpenBackpackOfTheBack.class
 br/com/backpacks/events/inventory/OnClickInConfigMenu$2.class
-br/com/backpacks/backup/ScheduledBackup.class
+br/com/backpacks/Config.class
 br/com/backpacks/utils/BackpackAction$Action.class
 br/com/backpacks/events/upgrades/Furnace$2.class
 br/com/backpacks/utils/UpgradeManager.class
@@ -28,7 +30,6 @@ br/com/backpacks/backup/BackupHandler.class
 br/com/backpacks/events/inventory/OnCloseBackpackConfigMenu.class
 br/com/backpacks/utils/Constants.class
 br/com/backpacks/utils/BackPackManager.class
-br/com/backpacks/backup/ScheduledBackup$IntervalType.class
 br/com/backpacks/upgrades/JukeboxUpgrade$1.class
 br/com/backpacks/events/backpacks/BackpackInteract.class
 br/com/backpacks/utils/inventory/InventoryBuilder.class
@@ -50,6 +51,7 @@ br/com/backpacks/utils/UpgradeManager$1.class
 br/com/backpacks/events/upgrades/Jukebox$1.class
 br/com/backpacks/events/upgrades/AutoFeed.class
 br/com/backpacks/events/upgrades/Furnace$4.class
+br/com/backpacks/backup/ScheduledBackupService$1.class
 br/com/backpacks/events/inventory/OnClickInConfigMenu$3.class
 br/com/backpacks/upgrades/FurnaceUpgrade$1.class
 br/com/backpacks/utils/others/FurnaceUtils.class
@@ -65,9 +67,9 @@ br/com/backpacks/commands/BpBackup.class
 br/com/backpacks/events/upgrades/Tanks.class
 br/com/backpacks/utils/RandomBackpackBuilder$1.class
 br/com/backpacks/storage/SerializationUtils.class
+br/com/backpacks/AutoSaveManager.class
 br/com/backpacks/upgrades/JukeboxUpgrade$2.class
 br/com/backpacks/commands/BpList.class
-br/com/backpacks/backup/ScheduledBackup$1.class
 br/com/backpacks/events/upgrades/CraftingTable$1.class
 br/com/backpacks/utils/UpgradeType.class
 br/com/backpacks/utils/inventory/InventoryBuilder$MenuType.class
