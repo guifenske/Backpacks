@@ -37,23 +37,21 @@ public class ThreadBackpacks {
     }
 
     public static void loadAll() {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), () -> {
-            StorageManager.getProvider().loadUpgrades();
-            StorageManager.getProvider().loadBackpacks();
+        StorageManager.getProvider().loadUpgrades();
+        StorageManager.getProvider().loadBackpacks();
 
-            Instant finish = Instant.now();
-            Main.getMain().getLogger().info("Hello from Backpacks! " + Duration.between(Main.start, finish).toMillis() + "ms");
-            BackupHandler backupHandler = Config.getBackupHandler();
-            if(backupHandler != null){
-                backupHandler.getScheduledBackupService().start();
-            }
-            Main.getMain().setBackupHandler(backupHandler);
+        Instant finish = Instant.now();
+        Main.getMain().getLogger().info("Hello from Backpacks! " + Duration.between(Main.start, finish).toMillis() + "ms");
+        BackupHandler backupHandler = Config.getBackupHandler();
+        if(backupHandler != null){
+            backupHandler.getScheduledBackupService().start();
+        }
+        Main.getMain().setBackupHandler(backupHandler);
 
-            AutoSaveManager autoSaveManager = Config.getAutoSaveManager();
-            if(autoSaveManager != null){
-                autoSaveManager.start();
-            }
-            Main.getMain().setAutoSaveManager(autoSaveManager);
-        });
+        AutoSaveManager autoSaveManager = Config.getAutoSaveManager();
+        if(autoSaveManager != null){
+            autoSaveManager.start();
+        }
+        Main.getMain().setAutoSaveManager(autoSaveManager);
     }
 }

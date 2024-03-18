@@ -101,27 +101,30 @@ public final class Main extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-        if(getConfig().getBoolean("debug")){
-            Constants.DEBUG_MODE = true;
-        }
-        if(getConfig().getBoolean("fish_backpack")){
-            Constants.CATCH_BACKPACK = true;
-        }
-        if(getConfig().getBoolean("kill_monster_backpack")){
-            Constants.MONSTER_DROPS_BACKPACK = true;
-        }
 
-        if(getConfig().getBoolean("mysql.enabled")){
-            StorageManager.setProvider(new MySQLProvider(getConfig().getString("mysql.url"), getConfig().getString("mysql.username"), getConfig().getString("mysql.password")));
-            if(!((MySQLProvider) StorageManager.getProvider()).canConnect()){
-                StorageManager.setProvider(new YamlProvider(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml", Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml"));
+        Bukkit.getScheduler().runTaskAsynchronously(this, ()->{
+            if(getConfig().getBoolean("debug")){
+                Constants.DEBUG_MODE = true;
             }
-        }   else{
-            StorageManager.setProvider(new YamlProvider(getDataFolder().getAbsolutePath() + "/backpacks.yml", getDataFolder().getAbsolutePath() + "/upgrades.yml"));
-        }
+            if(getConfig().getBoolean("fish_backpack")){
+                Constants.CATCH_BACKPACK = true;
+            }
+            if(getConfig().getBoolean("kill_monster_backpack")){
+                Constants.MONSTER_DROPS_BACKPACK = true;
+            }
 
-        UpdateChecker.checkForUpdates();
-        ThreadBackpacks.loadAll();
+            if(getConfig().getBoolean("mysql.enabled")){
+                StorageManager.setProvider(new MySQLProvider(getConfig().getString("mysql.url"), getConfig().getString("mysql.username"), getConfig().getString("mysql.password")));
+                if(!((MySQLProvider) StorageManager.getProvider()).canConnect()){
+                    StorageManager.setProvider(new YamlProvider(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml", Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml"));
+                }
+            }   else{
+                StorageManager.setProvider(new YamlProvider(getDataFolder().getAbsolutePath() + "/backpacks.yml", getDataFolder().getAbsolutePath() + "/upgrades.yml"));
+            }
+
+            ThreadBackpacks.loadAll();
+            UpdateChecker.checkForUpdates();
+        });
 
         //player
         Bukkit.getPluginManager().registerEvents(new CraftBackpack(), Main.getMain());
