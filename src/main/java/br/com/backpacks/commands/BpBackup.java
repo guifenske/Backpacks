@@ -30,9 +30,19 @@ public class BpBackup implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if(sender instanceof Player player){
+            if(!player.isOp()){
+                player.sendMessage(Main.PREFIX + "§cYou don't have permission to use this command");
+                return true;
+            }   else if(Main.getMain().getBackupHandler() == null){
+                player.sendMessage(Main.PREFIX + "§cBackup feature is disabled..");
+                return true;
+            }
+        }
+
         if(args.length == 1){
             if(args[0].equalsIgnoreCase("create")){
-                Main.getMain().getThreadBackpacks().getExecutor().submit(() ->{
+                Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), ()->{
                     long time;
                     try {
                         time = Main.getMain().getBackupHandler().backup();
@@ -77,7 +87,7 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                     entry.getKey().getBlock().setType(Material.AIR);
                 }
 
-                Main.getMain().getThreadBackpacks().getExecutor().submit(() -> {
+                Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), ()->{
                     try{
                         long time = Main.getMain().getBackupHandler().undoRollback();
                         if(time != -1L){
@@ -85,7 +95,6 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                         }   else{
                             sender.sendMessage("§cYou never did a rollback to undo it.");
                         }
-                        return true;
                     }   catch (IOException e){
                         Main.backPackManager.setCanBeOpen(true);
                         sender.sendMessage("§cAn error occurred while restoring the backup, please check the console for more information.");
@@ -118,7 +127,7 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                 entry.getKey().getBlock().setType(Material.AIR);
             }
 
-            Main.getMain().getThreadBackpacks().getExecutor().submit(() -> {
+            Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), ()->{
                 try{
                     long time = Main.getMain().getBackupHandler().restoreBackup(args[1]);
                     if(time != -1L){
@@ -126,7 +135,6 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                     }   else{
                         sender.sendMessage("§cSomething went wrong, please check the console for more information.");
                     }
-                    return true;
                 }   catch (IOException e){
                     Main.backPackManager.setCanBeOpen(true);
                     sender.sendMessage("§cAn error occurred while restoring the backup, please check the console for more information.");
@@ -143,13 +151,12 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            Main.getMain().getThreadBackpacks().getExecutor().submit(() -> {
+            Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), ()->{
                 if (Main.getMain().getBackupHandler().removeBackup(args[1])) {
                     sender.sendMessage("§aBackup removed successfully.");
                 } else {
                     sender.sendMessage("§cSomething went wrong, please check the console for more information.");
                 }
-                return true;
             });
         }   else {
             sender.sendMessage("§cUse: /bpbackup <create|remove|restore>");

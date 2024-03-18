@@ -28,19 +28,25 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BackupHandler {
+    private ScheduledBackupService scheduledBackupService;
+    private int keepBackups;
+    private final Path path = Path.of(Main.getMain().getDataFolder().getAbsolutePath() + "/Backups");
+    private ConcurrentHashMap<Integer, BackPack> rollbackBackpack;
+    private ConcurrentHashMap<Integer, Upgrade> rollbackUpgrade;
+    public BackupHandler(int keepBackups) {
+        this.keepBackups = keepBackups;
+    }
+
     public void setKeepBackups(int keepBackups) {
         this.keepBackups = keepBackups;
     }
 
-    private int keepBackups;
+    public void setScheduledBackupService(ScheduledBackupService scheduledBackupService) {
+        this.scheduledBackupService = scheduledBackupService;
+    }
 
-    private final Path path = Path.of(Main.getMain().getDataFolder().getAbsolutePath() + "/Backups");
-
-    private ConcurrentHashMap<Integer, BackPack> rollbackBackpack;
-    private ConcurrentHashMap<Integer, Upgrade> rollbackUpgrade;
-
-    public BackupHandler(int keepBackups) {
-        this.keepBackups = keepBackups;
+    public ScheduledBackupService getScheduledBackupService() {
+        return scheduledBackupService;
     }
 
     public boolean removeBackup(String name){

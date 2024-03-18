@@ -23,19 +23,17 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.concurrent.TimeUnit;
-
 public class VillagersFollow implements Listener {
     public static void tick() {
-        Main.getMain().getThreadBackpacks().getExecutor().scheduleAtFixedRate(() ->{
+        Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getMain(), ()->{
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (!player.getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) continue;
                 if (!player.getInventory().getItemInMainHand().getType().equals(Material.EMERALD_BLOCK) && !player.getInventory().getItemInOffHand().getType().equals(Material.EMERALD_BLOCK)) {
                     continue;
                 }
                 BackPack backpack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
-                if(backpack.getUpgradeFromType(UpgradeType.VILLAGERSFOLLOW) == null) continue;
                 VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) backpack.getUpgradeFromType(UpgradeType.VILLAGERSFOLLOW);
+                if(upgrade == null) continue;
 
                 if (!upgrade.isEnabled()) {
                     continue;
@@ -43,7 +41,7 @@ public class VillagersFollow implements Listener {
 
                 moveNearbyVillagers(player.getLocation().toBlockLocation(), player);
             }
-        }, 0, 500, TimeUnit.MILLISECONDS);
+        }, 0L, 15L);
     }
 
     @EventHandler

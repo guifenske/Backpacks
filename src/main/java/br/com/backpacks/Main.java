@@ -33,8 +33,8 @@ import java.util.List;
 import java.util.UUID;
 
 public final class Main extends JavaPlugin {
+    private AutoSaveManager autoSaveManager;
     private BackupHandler backupHandler;
-    private ThreadBackpacks threadBackpacks;
     private List<SmokingRecipe> smokingRecipes = new ArrayList<>();
     private List<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
     private List<BlastingRecipe> blastingRecipes = new ArrayList<>();
@@ -69,10 +69,6 @@ public final class Main extends JavaPlugin {
         return furnaceRecipes;
     }
 
-    public ThreadBackpacks getThreadBackpacks() {
-        return threadBackpacks;
-    }
-
     public static Main getMain() {
         return main;
     }
@@ -83,6 +79,14 @@ public final class Main extends JavaPlugin {
 
     public void setBackupHandler(BackupHandler backupHandler) {
         this.backupHandler = backupHandler;
+    }
+
+    public AutoSaveManager getAutoSaveManager() {
+        return autoSaveManager;
+    }
+
+    public void setAutoSaveManager(AutoSaveManager autoSaveManager) {
+        this.autoSaveManager = autoSaveManager;
     }
 
     @Override
@@ -117,14 +121,7 @@ public final class Main extends JavaPlugin {
         }
 
         UpdateChecker.checkForUpdates();
-
-        try {
-            threadBackpacks = new ThreadBackpacks();
-        } catch (IOException e) {
-            Main.getMain().getLogger().severe("Something went wrong, please report to the developer, disabling plugin.");
-            Bukkit.getPluginManager().disablePlugin(this);
-            throw new RuntimeException(e);
-        }
+        ThreadBackpacks.loadAll();
 
         //player
         Bukkit.getPluginManager().registerEvents(new CraftBackpack(), Main.getMain());
@@ -171,7 +168,6 @@ public final class Main extends JavaPlugin {
         Main.getMain().getCommand("bpupgbackpack").setExecutor(new BpUpgBackpack());
         Main.getMain().getCommand("bpupgive").setExecutor(new BpUpGive());
         registerRecipes();
-        threadBackpacks.loadAll();
     }
 
     @Override
@@ -186,10 +182,9 @@ public final class Main extends JavaPlugin {
         }
         Bukkit.getConsoleSender().sendMessage("[Backpacks] Saving backpacks..");
         saveConfig();
-        if(threadBackpacks == null) return;
 
         try {
-            threadBackpacks.saveAll();
+            ThreadBackpacks.saveAll();
         } catch (IOException e) {
             Main.getMain().getLogger().severe("Something went wrong, please report to the developer!");
             throw new RuntimeException(e);

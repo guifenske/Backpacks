@@ -33,7 +33,7 @@ public class Furnace implements Listener {
         }
         upgrade.startSubTick();
 
-        Main.getMain().getThreadBackpacks().getExecutor().submit(() ->{
+        Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), ()->{
             if(upgrade.getBoundFakeBlock() == null) {
                 Location tempLocation = new Location(Bukkit.getWorld("world"), ThreadLocalRandom.current().nextInt(-900, 900), -65, ThreadLocalRandom.current().nextInt(-900, 900));
                 Block tempBlock = tempLocation.getBlock();
@@ -84,11 +84,9 @@ public class Furnace implements Listener {
                     generalLogic(upgrade);
                 }
             }.runTaskTimer(Main.getMain(), upgrade.getCookItemTicks(), upgrade.getCookItemTicks());
-
             taskMap.put(upgrade.getId(), task);
         });
-
-       Main.debugMessage("Starting furnace task for " + upgrade.getId() + "!");
+        Main.debugMessage("Starting furnace task for " + upgrade.getId() + "!");
     }
 
     @EventHandler

@@ -11,9 +11,18 @@ mysql:
     username: "root"
     password: ""
 
+#The plugin saves the backpacks only when the server stops, enabling this will save the backpacks in a constant interval.
+autosave:
+  enabled: true
+  #the type of time unit to use, valid values are: MINUTES, HOURS, SECONDS
+  type: MINUTES
+  #interval
+  interval: 5
+
+
 autobackup:
   enabled: true
-  #the type of backup to use, valid values are: MINUTES, HOURS, SECONDS
+  #the type of time unit to use, valid values are: MINUTES, HOURS, SECONDS
   type: HOURS
   #interval
   interval: 2
