@@ -2,6 +2,8 @@ package br.com.backpacks;
 
 import br.com.backpacks.backup.BackupHandler;
 import br.com.backpacks.backup.ScheduledBackupService;
+import br.com.backpacks.storage.MySQLProvider;
+import br.com.backpacks.storage.YamlProvider;
 
 import java.util.concurrent.TimeUnit;
 
@@ -69,5 +71,14 @@ public class Config {
             Main.getMain().getLogger().warning("Invalid type for autosave, please use MINUTES | HOURS | SECONDS.");
         }
         return autoSaveManager;
+    }
+
+    public static MySQLProvider getMySQLProvider(){
+        if(!Config.getBoolean("mysql.enabled")) return null;
+        return new MySQLProvider(Config.getString("mysql.url"), Config.getString("mysql.username"), Config.getString("mysql.password"));
+    }
+
+    public static YamlProvider getYamlProvider(){
+        return new YamlProvider(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml", Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
     }
 }

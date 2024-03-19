@@ -13,25 +13,18 @@ import java.util.regex.Pattern;
 
 public class UpdateChecker {
     private static final String CURRENT_VERSION = Main.getMain().getDescription().getVersion();
-
     private static final String MODRINTH_API_URL = "https://api.modrinth.com/v2/project/advancedbackpacks/version";
 
     public static void checkForUpdates() {
-        HttpClient client = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(10))
-                .build();
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(MODRINTH_API_URL))
-                .GET()
-                .build();
-
+        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(MODRINTH_API_URL)).GET().build();
         String latestVersion;
 
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             latestVersion = parseVersion(response.body());
         } catch (IOException | InterruptedException e) {
+            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Could not find versions for this plugin, aborting update check.");
             return;
         }
 
@@ -42,7 +35,7 @@ public class UpdateChecker {
         if (!CURRENT_VERSION.equals(latestVersion)) {
             Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "An update is available! Latest version: " + latestVersion);
         } else {
-            Main.getMain().getLogger().info("You are using the latest version");
+            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "You are on the latest version!");
         }
     }
 

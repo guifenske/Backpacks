@@ -4,6 +4,7 @@ import br.com.backpacks.AutoSaveManager;
 import br.com.backpacks.Config;
 import br.com.backpacks.Main;
 import br.com.backpacks.backup.BackupHandler;
+import br.com.backpacks.storage.StorageManager;
 import br.com.backpacks.utils.Constants;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -28,6 +29,16 @@ public class BpReload implements CommandExecutor {
         Constants.DEBUG_MODE = Config.getBoolean("debug");
         Constants.CATCH_BACKPACK = Config.getBoolean("fish_backpack");
         Constants.MONSTER_DROPS_BACKPACK = Config.getBoolean("kill_monster_backpack");
+
+        if(!Config.getBoolean("mysql.enabled")){
+            StorageManager.setProvider(Config.getYamlProvider());
+        }   else{
+            if(Config.getMySQLProvider().canConnect()){
+                StorageManager.setProvider(Config.getMySQLProvider());
+            }   else{
+                StorageManager.setProvider(Config.getYamlProvider());
+            }
+        }
 
         BackupHandler backupHandler = Config.getBackupHandler();
         if(backupHandler == null && Main.getMain().getBackupHandler() != null){

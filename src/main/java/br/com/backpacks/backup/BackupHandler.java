@@ -1,5 +1,6 @@
 package br.com.backpacks.backup;
 
+import br.com.backpacks.Config;
 import br.com.backpacks.Main;
 import br.com.backpacks.storage.StorageManager;
 import br.com.backpacks.storage.YamlProvider;
@@ -60,7 +61,7 @@ public class BackupHandler {
 
         File backpackFile = new File(path + "/backpacks.yml");
         File upgradeFile = new File(path + "/upgrades.yml");
-        YamlProvider yamlProvider = new YamlProvider(path + "/backpacks.yml", path + "/upgrades.yml");
+        YamlProvider yamlProvider = Config.getYamlProvider();
         yamlProvider.saveBackpacks();
         yamlProvider.saveUpgrades();
 
@@ -143,7 +144,7 @@ public class BackupHandler {
         Instant start = Instant.now();
         rollbackBackpack = new ConcurrentHashMap<>(Main.backPackManager.getBackpacks());
         rollbackUpgrade = new ConcurrentHashMap<>(UpgradeManager.getUpgrades());
-        YamlProvider yamlProvider = new YamlProvider(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml", Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
+        YamlProvider yamlProvider = Config.getYamlProvider();
 
         File backpacksOriginal = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
         File upgradesOriginal = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");

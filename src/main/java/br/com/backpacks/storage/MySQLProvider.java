@@ -12,9 +12,9 @@ import java.sql.*;
 import java.util.UUID;
 
 public class MySQLProvider extends StorageProvider{
-    private String url;
-    private String user;
-    private String password;
+    private final String url;
+    private final String user;
+    private final String password;
     private final String databaseName;
 
     public MySQLProvider(String url, String user, String password) {
@@ -25,7 +25,8 @@ public class MySQLProvider extends StorageProvider{
         this.databaseName = "advbackpacks";
 
         try {
-            DriverManager.getConnection(url, user, password);
+            Connection connection = DriverManager.getConnection(url, user, password);
+            connection.close();
         }   catch (SQLException e) {
             Main.getMain().getLogger().severe("Could not connect to MySQL... Using YAML as default storage provider.");
             return;
@@ -36,35 +37,12 @@ public class MySQLProvider extends StorageProvider{
 
     public boolean canConnect() {
         try {
-            DriverManager.getConnection(url, user, password);
+            Connection connection = DriverManager.getConnection(url, user, password);
+            connection.close();
             return true;
         } catch (SQLException e) {
             return false;
         }
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public void createDatabase() {
@@ -181,7 +159,7 @@ public class MySQLProvider extends StorageProvider{
                        preparedStatement.setBlob(15, SerializationUtils.serializeItem(tanksUpgrade.getInventory().getItem(14)));
                    }
                }
-               Main.debugMessage("Saving " + upgrade.getType() + " upgrade " + upgrade.getId());
+               Main.debugMessage("Saving " + upgrade.getType().toString().toLowerCase() + " upgrade " + upgrade.getId());
                preparedStatement.execute();
            }
            connection.close();

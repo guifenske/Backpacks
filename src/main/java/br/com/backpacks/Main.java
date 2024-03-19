@@ -14,7 +14,6 @@ import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.recipes.UpgradesRecipes;
 import br.com.backpacks.storage.MySQLProvider;
 import br.com.backpacks.storage.StorageManager;
-import br.com.backpacks.storage.YamlProvider;
 import br.com.backpacks.utils.BackPackManager;
 import br.com.backpacks.utils.BackpackAction;
 import br.com.backpacks.utils.Constants;
@@ -114,12 +113,12 @@ public final class Main extends JavaPlugin {
             }
 
             if(getConfig().getBoolean("mysql.enabled")){
-                StorageManager.setProvider(new MySQLProvider(getConfig().getString("mysql.url"), getConfig().getString("mysql.username"), getConfig().getString("mysql.password")));
+                StorageManager.setProvider(Config.getMySQLProvider());
                 if(!((MySQLProvider) StorageManager.getProvider()).canConnect()){
-                    StorageManager.setProvider(new YamlProvider(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml", Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml"));
+                    StorageManager.setProvider(Config.getYamlProvider());
                 }
             }   else{
-                StorageManager.setProvider(new YamlProvider(getDataFolder().getAbsolutePath() + "/backpacks.yml", getDataFolder().getAbsolutePath() + "/upgrades.yml"));
+                StorageManager.setProvider(Config.getYamlProvider());
             }
 
             ThreadBackpacks.loadAll();
