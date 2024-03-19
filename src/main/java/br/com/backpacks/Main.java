@@ -182,6 +182,8 @@ public final class Main extends JavaPlugin {
             if(player == null) continue;
             player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
         }
+
+        ThreadBackpacks.cancelAllTasks();
         Bukkit.getConsoleSender().sendMessage("[Backpacks] Saving backpacks..");
         saveConfig();
 

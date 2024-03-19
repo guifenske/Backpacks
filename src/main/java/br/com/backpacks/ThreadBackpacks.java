@@ -19,8 +19,6 @@ public class ThreadBackpacks {
     }
 
     public static void saveAll() throws IOException{
-        cancelAllTasks();
-
         Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), () -> {
             try {
                 StorageManager.getProvider().saveBackpacks();

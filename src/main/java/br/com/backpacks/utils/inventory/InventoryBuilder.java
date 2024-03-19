@@ -219,27 +219,6 @@ public class InventoryBuilder {
         inv.setItem(49, editIO);
     }
 
-    public static void updateUpgradesInv(BackPack backPack){
-        Inventory inv = upgradesMenu.get(backPack.getId());
-        ItemStack item = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").build();
-        for(int i = 0; i < 9; i++){
-            inv.setItem(i, null);
-        }
-
-        for(int i = InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i < 9; i++){
-            inv.setItem(i, item);
-        }
-
-        int i = 0;
-        List<Upgrade> upgrades = backPack.getBackpackUpgrades();
-        if (!backPack.getBackpackUpgrades().isEmpty()) {
-            for (Upgrade upgrade : upgrades) {
-                inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));
-                i++;
-            }
-        }
-    }
-
     public static void updateEditIOInv(BackPack backPack){
         Inventory inv = editIOMenu.get(backPack.getId());
         ItemStack item = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").build();
