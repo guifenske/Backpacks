@@ -18,28 +18,12 @@ import java.util.Map;
 import java.util.Set;
 
 public final class YamlProvider extends StorageProvider {
-    private String backpacksPath;
-    private String upgradesPath;
+    private final String backpacksPath;
+    private final String upgradesPath;
 
     public YamlProvider(String backpacksPath, String upgradesPath) {
         super(StorageManager.StorageProviderType.YAML);
         this.backpacksPath = backpacksPath;
-        this.upgradesPath = upgradesPath;
-    }
-
-    public String getBackpacksPath() {
-        return backpacksPath;
-    }
-
-    public void setBackpacksPath(String backpacksPath) {
-        this.backpacksPath = backpacksPath;
-    }
-
-    public String getUpgradesPath() {
-        return upgradesPath;
-    }
-
-    public void setUpgradesPath(String upgradesPath) {
         this.upgradesPath = upgradesPath;
     }
 
@@ -49,7 +33,6 @@ public final class YamlProvider extends StorageProvider {
         YamlConfiguration config = new YamlConfiguration();
 
         for (BackPack backPack : Main.backPackManager.getBackpacks().values()) {
-            config.set(backPack.getId() + ".loc", null);
             if(backPack.getLocation() != null){
                 List<String> data = SerializationUtils.serializeLocationToList(backPack.getLocation());
                 config.set(backPack.getId() + ".loc", data);
@@ -71,6 +54,7 @@ public final class YamlProvider extends StorageProvider {
             if (backPack.getBackpackUpgrades() != null && !backPack.getBackpackUpgrades().isEmpty()) {
                 serializeUpgrades(config, backPack);
             }
+            Main.debugMessage("Saving backpack " + backPack.getId());
         }
 
         config.save(file);
