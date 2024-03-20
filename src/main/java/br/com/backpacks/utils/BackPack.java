@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Barrel;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -25,7 +26,7 @@ public final class BackPack extends UpgradeManager {
     private Location location;
     private boolean locked;
     private Inventory secondPage;
-    private Boolean blockState = false;
+    private Boolean isBlock = false;
     private final Set<UUID> viewersIds = new HashSet<>();
     private UUID owner;
     private boolean showNameAbove = false;
@@ -158,11 +159,11 @@ public final class BackPack extends UpgradeManager {
     }
 
     public Boolean isBlock() {
-        return blockState;
+        return isBlock;
     }
 
     public void setIsBlock(Boolean block) {
-        this.blockState = block;
+        this.isBlock = block;
     }
 
     public Inventory getFirstPage() {
@@ -425,5 +426,20 @@ public final class BackPack extends UpgradeManager {
             }
         }
         return list;
+    }
+
+    public void updateBarrelBlock(){
+        if(!isBlock()) return;
+        Barrel barrel = (Barrel) location.getBlock().getState();
+        List<ItemStack> bpItems = getBackpackItems();
+        if(bpItems.isEmpty()){
+            barrel.getInventory().clear();
+            return;
+        }
+
+        barrel.getInventory().clear();
+        for(int i = 0 ; i < bpItems.size() ; i++){
+            barrel.getInventory().setItem(i, bpItems.get(i));
+        }
     }
 }

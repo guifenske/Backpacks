@@ -24,6 +24,7 @@ public class HopperEvents implements Listener {
         if(sourceLocation == null) return;
         if(destinationLocation == null) return;
         BlockFace sideOfInput = sourceLocation.getBlock().getFace(destinationLocation.getBlock());
+        if(sideOfInput == null) return;
 
         //input
         if (Main.backPackManager.getBackpackFromLocation(destinationLocation) != null) {
@@ -74,7 +75,9 @@ public class HopperEvents implements Listener {
             List<ItemStack> list = backPack.tryAddItem(event.getItem().asOne());
             if (!list.isEmpty()) {
                 event.setCancelled(true);
+                return;
             }
+            backPack.updateBarrelBlock();
         }
 
         //output
@@ -104,6 +107,7 @@ public class HopperEvents implements Listener {
             }
             if (event.getDestination().addItem(backPack.getFirstItem().asOne()).isEmpty()) {
                 backPack.getFirstItem().subtract();
+                backPack.updateBarrelBlock();
             }
         }
     }

@@ -42,7 +42,8 @@ public class OnClickBackpack implements Listener {
                     event.setCancelled(true);
                 }
             }
-
+        }   else{
+            Bukkit.getScheduler().runTaskLater(Main.getMain(), backPack::updateBarrelBlock, 1L);
         }
     }
 }

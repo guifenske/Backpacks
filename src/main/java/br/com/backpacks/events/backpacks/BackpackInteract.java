@@ -12,7 +12,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.persistence.PersistentDataType;
 
-import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
 public class BackpackInteract implements Listener {
@@ -24,14 +23,8 @@ public class BackpackInteract implements Listener {
 
         if(event.getAction().equals(RIGHT_CLICK_BLOCK) && (event.getClickedBlock().getType().equals(Material.BARREL))){
             if(Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
-            if(event.getItem() != null){
-                if(event.getItem().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER)){
-                    //activate the backpackPlaceEvent
-                    if(player.isSneaking()) return;
-
-                    event.setCancelled(true);
-                    return;
-                }   else if(event.getItem().getType().isBlock() && player.isSneaking()) return;
+            if(event.getItem() != null && player.isSneaking()){
+                return;
             }
 
             event.setCancelled(true);
@@ -45,7 +38,7 @@ public class BackpackInteract implements Listener {
             }
             return;
         }
-        if(!event.getAction().equals(RIGHT_CLICK_BLOCK) && !event.getAction().equals(RIGHT_CLICK_AIR)) return;
+
         if(event.getItem() == null) return;
         if(player.isSneaking() && event.getAction().equals(RIGHT_CLICK_BLOCK)) return;
         if(!event.getItem().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER)){
