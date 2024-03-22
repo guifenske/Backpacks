@@ -18,14 +18,15 @@ public class BackpackInteract implements Listener {
 
     @EventHandler
     private void generalInteractionEvent(PlayerInteractEvent event){
-
         Player player = event.getPlayer();
+        if(!event.getAction().isRightClick()) return;
+
+        if(event.getItem() != null && player.isSneaking()){
+            return;
+        }
 
         if(event.getAction().equals(RIGHT_CLICK_BLOCK) && (event.getClickedBlock().getType().equals(Material.BARREL))){
             if(Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
-            if(event.getItem() != null && player.isSneaking()){
-                return;
-            }
 
             event.setCancelled(true);
             if(Main.backPackManager.canOpen()){
@@ -40,7 +41,6 @@ public class BackpackInteract implements Listener {
         }
 
         if(event.getItem() == null) return;
-        if(player.isSneaking() && event.getAction().equals(RIGHT_CLICK_BLOCK)) return;
         if(!event.getItem().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER)){
             if(event.getItem().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getNAMESPACE_WET_BACKPACK(), PersistentDataType.INTEGER)){
                 event.getPlayer().sendMessage(Main.PREFIX + "§cHumm, this thing is too wet to be used as a backpack.");

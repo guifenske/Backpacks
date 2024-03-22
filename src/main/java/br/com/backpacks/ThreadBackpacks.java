@@ -1,7 +1,11 @@
 package br.com.backpacks;
 
 import br.com.backpacks.backup.BackupHandler;
+import br.com.backpacks.events.upgrades.Magnet;
+import br.com.backpacks.events.upgrades.VillagersFollow;
 import br.com.backpacks.storage.StorageManager;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -40,5 +44,14 @@ public class ThreadBackpacks {
             autoSaveManager.start();
         }
         Main.getMain().setAutoSaveManager(autoSaveManager);
+    }
+
+    public static void startTicking(){
+        Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getMain(), ()->{
+            for(Player player : Bukkit.getOnlinePlayers()){
+                VillagersFollow.tick(player);
+                Magnet.tick(player);
+            }
+        }, 0L, 10L);
     }
 }

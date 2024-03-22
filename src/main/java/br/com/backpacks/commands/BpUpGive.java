@@ -90,6 +90,9 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
                 sender.sendMessage(Main.PREFIX + args[0] + " isn't a valid UpgradeType!");
                 return true;
             }
+            case MAGNET -> {
+                upgrade = new MagnetUpgrade(UpgradeManager.lastUpgradeID + 1);
+            }
         }
 
         ItemStack upgradeItem = RecipesUtils.getItemFromUpgrade(upgrade);

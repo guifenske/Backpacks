@@ -24,5 +24,7 @@ public enum UpgradeType {
 
     LIQUIDTANK,
 
-    UNBREAKABLE
+    UNBREAKABLE,
+
+    MAGNET
 }

@@ -24,24 +24,21 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 public class VillagersFollow implements Listener {
-    public static void tick() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getMain(), ()->{
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (!player.getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) continue;
-                if (!player.getInventory().getItemInMainHand().getType().equals(Material.EMERALD_BLOCK) && !player.getInventory().getItemInOffHand().getType().equals(Material.EMERALD_BLOCK)) {
-                    continue;
-                }
-                BackPack backpack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
-                VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) backpack.getUpgradeFromType(UpgradeType.VILLAGERSFOLLOW);
-                if(upgrade == null) continue;
+    public static void tick(Player player) {
+        if (!player.getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
+        if (!player.getInventory().getItemInMainHand().getType().equals(Material.EMERALD_BLOCK) && !player.getInventory().getItemInOffHand().getType().equals(Material.EMERALD_BLOCK)) {
+            return;
+        }
+        BackPack backpack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) backpack.getUpgradeFromType(UpgradeType.VILLAGERSFOLLOW);
+        if(upgrade == null) return;
 
-                if (!upgrade.isEnabled()) {
-                    continue;
-                }
+        if (!upgrade.isEnabled()) {
+            return;
+        }
 
-                moveNearbyVillagers(player.getLocation().toBlockLocation(), player);
-            }
-        }, 0L, 15L);
+        //move nearby villagers in a 10 blocks radius
+        moveNearbyVillagers(player.getLocation().toBlockLocation(), player, 100);
     }
 
     @EventHandler
@@ -81,15 +78,17 @@ public class VillagersFollow implements Listener {
         });
     }
 
-    private static void moveNearbyVillagers(Location l, Player player) {
+    private static void moveNearbyVillagers(Location l, Player player, int distanceSquared) {
         int chunkRadius = 1;
         int x = (int) l.getX(), z = (int) l.getZ();
         World world = l.getWorld();
+
+        //iterates over chunks around location
         for (int chX = -chunkRadius; chX <= chunkRadius; chX++) {
             for (int chZ = -chunkRadius; chZ <= chunkRadius; chZ++) {
                 if(!new Location(world, x + (chX * 16), 0, z + (chZ * 16)).isChunkLoaded()) continue;
                 for (Entity e : new Location(world, x + (chX * 16), 0, z + (chZ * 16)).getChunk().getEntities()) {
-                    if (e.getLocation().distanceSquared(l) <= 100 && e.getType().equals(EntityType.VILLAGER)){
+                    if (e.getLocation().distanceSquared(l) <= distanceSquared && e.getType().equals(EntityType.VILLAGER)){
                         moveToPlayer((Mob) e, player);
                     }
                 }

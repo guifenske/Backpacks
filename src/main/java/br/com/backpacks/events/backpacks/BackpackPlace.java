@@ -15,7 +15,7 @@ import org.bukkit.persistence.PersistentDataType;
 public class BackpackPlace implements Listener {
 
     @EventHandler
-    private void generalPlaceEvent(BlockPlaceEvent event) {
+    private void backpackPlaceEvent(BlockPlaceEvent event) {
         if (!event.getPlayer().isSneaking()) return;
         if (!event.getBlockPlaced().getType().equals(Material.BARREL)) return;
 
