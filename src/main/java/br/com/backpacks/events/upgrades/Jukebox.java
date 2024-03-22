@@ -27,7 +27,7 @@ public class Jukebox implements Listener {
     public static List<Integer> discsSlots = List.of(6,7,8,15,16,17,24,25,26);
 
     public static Boolean checkDisk(@NotNull ItemStack itemStack){
-        return durationFromDisc(itemStack) > 0;
+        return itemStack.getType().toString().endsWith("DISC");
     }
 
     public static net.kyori.adventure.sound.Sound getSoundFromItem(@NotNull ItemStack itemStack){

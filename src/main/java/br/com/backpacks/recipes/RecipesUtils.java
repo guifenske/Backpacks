@@ -223,7 +223,7 @@ public class RecipesUtils {
             return UpgradeManager.getUpgrades().get(id);
         }
         if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getMAGNET(), PersistentDataType.INTEGER)){
-            UpgradeManager.getUpgrades().put(id, new MagnetUpgrade(id));
+            UpgradeManager.getUpgrades().put(id, new Upgrade(UpgradeType.MAGNET, id));
             return UpgradeManager.getUpgrades().get(id);
         }
 

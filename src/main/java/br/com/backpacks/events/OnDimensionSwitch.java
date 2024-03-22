@@ -27,6 +27,10 @@ public class OnDimensionSwitch implements Listener {
         Sound sound = upgrade.getSound();
         Jukebox.stopSound(player, upgrade);
         upgrade.setSound(sound);
+        if(upgrade.isLooping()){
+            upgrade.startLoopingTask(player);
+            return;
+        }
         Jukebox.playSound(upgrade, player);
     }
 }

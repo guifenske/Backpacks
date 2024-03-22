@@ -71,6 +71,7 @@ br/com/backpacks/AutoSaveManager.class
 br/com/backpacks/upgrades/JukeboxUpgrade$2.class
 br/com/backpacks/commands/BpList.class
 br/com/backpacks/events/upgrades/CraftingTable$1.class
+br/com/backpacks/events/upgrades/Magnet.class
 br/com/backpacks/utils/UpgradeType.class
 br/com/backpacks/utils/inventory/InventoryBuilder$MenuType.class
 br/com/backpacks/upgrades/JukeboxUpgrade.class
