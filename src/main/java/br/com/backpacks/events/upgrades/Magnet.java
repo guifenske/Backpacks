@@ -12,6 +12,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.Vector;
 
 public class Magnet implements Listener {
 
@@ -20,12 +21,13 @@ public class Magnet implements Listener {
         BackPack backPack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
         if(backPack.getUpgradeFromType(UpgradeType.MAGNET) == null) return;
 
-        pullItemsNearby(player.getLocation());
+        pullItemsNearby(player);
     }
 
-    private static void pullItemsNearby(Location location){
+    private static void pullItemsNearby(Player player){
+        Location location = player.getLocation();
         int chunkRadius = 1;
-        int distanceSquared = 25;
+        int maxDistanceSquared = 25;
         int x = (int) location.getX(), z = (int) location.getZ();
         World world = location.getWorld();
 
@@ -34,19 +36,29 @@ public class Magnet implements Listener {
             for (int chZ = -chunkRadius; chZ <= chunkRadius; chZ++) {
                 if(!new Location(world, x + (chX * 16), 0, z + (chZ * 16)).isChunkLoaded()) continue;
                 for (Entity e : new Location(world, x + (chX * 16), 0, z + (chZ * 16)).getChunk().getEntities()) {
-                    if (e.getType().equals(EntityType.DROPPED_ITEM) && e.getLocation().distanceSquared(location) <= distanceSquared){
+                    double distanceSquared = location.distanceSquared(e.getLocation());
+                    if ((e.getType().equals(EntityType.DROPPED_ITEM) || e.getType().equals(EntityType.EXPERIENCE_ORB)) && distanceSquared <= maxDistanceSquared){
                         //just to not making the item doing a bit of flickering near the player
-                        if(e.getLocation().distanceSquared(location) <= 4) continue;
-                        pullItem((Item) e, location);
+                        if(e instanceof Item){
+                            if(((Item) e).getThrower() != null && ((Item) e).getThrower().equals(player.getUniqueId())) continue;
+                        }
+                        if(distanceSquared <= 4) continue;
+                        double distance = Math.sqrt(distanceSquared);
+                        pullItem(e, location, distance);
                     }
                 }
             }
         }
     }
 
-    private static void pullItem(Item item, Location pullTo){
-        item.setPickupDelay(0);
-        item.teleportAsync(pullTo);
+    private static void pullItem(Entity entity, Location pullTo, double distance){
+        if(entity instanceof Item){
+            ((Item) entity).setPickupDelay(0);
+        }
+        Vector direction = pullTo.subtract(entity.getLocation()).toVector();
+
+        //distribute the velocity of the item evenly in 5 ticks
+        entity.setVelocity(direction.normalize().multiply(distance / 5));
     }
 
 }
