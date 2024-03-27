@@ -4,8 +4,8 @@ import br.com.backpacks.backup.BackupHandler;
 import br.com.backpacks.events.upgrades.Magnet;
 import br.com.backpacks.events.upgrades.VillagersFollow;
 import br.com.backpacks.storage.StorageManager;
+import br.com.backpacks.utils.backpacks.BackPack;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -48,9 +48,13 @@ public class ThreadBackpacks {
 
     public static void startTicking(){
         Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getMain(), ()->{
-            for(Player player : Bukkit.getOnlinePlayers()){
-                VillagersFollow.tick(player);
-                Magnet.tick(player);
+            for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
+                if(backPack.getOwner() != null){
+                    VillagersFollow.tick(Bukkit.getPlayer(backPack.getOwner()));
+                    Magnet.tick(Bukkit.getPlayer(backPack.getOwner()));
+                }   else if(backPack.getLocation() != null){
+                    Magnet.tick(backPack);
+                }
             }
         }, 0L, 10L);
     }

@@ -2,8 +2,8 @@ package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
-import br.com.backpacks.utils.BackPack;
-import br.com.backpacks.utils.BackpackAction;
+import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackAction;
 import br.com.backpacks.utils.others.FurnaceUtils;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import org.bukkit.Bukkit;

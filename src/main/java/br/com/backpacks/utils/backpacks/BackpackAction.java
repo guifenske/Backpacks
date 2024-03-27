@@ -1,4 +1,4 @@
-package br.com.backpacks.utils;
+package br.com.backpacks.utils.backpacks;
 
 import org.bukkit.entity.HumanEntity;
 

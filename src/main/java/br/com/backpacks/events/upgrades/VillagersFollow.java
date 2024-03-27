@@ -3,9 +3,9 @@ package br.com.backpacks.events.upgrades;
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.upgrades.VillagersFollowUpgrade;
-import br.com.backpacks.utils.BackPack;
-import br.com.backpacks.utils.BackpackAction;
 import br.com.backpacks.utils.UpgradeType;
+import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackAction;
 import com.destroystokyo.paper.entity.Pathfinder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -25,6 +25,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class VillagersFollow implements Listener {
     public static void tick(Player player) {
+        if(player == null) return;
         if (!player.getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
         if (!player.getInventory().getItemInMainHand().getType().equals(Material.EMERALD_BLOCK) && !player.getInventory().getItemInOffHand().getType().equals(Material.EMERALD_BLOCK)) {
             return;

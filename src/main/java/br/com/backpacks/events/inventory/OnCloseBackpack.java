@@ -2,9 +2,9 @@ package br.com.backpacks.events.inventory;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
-import br.com.backpacks.utils.BackPack;
-import br.com.backpacks.utils.BackpackAction;
 import br.com.backpacks.utils.UpgradeType;
+import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackAction;
 import org.bukkit.block.Barrel;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,7 +23,7 @@ public class OnCloseBackpack implements Listener {
         shouldRemoveBackpack(event, backPack);
         backPack.getViewersIds().remove(event.getPlayer().getUniqueId());
         if(backPack.getViewersIds().isEmpty()){
-            if(backPack.isBlock()){
+            if(backPack.getLocation() != null){
                 Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
                 barrel.close();
             }

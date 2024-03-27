@@ -2,10 +2,10 @@ package br.com.backpacks.storage;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.upgrades.*;
-import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
+import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;

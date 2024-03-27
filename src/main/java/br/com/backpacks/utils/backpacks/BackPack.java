@@ -1,7 +1,8 @@
-package br.com.backpacks.utils;
+package br.com.backpacks.utils.backpacks;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
+import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.inventory.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

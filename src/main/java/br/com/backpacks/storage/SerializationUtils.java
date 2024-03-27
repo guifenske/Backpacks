@@ -1,7 +1,7 @@
 package br.com.backpacks.storage;
 
 import br.com.backpacks.recipes.BackpackRecipes;
-import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.backpacks.BackPack;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;

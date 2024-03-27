@@ -1,7 +1,10 @@
-package br.com.backpacks.utils;
+package br.com.backpacks.utils.backpacks;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.upgrades.*;
+import br.com.backpacks.utils.Upgrade;
+import br.com.backpacks.utils.UpgradeManager;
+import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

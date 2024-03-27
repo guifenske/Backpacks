@@ -2,7 +2,7 @@ package br.com.backpacks.events.entity;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
-import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.backpacks.BackPack;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

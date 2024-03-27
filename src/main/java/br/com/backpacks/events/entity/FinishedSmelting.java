@@ -2,8 +2,8 @@ package br.com.backpacks.events.entity;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
-import br.com.backpacks.utils.BackPack;
-import br.com.backpacks.utils.RandomBackpackBuilder;
+import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.RandomBackpackBuilder;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
