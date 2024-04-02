@@ -2,8 +2,8 @@ package br.com.backpacks.events.backpacks;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesUtils;
-import br.com.backpacks.utils.BackPack;
-import br.com.backpacks.utils.BackpackAction;
+import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackAction;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -15,17 +15,23 @@ import org.bukkit.event.Listener;
 
 import java.util.UUID;
 
-public class RenameBackpackChat implements Listener {
+public class RenameBackpack implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     private void onRename(AsyncChatEvent event){
-        if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.RENAMING)) return;
+        if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.RENAMING)) return;
         Player player = event.getPlayer();
         TextComponent textComponent = (TextComponent) event.originalMessage();
         String newName = textComponent.content();
         event.setCancelled(true);
 
-        BackpackAction.clearPlayerActions(player);
+        if(newName.isEmpty() || newName.length() > 30){
+            player.sendMessage(Main.PREFIX + "§cInvalid name, try again..");
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+            return;
+        }
+
+        BackpackAction.clearPlayerAction(player);
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(player);
 
         Bukkit.getScheduler().runTask(Main.getMain(), ()->{
@@ -33,7 +39,8 @@ public class RenameBackpackChat implements Listener {
                 if(Main.backPackManager.getCurrentPage().containsKey(uuid)){
                     Player player1 = Bukkit.getPlayer(uuid);
                     if(player1 == null) continue;
-                    BackpackAction.clearPlayerActions(player1);
+                    BackpackAction.clearPlayerAction(player1);
+                    BackpackAction.getSpectators().remove(player1.getUniqueId());
                     player1.closeInventory();
                 }
             }
@@ -53,7 +60,7 @@ public class RenameBackpackChat implements Listener {
                 }
             });
             player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
-            player.sendMessage(Main.PREFIX + "§aRenamed backpack to " + newName);
+            player.sendMessage(Main.PREFIX + "§aRenamed backpack to " + newName + ".");
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
             return;
         }
@@ -75,7 +82,7 @@ public class RenameBackpackChat implements Listener {
                 }
             }
         });
-        player.sendMessage(Main.PREFIX + "§aRenamed backpack to " + newName);
+        player.sendMessage(Main.PREFIX + "§aRenamed backpack to " + newName + ".");
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
     }
 }

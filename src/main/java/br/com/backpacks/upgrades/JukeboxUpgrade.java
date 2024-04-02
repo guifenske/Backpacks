@@ -15,10 +15,17 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static br.com.backpacks.events.upgrades.Jukebox.discsSlots;
 
@@ -168,4 +175,42 @@ public class JukeboxUpgrade extends Upgrade {
         inventory.setItem(10, play);
         inventory.setItem(11, stop);
     }
+
+    public ByteArrayInputStream serializeDiscs() throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
+
+        if (getDiscs().isEmpty()) {
+            dataOutput.writeInt(0);
+            dataOutput.close();
+            return new ByteArrayInputStream(outputStream.toByteArray());
+        }
+
+        dataOutput.writeInt(getDiscs().size());
+        for (Map.Entry<Integer, ItemStack> entry : getDiscs().entrySet()) {
+            if (entry.getValue() == null) continue;
+            dataOutput.writeInt(entry.getKey());
+            dataOutput.writeChars(entry.getValue().getType().name());
+        }
+
+        dataOutput.close();
+        return new ByteArrayInputStream(outputStream.toByteArray());
+    }
+
+    public void deserializeDiscs(InputStream inputStream) throws IOException, ClassNotFoundException {
+        if (inputStream == null || inputStream.available() == 0) return;
+        BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
+
+        int size = dataInput.readInt();
+        if(size == 0){
+            dataInput.close();
+            return;
+        }
+        for (int i = 0; i < size; i++) {
+            int slot = dataInput.readInt();
+            String name = dataInput.readUTF();
+            inventory.setItem(slot, getSoundFromName(name));
+        }
+    }
+
 }

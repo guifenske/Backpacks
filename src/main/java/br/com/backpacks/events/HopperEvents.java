@@ -3,9 +3,9 @@ package br.com.backpacks.events;
 import br.com.backpacks.Main;
 import br.com.backpacks.events.upgrades.Furnace;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
-import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
+import br.com.backpacks.utils.backpacks.BackPack;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
@@ -24,6 +24,7 @@ public class HopperEvents implements Listener {
         if(sourceLocation == null) return;
         if(destinationLocation == null) return;
         BlockFace sideOfInput = sourceLocation.getBlock().getFace(destinationLocation.getBlock());
+        if(sideOfInput == null) return;
 
         //input
         if (Main.backPackManager.getBackpackFromLocation(destinationLocation) != null) {
@@ -74,7 +75,9 @@ public class HopperEvents implements Listener {
             List<ItemStack> list = backPack.tryAddItem(event.getItem().asOne());
             if (!list.isEmpty()) {
                 event.setCancelled(true);
+                return;
             }
+            backPack.updateBarrelBlock();
         }
 
         //output
@@ -104,6 +107,7 @@ public class HopperEvents implements Listener {
             }
             if (event.getDestination().addItem(backPack.getFirstItem().asOne()).isEmpty()) {
                 backPack.getFirstItem().subtract();
+                backPack.updateBarrelBlock();
             }
         }
     }

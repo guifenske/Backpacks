@@ -2,10 +2,10 @@ package br.com.backpacks.events.inventory;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesUtils;
-import br.com.backpacks.utils.BackPack;
-import br.com.backpacks.utils.BackpackAction;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
+import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackAction;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,7 +22,7 @@ public class OnCloseUpgradeMenu implements Listener {
 
     @EventHandler
     private void onClose(InventoryCloseEvent event){
-        if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.UPGMENU)) return;
+        if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGMENU)) return;
 
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         if(backPack == null) return;
@@ -62,11 +62,11 @@ public class OnCloseUpgradeMenu implements Listener {
         }
 
         //stop ticking upgrades when not in the backpack
-        if(!backPack.getBackpackUpgrade().isEmpty()){
+        if(!backPack.getBackpackUpgrades().isEmpty()){
             if(newUpgrades.isEmpty()){
                 backPack.stopTickingAllUpgrades();
             }   else{
-                for(Upgrade upgrade : backPack.getBackpackUpgrade()){
+                for(Upgrade upgrade : backPack.getBackpackUpgrades()){
                     //was removed
                     if(!newUpgradesIds.contains(upgrade.getId())){
                         backPack.stopTickingUpgrade(upgrade.getId());
@@ -75,10 +75,10 @@ public class OnCloseUpgradeMenu implements Listener {
             }
         }
 
-        backPack.setBackpackUpgrade(newUpgrades);
+        backPack.setBackpackUpgrades(newUpgrades);
         InventoryBuilder.updateConfigInv(backPack);
         InventoryBuilder.updateEditIOInv(backPack);
-        BackpackAction.clearPlayerActions(event.getPlayer());
+        BackpackAction.clearPlayerAction(event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

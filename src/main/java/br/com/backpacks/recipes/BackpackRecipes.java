@@ -9,15 +9,44 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
 
-public class RecipesNamespaces {
+public class BackpackRecipes {
+    private final NamespacedKey IS_BACKPACK = new NamespacedKey(Main.getMain(), "isbackpack");
+    private final NamespacedKey BACKPACK_ID = new NamespacedKey(Main.getMain(), "backpackid");
+    private final NamespacedKey HAS_BACKPACK = new NamespacedKey(Main.getMain(), "hasbackpack");
+    private final NamespacedKey IS_CONFIG_ITEM = new NamespacedKey(Main.getMain(), "isconfigitem");
+    private final NamespacedKey NAMESPACE_LEATHER_BACKPACK = new NamespacedKey(Main.getMain(), "leatherbackpack");
+    private final NamespacedKey NAMESPACE_IRON_BACKPACK = new NamespacedKey(Main.getMain(), "ironbackpack");
+    private final NamespacedKey NAMESPACE_GOLD_BACKPACK = new NamespacedKey(Main.getMain(), "goldbackpack");
+    private final NamespacedKey NAMESPACE_LAPIS_BACKPACK = new NamespacedKey(Main.getMain(), "lapisbackpack");
+    private final NamespacedKey NAMESPACE_AMETHYST_BACKPACK = new NamespacedKey(Main.getMain(), "amethystbackpack");
+    private final NamespacedKey NAMESPACE_DRIED_BACKPACK = new NamespacedKey(Main.getMain(), "driedbackpack");
+    private final NamespacedKey NAMESPACE_WET_BACKPACK = new NamespacedKey(Main.getMain(), "wetbackpack");
+    private final NamespacedKey NAMESPACE_DIAMOND_BACKPACK = new NamespacedKey(Main.getMain(), "diamondbackpack");
+    private final NamespacedKey NAMESPACE_NETHERITE_BACKPACK = new NamespacedKey(Main.getMain(), "netheritebackpack");
 
     public NamespacedKey isBackpack() {
         return IS_BACKPACK;
     }
 
-    private final NamespacedKey IS_BACKPACK = new NamespacedKey(Main.getMain(), "isbackpack");
+    public NamespacedKey getNAMESPACE_DRIED_BACKPACK() {
+        return NAMESPACE_DRIED_BACKPACK;
+    }
 
-    private final NamespacedKey BACKPACK_ID = new NamespacedKey(Main.getMain(), "backpackid");
+    public NamespacedKey getIS_CONFIG_ITEM() {
+        return IS_CONFIG_ITEM;
+    }
+
+    public NamespacedKey getNAMESPACE_IRON_BACKPACK() {
+        return NAMESPACE_IRON_BACKPACK;
+    }
+
+    public NamespacedKey getNAMESPACE_LEATHER_BACKPACK() {
+        return NAMESPACE_LEATHER_BACKPACK;
+    }
+
+    public NamespacedKey getNAMESPACE_WET_BACKPACK() {
+        return NAMESPACE_WET_BACKPACK;
+    }
 
     public NamespacedKey getNAMESPACE_BACKPACK_ID() {
         return BACKPACK_ID;
@@ -27,40 +56,13 @@ public class RecipesNamespaces {
         return HAS_BACKPACK;
     }
 
-    private final NamespacedKey HAS_BACKPACK = new NamespacedKey(Main.getMain(), "hasbackpack");
-
-    public NamespacedKey getIS_CONFIG_ITEM() {
-        return IS_CONFIG_ITEM;
+    public NamespacedKey getNAMESPACE_AMETHYST_BACKPACK() {
+        return NAMESPACE_AMETHYST_BACKPACK;
     }
 
-    private final NamespacedKey IS_CONFIG_ITEM = new NamespacedKey(Main.getMain(), "isconfigitem");
-
-    public NamespacedKey getNAMESPACE_LEATHER_BACKPACK() {
-        return NAMESPACE_LEATHER_BACKPACK;
+    public NamespacedKey getNAMESPACE_NETHERITE_BACKPACK() {
+        return NAMESPACE_NETHERITE_BACKPACK;
     }
-
-    private final NamespacedKey NAMESPACE_LEATHER_BACKPACK = new NamespacedKey(Main.getMain(), "leatherbackpack");
-
-    public NamespacedKey getNAMESPACE_IRON_BACKPACK() {
-        return NAMESPACE_IRON_BACKPACK;
-    }
-
-    private final NamespacedKey NAMESPACE_IRON_BACKPACK = new NamespacedKey(Main.getMain(), "ironbackpack");
-    private final NamespacedKey NAMESPACE_GOLD_BACKPACK = new NamespacedKey(Main.getMain(), "goldbackpack");
-    private final NamespacedKey NAMESPACE_LAPIS_BACKPACK = new NamespacedKey(Main.getMain(), "lapisbackpack");
-    private final NamespacedKey NAMESPACE_AMETHYST_BACKPACK = new NamespacedKey(Main.getMain(), "amethystbackpack");
-
-    public NamespacedKey getNAMESPACE_DRIED_BACKPACK() {
-        return NAMESPACE_DRIED_BACKPACK;
-    }
-
-    private final NamespacedKey NAMESPACE_DRIED_BACKPACK = new NamespacedKey(Main.getMain(), "driedbackpack");
-
-    public NamespacedKey getNAMESPACE_WET_BACKPACK() {
-        return NAMESPACE_WET_BACKPACK;
-    }
-
-    private final NamespacedKey NAMESPACE_WET_BACKPACK = new NamespacedKey(Main.getMain(), "wetbackpack");
 
     public NamespacedKey getNAMESPACE_GOLD_BACKPACK() {
         return NAMESPACE_GOLD_BACKPACK;
@@ -73,18 +75,6 @@ public class RecipesNamespaces {
     public NamespacedKey getNAMESPACE_DIAMOND_BACKPACK() {
         return NAMESPACE_DIAMOND_BACKPACK;
     }
-
-    private final NamespacedKey NAMESPACE_DIAMOND_BACKPACK = new NamespacedKey(Main.getMain(), "diamondbackpack");
-
-    public NamespacedKey getNAMESPACE_AMETHYST_BACKPACK() {
-        return NAMESPACE_AMETHYST_BACKPACK;
-    }
-
-    public NamespacedKey getNAMESPACE_NETHERITE_BACKPACK() {
-        return NAMESPACE_NETHERITE_BACKPACK;
-    }
-
-    private final NamespacedKey NAMESPACE_NETHERITE_BACKPACK = new NamespacedKey(Main.getMain(), "netheritebackpack");
 
     public Recipe leatherBackpackRecipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);

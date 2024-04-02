@@ -1,8 +1,8 @@
 package br.com.backpacks.events.backpacks;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.recipes.RecipesNamespaces;
-import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.recipes.BackpackRecipes;
+import br.com.backpacks.utils.backpacks.BackPack;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Barrel;
@@ -12,27 +12,21 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.persistence.PersistentDataType;
 
-import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
 public class BackpackInteract implements Listener {
 
     @EventHandler
     private void generalInteractionEvent(PlayerInteractEvent event){
-
         Player player = event.getPlayer();
+        if(!event.getAction().isRightClick()) return;
+
+        if(event.getItem() != null && player.isSneaking()){
+            return;
+        }
 
         if(event.getAction().equals(RIGHT_CLICK_BLOCK) && (event.getClickedBlock().getType().equals(Material.BARREL))){
             if(Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
-            if(event.getItem() != null){
-                if(event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().isBackpack(), PersistentDataType.INTEGER)){
-                    //activate the backpackPlaceEvent
-                    if(player.isSneaking()) return;
-
-                    event.setCancelled(true);
-                    return;
-                }   else if(event.getItem().getType().isBlock() && player.isSneaking()) return;
-            }
 
             event.setCancelled(true);
             if(Main.backPackManager.canOpen()){
@@ -45,11 +39,10 @@ public class BackpackInteract implements Listener {
             }
             return;
         }
-        if(!event.getAction().equals(RIGHT_CLICK_BLOCK) && !event.getAction().equals(RIGHT_CLICK_AIR)) return;
+
         if(event.getItem() == null) return;
-        if(player.isSneaking() && event.getAction().equals(RIGHT_CLICK_BLOCK)) return;
-        if(!event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER)){
-            if(event.getItem().getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getNAMESPACE_WET_BACKPACK(), PersistentDataType.INTEGER)){
+        if(!event.getItem().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER)){
+            if(event.getItem().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getNAMESPACE_WET_BACKPACK(), PersistentDataType.INTEGER)){
                 event.getPlayer().sendMessage(Main.PREFIX + "§cHumm, this thing is too wet to be used as a backpack.");
                 event.setCancelled(true);
             }
@@ -58,7 +51,7 @@ public class BackpackInteract implements Listener {
 
         event.setCancelled(true);
         if(Main.backPackManager.canOpen()) {
-            BackPack backPack = Main.backPackManager.getBackpackFromId(event.getItem().getItemMeta().getPersistentDataContainer().get(new RecipesNamespaces().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+            BackPack backPack = Main.backPackManager.getBackpackFromId(event.getItem().getItemMeta().getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
             if(backPack == null) return;
             backPack.setIsBlock(false);
 

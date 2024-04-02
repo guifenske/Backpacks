@@ -1,8 +1,8 @@
 package br.com.backpacks.events.inventory;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.utils.BackPack;
-import br.com.backpacks.utils.BackpackAction;
+import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackAction;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,7 +14,7 @@ public class OnClickUpgradesMenu implements Listener {
     @EventHandler
     private void onClick(InventoryClickEvent event){
         if(event.getClickedInventory() == null) return;
-        if(!BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.UPGMENU)) return;
+        if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGMENU)) return;
 
         Player player = (Player) event.getWhoClicked();
 

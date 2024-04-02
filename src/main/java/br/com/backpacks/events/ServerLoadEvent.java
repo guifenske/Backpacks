@@ -1,13 +1,13 @@
 package br.com.backpacks.events;
 
 import br.com.backpacks.Main;
+import br.com.backpacks.ThreadBackpacks;
 import br.com.backpacks.events.upgrades.Furnace;
-import br.com.backpacks.events.upgrades.VillagersFollow;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
-import br.com.backpacks.utils.BackPack;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
+import br.com.backpacks.utils.backpacks.BackPack;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -66,7 +66,7 @@ public class ServerLoadEvent implements Listener {
         Main.getMain().setFurnaceRecipes(furnaceRecipes);
         Main.getMain().setSmokingRecipes(smokingRecipes);
 
-        VillagersFollow.tick();
+        ThreadBackpacks.startTicking();
         for(Upgrade upgrade : UpgradeManager.getUpgrades().values()){
             if(upgrade.getType().equals(UpgradeType.FURNACE) || upgrade.getType().equals(UpgradeType.BLAST_FURNACE) || upgrade.getType().equals(UpgradeType.SMOKER)){
                 if(!((FurnaceUpgrade) upgrade).canTick()) continue;

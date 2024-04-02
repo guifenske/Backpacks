@@ -10,11 +10,13 @@ import br.com.backpacks.events.backpacks.*;
 import br.com.backpacks.events.entity.*;
 import br.com.backpacks.events.inventory.*;
 import br.com.backpacks.events.upgrades.*;
-import br.com.backpacks.recipes.RecipesNamespaces;
-import br.com.backpacks.recipes.UpgradesRecipesNamespaces;
-import br.com.backpacks.utils.BackPackManager;
-import br.com.backpacks.utils.BackpackAction;
+import br.com.backpacks.recipes.BackpackRecipes;
+import br.com.backpacks.recipes.UpgradesRecipes;
+import br.com.backpacks.storage.MySQLProvider;
+import br.com.backpacks.storage.StorageManager;
 import br.com.backpacks.utils.Constants;
+import br.com.backpacks.utils.backpacks.BackPackManager;
+import br.com.backpacks.utils.backpacks.BackpackAction;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -24,19 +26,27 @@ import org.bukkit.inventory.SmokingRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public final class Main extends JavaPlugin {
-    private static Main back;
+    private AutoSaveManager autoSaveManager;
+    private BackupHandler backupHandler;
+    private List<SmokingRecipe> smokingRecipes = new ArrayList<>();
     private List<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
+    private List<BlastingRecipe> blastingRecipes = new ArrayList<>();
+    public static boolean saveComplete = false;
+    private static Main main;
+    public static Instant start;
+    public static String PREFIX = "§8[§6BackPacks§8] ";
+    public static final Object lock = new Object();
+    public static final BackPackManager backPackManager = new BackPackManager();
 
     public void setSmokingRecipes(List<SmokingRecipe> smokingRecipes) {
         this.smokingRecipes = smokingRecipes;
     }
-
-    private List<SmokingRecipe> smokingRecipes = new ArrayList<>();
 
     public List<SmokingRecipe> getSmokingRecipes() {
         return smokingRecipes;
@@ -54,33 +64,13 @@ public final class Main extends JavaPlugin {
         this.blastingRecipes = blastingRecipes;
     }
 
-    private List<BlastingRecipe> blastingRecipes = new ArrayList<>();
     public List<FurnaceRecipe> getFurnaceRecipes() {
         return furnaceRecipes;
     }
 
-    public static String PREFIX = "§8[§6BackPacks§8] ";
-
-    public static final BackPackManager backPackManager = new BackPackManager();
-
-    public ThreadBackpacks getThreadBackpacks() {
-        return threadBackpacks;
-    }
-
-    private ThreadBackpacks threadBackpacks;
-
-    public static final Object lock = new Object();
-    public static boolean saveComplete = false;
-
     public static Main getMain() {
-        return back;
+        return main;
     }
-
-    private static void setMain(Main back) {
-        Main.back = back;
-    }
-
-    private BackupHandler backupHandler;
 
     public BackupHandler getBackupHandler() {
         return backupHandler;
@@ -90,41 +80,50 @@ public final class Main extends JavaPlugin {
         this.backupHandler = backupHandler;
     }
 
+    public AutoSaveManager getAutoSaveManager() {
+        return autoSaveManager;
+    }
+
+    public void setAutoSaveManager(AutoSaveManager autoSaveManager) {
+        this.autoSaveManager = autoSaveManager;
+    }
+
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        setMain(this);
+        main = this;
         Constants.VERSION = Bukkit.getMinecraftVersion();
-
-        if(Bukkit.getPluginManager().getPlugin("BKCommonLib") == null){
-            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§Plugin BKCommonLib not found, disabling plugin.");
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
+        start = Instant.now();
 
         if(!Constants.SUPPORTED_VERSIONS.contains(Constants.VERSION)){
             Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§cThis plugin at the moment is only compatible with 1.20.x, 1.19.x, 1.18.x versions.");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-        if(getConfig().getBoolean("debug")){
-            Constants.DEBUG_MODE = true;
-        }
-        if(getConfig().getBoolean("fish_backpack")){
-            Constants.CATCH_BACKPACK = true;
-        }
-        if(getConfig().getBoolean("kill_monster_backpack")){
-            Constants.MONSTER_DROPS_BACKPACK = true;
-        }
-        UpdateChecker.checkForUpdates();
 
-        try {
-            threadBackpacks = new ThreadBackpacks();
-        } catch (IOException e) {
-            Main.getMain().getLogger().severe("Something went wrong, please report to the developer, disabling plugin.");
-            Bukkit.getPluginManager().disablePlugin(this);
-            throw new RuntimeException(e);
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(this, ()->{
+            if(getConfig().getBoolean("debug")){
+                Constants.DEBUG_MODE = true;
+            }
+            if(getConfig().getBoolean("fish_backpack")){
+                Constants.CATCH_BACKPACK = true;
+            }
+            if(getConfig().getBoolean("kill_monster_backpack")){
+                Constants.MONSTER_DROPS_BACKPACK = true;
+            }
+
+            if(getConfig().getBoolean("mysql.enabled")){
+                StorageManager.setProvider(Config.getMySQLProvider());
+                if(!((MySQLProvider) StorageManager.getProvider()).canConnect()){
+                    StorageManager.setProvider(Config.getYamlProvider());
+                }
+            }   else{
+                StorageManager.setProvider(Config.getYamlProvider());
+            }
+
+            ThreadBackpacks.loadAll();
+            UpdateChecker.checkForUpdates();
+        });
 
         //player
         Bukkit.getPluginManager().registerEvents(new CraftBackpack(), Main.getMain());
@@ -140,7 +139,7 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new OnClickBackpack(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new OnClickInConfigMenu(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new OnCloseBackpackConfigMenu(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new RenameBackpackChat(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new RenameBackpack(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new OpenBackpackOfTheBack(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new OnCloseBackpack(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new OnCloseUpgradeMenu(), Main.getMain());
@@ -171,9 +170,6 @@ public final class Main extends JavaPlugin {
         Main.getMain().getCommand("bpupgbackpack").setExecutor(new BpUpgBackpack());
         Main.getMain().getCommand("bpupgive").setExecutor(new BpUpGive());
         registerRecipes();
-        Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Hello from BackPacks");
-
-        threadBackpacks.loadAll();
     }
 
     @Override
@@ -182,16 +178,16 @@ public final class Main extends JavaPlugin {
         for(UUID uuid : BackpackAction.getHashMap().keySet()){
             Player player = Bukkit.getPlayer(uuid);
             BackpackAction.getHashMap().remove(uuid);
+            BackpackAction.getSpectators().remove(uuid);
             if(player == null) continue;
             player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
         }
-        Main.getMain().getLogger().info("Saving backpacks.");
+
+        Bukkit.getConsoleSender().sendMessage("[Backpacks] Saving backpacks..");
         saveConfig();
-        reloadConfig();
-        if(threadBackpacks == null) return;
 
         try {
-            threadBackpacks.saveAll();
+            ThreadBackpacks.saveAll();
         } catch (IOException e) {
             Main.getMain().getLogger().severe("Something went wrong, please report to the developer!");
             throw new RuntimeException(e);
@@ -217,29 +213,28 @@ public final class Main extends JavaPlugin {
 
     private void registerRecipes(){
         //Backpacks
-        Bukkit.addRecipe(new RecipesNamespaces().leatherBackpackRecipe());
-        Bukkit.addRecipe(new RecipesNamespaces().ironBackpackRecipe());
-        Bukkit.addRecipe(new RecipesNamespaces().diamondBackpackRecipe());
-        Bukkit.addRecipe(new RecipesNamespaces().netheriteBackpackRecipe());
-        Bukkit.addRecipe(new RecipesNamespaces().goldBackpackRecipe());
-        Bukkit.addRecipe(new RecipesNamespaces().amethystBackpackRecipe());
-        Bukkit.addRecipe(new RecipesNamespaces().lapisBackpackRecipe());
-        Bukkit.addRecipe(new RecipesNamespaces().driedBackpackRecipe());
+        Bukkit.addRecipe(new BackpackRecipes().leatherBackpackRecipe());
+        Bukkit.addRecipe(new BackpackRecipes().ironBackpackRecipe());
+        Bukkit.addRecipe(new BackpackRecipes().diamondBackpackRecipe());
+        Bukkit.addRecipe(new BackpackRecipes().netheriteBackpackRecipe());
+        Bukkit.addRecipe(new BackpackRecipes().goldBackpackRecipe());
+        Bukkit.addRecipe(new BackpackRecipes().amethystBackpackRecipe());
+        Bukkit.addRecipe(new BackpackRecipes().lapisBackpackRecipe());
+        Bukkit.addRecipe(new BackpackRecipes().driedBackpackRecipe());
 
 
         //Upgrades
-      //  Bukkit.addRecipe(new UpgradesRecipesNamespaces().getRecipeAutoFill());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getAutoFeedRecipe());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getJukeboxRecipe());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getFurnaceRecipe());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getSmokerRecipe());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getBlastFurnaceRecipe());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getCraftingTableRecipe());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getFollowingVillagersRecipe());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getEncapsulateRecipe());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getCollectorRecipe());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getUnbreakableUpgradeRecipe());
-        Bukkit.addRecipe(new UpgradesRecipesNamespaces().getLiquidTankRecipe());
+        Bukkit.addRecipe(new UpgradesRecipes().getAutoFeedRecipe());
+        Bukkit.addRecipe(new UpgradesRecipes().getJukeboxRecipe());
+        Bukkit.addRecipe(new UpgradesRecipes().getFurnaceRecipe());
+        Bukkit.addRecipe(new UpgradesRecipes().getSmokerRecipe());
+        Bukkit.addRecipe(new UpgradesRecipes().getBlastFurnaceRecipe());
+        Bukkit.addRecipe(new UpgradesRecipes().getCraftingTableRecipe());
+        Bukkit.addRecipe(new UpgradesRecipes().getFollowingVillagersRecipe());
+        Bukkit.addRecipe(new UpgradesRecipes().getEncapsulateRecipe());
+        Bukkit.addRecipe(new UpgradesRecipes().getCollectorRecipe());
+        Bukkit.addRecipe(new UpgradesRecipes().getUnbreakableUpgradeRecipe());
+        Bukkit.addRecipe(new UpgradesRecipes().getLiquidTankRecipe());
     }
 
 }

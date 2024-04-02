@@ -1,12 +1,14 @@
-package br.com.backpacks.utils;
+package br.com.backpacks.utils.backpacks;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.recipes.BackpackRecipes;
+import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.inventory.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Barrel;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -16,7 +18,122 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
-public class BackPack extends UpgradeManager {
+public final class BackPack extends UpgradeManager {
+    private int id;
+    private Inventory firstPage;
+    private int firstPageSize;
+    private int secondPageSize;
+    private BackpackType backpackType;
+    private Location location;
+    private boolean locked;
+    private Inventory secondPage;
+    private Boolean isBlock = false;
+    private final Set<UUID> viewersIds = new HashSet<>();
+    private UUID owner;
+    private boolean showNameAbove = false;
+    private UUID marker;
+    private String name;
+
+    public BackPack(BackpackType type, int id) {
+        this.backpackType = type;
+        this.id = id;
+        this.name = getDefaultName();
+        updateSizeOfPages();
+        firstPage = Bukkit.createInventory(null, firstPageSize, name);
+        if(secondPageSize > 0){
+            secondPage = Bukkit.createInventory(null, secondPageSize, name);
+        }
+        setConfigOptionItems();
+    }
+
+    public BackPack(String name, Inventory firstPage, int id, BackpackType type) {
+        this.backpackType = type;
+        this.firstPageSize = firstPage.getSize();
+        this.name = name;
+        this.firstPage = firstPage;
+        this.id = id;
+
+        updateSizeOfPages();
+        setConfigOptionItems();
+    }
+
+    public BackPack() {
+    }
+
+    public BackPack(String name, Inventory firstPage, Inventory secondPage, int id, BackpackType type) {
+        this.backpackType = type;
+        this.firstPageSize = firstPage.getSize();
+        this.secondPageSize = secondPage.getSize();
+        this.name = name;
+        this.secondPage = secondPage;
+        this.firstPage = firstPage;
+        this.id = id;
+
+        updateSizeOfPages();
+        setConfigOptionItems();
+    }
+    public List<String> serialize() {
+        List<String> data = new ArrayList<>();
+        data.add(name);
+        data.add(backpackType.toString());
+        return data;
+    }
+
+    public BackPack deserialize(YamlConfiguration config, String id) {
+        if(!config.isSet(id + ".i")){
+            Main.debugMessage("Backpack with id " + id + " not found!");
+            return null;
+        }
+
+        List<String> components = config.getStringList(id + ".i");
+
+        if(config.isSet(id + ".u")){
+            List<Integer> upgradesIds = config.getIntegerList(id + ".u");
+            setUpgradesIds(upgradesIds);
+        }
+
+        if(config.isSet(id + ".out")){
+            setOutputUpgrade(config.getInt(id + ".out"));
+        }
+
+        if(config.isSet(id + ".inp")){
+            setInputUpgrade(config.getInt(id + ".inp"));
+        }
+
+        if(config.isSet(id + ".owner")){
+            setOwner(UUID.fromString(config.getString(id + ".owner")));
+        }
+
+        name = components.get(0);
+        backpackType = BackpackType.valueOf(components.get(1));
+        this.id = Integer.parseInt(id);
+
+        updateSizeOfPages();
+
+        firstPage = Bukkit.createInventory(null, firstPageSize, name);
+
+        if(config.isSet(id + ".1")){
+            Set<String> keysFirstPage = config.getConfigurationSection(id + ".1").getKeys(false);
+            for(String index : keysFirstPage){
+                getFirstPage().setItem(Integer.parseInt(index), config.getItemStack(id + ".1." + index));
+            }
+        }
+
+        if(secondPageSize > 0) {
+            secondPage = Bukkit.createInventory(null, secondPageSize, name);
+            if(config.isSet(id + ".2")) {
+                Set<String> keysSecondPage = config.getConfigurationSection(id + ".2").getKeys(false);
+
+                for (String index : keysSecondPage) {
+                    getSecondPage().setItem(Integer.parseInt(index), config.getItemStack(id + ".2." + index));
+                }
+
+            }
+        }
+
+        setConfigOptionItems();
+        return this;
+    }
 
     public Inventory getSecondPage() {
         return secondPage;
@@ -26,8 +143,6 @@ public class BackPack extends UpgradeManager {
         return backpackType;
     }
 
-    private BackpackType backpackType;
-
     public Location getLocation() {
         return location;
     }
@@ -35,10 +150,6 @@ public class BackPack extends UpgradeManager {
     public void setLocation(Location location) {
         this.location = location;
     }
-
-    private Location location;
-
-    private boolean locked;
 
     public void setLocked(boolean locked) {
         this.locked = locked;
@@ -48,17 +159,13 @@ public class BackPack extends UpgradeManager {
         return locked;
     }
 
-    private Inventory secondPage;
-
     public Boolean isBlock() {
-        return block;
+        return isBlock;
     }
 
     public void setIsBlock(Boolean block) {
-        this.block = block;
+        this.isBlock = block;
     }
-
-    private Boolean block = false;
 
     public Inventory getFirstPage() {
         return firstPage;
@@ -68,23 +175,18 @@ public class BackPack extends UpgradeManager {
         return id;
     }
 
-    private int id;
-
-    private Inventory firstPage;
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public int getSecondPageSize() {
         return secondPageSize;
     }
 
-    private int firstPageSize;
-    private int secondPageSize;
     public Set<UUID> getViewersIds() {
         return viewersIds;
     }
 
-    private Set<UUID> viewersIds = new HashSet<>();
-
-    private UUID owner;
     public String getName() {
         return name;
     }
@@ -105,8 +207,6 @@ public class BackPack extends UpgradeManager {
         this.showNameAbove = showNameAbove;
     }
 
-    private boolean showNameAbove = false;
-
     public UUID getMarker() {
         return marker;
     }
@@ -118,8 +218,6 @@ public class BackPack extends UpgradeManager {
     public void setMarker(UUID uuid) {
         this.marker = uuid;
     }
-
-    private UUID marker;
 
     public void setName(String name) {
         this.name = name;
@@ -162,130 +260,28 @@ public class BackPack extends UpgradeManager {
         return "Backpack";
     }
 
-    private String name;
-    public BackPack(BackpackType type, int id) {
-        this.backpackType = type;
-        this.id = id;
-        this.name = getDefaultName();
-        updateSizeOfPages();
-        firstPage = Bukkit.createInventory(null, firstPageSize, name);
-        if(secondPageSize > 0){
-            secondPage = Bukkit.createInventory(null, secondPageSize, name);
-        }
-        setArrowsAndConfigOptionItems();
-    }
-
-    public BackPack(String name, Inventory firstPage, int id, BackpackType type) {
-        this.backpackType = type;
-        this.firstPageSize = firstPage.getSize();
-        this.name = name;
-        this.firstPage = firstPage;
-        this.id = id;
-
-        updateSizeOfPages();
-        setArrowsAndConfigOptionItems();
-    }
-
-    public BackPack() {
-    }
-
-    public BackPack(String name, Inventory firstPage, Inventory secondPage, int id, BackpackType type) {
-        this.backpackType = type;
-        this.firstPageSize = firstPage.getSize();
-        this.secondPageSize = secondPage.getSize();
-        this.name = name;
-        this.secondPage = secondPage;
-        this.firstPage = firstPage;
-        this.id = id;
-
-        updateSizeOfPages();
-        setArrowsAndConfigOptionItems();
-    }
-    public List<String> serialize() {
-        List<String> data = new ArrayList<>();
-        data.add(name);
-        data.add(backpackType.toString());
-        return data;
-    }
-
-    public BackPack deserialize(YamlConfiguration config, String s) {
-        if(!config.isSet(s + ".i")){
-            Main.getMain().debugMessage("Backpack with id " + s + " not found!");
-            return null;
-        }
-
-        List<String> components = config.getStringList(s + ".i");
-
-        if(config.isSet(s + ".u")){
-            List<Integer> upgradesIds = config.getIntegerList(s + ".u");
-            setUpgradesIds(upgradesIds);
-        }
-
-        if(config.isSet(s + ".out")){
-            setOutputUpgrade(config.getInt(s + ".out"));
-        }
-
-        if(config.isSet(s + ".inp")){
-            setInputUpgrade(config.getInt(s + ".inp"));
-        }
-
-        if(config.isSet(s + ".owner")){
-            setOwner(UUID.fromString(config.getString(s + ".owner")));
-        }
-
-        name = components.get(0);
-        backpackType = BackpackType.valueOf(components.get(1));
-        id = Integer.parseInt(s);
-
-        updateSizeOfPages();
-
-        firstPage = Bukkit.createInventory(null, firstPageSize, name);
-
-        if(config.isSet(s + ".1")){
-            Set<String> keysFirstPage = config.getConfigurationSection(s + ".1").getKeys(false);
-            for(String index : keysFirstPage){
-                getFirstPage().setItem(Integer.parseInt(index), config.getItemStack(s + ".1." + index));
-            }
-        }
-
-        if(secondPageSize > 0) {
-            secondPage = Bukkit.createInventory(null, secondPageSize, name);
-            if(config.isSet(s + ".2")) {
-                Set<String> keysSecondPage = config.getConfigurationSection(s + ".2").getKeys(false);
-
-                for (String index : keysSecondPage) {
-                    getSecondPage().setItem(Integer.parseInt(index), config.getItemStack(s + ".2." + index));
-                }
-
-            }
-        }
-
-        setArrowsAndConfigOptionItems();
-        return this;
-    }
-
     public NamespacedKey getNamespace() {
         switch (getType()) {
             case LEATHER -> {
-                return new RecipesNamespaces().getNAMESPACE_LEATHER_BACKPACK();
+                return new BackpackRecipes().getNAMESPACE_LEATHER_BACKPACK();
             }
             case IRON -> {
-                return new RecipesNamespaces().getNAMESPACE_IRON_BACKPACK();
+                return new BackpackRecipes().getNAMESPACE_IRON_BACKPACK();
             }
             case GOLD -> {
-                return new RecipesNamespaces().getNAMESPACE_GOLD_BACKPACK();
+                return new BackpackRecipes().getNAMESPACE_GOLD_BACKPACK();
             }
             case LAPIS -> {
-                return new RecipesNamespaces().getNAMESPACE_LAPIS_BACKPACK();
+                return new BackpackRecipes().getNAMESPACE_LAPIS_BACKPACK();
             }
             case AMETHYST -> {
-                return new RecipesNamespaces().getNAMESPACE_AMETHYST_BACKPACK();
+                return new BackpackRecipes().getNAMESPACE_AMETHYST_BACKPACK();
             }
             case DIAMOND -> {
-                return new RecipesNamespaces().getNAMESPACE_DIAMOND_BACKPACK();
+                return new BackpackRecipes().getNAMESPACE_DIAMOND_BACKPACK();
             }
             case NETHERITE -> {
-                return new RecipesNamespaces().getNAMESPACE_NETHERITE_BACKPACK();
+                return new BackpackRecipes().getNAMESPACE_NETHERITE_BACKPACK();
             }
         }
 
@@ -315,7 +311,7 @@ public class BackPack extends UpgradeManager {
         Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 1);
         Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
         player.openInventory(firstPage);
-        BackpackAction.addAction(player, BackpackAction.Action.OPENED);
+        BackpackAction.setAction(player, BackpackAction.Action.OPENED);
     }
 
     public void openSecondPage(Player player){
@@ -323,20 +319,20 @@ public class BackPack extends UpgradeManager {
         Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 2);
         Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
         player.openInventory(secondPage);
-        BackpackAction.addAction(player, BackpackAction.Action.OPENED);
+        BackpackAction.setAction(player, BackpackAction.Action.OPENED);
     }
 
     public ItemStack getFirstItem(){
         for(ItemStack itemStack : firstPage){
             if(itemStack == null) continue;
-            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
+            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
             return itemStack;
         }
 
         if(getSecondPage() != null){
             for(ItemStack itemStack : secondPage){
                 if(itemStack == null) continue;
-                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
+                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
                 return itemStack;
             }
         }
@@ -369,7 +365,7 @@ public class BackPack extends UpgradeManager {
     }
 
 
-    public void setArrowsAndConfigOptionItems(){
+    public void setConfigOptionItems(){
         ItemStack arrowLeft = new ItemCreator(Material.ARROW, "§aPrevious").build();
         ItemStack arrowRight = new ItemCreator(Material.ARROW, "§aNext").build();
         ItemStack config = new ItemCreator(Material.NETHER_STAR, "§6Config").build();
@@ -384,12 +380,12 @@ public class BackPack extends UpgradeManager {
     }
 
     public boolean containsItem(ItemStack itemStack){
-        for(ItemStack item : firstPage.getStorageContents()){
+        for(ItemStack item : firstPage){
             if(item == null)    continue;
             if(item.isSimilar(itemStack)) return true;
         }
         if(secondPageSize > 0){
-            for(ItemStack item : secondPage.getStorageContents()){
+            for(ItemStack item : secondPage){
                 if(item == null)    continue;
                 if(item.isSimilar(itemStack)) return true;
             }
@@ -420,16 +416,31 @@ public class BackPack extends UpgradeManager {
         List<ItemStack> list = new ArrayList<>();
         for(ItemStack itemStack : firstPage){
             if(itemStack == null) continue;
-            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
+            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
             list.add(itemStack);
         }
         if(secondPage != null){
             for(ItemStack itemStack : secondPage){
                 if(itemStack == null) continue;
-                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new RecipesNamespaces().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
+                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
                 list.add(itemStack);
             }
         }
         return list;
+    }
+
+    public void updateBarrelBlock(){
+        if(!isBlock()) return;
+        Barrel barrel = (Barrel) location.getBlock().getState();
+        List<ItemStack> bpItems = getBackpackItems();
+        if(bpItems.isEmpty()){
+            barrel.getInventory().clear();
+            return;
+        }
+
+        barrel.getInventory().clear();
+        for(int i = 0 ; i < bpItems.size() ; i++){
+            barrel.getInventory().setItem(i, bpItems.get(i));
+        }
     }
 }

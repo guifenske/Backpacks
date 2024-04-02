@@ -2,7 +2,7 @@ package br.com.backpacks.commands;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesUtils;
-import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.utils.backpacks.BackPack;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

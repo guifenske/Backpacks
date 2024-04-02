@@ -2,8 +2,6 @@ name: Backpacks
 version: '${project.version}'
 main: br.com.backpacks.Main
 api-version: '1.18'
-depend:
-  - BKCommonLib
 
 commands:
   bpgive:

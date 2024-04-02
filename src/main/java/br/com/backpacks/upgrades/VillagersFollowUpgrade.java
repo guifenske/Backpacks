@@ -9,15 +9,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class VillagersFollowUpgrade extends Upgrade {
-
     private boolean enabled;
-
     public Inventory getInventory() {
         return inventory;
     }
-
     private final Inventory inventory;
-
 
     public VillagersFollowUpgrade(int id){
         super(UpgradeType.VILLAGERSFOLLOW, id);
@@ -40,6 +36,8 @@ public class VillagersFollowUpgrade extends Upgrade {
 
         if(this.enabled){
             inventory.setItem(13, disable);
-        }   else inventory.setItem(13, enable);
+        }   else{
+            inventory.setItem(13, enable);
+        }
     }
 }

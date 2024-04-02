@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UpgradeManager {
-    private List<Integer> backpackUpgrade = new ArrayList<>();
+    private final List<Integer> backpackUpgrades = new ArrayList<>();
     private static ConcurrentHashMap<Integer, Upgrade> upgrades = new ConcurrentHashMap<>();
     public static int lastUpgradeID = 0;
 
@@ -18,32 +18,32 @@ public class UpgradeManager {
     }
 
     public List<Integer> getUpgradesIds() {
-        return backpackUpgrade;
+        return backpackUpgrades;
     }
 
-    public List<Upgrade> getBackpackUpgrade() {
-        if(this.backpackUpgrade.isEmpty()) return new ArrayList<>();
+    public List<Upgrade> getBackpackUpgrades() {
+        if(this.backpackUpgrades.isEmpty()) return new ArrayList<>();
         List<Upgrade> upgrades1 = new ArrayList<>();
-        for (Integer upgrade : backpackUpgrade) {
+        for (Integer upgrade : backpackUpgrades) {
             upgrades1.add(getUpgradeFromId(upgrade));
         }
         return upgrades1;
     }
 
     public void setUpgradesIds(List<Integer> list){
-        this.backpackUpgrade.clear();
-        this.backpackUpgrade.addAll(list);
+        this.backpackUpgrades.clear();
+        this.backpackUpgrades.addAll(list);
     }
 
-    public void setBackpackUpgrade(List<Upgrade> upgradeList){
-        this.backpackUpgrade.clear();
+    public void setBackpackUpgrades(List<Upgrade> upgradeList){
+        this.backpackUpgrades.clear();
         for(Upgrade upgrade : upgradeList) {
-            this.backpackUpgrade.add(upgrade.getId());
+            this.backpackUpgrades.add(upgrade.getId());
         }
     }
 
     public Boolean containsUpgradeType(UpgradeType upgradeType) {
-        for(Upgrade upgrade1 : getBackpackUpgrade()) {
+        for(Upgrade upgrade1 : getBackpackUpgrades()) {
             if(upgrade1.getType() == upgradeType) {
                 return true;
             }
@@ -57,14 +57,13 @@ public class UpgradeManager {
         return null;
     }
 
-    public List<Upgrade> getUpgradesFromType(UpgradeType type){
-        List<Upgrade> upgrades1 = new ArrayList<>();
-        for(Upgrade upgrade : getBackpackUpgrade()) {
+    public Upgrade getUpgradeFromType(UpgradeType type){
+        for(Upgrade upgrade : getBackpackUpgrades()) {
             if(upgrade.getType() == type) {
-               upgrades1.add(upgrade);
+               return upgrade;
             }
         }
-        return upgrades1;
+        return null;
     }
 
     public static boolean canUpgradeStack(Upgrade upgrade){
@@ -78,7 +77,7 @@ public class UpgradeManager {
     }
 
     public void stopTickingAllUpgrades(){
-        for(Upgrade upgrade : getBackpackUpgrade()){
+        for(Upgrade upgrade : getBackpackUpgrades()){
             upgrade.stopTickingUpgrade();
         }
     }

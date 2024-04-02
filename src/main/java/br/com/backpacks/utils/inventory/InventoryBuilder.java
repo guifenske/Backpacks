@@ -2,9 +2,9 @@ package br.com.backpacks.utils.inventory;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesUtils;
-import br.com.backpacks.utils.BackPack;
-import br.com.backpacks.utils.BackpackType;
 import br.com.backpacks.utils.Upgrade;
+import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -74,8 +74,8 @@ public class InventoryBuilder {
                     inv.setItem(i, loremIpsum);
                 }
 
-                if(!backPack.getBackpackUpgrade().isEmpty()) {
-                    List<Upgrade> upgrades = backPack.getBackpackUpgrade();
+                if(!backPack.getBackpackUpgrades().isEmpty()) {
+                    List<Upgrade> upgrades = backPack.getBackpackUpgrades();
 
                     int i = 0;
                     for(Upgrade upgrade : upgrades) {
@@ -121,8 +121,8 @@ public class InventoryBuilder {
                 }
 
                 int i = 0;
-                List<Upgrade> upgrades = backPack.getBackpackUpgrade();
-                if (!backPack.getBackpackUpgrade().isEmpty()) {
+                List<Upgrade> upgrades = backPack.getBackpackUpgrades();
+                if (!backPack.getBackpackUpgrades().isEmpty()) {
                     for (Upgrade upgrade : upgrades) {
                         inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));
                         i++;
@@ -142,8 +142,8 @@ public class InventoryBuilder {
                 }
 
                 int i = 0;
-                List<Upgrade> upgrades = backPack.getBackpackUpgrade();
-                if (!backPack.getBackpackUpgrade().isEmpty()) {
+                List<Upgrade> upgrades = backPack.getBackpackUpgrades();
+                if (!backPack.getBackpackUpgrades().isEmpty()) {
                     for (Upgrade upgrade : upgrades) {
                         if(!upgrade.isAdvanced()) continue;
                         inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));
@@ -184,8 +184,8 @@ public class InventoryBuilder {
             inv.setItem(i, loremIpsum);
         }
 
-        if(!backPack.getBackpackUpgrade().isEmpty()) {
-            List<Upgrade> upgrades = backPack.getBackpackUpgrade();
+        if(!backPack.getBackpackUpgrades().isEmpty()) {
+            List<Upgrade> upgrades = backPack.getBackpackUpgrades();
 
             int i = 0;
             for(Upgrade upgrade : upgrades) {
@@ -219,27 +219,6 @@ public class InventoryBuilder {
         inv.setItem(49, editIO);
     }
 
-    public static void updateUpgradesInv(BackPack backPack){
-        Inventory inv = upgradesMenu.get(backPack.getId());
-        ItemStack item = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").build();
-        for(int i = 0; i < 9; i++){
-            inv.setItem(i, null);
-        }
-
-        for(int i = InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i < 9; i++){
-            inv.setItem(i, item);
-        }
-
-        int i = 0;
-        List<Upgrade> upgrades = backPack.getBackpackUpgrade();
-        if (!backPack.getBackpackUpgrade().isEmpty()) {
-            for (Upgrade upgrade : upgrades) {
-                inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));
-                i++;
-            }
-        }
-    }
-
     public static void updateEditIOInv(BackPack backPack){
         Inventory inv = editIOMenu.get(backPack.getId());
         ItemStack item = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").build();
@@ -252,8 +231,8 @@ public class InventoryBuilder {
         }
 
         int i = 0;
-        List<Upgrade> upgrades = backPack.getBackpackUpgrade();
-        if (!backPack.getBackpackUpgrade().isEmpty()) {
+        List<Upgrade> upgrades = backPack.getBackpackUpgrades();
+        if (!backPack.getBackpackUpgrades().isEmpty()) {
             for (Upgrade upgrade : upgrades) {
                 if(!upgrade.isAdvanced()) continue;
                 inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));

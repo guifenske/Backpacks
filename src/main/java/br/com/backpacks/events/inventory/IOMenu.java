@@ -2,9 +2,9 @@ package br.com.backpacks.events.inventory;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesUtils;
-import br.com.backpacks.utils.BackPack;
-import br.com.backpacks.utils.BackpackAction;
 import br.com.backpacks.utils.Upgrade;
+import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackAction;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -18,14 +18,14 @@ public class IOMenu implements Listener {
 
     @EventHandler
     private void onClick(InventoryClickEvent event){
-        if(!BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.IOMENU)) return;
+        if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.IOMENU)) return;
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
         event.setCancelled(true);
 
         switch (event.getRawSlot()){
             case 11 -> {
                 event.getWhoClicked().openInventory(InventoryBuilder.getEditIOMenu(backPack));
-                BackpackAction.addAction(event.getWhoClicked(), BackpackAction.Action.EDITINPUT);
+                BackpackAction.setAction(event.getWhoClicked(), BackpackAction.Action.EDITINPUT);
                 event.setCancelled(true);
             }
 
@@ -37,7 +37,7 @@ public class IOMenu implements Listener {
 
             case 15 -> {
                 event.getWhoClicked().openInventory(InventoryBuilder.getEditIOMenu(backPack));
-                BackpackAction.addAction(event.getWhoClicked(), BackpackAction.Action.EDITOUTPUT);
+                BackpackAction.setAction(event.getWhoClicked(), BackpackAction.Action.EDITOUTPUT);
                 event.setCancelled(true);
             }
         }
@@ -45,9 +45,9 @@ public class IOMenu implements Listener {
 
     @EventHandler
     private void onClose(InventoryCloseEvent event){
-        if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.IOMENU)) return;
+        if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.IOMENU)) return;
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
-        BackpackAction.clearPlayerActions(event.getPlayer());
+        BackpackAction.clearPlayerAction(event.getPlayer());
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
             backPack.open((Player) event.getPlayer());
         }, 1L);
@@ -55,7 +55,7 @@ public class IOMenu implements Listener {
 
     @EventHandler
     private void onClickEditMenu(InventoryClickEvent event){
-        if(!BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.EDITOUTPUT) && !BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.EDITINPUT)) return;
+        if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.EDITOUTPUT) && !BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.EDITINPUT)) return;
         event.setCancelled(true);
         if(event.getRawSlot() > 8) return;
         if(event.getCurrentItem() == null) return;
@@ -64,7 +64,7 @@ public class IOMenu implements Listener {
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
         Upgrade upgrade = RecipesUtils.getUpgradeFromItem(event.getCurrentItem());
 
-        if(BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.EDITOUTPUT)){
+        if(BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.EDITOUTPUT)){
             backPack.setOutputUpgrade(upgrade.getId());
             event.getWhoClicked().closeInventory();
             return;
@@ -76,7 +76,7 @@ public class IOMenu implements Listener {
 
     @EventHandler
     private void onCloseEditMenu(InventoryCloseEvent event){
-        if(!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.EDITOUTPUT) && !BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.EDITINPUT)) return;
+        if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.EDITOUTPUT) && !BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.EDITINPUT)) return;
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
             backPack.open((Player) event.getPlayer());

@@ -12,7 +12,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
 
-public class UpgradesRecipesNamespaces {
+public class UpgradesRecipes {
     private final NamespacedKey CRAFTINGGRID = new NamespacedKey(Main.getMain(), "craftinggrid");
     private final NamespacedKey FURNACEGRID = new NamespacedKey(Main.getMain(), "furnacegrid");
     private final NamespacedKey BLASTFURNACE = new NamespacedKey(Main.getMain(), "blastfurnace");
@@ -26,10 +26,7 @@ public class UpgradesRecipesNamespaces {
     private final NamespacedKey AUTOFEED = new NamespacedKey(Main.getMain(), "autofeed");
     private final NamespacedKey LIQUIDTANK = new NamespacedKey(Main.getMain(), "liquidtank");
     private final NamespacedKey UPGRADEID = new NamespacedKey(Main.getMain(), "upgradeid");
-    private final NamespacedKey STACKUPGRADE2X = new NamespacedKey(Main.getMain(), "stackupgrade2x");
-    private final NamespacedKey STACKUPGRADE4X = new NamespacedKey(Main.getMain(), "stackupgrade4x");
-    private final NamespacedKey STACKUPGRADE8X = new NamespacedKey(Main.getMain(), "stackupgrade8x");
-    private final NamespacedKey STACKUPGRADE16X = new NamespacedKey(Main.getMain(), "stackupgrade16x");
+    private final NamespacedKey MAGNET = new NamespacedKey(Main.getMain(), "magnet");
     private final NamespacedKey NAMESPACEISUPGRADE = new NamespacedKey(Main.getMain(), "isupgrade");
 
     public NamespacedKey isUpgrade() {
@@ -82,6 +79,10 @@ public class UpgradesRecipesNamespaces {
 
     public NamespacedKey getSMOKER() {
         return SMOKER;
+    }
+
+    public NamespacedKey getMAGNET() {
+        return MAGNET;
     }
 
     public Recipe getCraftingTableRecipe() {
@@ -348,6 +349,26 @@ public class UpgradesRecipesNamespaces {
         recipe.setIngredient('S', Material.NETHERITE_INGOT);
         recipe.setIngredient('N', Material.NETHER_STAR);
         recipe.setIngredient('U', unbreakingThree);
+
+        return recipe;
+    }
+
+    public Recipe getMagnetRecipe() {
+        ItemStack magnet = new ItemStack(Material.ENDER_EYE);
+        ItemMeta meta = magnet.getItemMeta();
+
+        meta.setDisplayName("Magnet Upgrade");
+        meta.setLore(Arrays.asList("§7Magnet Upgrade", "§7§nPull dropped items on the ground directly into your backpack."));
+        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(MAGNET, PersistentDataType.INTEGER, 1);
+        magnet.setItemMeta(meta);
+
+        ShapedRecipe recipe = new ShapedRecipe(MAGNET, magnet);
+        recipe.shape("IRI", "IEI", "IRI");
+
+        recipe.setIngredient('I', Material.IRON_INGOT);
+        recipe.setIngredient('E', Material.ENDER_PEARL);
+        recipe.setIngredient('R', Material.REDSTONE);
 
         return recipe;
     }

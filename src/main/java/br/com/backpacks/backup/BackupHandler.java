@@ -1,10 +1,12 @@
 package br.com.backpacks.backup;
 
+import br.com.backpacks.Config;
 import br.com.backpacks.Main;
-import br.com.backpacks.utils.BackPack;
+import br.com.backpacks.storage.StorageManager;
+import br.com.backpacks.storage.YamlProvider;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
-import br.com.backpacks.yaml.YamlUtils;
+import br.com.backpacks.utils.backpacks.BackPack;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,20 +29,25 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BackupHandler {
+    private ScheduledBackupService scheduledBackupService;
+    private int keepBackups;
+    private final Path path = Path.of(Main.getMain().getDataFolder().getAbsolutePath() + "/Backups");
+    private ConcurrentHashMap<Integer, BackPack> rollbackBackpack;
+    private ConcurrentHashMap<Integer, Upgrade> rollbackUpgrade;
+    public BackupHandler(int keepBackups) {
+        this.keepBackups = keepBackups;
+    }
+
     public void setKeepBackups(int keepBackups) {
         this.keepBackups = keepBackups;
     }
 
-    private int keepBackups;
+    public void setScheduledBackupService(ScheduledBackupService scheduledBackupService) {
+        this.scheduledBackupService = scheduledBackupService;
+    }
 
-    private final Path path;
-
-    private ConcurrentHashMap<Integer, BackPack> rollbackBackpack;
-    private ConcurrentHashMap<Integer, Upgrade> rollbackUpgrade;
-
-    public BackupHandler(int keepBackups, String path) {
-        this.keepBackups = keepBackups;
-        this.path = Path.of(path);
+    public ScheduledBackupService getScheduledBackupService() {
+        return scheduledBackupService;
     }
 
     public boolean removeBackup(String name){
@@ -54,15 +61,16 @@ public class BackupHandler {
 
         File backpackFile = new File(path + "/backpacks.yml");
         File upgradeFile = new File(path + "/upgrades.yml");
-        YamlUtils.saveBackpacks(path + "/backpacks.yml");
-        YamlUtils.saveUpgrades(path + "/upgrades.yml");
+        YamlProvider yamlProvider = Config.getYamlProvider();
+        yamlProvider.saveBackpacks();
+        yamlProvider.saveUpgrades();
 
         ZipUtils.zipAll(backpackFile.toPath(), upgradeFile.toPath(), path);
         removeLeftoverFiles();
 
         Instant finish = Instant.now();
         long time = Duration.between(start, finish).toMillis();
-        Main.getMain().debugMessage("Backup completed in " + time + " ms!");
+        Main.debugMessage("Backup completed in " + time + " ms!");
         return time;
     }
 
@@ -87,8 +95,10 @@ public class BackupHandler {
         if(rollbackUpgrade == null) return -1;
         if(rollbackBackpack == null) return -1;
         Instant start = Instant.now();
-        YamlUtils.loadUpgrades(rollbackUpgrade);
-        YamlUtils.loadBackpacks(rollbackBackpack);
+
+        StorageManager.getProvider().loadUpgrades(rollbackUpgrade);
+        StorageManager.getProvider().loadBackpacks(rollbackBackpack);
+
         Bukkit.getScheduler().runTask(Main.getMain(), ()->{
             for(Map.Entry<Location, Integer> entry : Main.backPackManager.getBackpacksPlacedLocations().entrySet()){
                 BackPack backPack = Main.backPackManager.getBackpackFromId(entry.getValue());
@@ -132,21 +142,22 @@ public class BackupHandler {
         }
 
         Instant start = Instant.now();
-        File backpacksOriginal = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
-        File upgradesOriginal = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
         rollbackBackpack = new ConcurrentHashMap<>(Main.backPackManager.getBackpacks());
         rollbackUpgrade = new ConcurrentHashMap<>(UpgradeManager.getUpgrades());
+        YamlProvider yamlProvider = Config.getYamlProvider();
+
+        File backpacksOriginal = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
+        File upgradesOriginal = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
         backpacksOriginal.delete();
         upgradesOriginal.delete();
-
         ZipUtils.unzipAll(this.path + "/" + path);
 
         Main.backPackManager.getBackpacksPlacedLocations().clear();
         Main.backPackManager.getBackpacks().clear();
         UpgradeManager.getUpgrades().clear();
 
-        YamlUtils.loadUpgrades();
-        YamlUtils.loadBackpacks();
+        yamlProvider.loadUpgrades();
+        yamlProvider.loadBackpacks();
 
         Bukkit.getScheduler().runTask(Main.getMain(), ()->{
             for(Map.Entry<Location, Integer> entry : Main.backPackManager.getBackpacksPlacedLocations().entrySet()){

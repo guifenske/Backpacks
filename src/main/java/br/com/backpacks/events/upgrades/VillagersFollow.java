@@ -1,12 +1,11 @@
 package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.recipes.RecipesNamespaces;
+import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.upgrades.VillagersFollowUpgrade;
-import br.com.backpacks.utils.BackPack;
-import br.com.backpacks.utils.BackpackAction;
-import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeType;
+import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackAction;
 import com.destroystokyo.paper.entity.Pathfinder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -24,40 +23,33 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 public class VillagersFollow implements Listener {
-    public static void tick() {
-        Main.getMain().getThreadBackpacks().getExecutor().scheduleAtFixedRate(() ->{
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (!player.getPersistentDataContainer().has(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER)) continue;
-                if (!player.getInventory().getItemInMainHand().getType().equals(Material.EMERALD_BLOCK) && !player.getInventory().getItemInOffHand().getType().equals(Material.EMERALD_BLOCK)) {
-                    continue;
-                }
-                BackPack backpack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new RecipesNamespaces().getHAS_BACKPACK(), PersistentDataType.INTEGER));
-                List<Upgrade> list = backpack.getUpgradesFromType(UpgradeType.VILLAGERSFOLLOW);
-                if (list.isEmpty()) continue;
-                VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) list.get(0);
+    public static void tick(Player player) {
+        if(player == null) return;
+        if (!player.getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
+        if (!player.getInventory().getItemInMainHand().getType().equals(Material.EMERALD_BLOCK) && !player.getInventory().getItemInOffHand().getType().equals(Material.EMERALD_BLOCK)) {
+            return;
+        }
+        BackPack backpack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) backpack.getUpgradeFromType(UpgradeType.VILLAGERSFOLLOW);
+        if(upgrade == null) return;
 
-                if (!upgrade.isEnabled()) {
-                    continue;
-                }
+        if (!upgrade.isEnabled()) {
+            return;
+        }
 
-                moveNearbyVillagers(player.getLocation().toBlockLocation(), player);
-            }
-        }, 0, 500, TimeUnit.MILLISECONDS);
+        //move nearby villagers in a 10 blocks radius
+        moveNearbyVillagers(player.getLocation().toBlockLocation(), player, 100);
     }
 
     @EventHandler
     private static void onClick(InventoryClickEvent event) {
-        if (!BackpackAction.getActions(event.getWhoClicked()).contains(BackpackAction.Action.UPGVILLAGERSFOLLOW)) {
+        if (!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGVILLAGERSFOLLOW)) {
             return;
         }
         event.setCancelled(true);
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
-        List<Upgrade> list = backPack.getUpgradesFromType(UpgradeType.VILLAGERSFOLLOW);
-        VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) list.get(0);
+        VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) backPack.getUpgradeFromType(UpgradeType.VILLAGERSFOLLOW);
 
         if (event.getRawSlot() == 13) {
             upgrade.setEnabled(!upgrade.isEnabled());
@@ -67,11 +59,11 @@ public class VillagersFollow implements Listener {
 
     @EventHandler
     private static void onClose(InventoryCloseEvent event) {
-        if (!BackpackAction.getActions(event.getPlayer()).contains(BackpackAction.Action.UPGVILLAGERSFOLLOW)) {
+        if (!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGVILLAGERSFOLLOW)) {
             return;
         }
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
-        BackpackAction.clearPlayerActions(event.getPlayer());
+        BackpackAction.clearPlayerAction(event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
@@ -87,15 +79,17 @@ public class VillagersFollow implements Listener {
         });
     }
 
-    private static void moveNearbyVillagers(Location l, Player player) {
+    private static void moveNearbyVillagers(Location l, Player player, int distanceSquared) {
         int chunkRadius = 1;
         int x = (int) l.getX(), z = (int) l.getZ();
         World world = l.getWorld();
+
+        //iterates over chunks around location
         for (int chX = -chunkRadius; chX <= chunkRadius; chX++) {
             for (int chZ = -chunkRadius; chZ <= chunkRadius; chZ++) {
                 if(!new Location(world, x + (chX * 16), 0, z + (chZ * 16)).isChunkLoaded()) continue;
                 for (Entity e : new Location(world, x + (chX * 16), 0, z + (chZ * 16)).getChunk().getEntities()) {
-                    if (e.getLocation().distanceSquared(l) <= 100 && e.getType().equals(EntityType.VILLAGER)){
+                    if (e.getLocation().distanceSquared(l) <= distanceSquared && e.getType().equals(EntityType.VILLAGER)){
                         moveToPlayer((Mob) e, player);
                     }
                 }

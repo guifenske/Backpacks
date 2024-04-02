@@ -1,110 +1,61 @@
 package br.com.backpacks;
 
 import br.com.backpacks.backup.BackupHandler;
-import br.com.backpacks.backup.ScheduledBackup;
-import br.com.backpacks.yaml.YamlUtils;
+import br.com.backpacks.events.upgrades.Magnet;
+import br.com.backpacks.events.upgrades.VillagersFollow;
+import br.com.backpacks.storage.StorageManager;
+import br.com.backpacks.utils.backpacks.BackPack;
 import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
+import java.time.Duration;
+import java.time.Instant;
 
 public class ThreadBackpacks {
-    public ScheduledExecutorService getExecutor() {
-        return executor;
-    }
-    private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
-    public ThreadBackpacks() throws IOException {
-        String filePath = Main.getMain().getDataFolder().getCanonicalFile().getAbsolutePath() + "/config.yml";
-        if (Files.exists(Paths.get(filePath))) {
-            if (Main.getMain().getConfig().getInt("maxThreads") == 0) {
-                return;
-            }
-            if(Runtime.getRuntime().availableProcessors() < Main.getMain().getConfig().getInt("maxThreads")){
-                return;
-            }
-            executor = Executors.newScheduledThreadPool(Main.getMain().getConfig().getInt("maxThreads"));
-        }
-    }
-
-    public void cancelAllTasks(){
-        for(BukkitTask task : Bukkit.getScheduler().getPendingTasks()){
-            if(task.getOwner().equals(Main.getMain())){
-                task.cancel();
-            }
-        }
-    }
-
-    public void saveAll() throws IOException{
-        cancelAllTasks();
-
-        Future<Void> future = executor.submit(() -> {
-            YamlUtils.saveBackpacks(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
-            YamlUtils.saveUpgrades(Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
+    public static void saveAll() throws IOException{
+        try {
+            StorageManager.getProvider().saveBackpacks();
+            StorageManager.getProvider().saveUpgrades();
             Main.getMain().saveConfig();
-            return null;
-        });
-
-        try {
-            future.get();
-        } catch (Exception ignored) {
-
-        }
-        executor.shutdownNow();
-        Main.saveComplete = true;
-        synchronized (Main.lock){
-            Main.lock.notifyAll();
+            Main.saveComplete = true;
+            synchronized (Main.lock){
+                Main.lock.notifyAll();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public void loadAll() {
-        Future<Void> future = executor.submit(() -> {
-            YamlUtils.loadUpgrades();
-            YamlUtils.loadBackpacks();
-            return null;
-        });
+    public static void loadAll() {
+        StorageManager.getProvider().loadUpgrades();
+        StorageManager.getProvider().loadBackpacks();
 
-        try {
-            future.get();
-        } catch (Exception ignored) {
-
+        Instant finish = Instant.now();
+        Main.getMain().getLogger().info("Hello from Backpacks! " + Duration.between(Main.start, finish).toMillis() + "ms");
+        BackupHandler backupHandler = Config.getBackupHandler();
+        if(backupHandler != null){
+            backupHandler.getScheduledBackupService().start();
         }
-
-        if(!Main.getMain().getConfig().getBoolean("autobackup.enabled")) return;
-        ScheduledBackup scheduledBackup = new ScheduledBackup();
-        if(Main.getMain().getConfig().getInt("autobackup.interval") > 0){
-            scheduledBackup.setInterval(Main.getMain().getConfig().getInt("autobackup.interval"));
-        }   else{
-            Main.getMain().getLogger().warning("Invalid interval for autobackup, please use a number greater than 0.");
-            return;
-        }
-        scheduledBackup.setPath(Main.getMain().getDataFolder().getAbsolutePath() + "/Backups");
-
-
-        if(Main.getMain().getConfig().getString("autobackup.type") != null){
-            try{
-                ScheduledBackup.IntervalType.valueOf(Main.getMain().getConfig().getString("autobackup.type"));
-            }   catch (IllegalArgumentException e){
-                Main.getMain().getLogger().warning("Invalid type for autobackup, please use MINUTES | HOURS | SECONDS.");
-                return;
-            }
-            scheduledBackup.setType(ScheduledBackup.IntervalType.valueOf(Main.getMain().getConfig().getString("autobackup.type")));
-        }   else{
-            Main.getMain().getLogger().warning("Invalid type for autobackup, please use MINUTES | HOURS | SECONDS.");
-        }
-        int keep = 0;
-        if(Main.getMain().getConfig().getInt("autobackup.keep") > 0){
-            keep = Main.getMain().getConfig().getInt("autobackup.keep");
-        }   else{
-            Main.getMain().getLogger().warning("Invalid keep for autobackup, please use a number greater than 0.");
-        }
-        BackupHandler backupHandler = new BackupHandler(keep, scheduledBackup.getPath());
         Main.getMain().setBackupHandler(backupHandler);
-        scheduledBackup.startWithDelay();
+
+        AutoSaveManager autoSaveManager = Config.getAutoSaveManager();
+        if(autoSaveManager != null){
+            autoSaveManager.start();
+        }
+        Main.getMain().setAutoSaveManager(autoSaveManager);
+    }
+
+    public static void startTicking(){
+        Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getMain(), ()->{
+            for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
+                if(backPack.getOwner() != null){
+                    VillagersFollow.tick(Bukkit.getPlayer(backPack.getOwner()));
+                    Magnet.tick(Bukkit.getPlayer(backPack.getOwner()));
+                }   else if(backPack.getLocation() != null){
+                    Magnet.tick(backPack);
+                }
+            }
+        }, 0L, 10L);
     }
 }

@@ -43,14 +43,6 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
 
         Upgrade upgrade = null;
         switch (type){
-            case CRAFTING -> {
-                upgrade = new Upgrade(CRAFTING, UpgradeManager.lastUpgradeID + 1);
-            }
-
-            case UNBREAKABLE -> {
-                upgrade = new Upgrade(UNBREAKABLE, UpgradeManager.lastUpgradeID + 1);
-            }
-
             case JUKEBOX -> {
                 upgrade = new JukeboxUpgrade(UpgradeManager.lastUpgradeID + 1);
             }
@@ -78,9 +70,6 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
             case LIQUIDTANK -> {
                 upgrade = new TanksUpgrade(UpgradeManager.lastUpgradeID + 1);
             }
-            case ENCAPSULATE -> {
-                upgrade = new Upgrade(ENCAPSULATE, UpgradeManager.lastUpgradeID + 1);
-            }
 
             case COLLECTOR -> {
                 upgrade = new CollectorUpgrade(UpgradeManager.lastUpgradeID + 1);
@@ -89,6 +78,10 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
             case AUTOFILL -> {
                 sender.sendMessage(Main.PREFIX + args[0] + " isn't a valid UpgradeType!");
                 return true;
+            }
+
+            default -> {
+                upgrade = new Upgrade(type, UpgradeManager.lastUpgradeID + 1);
             }
         }
 
