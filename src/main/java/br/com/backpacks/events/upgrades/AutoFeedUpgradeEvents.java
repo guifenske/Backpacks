@@ -3,6 +3,7 @@ package br.com.backpacks.events.upgrades;
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.upgrades.AutoFeedUpgrade;
+import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
@@ -25,7 +26,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class AutoFeed implements Listener {
+public class AutoFeedUpgradeEvents implements Listener {
     @EventHandler
     private static void tick(FoodLevelChangeEvent event){
         Player player = (Player) event.getEntity();
@@ -87,8 +88,7 @@ public class AutoFeed implements Listener {
         if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGAUTOFEED)) return;
         event.setCancelled(true);
         if(event.getRawSlot() == 13){
-            BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-            AutoFeedUpgrade upgrade = (AutoFeedUpgrade) backPack.getUpgradeFromType(UpgradeType.AUTOFEED);
+            AutoFeedUpgrade upgrade = (AutoFeedUpgrade) UpgradeManager.getPlayerCurrentUpgrade(event.getWhoClicked());
             upgrade.setEnabled(!upgrade.isEnabled());
             upgrade.updateInventory();
         }
@@ -99,6 +99,7 @@ public class AutoFeed implements Listener {
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGAUTOFEED)) return;
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         BackpackAction.clearPlayerAction(event.getPlayer());
+        UpgradeManager.removePlayerCurrentUpgrade(event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

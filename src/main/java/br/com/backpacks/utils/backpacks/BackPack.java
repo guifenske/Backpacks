@@ -392,24 +392,18 @@ public final class BackPack extends UpgradeManager {
         }
         return false;
     }
-    public List<ItemStack> tryAddItem(ItemStack itemStack){
-        List<ItemStack> list = new ArrayList<>();
-        if(itemStack == null) return list;
 
-        if(!firstPage.addItem(itemStack).isEmpty()){
-            list.addAll(firstPage.addItem(itemStack).values());
-            if(secondPageSize > 0){
-                List<ItemStack> list2 = new ArrayList<>();
-                for(ItemStack item : list){
-                    if(!secondPage.addItem(item).isEmpty()){
-                        list2.addAll(secondPage.addItem(item).values());
-                    }
-                }
-                return list2;
-            }
-        }
+    public ItemStack tryAddItem(ItemStack itemStack){
+        if(itemStack == null) return null;
+        ItemStack tempItem;
+        HashMap<Integer, ItemStack> hashMap = firstPage.addItem(itemStack);
+        if(hashMap.isEmpty()) return null;
 
-        return list;
+        tempItem = hashMap.get(0);
+        if(secondPage == null) return tempItem;
+        hashMap = secondPage.addItem(tempItem);
+        if(hashMap.isEmpty()) return null;
+        else return hashMap.get(0);
     }
 
     public List<ItemStack> getBackpackItems(){

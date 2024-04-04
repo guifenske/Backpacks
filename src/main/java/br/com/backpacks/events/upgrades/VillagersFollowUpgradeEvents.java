@@ -3,6 +3,7 @@ package br.com.backpacks.events.upgrades;
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.upgrades.VillagersFollowUpgrade;
+import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
@@ -23,7 +24,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-public class VillagersFollow implements Listener {
+public class VillagersFollowUpgradeEvents implements Listener {
     public static void tick(Player player) {
         if(player == null) return;
         if (!player.getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
@@ -44,12 +45,10 @@ public class VillagersFollow implements Listener {
 
     @EventHandler
     private static void onClick(InventoryClickEvent event) {
-        if (!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGVILLAGERSFOLLOW)) {
-            return;
-        }
+        if (!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGVILLAGERSFOLLOW)) return;
+
         event.setCancelled(true);
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
-        VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) backPack.getUpgradeFromType(UpgradeType.VILLAGERSFOLLOW);
+        VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) UpgradeManager.getPlayerCurrentUpgrade(event.getWhoClicked());
 
         if (event.getRawSlot() == 13) {
             upgrade.setEnabled(!upgrade.isEnabled());
@@ -62,8 +61,9 @@ public class VillagersFollow implements Listener {
         if (!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGVILLAGERSFOLLOW)) {
             return;
         }
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
+        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         BackpackAction.clearPlayerAction(event.getPlayer());
+        UpgradeManager.removePlayerCurrentUpgrade(event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

@@ -3,6 +3,7 @@ package br.com.backpacks.events.upgrades;
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.upgrades.CollectorUpgrade;
+import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
@@ -16,9 +17,7 @@ import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.List;
-
-public class Collector implements Listener {
+public class CollectorUpgradeEvents implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void onPickUp(PlayerAttemptPickupItemEvent event){
         if(!event.getPlayer().getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
@@ -37,9 +36,9 @@ public class Collector implements Listener {
     }
 
     private void generalLogic(PlayerAttemptPickupItemEvent event, BackPack backPack) {
-        List<ItemStack> list = backPack.tryAddItem(event.getItem().getItemStack());
-        if(!list.isEmpty()){
-            event.getItem().setItemStack(list.get(0));
+        ItemStack itemStack = backPack.tryAddItem(event.getItem().getItemStack());
+        if(itemStack != null){
+            event.getItem().setItemStack(itemStack);
         }   else {
             event.setCancelled(true);
             event.getPlayer().playPickupItemAnimation(event.getItem());
@@ -49,33 +48,29 @@ public class Collector implements Listener {
 
     @EventHandler
     private static void onClick(InventoryClickEvent event){
-        if(BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGCOLLECTOR)){
-            event.setCancelled(true);
+        if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGCOLLECTOR)) return;
+        event.setCancelled(true);
+        CollectorUpgrade upgrade = (CollectorUpgrade) UpgradeManager.getPlayerCurrentUpgrade(event.getWhoClicked());
 
-            switch (event.getRawSlot()){
-                case 11 -> {
-                    BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-                    CollectorUpgrade upgrade = (CollectorUpgrade) backPack.getUpgradeFromType(UpgradeType.COLLECTOR);
-                    upgrade.setEnabled(!upgrade.isEnabled());
-                    upgrade.updateInventory();
-                }
-                case 13 -> {
-                    BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-                    CollectorUpgrade upgrade = (CollectorUpgrade) backPack.getUpgradeFromType(UpgradeType.COLLECTOR);
-                    upgrade.setMode(upgrade.getMode() == 0 ? 1 : 0);
-                    upgrade.updateInventory();
-                }
+        switch (event.getRawSlot()){
+            case 11 -> {
+                upgrade.setEnabled(!upgrade.isEnabled());
+                upgrade.updateInventory();
+            }
+            case 13 -> {
+                upgrade.setMode(upgrade.getMode() == 0 ? 1 : 0);
+                upgrade.updateInventory();
             }
         }
     }
 
     @EventHandler
     private void onClose(InventoryCloseEvent event){
-        if(BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGCOLLECTOR)){
-            BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
-            BackpackAction.clearPlayerAction(event.getPlayer());
-            Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> backPack.open((Player) event.getPlayer()), 1L);
-        }
+        if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGCOLLECTOR)) return;
+        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
+        BackpackAction.clearPlayerAction(event.getPlayer());
+        UpgradeManager.removePlayerCurrentUpgrade(event.getPlayer());
+        Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> backPack.open((Player) event.getPlayer()), 1L);
     }
 
 }

@@ -1,7 +1,7 @@
 package br.com.backpacks.upgrades;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.events.upgrades.Jukebox;
+import br.com.backpacks.events.upgrades.JukeboxUpgradeEvents;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.inventory.ItemCreator;
@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static br.com.backpacks.events.upgrades.Jukebox.discsSlots;
+import static br.com.backpacks.events.upgrades.JukeboxUpgradeEvents.discsSlots;
 
 public class JukeboxUpgrade extends Upgrade {
     private Sound sound;
@@ -66,8 +66,8 @@ public class JukeboxUpgrade extends Upgrade {
     public void stopTickingUpgrade() {
         clearLoopingTask();
         clearParticleTask();
-        if(owner != null) Jukebox.stopSound(owner, this);
-        if(backpackId != null) Jukebox.stopSound(Main.backPackManager.getBackpackFromId(backpackId), this);
+        if(owner != null) JukeboxUpgradeEvents.stopSound(owner, this);
+        if(backpackId != null) JukeboxUpgradeEvents.stopSound(Main.backPackManager.getBackpackFromId(backpackId), this);
         backpackId = null;
         owner = null;
     }
@@ -88,7 +88,7 @@ public class JukeboxUpgrade extends Upgrade {
             public void run() {
                 entity.playSound(getSound(), Sound.Emitter.self());
             }
-        }.runTaskTimer(Main.getMain(), 0L, (Jukebox.durationFromDisc(inventory.getItem(13)) * 20));
+        }.runTaskTimer(Main.getMain(), 0L, (JukeboxUpgradeEvents.durationFromDisc(inventory.getItem(13)) * 20));
     }
 
     public void startLoopingTask(Location loc){
@@ -97,7 +97,7 @@ public class JukeboxUpgrade extends Upgrade {
             public void run() {
                 loc.getWorld().playSound(getSound());
             }
-        }.runTaskTimer(Main.getMain(), 0L, (Jukebox.durationFromDisc(inventory.getItem(13)) * 20));
+        }.runTaskTimer(Main.getMain(), 0L, (JukeboxUpgradeEvents.durationFromDisc(inventory.getItem(13)) * 20));
     }
 
     public void startParticleTask(Location loc){
@@ -132,11 +132,11 @@ public class JukeboxUpgrade extends Upgrade {
 
     @Override
     public boolean canReceiveSpecificItemAsInput(@NotNull ItemStack itemStack) {
-        return Jukebox.checkDisk(itemStack);
+        return JukeboxUpgradeEvents.checkDisk(itemStack);
     }
 
     @Override
-    public boolean isAdvanced() {
+    public boolean canBeInputOrOutputHolder() {
         return true;
     }
 
@@ -167,7 +167,7 @@ public class JukeboxUpgrade extends Upgrade {
         ItemStack enableLoop = new ItemCreator(Material.GREEN_STAINED_GLASS, "Enable loop").build();
         ItemStack blank = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").build();
 
-        for (int i : Jukebox.blankSlots) {
+        for (int i : JukeboxUpgradeEvents.blankSlots) {
             inventory.setItem(i, blank);
         }
 

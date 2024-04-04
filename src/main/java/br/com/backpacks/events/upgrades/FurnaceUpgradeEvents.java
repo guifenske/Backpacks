@@ -2,6 +2,7 @@ package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
+import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
 import br.com.backpacks.utils.others.FurnaceUtils;
@@ -18,12 +19,10 @@ import org.bukkit.inventory.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Furnace implements Listener {
-    public static final ConcurrentHashMap<UUID, FurnaceUpgrade> currentFurnace = new ConcurrentHashMap<>();
+public class FurnaceUpgradeEvents implements Listener {
     public static final ConcurrentHashMap<Integer, BukkitTask> taskMap = new ConcurrentHashMap<>();
     public static final IntOpenHashSet shouldTick = new IntOpenHashSet();
 
@@ -33,59 +32,57 @@ public class Furnace implements Listener {
         }
         upgrade.startSubTick();
 
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), ()->{
-            if(upgrade.getBoundFakeBlock() == null) {
-                Location tempLocation = new Location(Bukkit.getWorld("world"), ThreadLocalRandom.current().nextInt(-900, 900), -65, ThreadLocalRandom.current().nextInt(-900, 900));
-                Block tempBlock = tempLocation.getBlock();
-                switch (upgrade.getType()) {
-                    case FURNACE -> tempBlock.setType(Material.FURNACE);
-                    case SMOKER -> tempBlock.setType(Material.SMOKER);
-                    case BLAST_FURNACE -> tempBlock.setType(Material.BLAST_FURNACE);
-                }
-                upgrade.setBoundFakeBlock(tempBlock);
+        if(upgrade.getBoundFakeBlock() == null) {
+            Location tempLocation = new Location(Bukkit.getWorld("world"), ThreadLocalRandom.current().nextInt(-900, 900), -65, ThreadLocalRandom.current().nextInt(-900, 900));
+            Block tempBlock = tempLocation.getBlock();
+            switch (upgrade.getType()) {
+                case FURNACE -> tempBlock.setType(Material.FURNACE);
+                case SMOKER -> tempBlock.setType(Material.SMOKER);
+                case BLAST_FURNACE -> tempBlock.setType(Material.BLAST_FURNACE);
             }
-            BukkitTask task = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if(!upgrade.canTick()){
-                        this.cancel();
-                        upgrade.stopTickingUpgrade();
-                        upgrade.setRecipe(null);
-                        Main.debugMessage("Stopping furnace task for " + upgrade.getId() + "!");
-                        return;
-                    }
-
-                    FurnaceUtils.Fuel fuel = getFuelFromItem(upgrade.getFuel());
-                    int maxOperation = fuel.getMaxOperation();
-
-                    if(fuel.equals(FurnaceUtils.Fuel.NOTHING)){
-                        if(upgrade.getLastMaxOperation() > 0 && upgrade.getOperation() > 0){
-                            if(upgrade.getLastMaxOperation() == 100 && upgrade.getFuel().getType().equals(Material.BUCKET)){
-                                fuel = FurnaceUtils.Fuel.LAVA_BUCKET;
-                                maxOperation = 100;
-                                upgrade.setLastMaxOperation(maxOperation);
-                            }   else    maxOperation = upgrade.getLastMaxOperation();
-                        }   else   return;
-                    }
-
-                    if(upgrade.getFuel() != null && fuel.equals(FurnaceUtils.Fuel.NOTHING)){
-                        this.cancel();
-                        upgrade.stopTickingUpgrade();
-                        upgrade.setRecipe(null);
-                        Main.getMain().getLogger().severe("Furnace " + upgrade.getId() + " has a invalid fuel! Fuel = " + upgrade.getFuel() + ", if this is a bug or a valid fuel, report to the developer!");
-                        return;
-                    }
-
-                    if(upgrade.getLastMaxOperation() > 0){
-                        if(upgrade.getLastMaxOperation() != maxOperation) upgrade.setOperation(0);
-                    }
-
-                    upgrade.setLastMaxOperation(maxOperation);
-                    generalLogic(upgrade);
+            upgrade.setBoundFakeBlock(tempBlock);
+        }
+        BukkitTask task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if(!upgrade.canTick()){
+                    this.cancel();
+                    upgrade.stopTickingUpgrade();
+                    upgrade.setRecipe(null);
+                    Main.debugMessage("Stopping furnace task for " + upgrade.getId() + "!");
+                    return;
                 }
-            }.runTaskTimer(Main.getMain(), upgrade.getCookItemTicks(), upgrade.getCookItemTicks());
-            taskMap.put(upgrade.getId(), task);
-        });
+
+                FurnaceUtils.Fuel fuel = getFuelFromItem(upgrade.getFuel());
+                int maxOperation = fuel.getMaxOperation();
+
+                if(fuel.equals(FurnaceUtils.Fuel.NOTHING)){
+                    if(upgrade.getLastMaxOperation() > 0 && upgrade.getOperation() > 0){
+                        if(upgrade.getLastMaxOperation() == 100 && upgrade.getFuel().getType().equals(Material.BUCKET)){
+                            fuel = FurnaceUtils.Fuel.LAVA_BUCKET;
+                            maxOperation = 100;
+                            upgrade.setLastMaxOperation(maxOperation);
+                        }   else    maxOperation = upgrade.getLastMaxOperation();
+                    }   else   return;
+                }
+
+                if(upgrade.getFuel() != null && fuel.equals(FurnaceUtils.Fuel.NOTHING)){
+                    this.cancel();
+                    upgrade.stopTickingUpgrade();
+                    upgrade.setRecipe(null);
+                    Main.getMain().getLogger().severe("Furnace " + upgrade.getId() + " has a invalid fuel! Fuel = " + upgrade.getFuel() + ", if this is a bug or a valid fuel, report to the developer!");
+                    return;
+                }
+
+                if(upgrade.getLastMaxOperation() > 0){
+                    if(upgrade.getLastMaxOperation() != maxOperation) upgrade.setOperation(0);
+                }
+
+                upgrade.setLastMaxOperation(maxOperation);
+                generalLogic(upgrade);
+            }
+        }.runTaskTimer(Main.getMain(), upgrade.getCookItemTicks(), upgrade.getCookItemTicks());
+        taskMap.put(upgrade.getId(), task);
         Main.debugMessage("Starting furnace task for " + upgrade.getId() + "!");
     }
 
@@ -93,27 +90,28 @@ public class Furnace implements Listener {
     private void onClick(InventoryClickEvent event){
         if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGFURNACE)) return;
         Player player = (Player) event.getWhoClicked();
+        FurnaceUpgrade upgrade = (FurnaceUpgrade) UpgradeManager.getPlayerCurrentUpgrade(player);
 
         if(event.getRawSlot() == 2){
-            if(event.getCurrentItem() != null && event.getCurrentItem().isSimilar(currentFurnace.get(player.getUniqueId()).getResult())){
-                float expPoints = currentFurnace.get(player.getUniqueId()).getRecipe().getExperience();
+            if(event.getCurrentItem() != null && event.getCurrentItem().isSimilar(upgrade.getResult())){
+                float expPoints = upgrade.getRecipe().getExperience();
                 player.giveExp((int) (expPoints * event.getCurrentItem().getAmount()));
             }
         }
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
-                currentFurnace.get(player.getUniqueId()).setFuel(event.getInventory().getItem(1));
-                currentFurnace.get(player.getUniqueId()).setSmelting(event.getInventory().getItem(0));
-                currentFurnace.get(player.getUniqueId()).setResult(event.getInventory().getItem(2));
-                if(!shouldTick.contains(currentFurnace.get(player.getUniqueId()).getId())) {
-                    if (currentFurnace.get(player.getUniqueId()).canTick()) {
-                        shouldTick.add(currentFurnace.get(player.getUniqueId()).getId());
-                        tick(currentFurnace.get(player.getUniqueId()));
+                upgrade.setFuel(event.getInventory().getItem(1));
+                upgrade.setSmelting(event.getInventory().getItem(0));
+                upgrade.setResult(event.getInventory().getItem(2));
+                if(!shouldTick.contains(upgrade.getId())) {
+                    if (upgrade.canTick()) {
+                        shouldTick.add(upgrade.getId());
+                        tick(upgrade);
                     }
                 }   else{
-                    if(!currentFurnace.get(player.getUniqueId()).canTick()){
-                        currentFurnace.get(player.getUniqueId()).stopTickingUpgrade();
+                    if(!upgrade.canTick()){
+                        upgrade.stopTickingUpgrade();
                     }
                 }
             }
@@ -125,23 +123,24 @@ public class Furnace implements Listener {
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGFURNACE)) return;
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         Player player = (Player) event.getPlayer();
+        FurnaceUpgrade upgrade = (FurnaceUpgrade) UpgradeManager.getPlayerCurrentUpgrade(player);
 
-        currentFurnace.get(player.getUniqueId()).setFuel(event.getInventory().getItem(1));
-        currentFurnace.get(player.getUniqueId()).setSmelting(event.getInventory().getItem(0));
-        currentFurnace.get(player.getUniqueId()).setResult(event.getInventory().getItem(2));
+        upgrade.setFuel(event.getInventory().getItem(1));
+        upgrade.setSmelting(event.getInventory().getItem(0));
+        upgrade.setResult(event.getInventory().getItem(2));
 
-        if(!currentFurnace.get(player.getUniqueId()).canTick()){
-            currentFurnace.get(player.getUniqueId()).stopTickingUpgrade();
+        if(!upgrade.canTick()){
+            upgrade.stopTickingUpgrade();
         }
 
         BackpackAction.clearPlayerAction(player);
+        UpgradeManager.removePlayerCurrentUpgrade(player);
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
                 backPack.open((Player) event.getPlayer());
             }
         }.runTaskLater(Main.getMain(), 1L);
-
     }
 
     private static FurnaceUtils.Fuel getFuelFromItem(ItemStack item){

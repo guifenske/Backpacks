@@ -4,7 +4,9 @@ import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.recipes.UpgradesRecipes;
+import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
+import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackType;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
@@ -19,24 +21,24 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class CraftBackpack implements Listener {
 
-    private static final String DONTHAVEBACKPACKMSG =  Main.PREFIX + "§cIt looks that you don't have a backpack to upgrade in the recipe!";
-    private static final String NOTCORRECTTYPE =  Main.PREFIX + "§cYou don't have the correct type of backpack to upgrade!";
+    private final String DONTHAVEBACKPACKMSG =  Main.PREFIX + "§cIt looks that you don't have a backpack to upgrade in the recipe!";
+    private final String NOTCORRECTTYPE =  Main.PREFIX + "§cYou don't have the correct type of backpack to upgrade!";
 
     @EventHandler
-    private static void craftBackpackEvent(CraftItemEvent event){
+    private void craftBackpackEvent(CraftItemEvent event){
         if(!event.getRecipe().getResult().hasItemMeta()){
             switch (event.getRecipe().getResult().getType()){
                 case CHEST, BARREL, COMPOSTER -> {
                     if(!event.getWhoClicked().hasDiscoveredRecipe(new BackpackRecipes().getNAMESPACE_LEATHER_BACKPACK())){
                         event.getWhoClicked().discoverRecipe(new BackpackRecipes().getNAMESPACE_LEATHER_BACKPACK());
                     }   else{
-                        event.getWhoClicked().discoverRecipe(new UpgradesRecipes().getCOLLECTOR());
+                        event.getWhoClicked().discoverRecipe(new UpgradesRecipes().getCollector());
                     }
                 }
                 case FURNACE, SMOKER, BLAST_FURNACE -> {
                     event.getWhoClicked().discoverRecipe(new UpgradesRecipes().getFurnace());
-                    event.getWhoClicked().discoverRecipe(new UpgradesRecipes().getBLASTFURNACE());
-                    event.getWhoClicked().discoverRecipe(new UpgradesRecipes().getSMOKER());
+                    event.getWhoClicked().discoverRecipe(new UpgradesRecipes().getBlastFurnace());
+                    event.getWhoClicked().discoverRecipe(new UpgradesRecipes().getSmoker());
                 }
                 case JUKEBOX, NOTE_BLOCK -> {
                     event.getWhoClicked().discoverRecipe(new UpgradesRecipes().getJukebox());
@@ -48,8 +50,8 @@ public class CraftBackpack implements Listener {
                     event.getWhoClicked().discoverRecipe(new UpgradesRecipes().getVillagersFollow());
                 }
                 case END_CRYSTAL, BEACON, NETHERITE_INGOT -> {
-                    event.getWhoClicked().discoverRecipe(new UpgradesRecipes().getUNBREAKING());
-                    event.getWhoClicked().discoverRecipe(new UpgradesRecipes().getENCAPSULATE());
+                    event.getWhoClicked().discoverRecipe(new UpgradesRecipes().getUnbreaking());
+                    event.getWhoClicked().discoverRecipe(new UpgradesRecipes().getEncapsulate());
                 }
                 case BUCKET, CAULDRON -> {
                     event.getWhoClicked().discoverRecipe(new UpgradesRecipes().getLiquidTank());
@@ -60,9 +62,17 @@ public class CraftBackpack implements Listener {
 
         Player player = (Player) event.getWhoClicked();
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().isUpgrade(), PersistentDataType.INTEGER)){
+            if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getAdvancedFilter(), PersistentDataType.INTEGER)){
+                if(!checkUpgradeInMatrix(event, UpgradeType.FILTER)){
+                    event.setCancelled(true);
+                    event.getWhoClicked().sendMessage(Main.PREFIX + "§cYou don't have a normal upgrade to make a advanced one!");
+                    return;
+                }
+            }
+
             ItemStack itemStack = event.getRecipe().getResult();
             ItemMeta meta = itemStack.getItemMeta();
-            meta.getPersistentDataContainer().set(new UpgradesRecipes().getUPGRADEID(), PersistentDataType.INTEGER, UpgradeManager.lastUpgradeID + 1);
+            meta.getPersistentDataContainer().set(new UpgradesRecipes().getUPGRADE_ID(), PersistentDataType.INTEGER, UpgradeManager.lastUpgradeID + 1);
             itemStack.setItemMeta(meta);
             event.getInventory().setResult(itemStack);
             UpgradeManager.lastUpgradeID++;
@@ -73,8 +83,8 @@ public class CraftBackpack implements Listener {
         if(!event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER)) return;
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getFurnace(), PersistentDataType.INTEGER)){
-            player.discoverRecipe(new UpgradesRecipes().getSMOKER());
-            player.discoverRecipe(new UpgradesRecipes().getBLASTFURNACE());
+            player.discoverRecipe(new UpgradesRecipes().getSmoker());
+            player.discoverRecipe(new UpgradesRecipes().getBlastFurnace());
             return;
         }
 
@@ -93,10 +103,10 @@ public class CraftBackpack implements Listener {
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getNAMESPACE_IRON_BACKPACK(), PersistentDataType.INTEGER)){
-            oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.IRON);
+            oldId = getBackpackIdInMatrix(event, oldId, BackpackType.IRON);
             if(oldId == -1) return;
             player.discoverRecipe(new BackpackRecipes().getNAMESPACE_GOLD_BACKPACK());
-            player.discoverRecipe(new UpgradesRecipes().getENCAPSULATE());
+            player.discoverRecipe(new UpgradesRecipes().getEncapsulate());
             updateResult(event, oldId);
             Main.backPackManager.setLastBackpackID(Main.backPackManager.getLastBackpackID() + 1);
             BackPack backPack = Main.backPackManager.upgradeBackpack(BackpackType.LEATHER, oldId);
@@ -107,7 +117,7 @@ public class CraftBackpack implements Listener {
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getNAMESPACE_GOLD_BACKPACK(), PersistentDataType.INTEGER)){
-            oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.GOLD);
+            oldId = getBackpackIdInMatrix(event, oldId, BackpackType.GOLD);
             if(oldId == -1) return;
             player.discoverRecipe(new BackpackRecipes().getNAMESPACE_LAPIS_BACKPACK());
             player.discoverRecipe(new UpgradesRecipes().getLiquidTank());
@@ -121,10 +131,10 @@ public class CraftBackpack implements Listener {
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getNAMESPACE_LAPIS_BACKPACK(), PersistentDataType.INTEGER)){
-            oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.LAPIS);
+            oldId = getBackpackIdInMatrix(event, oldId, BackpackType.LAPIS);
             if(oldId == -1) return;
             player.discoverRecipe(new BackpackRecipes().getNAMESPACE_AMETHYST_BACKPACK());
-            player.discoverRecipe(new UpgradesRecipes().getUNBREAKING());
+            player.discoverRecipe(new UpgradesRecipes().getUnbreaking());
             updateResult(event, oldId);
             Main.backPackManager.setLastBackpackID(Main.backPackManager.getLastBackpackID() + 1);
             BackPack backPack = Main.backPackManager.upgradeBackpack(BackpackType.GOLD, oldId);
@@ -135,7 +145,7 @@ public class CraftBackpack implements Listener {
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getNAMESPACE_AMETHYST_BACKPACK(), PersistentDataType.INTEGER)){
-            oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.AMETHYST);
+            oldId = getBackpackIdInMatrix(event, oldId, BackpackType.AMETHYST);
             if(oldId == -1) return;
             player.discoverRecipe(new BackpackRecipes().getNAMESPACE_DIAMOND_BACKPACK());
             updateResult(event, oldId);
@@ -148,7 +158,7 @@ public class CraftBackpack implements Listener {
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getNAMESPACE_DIAMOND_BACKPACK(), PersistentDataType.INTEGER)){
-            oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.DIAMOND);
+            oldId = getBackpackIdInMatrix(event, oldId, BackpackType.DIAMOND);
             if(oldId == -1) return;
             player.discoverRecipe(new BackpackRecipes().getNAMESPACE_NETHERITE_BACKPACK());
             updateResult(event, oldId);
@@ -161,7 +171,7 @@ public class CraftBackpack implements Listener {
         }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getNAMESPACE_NETHERITE_BACKPACK(), PersistentDataType.INTEGER)){
-            oldId = checkBackpackInTheMatrix(event, oldId, BackpackType.NETHERITE);
+            oldId = getBackpackIdInMatrix(event, oldId, BackpackType.NETHERITE);
             if(oldId == -1) return;
             updateResult(event, oldId);
             Main.backPackManager.setLastBackpackID(Main.backPackManager.getLastBackpackID() + 1);
@@ -172,7 +182,23 @@ public class CraftBackpack implements Listener {
         }
     }
 
-    private static int checkBackpackInTheMatrix(CraftItemEvent event, int oldId, BackpackType type) {
+    private boolean checkUpgradeInMatrix(CraftItemEvent event, UpgradeType type){
+        ItemStack upgradeItem = event.getInventory().getItem(5);
+        Upgrade upgrade;
+        if(upgradeItem == null) return false;
+        if(!upgradeItem.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().isUpgrade(), PersistentDataType.INTEGER)) return false;
+
+        if(upgradeItem.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getUPGRADE_ID(), PersistentDataType.INTEGER)){
+            upgrade = UpgradeManager.getUpgradeFromId(upgradeItem.getItemMeta().getPersistentDataContainer().get(new UpgradesRecipes().getUPGRADE_ID(), PersistentDataType.INTEGER));
+            if(upgrade == null) return false;
+            return upgrade.getType() == type;
+        }
+
+        return false;
+    }
+
+
+    private int getBackpackIdInMatrix(CraftItemEvent event, int oldId, BackpackType type) {
         ItemStack backpack = event.getInventory().getItem(5);
 
         if(backpack.getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER)){
@@ -227,6 +253,7 @@ public class CraftBackpack implements Listener {
                     return -1;
                 }
             }
+
             default -> {
                 event.getWhoClicked().sendMessage(DONTHAVEBACKPACKMSG);
                 event.setCancelled(true);
@@ -244,7 +271,7 @@ public class CraftBackpack implements Listener {
         return oldId;
     }
 
-    private static void updateResult(CraftItemEvent event, int id) {
+    private void updateResult(CraftItemEvent event, int id) {
         ItemStack itemStack = event.getRecipe().getResult();
         ItemMeta meta = itemStack.getItemMeta();
         meta.getPersistentDataContainer().set(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER, id);

@@ -145,7 +145,7 @@ public class InventoryBuilder {
                 List<Upgrade> upgrades = backPack.getBackpackUpgrades();
                 if (!backPack.getBackpackUpgrades().isEmpty()) {
                     for (Upgrade upgrade : upgrades) {
-                        if(!upgrade.isAdvanced()) continue;
+                        if(!upgrade.canBeInputOrOutputHolder()) continue;
                         inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));
                         i++;
                     }
@@ -234,7 +234,7 @@ public class InventoryBuilder {
         List<Upgrade> upgrades = backPack.getBackpackUpgrades();
         if (!backPack.getBackpackUpgrades().isEmpty()) {
             for (Upgrade upgrade : upgrades) {
-                if(!upgrade.isAdvanced()) continue;
+                if(!upgrade.canBeInputOrOutputHolder()) continue;
                 inv.setItem(i, RecipesUtils.getItemFromUpgrade(upgrade));
                 i++;
             }

@@ -1,8 +1,8 @@
 package br.com.backpacks;
 
 import br.com.backpacks.backup.BackupHandler;
-import br.com.backpacks.events.upgrades.Magnet;
-import br.com.backpacks.events.upgrades.VillagersFollow;
+import br.com.backpacks.events.upgrades.MagnetUpgradeEvents;
+import br.com.backpacks.events.upgrades.VillagersFollowUpgradeEvents;
 import br.com.backpacks.storage.StorageManager;
 import br.com.backpacks.utils.backpacks.BackPack;
 import org.bukkit.Bukkit;
@@ -44,16 +44,17 @@ public class ThreadBackpacks {
             autoSaveManager.start();
         }
         Main.getMain().setAutoSaveManager(autoSaveManager);
+        startTicking();
     }
 
     public static void startTicking(){
         Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getMain(), ()->{
             for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
                 if(backPack.getOwner() != null){
-                    VillagersFollow.tick(Bukkit.getPlayer(backPack.getOwner()));
-                    Magnet.tick(Bukkit.getPlayer(backPack.getOwner()));
+                    VillagersFollowUpgradeEvents.tick(Bukkit.getPlayer(backPack.getOwner()));
+                    MagnetUpgradeEvents.tick(Bukkit.getPlayer(backPack.getOwner()));
                 }   else if(backPack.getLocation() != null){
-                    Magnet.tick(backPack);
+                    MagnetUpgradeEvents.tick(backPack);
                 }
             }
         }, 0L, 10L);

@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -192,6 +193,48 @@ public class SerializationUtils {
         dataOutput.writeObject(null);
         dataOutput.close();
         return new ByteArrayInputStream(outputStream.toByteArray());
+    }
+
+    public static ByteArrayInputStream serializeListItemStack(@NotNull List<ItemStack> itemStackList) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
+        if(itemStackList.isEmpty()){
+            dataOutput.writeInt(0);
+            dataOutput.close();
+            return new ByteArrayInputStream(outputStream.toByteArray());
+        }
+
+        dataOutput.writeInt(itemStackList.size());
+        for(ItemStack itemStack : itemStackList){
+            dataOutput.writeObject(itemStack);
+        }
+        dataOutput.close();
+
+        return new ByteArrayInputStream(outputStream.toByteArray());
+    }
+
+    public static List<ItemStack> deserializeListItemStack(InputStream inputStream) throws IOException, ClassNotFoundException {
+        if (inputStream == null || inputStream.available() == 0) return new ArrayList<>();
+        BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
+        List<ItemStack> list = new ArrayList<>();
+        int size = dataInput.readInt();
+        if(size == 0){
+            dataInput.close();
+            return new ArrayList<>();
+        }
+
+        if(dataInput.available() == 0){
+            dataInput.close();
+            return new ArrayList<>();
+        }
+
+        for(int i = 0; i < size; i++){
+            list.add((ItemStack) dataInput.readObject());
+        }
+
+        dataInput.close();
+
+        return list;
     }
 
 }

@@ -29,6 +29,8 @@ public class BackpackAction {
 
         UPGCOLLECTOR,
 
+        UPGFILTER,
+
         IOMENU,
 
         EDITINPUT,

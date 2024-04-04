@@ -1,7 +1,7 @@
 package br.com.backpacks.events;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.events.upgrades.Jukebox;
+import br.com.backpacks.events.upgrades.JukeboxUpgradeEvents;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
 import br.com.backpacks.utils.UpgradeType;
@@ -26,12 +26,12 @@ public class OnDimensionSwitch implements Listener {
 
         if(upgrade.getSound() == null) return;
         Sound sound = upgrade.getSound();
-        Jukebox.stopSound(player, upgrade);
+        JukeboxUpgradeEvents.stopSound(player, upgrade);
         upgrade.setSound(sound);
         if(upgrade.isLooping()){
             upgrade.startLoopingTask(player);
             return;
         }
-        Jukebox.playSound(upgrade, player);
+        JukeboxUpgradeEvents.playSound(upgrade, player);
     }
 }

@@ -1,10 +1,12 @@
 package br.com.backpacks.events;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.events.upgrades.Furnace;
+import br.com.backpacks.events.upgrades.FurnaceUpgradeEvents;
+import br.com.backpacks.upgrades.FilterUpgrade;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
+import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
@@ -29,6 +31,21 @@ public class HopperEvents implements Listener {
         //input
         if (Main.backPackManager.getBackpackFromLocation(destinationLocation) != null) {
             BackPack backPack = Main.backPackManager.getBackpackFromLocation(destinationLocation);
+            FilterUpgrade advFilterUpgrade = (FilterUpgrade) backPack.getUpgradeFromType(UpgradeType.ADVANCED_FILTER);
+            FilterUpgrade filterUpgrade = (FilterUpgrade) backPack.getUpgradeFromType(UpgradeType.FILTER);
+            if(advFilterUpgrade != null){
+                if(!advFilterUpgrade.getFilteredItems().contains(event.getItem().getType())){
+                    if(filterUpgrade == null){
+                        event.setCancelled(true);
+                        return;
+                    }
+                    if(!filterUpgrade.getFilteredItems().contains(event.getItem().getType())){
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
+            }
+
             if(backPack.getInputUpgrade() != -1){
                 Upgrade upgrade = UpgradeManager.getUpgradeFromId(backPack.getInputUpgrade());
                 if(!backPack.getUpgradesIds().contains(backPack.getInputUpgrade()) || upgrade == null){
@@ -45,9 +62,9 @@ public class HopperEvents implements Listener {
                             return;
                         }
 
-                        if(((FurnaceUpgrade) upgrade).canTick() && !Furnace.shouldTick.contains(upgrade.getId())){
-                            Furnace.shouldTick.add(upgrade.getId());
-                            Furnace.tick((FurnaceUpgrade) upgrade);
+                        if(((FurnaceUpgrade) upgrade).canTick() && !FurnaceUpgradeEvents.shouldTick.contains(upgrade.getId())){
+                            FurnaceUpgradeEvents.shouldTick.add(upgrade.getId());
+                            FurnaceUpgradeEvents.tick((FurnaceUpgrade) upgrade);
                         }
 
                         return;
@@ -72,12 +89,12 @@ public class HopperEvents implements Listener {
                 return;
             }
 
-            List<ItemStack> list = backPack.tryAddItem(event.getItem().asOne());
-            if (!list.isEmpty()) {
+            ItemStack itemStack = backPack.tryAddItem(event.getItem().asOne());
+            backPack.updateBarrelBlock();
+            if (itemStack != null) {
                 event.setCancelled(true);
                 return;
             }
-            backPack.updateBarrelBlock();
         }
 
         //output

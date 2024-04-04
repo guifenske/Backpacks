@@ -27,7 +27,7 @@ public class TanksUpgrade extends Upgrade {
     }
 
     @Override
-    public boolean isAdvanced() {
+    public boolean canBeInputOrOutputHolder() {
         return true;
     }
 

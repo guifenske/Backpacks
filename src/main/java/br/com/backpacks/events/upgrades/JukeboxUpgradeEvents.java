@@ -3,7 +3,7 @@ package br.com.backpacks.events.upgrades;
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
-import br.com.backpacks.utils.UpgradeType;
+import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
 import br.com.backpacks.utils.others.JukeboxUtils;
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Jukebox implements Listener {
+public class JukeboxUpgradeEvents implements Listener {
     public static List<Integer> blankSlots = List.of(0,1,2,3,4,5,12,14,18,19,20,21,22,23);
     public static List<Integer> discsSlots = List.of(6,7,8,15,16,17,24,25,26);
 
@@ -65,7 +65,7 @@ public class Jukebox implements Listener {
         }
 
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-        JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradeFromType(UpgradeType.JUKEBOX);
+        JukeboxUpgrade upgrade = (JukeboxUpgrade) UpgradeManager.getPlayerCurrentUpgrade(event.getWhoClicked());
         boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER) || backPack.isBlock();
 
         switch (event.getRawSlot()){
@@ -123,7 +123,7 @@ public class Jukebox implements Listener {
     private void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGJUKEBOX)) return;
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
-        JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradeFromType(UpgradeType.JUKEBOX);
+        JukeboxUpgrade upgrade = (JukeboxUpgrade) UpgradeManager.getPlayerCurrentUpgrade(event.getPlayer());
         for(int i : discsSlots){
             if(event.getInventory().getItem(i) == null) continue;
             if(!checkDisk(event.getInventory().getItem(i))){
@@ -146,6 +146,7 @@ public class Jukebox implements Listener {
         }
 
         BackpackAction.clearPlayerAction(event.getPlayer());
+        UpgradeManager.removePlayerCurrentUpgrade(event.getPlayer());
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
             backPack.open((Player) event.getPlayer());
         }, 1L);

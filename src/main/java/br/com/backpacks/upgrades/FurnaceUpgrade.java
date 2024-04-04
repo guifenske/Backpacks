@@ -1,7 +1,7 @@
 package br.com.backpacks.upgrades;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.events.upgrades.Furnace;
+import br.com.backpacks.events.upgrades.FurnaceUpgradeEvents;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeType;
 import org.bukkit.Bukkit;
@@ -38,7 +38,7 @@ public class FurnaceUpgrade extends Upgrade {
     public void setCookTime(int cookTime) {
         this.cookTime = cookTime;
     }
-    private final int cookTimeMultiplier;
+    private final int cookTimeAmount;
     private int cookTime = 0;
     public int getLastMaxOperation() {
         return lastMaxOperation;
@@ -69,25 +69,21 @@ public class FurnaceUpgrade extends Upgrade {
         if(upgradeType.equals(UpgradeType.BLAST_FURNACE)){
             this.cookItemTicks = 100L;
             this.inventory = Bukkit.createInventory(null, InventoryType.BLAST_FURNACE);
-            this.cookTimeMultiplier = 4;
+            this.cookTimeAmount = 4;
         }   else if(upgradeType.equals(UpgradeType.SMOKER)){
             this.cookItemTicks = 100L;
             this.inventory = Bukkit.createInventory(null, InventoryType.SMOKER);
-            this.cookTimeMultiplier = 4;
+            this.cookTimeAmount = 4;
         }   else{
             this.cookItemTicks = 200L;
             this.inventory = Bukkit.createInventory(null, InventoryType.FURNACE);
-            this.cookTimeMultiplier = 2;
+            this.cookTimeAmount = 2;
         }
         updateInventory();
     }
 
-    public BukkitTask getSubTickTask() {
-        return subTickTask;
-    }
-
     @Override
-    public boolean isAdvanced() {
+    public boolean canBeInputOrOutputHolder() {
         return true;
     }
 
@@ -103,10 +99,10 @@ public class FurnaceUpgrade extends Upgrade {
 
     @Override
     public void stopTickingUpgrade() {
-        if(Furnace.shouldTick.contains(getId())) Furnace.shouldTick.remove(getId());
+        if(FurnaceUpgradeEvents.shouldTick.contains(getId())) FurnaceUpgradeEvents.shouldTick.remove(getId());
         setCookTime(0);
-        if(Furnace.taskMap.containsKey(getId())) Furnace.taskMap.get(getId()).cancel();
-        Furnace.taskMap.remove(getId());
+        if(FurnaceUpgradeEvents.taskMap.containsKey(getId())) FurnaceUpgradeEvents.taskMap.get(getId()).cancel();
+        FurnaceUpgradeEvents.taskMap.remove(getId());
         setBoundFakeBlock(null);
         clearSubTickTask();
     }
@@ -165,7 +161,7 @@ public class FurnaceUpgrade extends Upgrade {
         subTickTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if(!Furnace.shouldTick.contains(getId())){
+                if(!FurnaceUpgradeEvents.shouldTick.contains(getId())){
                     this.cancel();
                     return;
                 }
@@ -173,20 +169,10 @@ public class FurnaceUpgrade extends Upgrade {
                     this.cancel();
                     return;
                 }
-                setCookTime(getCookTime() + cookTimeMultiplier);
+                setCookTime(getCookTime() + cookTimeAmount);
                 for(HumanEntity player : getInventory().getViewers()){
-                    if(Furnace.currentFurnace.containsKey(player.getUniqueId())) {
-                        InventoryView view = player.getOpenInventory();
-                        if (Furnace.currentFurnace.get(player.getUniqueId()) == null) {
-                            view.setProperty(InventoryView.Property.COOK_TIME, 0);
-                            continue;
-                        }
-                        if (Furnace.currentFurnace.get(player.getUniqueId()).getId() != getId()) {
-                            view.setProperty(InventoryView.Property.COOK_TIME, 0);
-                            continue;
-                        }
-                        view.setProperty(InventoryView.Property.COOK_TIME, getCookTime());
-                    }
+                    InventoryView view = player.getOpenInventory();
+                    view.setProperty(InventoryView.Property.COOK_TIME, getCookTime());
                 }
             }
         }.runTaskTimer(Main.getMain(), 0L, 2L);

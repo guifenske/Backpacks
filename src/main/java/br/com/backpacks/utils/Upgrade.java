@@ -9,6 +9,7 @@ import java.util.List;
 public class Upgrade {
     private final UpgradeType type;
     private final int id;
+
     public Upgrade(UpgradeType type, int id) {
         this.type = type;
         this.id = id;
@@ -17,13 +18,13 @@ public class Upgrade {
     public UpgradeType getType() {
         return type;
     }
-
     public int getId() {
         return id;
     }
     public Inventory getInventory() {
         return null;
     }
+    public boolean canBeInputOrOutputHolder(){return false;}
     public boolean isAdvanced(){return false;}
     public List<Integer> inputSlots(){return null;}
     public List<Integer> outputSlots(){return null;}

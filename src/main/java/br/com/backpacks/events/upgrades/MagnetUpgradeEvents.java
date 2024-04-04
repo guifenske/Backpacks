@@ -6,12 +6,15 @@ import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
-public class Magnet implements Listener {
+public class MagnetUpgradeEvents implements Listener {
 
     public static void tick(Player player){
         if(player == null) return;
@@ -39,7 +42,7 @@ public class Magnet implements Listener {
                 if(!new Location(world, x + (chX * 16), 0, z + (chZ * 16)).isChunkLoaded()) continue;
                 for (Entity e : new Location(world, x + (chX * 16), 0, z + (chZ * 16)).getChunk().getEntities()) {
                     double distanceSquared = location.distanceSquared(e.getLocation());
-                    if ((e.getType().equals(EntityType.DROPPED_ITEM) || e.getType().equals(EntityType.EXPERIENCE_ORB)) && distanceSquared <= maxDistanceSquared){
+                    if (e.getType().equals(EntityType.DROPPED_ITEM) && distanceSquared <= maxDistanceSquared){
 
                         if(player != null){
                             if(e instanceof Item){
@@ -47,11 +50,9 @@ public class Magnet implements Listener {
                             }
 
                             if(distanceSquared <= 4) continue;
-                            pullItem(e, location, Math.sqrt(distanceSquared), true);
+                            pullItem(e, location, true);
                         }   else{
-                            if(e instanceof ExperienceOrb) continue;
-                            double distance = Math.sqrt(distanceSquared);
-                            pullItem(e, location, distance, false);
+                            pullItem(e, location, false);
                         }
 
                     }
@@ -60,14 +61,14 @@ public class Magnet implements Listener {
         }
     }
 
-    private static void pullItem(Entity entity, Location pullTo, double distance, boolean isPlayer){
-        if(isPlayer && entity instanceof Item){
+    private static void pullItem(Entity entity, Location pullTo, boolean isPlayer){
+        if(isPlayer){
             ((Item) entity).setPickupDelay(0);
         }
         Vector direction = pullTo.subtract(entity.getLocation()).toVector();
 
-        //distribute the velocity of the item evenly in 5 ticks
-        entity.setVelocity(direction.normalize().multiply(distance / 5));
+        //distribute the velocity of the item evenly in 5 ticks(25 because the distance is squared)
+        entity.setVelocity(direction.normalize());
     }
 
 }

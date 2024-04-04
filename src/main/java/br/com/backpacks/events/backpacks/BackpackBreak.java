@@ -1,7 +1,7 @@
 package br.com.backpacks.events.backpacks;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.events.upgrades.Jukebox;
+import br.com.backpacks.events.upgrades.JukeboxUpgradeEvents;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.recipes.UpgradesRecipes;
@@ -51,7 +51,7 @@ public class BackpackBreak implements Listener {
             if(upgrade.getSound() != null){
                 upgrade.clearParticleTask();
                 upgrade.clearLoopingTask();
-                Jukebox.stopSound(backPack, upgrade);
+                JukeboxUpgradeEvents.stopSound(backPack, upgrade);
             }
         }
         for(UUID uuid : BackpackAction.getHashMap().keySet()){
@@ -99,7 +99,7 @@ public class BackpackBreak implements Listener {
                 if(upgrade.getSound() != null){
                     upgrade.clearParticleTask();
                     upgrade.clearLoopingTask();
-                    Jukebox.stopSound(backPack, upgrade);
+                    JukeboxUpgradeEvents.stopSound(backPack, upgrade);
                 }
             }
 
@@ -136,7 +136,7 @@ public class BackpackBreak implements Listener {
                     event.setCancelled(true);
                     return;
                 }
-                int id = event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().get(new UpgradesRecipes().getUPGRADEID(), PersistentDataType.INTEGER);
+                int id = event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().get(new UpgradesRecipes().getUPGRADE_ID(), PersistentDataType.INTEGER);
                 UpgradeManager.getUpgrades().remove(id);
             }
             return;
@@ -176,7 +176,7 @@ public class BackpackBreak implements Listener {
                 if(!Main.backPackManager.canOpen()){
                     return;
                 }
-                int id = eventItem.getItemStack().getItemMeta().getPersistentDataContainer().get(new UpgradesRecipes().getUPGRADEID(), PersistentDataType.INTEGER);
+                int id = eventItem.getItemStack().getItemMeta().getPersistentDataContainer().get(new UpgradesRecipes().getUPGRADE_ID(), PersistentDataType.INTEGER);
                 UpgradeManager.getUpgrades().remove(id);
             }
             return;

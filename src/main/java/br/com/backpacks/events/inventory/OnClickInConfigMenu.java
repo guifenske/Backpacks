@@ -1,11 +1,9 @@
 package br.com.backpacks.events.inventory;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.events.upgrades.Furnace;
-import br.com.backpacks.events.upgrades.Jukebox;
+import br.com.backpacks.events.upgrades.JukeboxUpgradeEvents;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.recipes.RecipesUtils;
-import br.com.backpacks.upgrades.FurnaceUpgrade;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
@@ -52,6 +50,7 @@ public class OnClickInConfigMenu implements Listener {
                     BackpackAction.clearPlayerAction(player);
                     event.getWhoClicked().openWorkbench(null, true);
                     BackpackAction.setAction(player, BackpackAction.Action.UPGCRAFTINGGRID);
+                    UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
                     event.setCancelled(true);
                 }
 
@@ -62,7 +61,7 @@ public class OnClickInConfigMenu implements Listener {
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGFURNACE);
-                            Furnace.currentFurnace.put(player.getUniqueId(), ((FurnaceUpgrade) upgrade));
+                            UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
@@ -75,6 +74,7 @@ public class OnClickInConfigMenu implements Listener {
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGJUKEBOX);
+                            UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
@@ -87,6 +87,7 @@ public class OnClickInConfigMenu implements Listener {
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGAUTOFEED);
+                            UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
@@ -99,6 +100,7 @@ public class OnClickInConfigMenu implements Listener {
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGVILLAGERSFOLLOW);
+                            UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
@@ -111,6 +113,7 @@ public class OnClickInConfigMenu implements Listener {
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGCOLLECTOR);
+                            UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
@@ -123,6 +126,20 @@ public class OnClickInConfigMenu implements Listener {
                         @Override
                         public void run() {
                             BackpackAction.setAction(player, BackpackAction.Action.UPGTANKS);
+                            UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
+                        }
+                    }.runTaskLater(Main.getMain(), 1L);
+                    event.setCancelled(true);
+                }
+
+                case ADVANCED_FILTER, FILTER -> {
+                    BackpackAction.clearPlayerAction(player);
+                    event.getWhoClicked().openInventory(upgrade.getInventory());
+                    BukkitTask task = new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            BackpackAction.setAction(player, BackpackAction.Action.UPGFILTER);
+                            UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
                         }
                     }.runTaskLater(Main.getMain(), 1L);
                     event.setCancelled(true);
@@ -146,7 +163,7 @@ public class OnClickInConfigMenu implements Listener {
                         JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradeFromType(UpgradeType.JUKEBOX);
                         if(upgrade.getSound() != null){
                             upgrade.clearLoopingTask();
-                            Jukebox.stopSound(player, upgrade);
+                            JukeboxUpgradeEvents.stopSound(player, upgrade);
                         }
                     }
 

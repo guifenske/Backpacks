@@ -1,6 +1,7 @@
 package br.com.backpacks.storage;
 
 import br.com.backpacks.Main;
+import br.com.backpacks.events.upgrades.FurnaceUpgradeEvents;
 import br.com.backpacks.upgrades.*;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
@@ -56,7 +57,7 @@ public class MySQLProvider extends StorageProvider{
             connection.prepareStatement(createDatabase).execute();
             connection.prepareStatement("USE " + databaseName + ";").execute();
             connection.prepareStatement("CREATE TABLE IF NOT EXISTS backpacks (id INT, bpType VARCHAR(255), loc BLOB, outputId INT, inputId INT, shownameabove BOOLEAN, bpname VARCHAR(255), owner VARCHAR(255), firstPage BLOB, secondPage BLOB, upgradesIds BLOB);").execute();
-            connection.prepareStatement("CREATE TABLE IF NOT EXISTS upgrades (id INT, upgradeType VARCHAR(255), enabled BOOLEAN, furnace_smelting BLOB, furnace_fuel BLOB, furnace_result BLOB, furnace_operation INT, furnace_maxoperation INT, jukebox_discs BLOB, jukebox_playing VARCHAR(255), collector_mode INT, tank_1 BLOB, tank_2 BLOB, tank_input_1 BLOB, tank_input_2 BLOB);").execute();
+            connection.prepareStatement("CREATE TABLE IF NOT EXISTS upgrades (id INT, upgradeType VARCHAR(255), enabled BOOLEAN, furnace_smelting BLOB, furnace_fuel BLOB, furnace_result BLOB, furnace_operation INT, furnace_maxoperation INT, jukebox_discs BLOB, jukebox_playing VARCHAR(255), collector_mode INT, tank_1 BLOB, tank_2 BLOB, tank_input_1 BLOB, tank_input_2 BLOB, filter_filtered BLOB);").execute();
             connection.close();
         } catch (SQLException e) {
             Main.getMain().getLogger().severe("Could not connect to MySQL... Using YAML as default storage provider.");
@@ -112,7 +113,7 @@ public class MySQLProvider extends StorageProvider{
                return;
            }
            for(Upgrade upgrade : UpgradeManager.getUpgrades().values()){
-               PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO upgrades (id, upgradeType, enabled, furnace_smelting, furnace_fuel, furnace_result, furnace_operation, furnace_maxoperation, jukebox_discs, jukebox_playing, collector_mode, tank_1, tank_2, tank_input_1, tank_input_2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+               PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO upgrades (id, upgradeType, enabled, furnace_smelting, furnace_fuel, furnace_result, furnace_operation, furnace_maxoperation, jukebox_discs, jukebox_playing, collector_mode, tank_1, tank_2, tank_input_1, tank_input_2, filter_filtered) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
                preparedStatement.setInt(1, upgrade.getId());
                preparedStatement.setString(2, upgrade.getType().toString());
                preparedStatement.setBoolean(3, true);
@@ -137,24 +138,29 @@ public class MySQLProvider extends StorageProvider{
                        preparedStatement.setInt(7, furnaceUpgrade.getOperation());
                        preparedStatement.setInt(8, furnaceUpgrade.getLastMaxOperation());
                    }
+
                    case JUKEBOX -> {
                        JukeboxUpgrade jukeboxUpgrade = (JukeboxUpgrade) upgrade;
                        preparedStatement.setBlob(9, jukeboxUpgrade.serializeDiscs());
                        if(jukeboxUpgrade.getInventory().getItem(13) != null)    preparedStatement.setString(10, jukeboxUpgrade.getInventory().getItem(13).getType().name());
                    }
+
                    case AUTOFEED -> {
                        AutoFeedUpgrade autoFeedUpgrade = (AutoFeedUpgrade) upgrade;
                        preparedStatement.setBoolean(3, autoFeedUpgrade.isEnabled());
                    }
+
                    case VILLAGERSFOLLOW -> {
                        VillagersFollowUpgrade followUpgrade = (VillagersFollowUpgrade) upgrade;
                        preparedStatement.setBoolean(3, followUpgrade.isEnabled());
                    }
+
                    case COLLECTOR -> {
                        CollectorUpgrade collectorUpgrade = (CollectorUpgrade) upgrade;
                        preparedStatement.setInt(11, collectorUpgrade.getMode());
                        preparedStatement.setBoolean(3, collectorUpgrade.isEnabled());
                    }
+
                    case LIQUIDTANK -> {
                        TanksUpgrade tanksUpgrade = (TanksUpgrade) upgrade;
                        preparedStatement.setBlob(12, tanksUpgrade.serializeTank(1));
@@ -162,8 +168,13 @@ public class MySQLProvider extends StorageProvider{
                        preparedStatement.setBlob(14, SerializationUtils.serializeItem(tanksUpgrade.getInventory().getItem(12)));
                        preparedStatement.setBlob(15, SerializationUtils.serializeItem(tanksUpgrade.getInventory().getItem(14)));
                    }
+
+                   case FILTER, ADVANCED_FILTER -> {
+                       FilterUpgrade filterUpgrade = (FilterUpgrade) upgrade;
+                       preparedStatement.setBlob(16, SerializationUtils.serializeListItemStack(filterUpgrade.getFilteredItems()));
+                   }
                }
-               Main.debugMessage("Saving " + upgrade.getType().toString().toLowerCase() + " upgrade " + upgrade.getId());
+               Main.debugMessage("Saving " + upgrade.getType().toString().toLowerCase().replace("_", " ") + " Upgrade " + upgrade.getId());
                preparedStatement.execute();
            }
            connection.close();
@@ -192,8 +203,14 @@ public class MySQLProvider extends StorageProvider{
                         upgrade.setOperation(upgradeSet.getInt("furnace_operation"));
                         upgrade.setLastMaxOperation(upgradeSet.getInt("furnace_maxoperation"));
                         upgrade.updateInventory();
+                        if(upgrade.canTick()){
+                            FurnaceUpgradeEvents.shouldTick.add(upgrade.getId());
+                            FurnaceUpgradeEvents.tick(upgrade);
+                        }
+
                         UpgradeManager.getUpgrades().put(id, upgrade);
                     }
+
                     case JUKEBOX -> {
                         JukeboxUpgrade upgrade = new JukeboxUpgrade(id);
                         upgrade.deserializeDiscs(upgradeSet.getBlob("jukebox_discs").getBinaryStream());
@@ -201,6 +218,7 @@ public class MySQLProvider extends StorageProvider{
                         upgrade.updateInventory();
                         UpgradeManager.getUpgrades().put(id, upgrade);
                     }
+
                     case COLLECTOR -> {
                         CollectorUpgrade upgrade = new CollectorUpgrade(id);
                         upgrade.setMode(upgradeSet.getInt("collector_mode"));
@@ -208,18 +226,21 @@ public class MySQLProvider extends StorageProvider{
                         upgrade.updateInventory();
                         UpgradeManager.getUpgrades().put(id, upgrade);
                     }
+
                     case VILLAGERSFOLLOW -> {
                         VillagersFollowUpgrade upgrade = new VillagersFollowUpgrade(id);
                         upgrade.setEnabled(upgradeSet.getBoolean("enabled"));
                         upgrade.updateInventory();
                         UpgradeManager.getUpgrades().put(id, upgrade);
                     }
+
                     case AUTOFEED -> {
                         AutoFeedUpgrade upgrade = new AutoFeedUpgrade(id);
                         upgrade.setEnabled(upgradeSet.getBoolean("enabled"));
                         upgrade.updateInventory();
                         UpgradeManager.getUpgrades().put(id, upgrade);
                     }
+
                     case LIQUIDTANK -> {
                         TanksUpgrade upgrade = new TanksUpgrade(id);
                         upgrade.deserializeTank(upgradeSet.getBlob("tank_1").getBinaryStream());
@@ -229,6 +250,23 @@ public class MySQLProvider extends StorageProvider{
                         upgrade.updateInventory();
                         UpgradeManager.getUpgrades().put(id, upgrade);
                     }
+
+                    case FILTER, ADVANCED_FILTER -> {
+                        FilterUpgrade upgrade = new FilterUpgrade(type, id);
+                        upgrade.setFilteredItems(SerializationUtils.deserializeListItemStack(upgradeSet.getBlob("filter.filtered").getBinaryStream()));
+                        if(upgrade.isAdvanced()){
+                            int index = 0;
+                            for(ItemStack itemStack : upgrade.getFilteredItems()){
+                                upgrade.getInventory().setItem(index, itemStack);
+                                index++;
+                            }
+                        }   else{
+                            upgrade.getInventory().setItem(4, upgrade.getFilteredItems().get(0));
+                        }
+
+                        UpgradeManager.getUpgrades().put(id, upgrade);
+                    }
+
                     default -> {
                         Upgrade upgrade = new Upgrade(type, id);
                         UpgradeManager.getUpgrades().put(id, upgrade);

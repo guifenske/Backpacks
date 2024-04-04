@@ -1,7 +1,7 @@
 package br.com.backpacks.events.entity;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.events.upgrades.Jukebox;
+import br.com.backpacks.events.upgrades.JukeboxUpgradeEvents;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
@@ -45,7 +45,7 @@ public class EntityDeathEvent implements Listener {
             JukeboxUpgrade upgrade = (JukeboxUpgrade) backpack.getUpgradeFromType(UpgradeType.JUKEBOX);
             if(upgrade.getSound() != null){
                 upgrade.clearLoopingTask();
-                Jukebox.stopSound(player, upgrade);
+                JukeboxUpgradeEvents.stopSound(player, upgrade);
             }
         }
         backpack.setOwner(null);
@@ -56,9 +56,9 @@ public class EntityDeathEvent implements Listener {
         Main.backPackManager.getBackpacksPlacedLocations().put(backpack.getLocation(), backpack.getId());
         player.getPersistentDataContainer().remove(new BackpackRecipes().getHAS_BACKPACK());
         double y = backpack.getLocation().getY() + 1;
-        Component component = Component.text(Main.PREFIX + "§cYou died and your backpack was placed on: " + backpack.getLocation().getX() + ", " + backpack.getLocation().getY() + ", " + backpack.getLocation().getZ() + "! Click to tp!")
+        Component component = Component.text(Main.PREFIX + "§cYou died and your backpack was placed on: " + backpack.getLocation().getX() + ", " + backpack.getLocation().getY() + ", " + backpack.getLocation().getZ() + "! Click to teleport!")
                 .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + backpack.getLocation().getX() + " " + y + " " + backpack.getLocation().getZ()));
-        player.sendMessage(component.toString());
+        player.sendMessage(component);
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -5,7 +5,6 @@ import br.com.backpacks.commands.*;
 import br.com.backpacks.events.ConfigItemsEvents;
 import br.com.backpacks.events.HopperEvents;
 import br.com.backpacks.events.OnDimensionSwitch;
-import br.com.backpacks.events.ServerLoadEvent;
 import br.com.backpacks.events.backpacks.*;
 import br.com.backpacks.events.entity.*;
 import br.com.backpacks.events.inventory.*;
@@ -15,19 +14,23 @@ import br.com.backpacks.recipes.UpgradesRecipes;
 import br.com.backpacks.storage.MySQLProvider;
 import br.com.backpacks.storage.StorageManager;
 import br.com.backpacks.utils.Constants;
+import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackPackManager;
 import br.com.backpacks.utils.backpacks.BackpackAction;
 import org.bukkit.Bukkit;
+import org.bukkit.block.Barrel;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.SmokingRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -149,19 +152,19 @@ public final class Main extends JavaPlugin {
         //others
         Bukkit.getPluginManager().registerEvents(new HopperEvents(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new ConfigItemsEvents(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new ServerLoadEvent(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new BpList(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new EntityDeathEvent(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new OnDimensionSwitch(), Main.getMain());
 
         //Upgrades
-        Bukkit.getPluginManager().registerEvents(new CraftingTable(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new Furnace(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new Jukebox(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new AutoFeed(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new VillagersFollow(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new Collector(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new Tanks(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new CraftingUpgradeEvents(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new FurnaceUpgradeEvents(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new JukeboxUpgradeEvents(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new AutoFeedUpgradeEvents(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new VillagersFollowUpgradeEvents(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new CollectorUpgradeEvents(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new TanksUpgradeEvents(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new FilterUpgradeEvents(), Main.getMain());
 
         Main.getMain().getCommand("bpgive").setExecutor(new BpGive());
         Main.getMain().getCommand("bplist").setExecutor(new BpList());
@@ -177,10 +180,14 @@ public final class Main extends JavaPlugin {
         //reload logic
         for(UUID uuid : BackpackAction.getHashMap().keySet()){
             Player player = Bukkit.getPlayer(uuid);
-            BackpackAction.getHashMap().remove(uuid);
-            BackpackAction.getSpectators().remove(uuid);
             if(player == null) continue;
             player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
+        }
+
+        for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
+            if(backPack.getLocation() == null) continue;
+            Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
+            barrel.close();
         }
 
         Bukkit.getConsoleSender().sendMessage("[Backpacks] Saving backpacks..");
@@ -229,12 +236,30 @@ public final class Main extends JavaPlugin {
         Bukkit.addRecipe(new UpgradesRecipes().getFurnaceRecipe());
         Bukkit.addRecipe(new UpgradesRecipes().getSmokerRecipe());
         Bukkit.addRecipe(new UpgradesRecipes().getBlastFurnaceRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getCraftingTableRecipe());
+        Bukkit.addRecipe(new UpgradesRecipes().getCraftingRecipe());
         Bukkit.addRecipe(new UpgradesRecipes().getFollowingVillagersRecipe());
         Bukkit.addRecipe(new UpgradesRecipes().getEncapsulateRecipe());
         Bukkit.addRecipe(new UpgradesRecipes().getCollectorRecipe());
         Bukkit.addRecipe(new UpgradesRecipes().getUnbreakableUpgradeRecipe());
         Bukkit.addRecipe(new UpgradesRecipes().getLiquidTankRecipe());
-    }
+        Bukkit.addRecipe(new UpgradesRecipes().getMagnetRecipe());
+        Bukkit.addRecipe(new UpgradesRecipes().getFilterRecipe());
+        Bukkit.addRecipe(new UpgradesRecipes().getAdvancedFilterUpgrade());
 
+        Iterator<Recipe> iterator = Bukkit.recipeIterator();
+        while (iterator.hasNext()){
+            Recipe recipe = iterator.next();
+            if(!(recipe instanceof FurnaceRecipe)){
+                if(recipe instanceof SmokingRecipe){
+                    smokingRecipes.add((SmokingRecipe) recipe);
+                    continue;
+                }   else if (recipe instanceof BlastingRecipe){
+                    blastingRecipes.add((BlastingRecipe) recipe);
+                    continue;
+                }
+                continue;
+            }
+            furnaceRecipes.add((FurnaceRecipe) recipe);
+        }
+    }
 }

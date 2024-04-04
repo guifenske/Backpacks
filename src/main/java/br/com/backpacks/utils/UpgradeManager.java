@@ -1,22 +1,24 @@
 package br.com.backpacks.utils;
 
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UpgradeManager {
-    private final List<Integer> backpackUpgrades = new ArrayList<>();
     private static ConcurrentHashMap<Integer, Upgrade> upgrades = new ConcurrentHashMap<>();
     public static int lastUpgradeID = 0;
-
     public static void setUpgrades(ConcurrentHashMap<Integer, Upgrade> upgradesList){
         upgrades = upgradesList;
     }
-
     public static ConcurrentHashMap<Integer, Upgrade> getUpgrades(){
         return upgrades;
     }
-
+    private static ConcurrentHashMap<UUID, Integer> playerUpgrade = new ConcurrentHashMap<>();
+    private final List<Integer> backpackUpgrades = new ArrayList<>();
     public List<Integer> getUpgradesIds() {
         return backpackUpgrades;
     }
@@ -103,5 +105,19 @@ public class UpgradeManager {
 
     public void setOutputUpgrade(int outputUpgrade){
         this.outputUpgrade = outputUpgrade;
+    }
+
+    public static void setPlayerCurrentUpgrade(Player player, int upgradeId) {
+        playerUpgrade.put(player.getUniqueId(), upgradeId);
+    }
+
+    public static Upgrade getPlayerCurrentUpgrade(HumanEntity player){
+        if(!playerUpgrade.containsKey(player.getUniqueId())) return null;
+        int upgradeId = playerUpgrade.get(player.getUniqueId());
+        return getUpgradeFromId(upgradeId);
+    }
+
+    public static void removePlayerCurrentUpgrade(HumanEntity player){
+        playerUpgrade.remove(player.getUniqueId());
     }
 }

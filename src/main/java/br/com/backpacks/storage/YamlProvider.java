@@ -1,6 +1,7 @@
 package br.com.backpacks.storage;
 
 import br.com.backpacks.Main;
+import br.com.backpacks.events.upgrades.FurnaceUpgradeEvents;
 import br.com.backpacks.upgrades.*;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
@@ -70,7 +71,6 @@ public final class YamlProvider extends StorageProvider {
             UpgradeType type = upgrade.getType();
             switch (type){
                 case FURNACE, BLAST_FURNACE, SMOKER -> {
-                    Main.debugMessage("Saving furnace upgrade " + upgrade.getId());
                     FurnaceUpgrade furnaceUpgrade = (FurnaceUpgrade) upgrade;
                     if(furnaceUpgrade.getResult() != null)  config.set(upgrade.getId() + ".furnace.result", furnaceUpgrade.getResult());
                     if(furnaceUpgrade.getFuel() != null)  config.set(upgrade.getId() + ".furnace.fuel", furnaceUpgrade.getFuel());
@@ -78,9 +78,9 @@ public final class YamlProvider extends StorageProvider {
                     if(furnaceUpgrade.getOperation() > 0)   config.set(upgrade.getId() + ".furnace.operation", furnaceUpgrade.getOperation());
                     if(furnaceUpgrade.getLastMaxOperation() > 0)   config.set(upgrade.getId() + ".furnace.maxoperation", furnaceUpgrade.getLastMaxOperation());
                 }
+
                 case JUKEBOX -> {
                     JukeboxUpgrade jukeboxUpgrade = (JukeboxUpgrade) upgrade;
-                    Main.debugMessage("Saving jukebox upgrade " + jukeboxUpgrade.getId());
                     if(!jukeboxUpgrade.getDiscs().isEmpty()){
                         for(Map.Entry<Integer, ItemStack> item : jukeboxUpgrade.getDiscs().entrySet()){
                             config.set(upgrade.getId() + ".jukebox.discs." + item.getKey(), item.getValue().getType().name());
@@ -88,25 +88,25 @@ public final class YamlProvider extends StorageProvider {
                     }
                     if(jukeboxUpgrade.getInventory().getItem(13) != null)    config.set(upgrade.getId() + ".jukebox.playing", jukeboxUpgrade.getInventory().getItem(13).getType().name());
                 }
+
                 case AUTOFEED -> {
                     AutoFeedUpgrade autoFeedUpgrade = (AutoFeedUpgrade) upgrade;
-                    Main.debugMessage("Saving auto feed upgrade " + autoFeedUpgrade.getId());
                     config.set(upgrade.getId() + ".autofeed.enabled", autoFeedUpgrade.isEnabled());
                 }
+
                 case VILLAGERSFOLLOW -> {
                     VillagersFollowUpgrade followUpgrade = (VillagersFollowUpgrade) upgrade;
-                    Main.debugMessage("Saving villager upgrade " + followUpgrade.getId());
                     config.set(upgrade.getId() + ".villager.enabled", followUpgrade.isEnabled());
                 }
+
                 case COLLECTOR -> {
                     CollectorUpgrade collectorUpgrade = (CollectorUpgrade) upgrade;
-                    Main.debugMessage("Saving collector upgrade " + collectorUpgrade.getId());
                     config.set(upgrade.getId() + ".collector.enabled", collectorUpgrade.isEnabled());
                     config.set(upgrade.getId() + ".collector.mode", collectorUpgrade.getMode());
                 }
+
                 case LIQUIDTANK -> {
                     TanksUpgrade tanksUpgrade = (TanksUpgrade) upgrade;
-                    Main.debugMessage("Saving tank upgrade " + tanksUpgrade.getId());
                     if(!tanksUpgrade.getItemsPerTank(1).isEmpty()){
                         for(Map.Entry<Integer, ItemStack> item : tanksUpgrade.getItemsPerTank(1).entrySet()){
                             config.set(upgrade.getId() + ".tank1." + item.getKey(), item.getValue());
@@ -120,7 +120,23 @@ public final class YamlProvider extends StorageProvider {
                     if(tanksUpgrade.getInventory().getItem(12) != null) config.set(upgrade.getId() + ".12", tanksUpgrade.getInventory().getItem(12));
                     if(tanksUpgrade.getInventory().getItem(14) != null) config.set(upgrade.getId() + ".14", tanksUpgrade.getInventory().getItem(14));
                 }
+
+                case FILTER, ADVANCED_FILTER -> {
+                    FilterUpgrade filterUpgrade = (FilterUpgrade) upgrade;
+                    if(filterUpgrade.getFilteredItems().isEmpty()) continue;
+                    int index = 0;
+                    for(ItemStack itemStack : filterUpgrade.getFilteredItems()){
+                        if(itemStack == null){
+                            index++;
+                            continue;
+                        }
+                        config.set(upgrade.getId() + ".filter.filtered." + index, itemStack);
+                        index++;
+                    }
+                }
             }
+
+            Main.debugMessage("Saving " + type.toString().toLowerCase().replace("_", " " + " Upgrade"));
         }
         config.save(file);
     }
@@ -138,6 +154,7 @@ public final class YamlProvider extends StorageProvider {
             if(UpgradeManager.lastUpgradeID < id){
                 UpgradeManager.lastUpgradeID = id;
             }
+
             switch (type){
                 case FURNACE, BLAST_FURNACE, SMOKER -> {
                     FurnaceUpgrade upgrade = new FurnaceUpgrade(type, id);
@@ -156,10 +173,15 @@ public final class YamlProvider extends StorageProvider {
                     if(config.isSet(i + ".furnace.maxoperation")){
                         upgrade.setLastMaxOperation(config.getInt(i + ".furnace.maxoperation"));
                     }
-                    Main.debugMessage("furnace loaded: " + i);
                     upgrade.updateInventory();
+                    if(upgrade.canTick()){
+                        FurnaceUpgradeEvents.shouldTick.add(upgrade.getId());
+                        FurnaceUpgradeEvents.tick(upgrade);
+                    }
+
                     UpgradeManager.getUpgrades().put(id, upgrade);
                 }
+
                 case JUKEBOX -> {
                     JukeboxUpgrade upgrade = new JukeboxUpgrade(id);
                     if(config.isSet(i + ".jukebox.discs")){
@@ -171,9 +193,9 @@ public final class YamlProvider extends StorageProvider {
                     if(config.isSet(i + ".jukebox.playing")){
                         upgrade.getInventory().setItem(13, upgrade.getSoundFromName(config.getString(i + ".jukebox.playing")));
                     }
-                    Main.debugMessage("loading jukebox: " + i);
                     UpgradeManager.getUpgrades().put(id, upgrade);
                 }
+
                 case COLLECTOR -> {
                     CollectorUpgrade upgrade = new CollectorUpgrade(id);
                     if(config.isSet(i + ".collector.enabled")){
@@ -182,28 +204,28 @@ public final class YamlProvider extends StorageProvider {
                     if(config.isSet(i + ".collector.mode")){
                         upgrade.setMode(config.getInt(i + ".collector.mode"));
                     }
-                    Main.debugMessage("loading collector: " + i);
                     upgrade.updateInventory();
                     UpgradeManager.getUpgrades().put(id, upgrade);
                 }
+
                 case VILLAGERSFOLLOW -> {
                     VillagersFollowUpgrade upgrade = new VillagersFollowUpgrade(id);
                     if (config.isSet(i + ".villager.enabled")) {
                         upgrade.setEnabled(config.getBoolean(i + ".villager.enabled"));
                     }
-                    Main.debugMessage("loading villagers follow: " + i);
                     upgrade.updateInventory();
                     UpgradeManager.getUpgrades().put(id, upgrade);
                 }
+
                 case AUTOFEED -> {
                     AutoFeedUpgrade upgrade = new AutoFeedUpgrade(id);
                     if(config.isSet(i + ".autofeed.enabled")){
                         upgrade.setEnabled(config.getBoolean(i + ".autofeed.enabled"));
                     }
                     upgrade.updateInventory();
-                    Main.debugMessage("loading auto feed: " + i);
                     UpgradeManager.getUpgrades().put(id, upgrade);
                 }
+
                 case LIQUIDTANK -> {
                     TanksUpgrade upgrade = new TanksUpgrade(id);
                     if(config.isSet(i + ".tank1")){
@@ -225,15 +247,33 @@ public final class YamlProvider extends StorageProvider {
                         upgrade.getInventory().setItem(14, config.getItemStack(i + ".14"));
                     }
 
-                    Main.debugMessage("loading tank upgrade: " + i);
                     UpgradeManager.getUpgrades().put(id, upgrade);
                 }
+
+                case FILTER, ADVANCED_FILTER -> {
+                    FilterUpgrade upgrade = new FilterUpgrade(type, id);
+                    if(config.isSet(i + ".filter.filtered")){
+                        Set<String> keys = config.getConfigurationSection(i + ".filter.filtered").getKeys(false);
+                        if(!upgrade.isAdvanced()){
+                            upgrade.getInventory().setItem(4, config.getItemStack(i + ".filter.filtered.0"));
+                            upgrade.getFilteredItems().add(config.getItemStack(i + ".filter.filtered.0"));
+                        }   else{
+                            for(String s : keys){
+                                upgrade.getInventory().setItem(Integer.parseInt(s), config.getItemStack(i + ".filter.filtered." + s));
+                                upgrade.getFilteredItems().add(config.getItemStack(i + ".filter.filtered." + s));
+                            }
+                        }
+                    }
+
+                    UpgradeManager.getUpgrades().put(id, upgrade);
+                }
+
                 default -> {
                     Upgrade upgrade = new Upgrade(type, id);
                     UpgradeManager.getUpgrades().put(id, upgrade);
-                    Main.debugMessage("loading " + type.toString().toLowerCase() + " upgrade: " + i);
                 }
             }
+            Main.debugMessage("loading " + type.toString().toLowerCase().replace("_", " ") + " upgrade: " + i);
         }
     }
 

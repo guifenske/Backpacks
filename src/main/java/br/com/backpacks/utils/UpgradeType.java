@@ -26,5 +26,9 @@ public enum UpgradeType {
 
     UNBREAKABLE,
 
+    FILTER,
+
+    ADVANCED_FILTER,
+
     MAGNET
 }

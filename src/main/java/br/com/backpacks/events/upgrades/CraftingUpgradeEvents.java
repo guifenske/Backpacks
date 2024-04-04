@@ -1,6 +1,7 @@
 package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
+import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
 import org.bukkit.entity.Player;
@@ -10,7 +11,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-public class CraftingTable implements Listener {
+public class CraftingUpgradeEvents implements Listener {
 
     @EventHandler
     private void onClose(InventoryCloseEvent event){
@@ -19,6 +20,7 @@ public class CraftingTable implements Listener {
         if(backPack == null) return;
 
         BackpackAction.clearPlayerAction(event.getPlayer());
+        UpgradeManager.removePlayerCurrentUpgrade(event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

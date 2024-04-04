@@ -17,8 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static br.com.backpacks.utils.UpgradeType.*;
-
 public class BpUpGive implements CommandExecutor, TabCompleter {
 
     @Override
@@ -55,16 +53,8 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
                 upgrade = new AutoFeedUpgrade(UpgradeManager.lastUpgradeID + 1);
             }
 
-            case FURNACE -> {
-                upgrade = new FurnaceUpgrade(FURNACE, UpgradeManager.lastUpgradeID + 1);
-            }
-
-            case SMOKER -> {
-                upgrade = new FurnaceUpgrade(SMOKER, UpgradeManager.lastUpgradeID + 1);
-            }
-
-            case BLAST_FURNACE -> {
-                upgrade = new FurnaceUpgrade(BLAST_FURNACE, UpgradeManager.lastUpgradeID + 1);
+            case FURNACE, SMOKER, BLAST_FURNACE -> {
+                upgrade = new FurnaceUpgrade(type, UpgradeManager.lastUpgradeID + 1);
             }
 
             case LIQUIDTANK -> {
@@ -78,6 +68,10 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
             case AUTOFILL -> {
                 sender.sendMessage(Main.PREFIX + args[0] + " isn't a valid UpgradeType!");
                 return true;
+            }
+
+            case FILTER, ADVANCED_FILTER -> {
+                upgrade = new FilterUpgrade(type, UpgradeManager.lastUpgradeID + 1);
             }
 
             default -> {
