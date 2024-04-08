@@ -7,6 +7,7 @@ import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -31,7 +32,7 @@ public class AutoFeedUpgradeEvents implements Listener {
     private static void tick(FoodLevelChangeEvent event){
         Player player = (Player) event.getEntity();
         if(!player.getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        BackPack backPack = BackpackManager.getBackpackFromId(player.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
         if(backPack.getUpgradeFromType(UpgradeType.AUTOFEED) == null) return;
         AutoFeedUpgrade upgrade = (AutoFeedUpgrade) backPack.getUpgradeFromType(UpgradeType.AUTOFEED);
         if(!upgrade.isEnabled() || backPack.getBackpackItems().isEmpty()) return;
@@ -97,7 +98,7 @@ public class AutoFeedUpgradeEvents implements Listener {
     @EventHandler
     private static void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGAUTOFEED)) return;
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
+        BackPack backPack = BackpackManager.getPlayerCurrentBackpack(event.getPlayer());
         BackpackAction.clearPlayerAction(event.getPlayer());
         UpgradeManager.removePlayerCurrentUpgrade(event.getPlayer());
         BukkitTask task = new BukkitRunnable() {

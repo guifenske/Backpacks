@@ -5,6 +5,7 @@ import br.com.backpacks.upgrades.TanksUpgrade;
 import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -24,7 +25,7 @@ public class TanksUpgradeEvents implements Listener {
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGTANKS)) return;
         BackpackAction.clearPlayerAction(event.getPlayer());
         UpgradeManager.removePlayerCurrentUpgrade(event.getPlayer());
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
+        BackPack backPack = BackpackManager.getPlayerCurrentBackpack(event.getPlayer());
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
             backPack.open((Player) event.getPlayer());
         }, 1L);

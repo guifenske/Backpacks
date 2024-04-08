@@ -3,6 +3,7 @@ package br.com.backpacks.events.backpacks;
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Barrel;
@@ -26,15 +27,14 @@ public class BackpackInteract implements Listener {
         }
 
         if(event.getAction().equals(RIGHT_CLICK_BLOCK) && (event.getClickedBlock().getType().equals(Material.BARREL))){
-            if(Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
+            if(BackpackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
 
             event.setCancelled(true);
-            if(Main.backPackManager.canOpen()){
-                BackPack backPack = Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation());
+            if(BackpackManager.canOpen()){
+                BackPack backPack = BackpackManager.getBackpackFromLocation(event.getClickedBlock().getLocation());
                 backPack.open(player);
                 Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
                 barrel.open();
-                backPack.setIsBlock(true);
                 player.getWorld().playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
             }
             return;
@@ -50,10 +50,9 @@ public class BackpackInteract implements Listener {
         }
 
         event.setCancelled(true);
-        if(Main.backPackManager.canOpen()) {
-            BackPack backPack = Main.backPackManager.getBackpackFromId(event.getItem().getItemMeta().getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+        if(BackpackManager.canOpen()) {
+            BackPack backPack = BackpackManager.getBackpackFromId(event.getItem().getItemMeta().getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
             if(backPack == null) return;
-            backPack.setIsBlock(false);
 
             backPack.open(player);
             player.getWorld().playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);

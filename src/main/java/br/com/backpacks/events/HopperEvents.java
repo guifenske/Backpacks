@@ -1,6 +1,5 @@
 package br.com.backpacks.events;
 
-import br.com.backpacks.Main;
 import br.com.backpacks.events.upgrades.FurnaceUpgradeEvents;
 import br.com.backpacks.upgrades.FilterUpgrade;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
@@ -8,6 +7,7 @@ import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
@@ -29,8 +29,8 @@ public class HopperEvents implements Listener {
         if(sideOfInput == null) return;
 
         //input
-        if (Main.backPackManager.getBackpackFromLocation(destinationLocation) != null) {
-            BackPack backPack = Main.backPackManager.getBackpackFromLocation(destinationLocation);
+        if (BackpackManager.getBackpackFromLocation(destinationLocation) != null) {
+            BackPack backPack = BackpackManager.getBackpackFromLocation(destinationLocation);
             FilterUpgrade advFilterUpgrade = (FilterUpgrade) backPack.getUpgradeFromType(UpgradeType.ADVANCED_FILTER);
             FilterUpgrade filterUpgrade = (FilterUpgrade) backPack.getUpgradeFromType(UpgradeType.FILTER);
             if(advFilterUpgrade != null){
@@ -98,8 +98,8 @@ public class HopperEvents implements Listener {
         }
 
         //output
-        else if (Main.backPackManager.getBackpackFromLocation(sourceLocation) != null) {
-            BackPack backPack = Main.backPackManager.getBackpackFromLocation(sourceLocation);
+        else if (BackpackManager.getBackpackFromLocation(sourceLocation) != null) {
+            BackPack backPack = BackpackManager.getBackpackFromLocation(sourceLocation);
             event.setCancelled(true);
 
             if(backPack.getOutputUpgrade() != -1){

@@ -6,6 +6,7 @@ import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,7 +25,7 @@ public class OnCloseUpgradeMenu implements Listener {
     private void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGMENU)) return;
 
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
+        BackPack backPack = BackpackManager.getPlayerCurrentBackpack(event.getPlayer());
         if(backPack == null) return;
 
         List<Upgrade> newUpgrades = new ArrayList<>();

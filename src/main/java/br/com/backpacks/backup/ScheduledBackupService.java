@@ -23,10 +23,6 @@ public class ScheduledBackupService {
         this.interval = interval;
     }
 
-    public int getInterval() {
-        return interval;
-    }
-
     public void setType(TimeUnit type) {
         this.type = type;
     }

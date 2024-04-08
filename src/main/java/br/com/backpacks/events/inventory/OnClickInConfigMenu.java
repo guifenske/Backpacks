@@ -10,6 +10,7 @@ import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -33,7 +34,7 @@ public class OnClickInConfigMenu implements Listener {
         if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.CONFIGMENU)) return;
         event.setCancelled(true);
 
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
+        BackPack backPack = BackpackManager.getBackpackFromId(BackpackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
         if(backPack == null) return;
         Player player = (Player) event.getWhoClicked();
 
@@ -155,7 +156,7 @@ public class OnClickInConfigMenu implements Listener {
             case 45 -> player.closeInventory();
             //equip or un-equip backpack in the back
             case 53 -> {
-                if(backPack.isBlock())  return;
+                if(backPack.getLocation() != null)  return;
                 if (backPack.getOwner() != null && backPack.getOwner().equals(player.getUniqueId())){
                     player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
                     player.getPersistentDataContainer().remove(new BackpackRecipes().getHAS_BACKPACK());
@@ -181,7 +182,7 @@ public class OnClickInConfigMenu implements Listener {
             case 52 -> {
                 backPack.getViewersIds().remove(player.getUniqueId());
                 if(backPack.getViewersIds().isEmpty()){
-                    if(backPack.isBlock()){
+                    if(backPack.getLocation() != null){
                         Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
                         barrel.close();
                     }
@@ -213,7 +214,7 @@ public class OnClickInConfigMenu implements Listener {
             }
 
             case 48 ->{
-                if(!backPack.isBlock()) return;
+                if(backPack.getLocation() == null) return;
                 if(!backPack.isShowingNameAbove()){
                     ArmorStand marker = (ArmorStand) player.getWorld().spawnEntity(backPack.getLocation().clone().add(0, 1, 0).toCenterLocation(), EntityType.ARMOR_STAND, CreatureSpawnEvent.SpawnReason.CUSTOM);
                     marker.setVisible(false);
@@ -226,11 +227,11 @@ public class OnClickInConfigMenu implements Listener {
                     marker.setInvulnerable(true);
                     marker.setBasePlate(false);
                     marker.setMarker(true);
-                    backPack.setMarker(marker.getUniqueId());
+                    backPack.setMarkerId(marker.getUniqueId());
                     backPack.setShowNameAbove(true);
                 }   else{
                     backPack.getMarkerEntity().remove();
-                    backPack.setMarker(null);
+                    backPack.setMarkerId(null);
                     backPack.setShowNameAbove(false);
                 }
                 InventoryBuilder.updateConfigInv(backPack);

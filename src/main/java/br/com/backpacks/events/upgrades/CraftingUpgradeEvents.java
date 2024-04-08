@@ -4,6 +4,7 @@ import br.com.backpacks.Main;
 import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,7 +17,7 @@ public class CraftingUpgradeEvents implements Listener {
     @EventHandler
     private void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGCRAFTINGGRID)) return;
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
+        BackPack backPack = BackpackManager.getPlayerCurrentBackpack(event.getPlayer());
         if(backPack == null) return;
 
         BackpackAction.clearPlayerAction(event.getPlayer());

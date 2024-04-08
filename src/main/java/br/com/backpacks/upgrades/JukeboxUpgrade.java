@@ -4,6 +4,7 @@ import br.com.backpacks.Main;
 import br.com.backpacks.events.upgrades.JukeboxUpgradeEvents;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeType;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import br.com.backpacks.utils.inventory.ItemCreator;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.Bukkit;
@@ -67,7 +68,7 @@ public class JukeboxUpgrade extends Upgrade {
         clearLoopingTask();
         clearParticleTask();
         if(owner != null) JukeboxUpgradeEvents.stopSound(owner, this);
-        if(backpackId != null) JukeboxUpgradeEvents.stopSound(Main.backPackManager.getBackpackFromId(backpackId), this);
+        if(backpackId != null) JukeboxUpgradeEvents.stopSound(BackpackManager.getBackpackFromId(backpackId), this);
         backpackId = null;
         owner = null;
     }

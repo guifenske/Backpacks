@@ -4,6 +4,7 @@ import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -32,11 +33,11 @@ public class RenameBackpack implements Listener {
         }
 
         BackpackAction.clearPlayerAction(player);
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(player);
+        BackPack backPack = BackpackManager.getPlayerCurrentBackpack(player);
 
         Bukkit.getScheduler().runTask(Main.getMain(), ()->{
             for(UUID uuid : backPack.getViewersIds()){
-                if(Main.backPackManager.getCurrentPage().containsKey(uuid)){
+                if(BackpackManager.getCurrentPage().containsKey(uuid)){
                     Player player1 = Bukkit.getPlayer(uuid);
                     if(player1 == null) continue;
                     BackpackAction.clearPlayerAction(player1);
@@ -46,15 +47,15 @@ public class RenameBackpack implements Listener {
             }
         });
 
-        if(!backPack.isBlock() && backPack.getOwner() == null) {
+        if(backPack.getLocation() == null && backPack.getOwner() == null) {
             player.getInventory().remove(RecipesUtils.getItemFromBackpack(backPack));
             backPack.setName(newName);
             Bukkit.getScheduler().runTask(Main.getMain(), ()->{
                 for(UUID uuid : backPack.getViewersIds()){
-                    if(Main.backPackManager.getCurrentPage().containsKey(uuid)){
+                    if(BackpackManager.getCurrentPage().containsKey(uuid)){
                         Player player1 = Bukkit.getPlayer(uuid);
                         if(player1 == null) continue;
-                        if(Main.backPackManager.getCurrentPage().get(uuid) == 1) backPack.open(player1);
+                        if(BackpackManager.getCurrentPage().get(uuid) == 1) backPack.open(player1);
                         else backPack.openSecondPage(player1);
                     }
                 }
@@ -74,10 +75,10 @@ public class RenameBackpack implements Listener {
         backPack.setName(newName);
         Bukkit.getScheduler().runTask(Main.getMain(), ()->{
             for(UUID uuid : backPack.getViewersIds()){
-                if(Main.backPackManager.getCurrentPage().containsKey(uuid)){
+                if(BackpackManager.getCurrentPage().containsKey(uuid)){
                     Player player1 = Bukkit.getPlayer(uuid);
                     if(player1 == null) continue;
-                    if(Main.backPackManager.getCurrentPage().get(uuid) == 1) backPack.open(player1);
+                    if(BackpackManager.getCurrentPage().get(uuid) == 1) backPack.open(player1);
                     else backPack.openSecondPage(player1);
                 }
             }

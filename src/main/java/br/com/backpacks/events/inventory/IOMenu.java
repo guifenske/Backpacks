@@ -5,6 +5,7 @@ import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -19,7 +20,7 @@ public class IOMenu implements Listener {
     @EventHandler
     private void onClick(InventoryClickEvent event){
         if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.IOMENU)) return;
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
+        BackPack backPack = BackpackManager.getPlayerCurrentBackpack(event.getWhoClicked());
         event.setCancelled(true);
 
         switch (event.getRawSlot()){
@@ -46,7 +47,7 @@ public class IOMenu implements Listener {
     @EventHandler
     private void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.IOMENU)) return;
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
+        BackPack backPack = BackpackManager.getPlayerCurrentBackpack(event.getPlayer());
         BackpackAction.clearPlayerAction(event.getPlayer());
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
             backPack.open((Player) event.getPlayer());
@@ -61,7 +62,7 @@ public class IOMenu implements Listener {
         if(event.getCurrentItem() == null) return;
         if(event.getCurrentItem().getType().equals(Material.GRAY_STAINED_GLASS_PANE)) return;
 
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
+        BackPack backPack = BackpackManager.getPlayerCurrentBackpack(event.getWhoClicked());
         Upgrade upgrade = RecipesUtils.getUpgradeFromItem(event.getCurrentItem());
 
         if(BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.EDITOUTPUT)){
@@ -77,7 +78,7 @@ public class IOMenu implements Listener {
     @EventHandler
     private void onCloseEditMenu(InventoryCloseEvent event){
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.EDITOUTPUT) && !BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.EDITINPUT)) return;
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
+        BackPack backPack = BackpackManager.getPlayerCurrentBackpack(event.getPlayer());
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
             backPack.open((Player) event.getPlayer());
         }, 1L);

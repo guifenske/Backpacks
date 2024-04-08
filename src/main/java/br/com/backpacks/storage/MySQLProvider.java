@@ -7,6 +7,7 @@ import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import br.com.backpacks.utils.backpacks.BackpackType;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Material;
@@ -72,11 +73,11 @@ public class MySQLProvider extends StorageProvider{
            connection.prepareStatement("USE " + databaseName + ";").execute();
            connection.prepareStatement("DELETE FROM backpacks;").execute();
 
-           if(Main.backPackManager.getBackpacks().isEmpty()){
+           if(BackpackManager.getBackpacks().isEmpty()){
                connection.close();
                return;
            }
-           for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
+           for(BackPack backPack : BackpackManager.getBackpacks().values()){
                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO backpacks (id, bpType, loc, outputId, inputId, shownameabove, bpname, owner, firstPage, secondPage, upgradesIds) VALUES (?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?);");
                preparedStatement.setInt(1, backPack.getId());
                preparedStatement.setString(2, backPack.getType().name());
@@ -302,7 +303,7 @@ public class MySQLProvider extends StorageProvider{
                    backPack.setLocation(null);
                }    else{
                    backPack.setLocation(SerializationUtils.deserializeLocationFromStream(backpackSet.getBlob("loc").getBinaryStream()));
-                   Main.backPackManager.getBackpacksPlacedLocations().put(backPack.getLocation(), backPack.getId());
+                   BackpackManager.getBackpacksPlacedLocations().put(backPack.getLocation(), backPack.getId());
                }
                backPack.setOutputUpgrade(backpackSet.getInt("outputId"));
                backPack.setInputUpgrade(backpackSet.getInt("inputId"));
@@ -314,15 +315,15 @@ public class MySQLProvider extends StorageProvider{
                SerializationUtils.deserializeItemsToInventory(backpackSet.getBlob("firstPage").getBinaryStream(), backPack.getFirstPage());
                SerializationUtils.deserializeItemsToInventory(backpackSet.getBlob("secondPage").getBinaryStream(), backPack.getSecondPage());
                SerializationUtils.deserializeUpgradesIds(backpackSet.getBlob("upgradesIds").getBinaryStream(), backPack);
-               Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
+               BackpackManager.getBackpacks().put(backPack.getId(), backPack);
                new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
                new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
                new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
 
                int id = backPack.getId();
-               if(Main.backPackManager.getLastBackpackID() == 0) Main.backPackManager.setLastBackpackID(id);
-               if(Main.backPackManager.getLastBackpackID() < id){
-                   Main.backPackManager.setLastBackpackID(id);
+               if(BackpackManager.lastBackpackID == 0) BackpackManager.lastBackpackID = id;
+               if(BackpackManager.lastBackpackID < id){
+                   BackpackManager.lastBackpackID = id;
                }
                Main.debugMessage("loaded backpack " + id);
            }

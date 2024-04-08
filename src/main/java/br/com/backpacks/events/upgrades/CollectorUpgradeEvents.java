@@ -7,6 +7,7 @@ import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,7 +22,7 @@ public class CollectorUpgradeEvents implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void onPickUp(PlayerAttemptPickupItemEvent event){
         if(!event.getPlayer().getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(event.getPlayer().getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        BackPack backPack = BackpackManager.getBackpackFromId(event.getPlayer().getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
         if(backPack == null) return;
         if(backPack.getUpgradeFromType(UpgradeType.COLLECTOR) == null) return;
         CollectorUpgrade upgrade = (CollectorUpgrade) backPack.getUpgradeFromType(UpgradeType.COLLECTOR);
@@ -67,7 +68,7 @@ public class CollectorUpgradeEvents implements Listener {
     @EventHandler
     private void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGCOLLECTOR)) return;
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
+        BackPack backPack = BackpackManager.getPlayerCurrentBackpack(event.getPlayer());
         BackpackAction.clearPlayerAction(event.getPlayer());
         UpgradeManager.removePlayerCurrentUpgrade(event.getPlayer());
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> backPack.open((Player) event.getPlayer()), 1L);

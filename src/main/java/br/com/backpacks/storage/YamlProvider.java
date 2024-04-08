@@ -7,6 +7,7 @@ import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -33,7 +34,7 @@ public final class YamlProvider extends StorageProvider {
         File file = new File(backpacksPath);
         YamlConfiguration config = new YamlConfiguration();
 
-        for (BackPack backPack : Main.backPackManager.getBackpacks().values()) {
+        for (BackPack backPack : BackpackManager.getBackpacks().values()) {
             if(backPack.getLocation() != null){
                 List<String> data = SerializationUtils.serializeLocationToList(backPack.getLocation());
                 config.set(backPack.getId() + ".loc", data);
@@ -136,8 +137,9 @@ public final class YamlProvider extends StorageProvider {
                 }
             }
 
-            Main.debugMessage("Saving " + type.toString().toLowerCase().replace("_", " " + " Upgrade"));
+            Main.debugMessage("Saving " + type + " Upgrade");
         }
+
         config.save(file);
     }
 
@@ -273,7 +275,7 @@ public final class YamlProvider extends StorageProvider {
                     UpgradeManager.getUpgrades().put(id, upgrade);
                 }
             }
-            Main.debugMessage("loading " + type.toString().toLowerCase().replace("_", " ") + " upgrade: " + i);
+            Main.debugMessage("loading " + type + " upgrade: " + i);
         }
     }
 
@@ -281,42 +283,38 @@ public final class YamlProvider extends StorageProvider {
     public void loadBackpacks() {
         File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        Main.backPackManager.setLastBackpackID(0);
+        BackpackManager.lastBackpackID = 0;
 
         for (String i : config.getKeys(false)) {
             BackPack backPack = new BackPack().deserialize(config, i);
             if(config.isSet(i + ".loc")){
                 backPack.setLocation(SerializationUtils.deserializeLocationAsList(config.getStringList(i + ".loc")));
-                backPack.setIsBlock(true);
                 if(config.isSet(i + ".shownameabove")){
                     backPack.setShowNameAbove(true);
                 }
-                Main.backPackManager.getBackpacksPlacedLocations().put(backPack.getLocation(), backPack.getId());
+                BackpackManager.getBackpacksPlacedLocations().put(backPack.getLocation(), backPack.getId());
             }
             Main.debugMessage("Loading backpack " + backPack.getName() + " id " + backPack.getId());
-            Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
+            BackpackManager.getBackpacks().put(backPack.getId(), backPack);
 
             new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
             new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
             new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
 
             int id = backPack.getId();
-            if(Main.backPackManager.getLastBackpackID() == 0) Main.backPackManager.setLastBackpackID(id);
-            if(Main.backPackManager.getLastBackpackID() < id){
-                Main.backPackManager.setLastBackpackID(id);
+            if(BackpackManager.lastBackpackID == 0) BackpackManager.lastBackpackID = id;
+            if(BackpackManager.lastBackpackID < id){
+                BackpackManager.lastBackpackID = id;
             }
         }
     }
 
     private void serializeUpgrades(YamlConfiguration config, BackPack backPack){
-        config.set(backPack.getId() + ".u", null);
         config.set(backPack.getId() + ".u", backPack.getUpgradesIds());
     }
 
     private void saveStorageContents(BackPack backPack, YamlConfiguration config){
         int i = 0;
-        int i1 = 0;
-        config.set(backPack.getId() + ".1", null);
         for(ItemStack itemStack : backPack.getStorageContentsFirstPage()){
             if(itemStack == null){
                 i++;
@@ -328,15 +326,15 @@ public final class YamlProvider extends StorageProvider {
         }
 
         if(backPack.getSecondPage() != null){
-            config.set(backPack.getId() + ".2", null);
+            i = 0;
             for(ItemStack itemStack : backPack.getStorageContentsSecondPage()){
                 if(itemStack == null){
-                    i1++;
+                    i++;
                     continue;
                 }
 
-                config.set(backPack.getId() + ".2." + i1, itemStack);
-                i1++;
+                config.set(backPack.getId() + ".2." + i, itemStack);
+                i++;
             }
         }
     }

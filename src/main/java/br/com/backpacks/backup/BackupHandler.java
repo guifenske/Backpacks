@@ -7,16 +7,15 @@ import br.com.backpacks.storage.YamlProvider;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Barrel;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,15 +29,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class BackupHandler {
     private ScheduledBackupService scheduledBackupService;
-    private int keepBackups;
+    private final int keepBackups;
     private final Path path = Path.of(Main.getMain().getDataFolder().getAbsolutePath() + "/Backups");
     private ConcurrentHashMap<Integer, BackPack> rollbackBackpack;
     private ConcurrentHashMap<Integer, Upgrade> rollbackUpgrade;
+    private final Object lock = new Object();
+    private boolean deletionComplete = false;
     public BackupHandler(int keepBackups) {
-        this.keepBackups = keepBackups;
-    }
-
-    public void setKeepBackups(int keepBackups) {
         this.keepBackups = keepBackups;
     }
 
@@ -59,8 +56,8 @@ public class BackupHandler {
         Instant start = Instant.now();
         path.toFile().mkdir();
 
-        File backpackFile = new File(path + "/backpacks.yml");
-        File upgradeFile = new File(path + "/upgrades.yml");
+        File backpackFile = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
+        File upgradeFile = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
         YamlProvider yamlProvider = Config.getYamlProvider();
         yamlProvider.saveBackpacks();
         yamlProvider.saveUpgrades();
@@ -96,54 +93,71 @@ public class BackupHandler {
         if(rollbackBackpack == null) return -1;
         Instant start = Instant.now();
 
-        StorageManager.getProvider().loadUpgrades(rollbackUpgrade);
-        StorageManager.getProvider().loadBackpacks(rollbackBackpack);
+        ConcurrentHashMap<Integer, BackPack> tempBackpacks = new ConcurrentHashMap<>(BackpackManager.getBackpacks());
+        ConcurrentHashMap<Integer, Upgrade> tempUpgrades = new ConcurrentHashMap<>(UpgradeManager.getUpgrades());
 
         Bukkit.getScheduler().runTask(Main.getMain(), ()->{
-            for(Map.Entry<Location, Integer> entry : Main.backPackManager.getBackpacksPlacedLocations().entrySet()){
-                BackPack backPack = Main.backPackManager.getBackpackFromId(entry.getValue());
-                if(backPack.isShowingNameAbove()){
-                    ArmorStand marker = (ArmorStand) entry.getKey().getWorld().spawnEntity(backPack.getLocation().clone().add(0, 1, 0).toCenterLocation(), EntityType.ARMOR_STAND, CreatureSpawnEvent.SpawnReason.CUSTOM);
-                    marker.setVisible(false);
-                    marker.setSmall(true);
-                    marker.customName(Component.text(backPack.getName()));
-                    marker.setCustomNameVisible(true);
-                    marker.setCanTick(false);
-                    marker.setCanMove(false);
-                    marker.setCollidable(false);
-                    marker.setInvulnerable(true);
-                    marker.setBasePlate(false);
-                    marker.setMarker(true);
-                    backPack.setMarker(marker.getUniqueId());
-                }
-                entry.getKey().getBlock().setType(Material.BARREL);
-                Barrel barrel = (Barrel) entry.getKey().getBlock().getState();
-                barrel.update();
-                barrel.getInventory().setItem(0, new ItemStack(Material.STICK));
+            deleteAllBackpacks();
+            deletionComplete = true;
+            synchronized (lock){
+                lock.notifyAll();
             }
         });
 
-        rollbackBackpack = null;
-        rollbackUpgrade = null;
+        synchronized (lock){
+            while (!deletionComplete){
+                try{
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    return -1;
+                }
+            }
+        }
+
+        StorageManager.getProvider().loadUpgrades(rollbackUpgrade);
+        StorageManager.getProvider().loadBackpacks(rollbackBackpack);
+
+        rollbackBackpack = tempBackpacks;
+        rollbackUpgrade = tempUpgrades;
 
         Instant finish = Instant.now();
-        Main.backPackManager.setCanBeOpen(true);
+        BackpackManager.setCanBeOpen(true);
         return Duration.between(start, finish).toMillis();
     }
 
-    public long restoreBackup(String path) throws IOException {
+    public long rollback(String path) throws IOException {
         try{
             Path.of(path);
         }   catch (Exception e){
-            Main.backPackManager.setCanBeOpen(true);
+            BackpackManager.setCanBeOpen(true);
             Main.getMain().getLogger().severe("Cannot restore backup, invalid path or file not found.");
             Main.getMain().getLogger().severe("Aborting restore task...");
             return -1L;
         }
 
         Instant start = Instant.now();
-        rollbackBackpack = new ConcurrentHashMap<>(Main.backPackManager.getBackpacks());
+        rollbackBackpack = new ConcurrentHashMap<>(BackpackManager.getBackpacks());
         rollbackUpgrade = new ConcurrentHashMap<>(UpgradeManager.getUpgrades());
+
+        Bukkit.getScheduler().runTask(Main.getMain(), ()->{
+            deleteAllBackpacks();
+            deletionComplete = true;
+            synchronized (lock){
+                lock.notifyAll();
+            }
+        });
+
+        synchronized (lock){
+            while (!deletionComplete){
+                try{
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    BackpackManager.setCanBeOpen(true);
+                    return -1;
+                }
+            }
+        }
+
         YamlProvider yamlProvider = Config.getYamlProvider();
 
         File backpacksOriginal = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
@@ -152,16 +166,18 @@ public class BackupHandler {
         upgradesOriginal.delete();
         ZipUtils.unzipAll(this.path + "/" + path);
 
-        Main.backPackManager.getBackpacksPlacedLocations().clear();
-        Main.backPackManager.getBackpacks().clear();
+        BackpackManager.getBackpacksPlacedLocations().clear();
+        BackpackManager.getBackpacks().clear();
         UpgradeManager.getUpgrades().clear();
 
         yamlProvider.loadUpgrades();
         yamlProvider.loadBackpacks();
 
         Bukkit.getScheduler().runTask(Main.getMain(), ()->{
-            for(Map.Entry<Location, Integer> entry : Main.backPackManager.getBackpacksPlacedLocations().entrySet()){
-                BackPack backPack = Main.backPackManager.getBackpackFromId(entry.getValue());
+            for(Map.Entry<Location, Integer> entry : BackpackManager.getBackpacksPlacedLocations().entrySet()){
+                BackPack backPack = BackpackManager.getBackpackFromId(entry.getValue());
+                entry.getKey().getBlock().setType(Material.BARREL);
+                backPack.updateBarrelBlock();
                 if(backPack.isShowingNameAbove()){
                     ArmorStand marker = (ArmorStand) entry.getKey().getWorld().spawnEntity(backPack.getLocation().clone().add(0, 1, 0).toCenterLocation(), EntityType.ARMOR_STAND, CreatureSpawnEvent.SpawnReason.CUSTOM);
                     marker.setVisible(false);
@@ -174,16 +190,12 @@ public class BackupHandler {
                     marker.setInvulnerable(true);
                     marker.setBasePlate(false);
                     marker.setMarker(true);
-                    backPack.setMarker(marker.getUniqueId());
+                    backPack.setMarkerId(marker.getUniqueId());
                 }
-                entry.getKey().getBlock().setType(Material.BARREL);
-                Barrel barrel = (Barrel) entry.getKey().getBlock().getState();
-                barrel.update();
-                barrel.getInventory().setItem(0, new ItemStack(Material.STICK));
             }
         });
 
-        Main.backPackManager.setCanBeOpen(true);
+        BackpackManager.setCanBeOpen(true);
         Instant finish = Instant.now();
         return Duration.between(start, finish).toMillis();
     }
@@ -199,5 +211,25 @@ public class BackupHandler {
             list.add(file.getName());
         }
         return list;
+    }
+
+    private void deleteAllBackpacks() {
+        try{
+            for(BackPack backPack : BackpackManager.getBackpacks().values()){
+                if(backPack.getMarkerId() != null){
+                    backPack.getMarkerEntity().remove();
+                }
+                if(backPack.getLocation() != null){
+                    backPack.getLocation().getBlock().setType(Material.AIR);
+                }
+            }
+        }   catch (Exception e){
+            deletionComplete = true;
+            synchronized (lock){
+                lock.notifyAll();
+            }
+            BackpackManager.setCanBeOpen(true);
+            Main.getMain().getLogger().severe(Main.PREFIX + "Something went wrong when deleting backpacks, please report to the dev: " + e);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package br.com.backpacks.backup;
 
 import br.com.backpacks.Main;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,7 +53,7 @@ public class ZipUtils {
         File destDir = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/");
 
         if(!pathBackup.endsWith(".zip")) {
-            Main.backPackManager.setCanBeOpen(true);
+            BackpackManager.setCanBeOpen(true);
             throw new IOException("Invalid File: " + pathBackup);
         }
 
@@ -63,14 +64,14 @@ public class ZipUtils {
             File newFile = newFile(destDir, zipEntry);
             if (zipEntry.isDirectory()) {
                 if (!newFile.isDirectory() && !newFile.mkdirs()) {
-                    Main.backPackManager.setCanBeOpen(true);
+                    BackpackManager.setCanBeOpen(true);
                     throw new IOException("Failed to create directory " + newFile);
                 }
             } else {
                 // fix for Windows-created archives
                 File parent = newFile.getParentFile();
                 if (!parent.isDirectory() && !parent.mkdirs()) {
-                    Main.backPackManager.setCanBeOpen(true);
+                    BackpackManager.setCanBeOpen(true);
                     throw new IOException("Failed to create directory " + parent);
                 }
 
@@ -96,7 +97,7 @@ public class ZipUtils {
         String destFilePath = destFile.getCanonicalPath();
 
         if (!destFilePath.startsWith(destDirPath + File.separator)) {
-            Main.backPackManager.setCanBeOpen(true);
+            BackpackManager.setCanBeOpen(true);
             throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
         }
 

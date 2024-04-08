@@ -1,9 +1,9 @@
 package br.com.backpacks.utils.inventory;
 
-import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import br.com.backpacks.utils.backpacks.BackpackType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -56,7 +56,7 @@ public class InventoryBuilder {
         switch (type){
             case CONFIG -> {
                 inv = Bukkit.createInventory(null, 54, "Backpack Config");
-                BackPack backPack = Main.backPackManager.getBackpackFromId(backpackId);
+                BackPack backPack = BackpackManager.getBackpackFromId(backpackId);
 
                 ItemStack equipBackpack = new ItemCreator(Material.CHEST, "Equip Backpack").build();
                 ItemStack unequipBackpack = new ItemCreator(Material.ENDER_CHEST, "Unequip Backpack").build();
@@ -84,7 +84,7 @@ public class InventoryBuilder {
                     }
                 }
 
-                if(!backPack.isBlock()) {
+                if(backPack.getLocation() == null) {
                     if (backPack.getOwner() != null) {
                         if(backPack.isLocked()) {
                             inv.setItem(51, unlock);
@@ -113,7 +113,7 @@ public class InventoryBuilder {
             case UPGMENU -> {
                 inv = Bukkit.createInventory(null, 9, "Upgrades Menu");
 
-                BackPack backPack = Main.backPackManager.getBackpackFromId(backpackId);
+                BackPack backPack = BackpackManager.getBackpackFromId(backpackId);
                 ItemStack item = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").build();
 
                 for(int i = InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i < 9; i++){
@@ -134,7 +134,7 @@ public class InventoryBuilder {
             case EDIT_IO_MENU -> {
                 inv = Bukkit.createInventory(null, 9, "Upgrades Menu");
 
-                BackPack backPack = Main.backPackManager.getBackpackFromId(backpackId);
+                BackPack backPack = BackpackManager.getBackpackFromId(backpackId);
                 ItemStack item = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").build();
 
                 for(int i = InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i < 9; i++){
@@ -194,7 +194,7 @@ public class InventoryBuilder {
             }
         }
 
-        if(!backPack.isBlock()) {
+        if(backPack.getLocation() == null) {
             if (backPack.getOwner() != null) {
                 if(backPack.isLocked()) {
                     inv.setItem(51, unlock);

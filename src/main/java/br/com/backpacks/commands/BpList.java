@@ -5,6 +5,7 @@ import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import br.com.backpacks.utils.inventory.ItemCreator;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -55,7 +56,7 @@ public class BpList implements CommandExecutor, Listener {
 
     private Inventory inventory(Player player){
         Inventory inventory = Bukkit.createInventory(player, 54, "§8Backpacks List");
-        List<Integer> backpacksIds = new ArrayList<>(Main.backPackManager.getBackpacks().keySet());
+        List<Integer> backpacksIds = new ArrayList<>(BackpackManager.getBackpacks().keySet());
         ItemStack nextPage = new ItemCreator(Material.ARROW, "§aNext Page").build();
         ItemStack previousPage = new ItemCreator(Material.ARROW, "§aPrevious Page").build();
         inventory.setItem(52, previousPage);
@@ -63,11 +64,11 @@ public class BpList implements CommandExecutor, Listener {
 
         for(int i = 0; i < backpacksIds.size(); i++){
             if(i == 52 || backpacksIds.size() < page.get(player.getUniqueId()) * 52 + i) break;
-            BackPack backPack = Main.backPackManager.getBackpackFromId(backpacksIds.get(page.get(player.getUniqueId()) * 52 + i));
+            BackPack backPack = BackpackManager.getBackpackFromId(backpacksIds.get(page.get(player.getUniqueId()) * 52 + i));
             ItemStack backpackItem = RecipesUtils.getItemFromBackpack(backPack);
             ItemMeta meta = backpackItem.getItemMeta();
             meta.lore(List.of(Component.text("Id: " + backPack.getId())));
-            if(backPack.isBlock()){
+            if(backPack.getLocation() != null){
                 meta.lore(List.of(Component.text("Id: " + backPack.getId()) ,Component.text("Location: " + backPack.getLocation().getX() + " " + backPack.getLocation().getY() + " " + backPack.getLocation().getZ())));
             }
             backpackItem.setItemMeta(meta);
@@ -101,7 +102,7 @@ public class BpList implements CommandExecutor, Listener {
             return;
         }
         if(event.getRawSlot() == 53){
-            if(page.get(player.getUniqueId()) >= Main.backPackManager.getBackpacks().size() / 52){
+            if(page.get(player.getUniqueId()) >= BackpackManager.getBackpacks().size() / 52){
                 player.sendMessage(Main.PREFIX + "§cYou are already in the last page.");
                 return;
             }
@@ -114,7 +115,7 @@ public class BpList implements CommandExecutor, Listener {
         }
         if(event.getRawSlot() > 52) return;
         if(event.getCurrentItem() == null) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+        BackPack backPack = BackpackManager.getBackpackFromId(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
 
         BackpackAction.clearPlayerAction(player);
         Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{

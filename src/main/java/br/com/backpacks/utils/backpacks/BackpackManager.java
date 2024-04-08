@@ -7,78 +7,69 @@ import org.bukkit.Location;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BackPackManager {
-    public boolean canOpen() {
+public final class BackpackManager {
+    private static boolean canBeOpen = true;
+    public static int lastBackpackID = 0;
+    private static final ConcurrentHashMap<Location, Integer> backpacksPlacedLocations = new ConcurrentHashMap<>();
+    private static final HashMap<UUID, Integer> currentPage = new HashMap<>();
+    private static ConcurrentHashMap<Integer, BackPack> backpacks = new ConcurrentHashMap<>();
+    private static final HashMap<UUID, Integer> currentBackpackId = new HashMap<>();
+
+    public static boolean canOpen() {
         return canBeOpen;
     }
 
-    public void setCanBeOpen(boolean canBeOpen) {
-        this.canBeOpen = canBeOpen;
+    public static void setCanBeOpen(boolean open) {
+        canBeOpen = open;
     }
 
-    private boolean canBeOpen = true;
-    public ConcurrentHashMap<Integer, BackPack> getBackpacks() {
-        return backpacks;
-    }
-
-    private int lastBackpackID = 0;
-    public int getLastBackpackID() {
-        return lastBackpackID;
-    }
-
-    public void setLastBackpackID(int lastBackpackID) {
-        this.lastBackpackID = lastBackpackID;
-    }
-
-    private ConcurrentHashMap<Integer, BackPack> backpacks = new ConcurrentHashMap<>();
-
-    private HashMap<UUID, Integer> currentBackpackId = new HashMap<>();
-
-    public ConcurrentHashMap<Location, Integer> getBackpacksPlacedLocations() {
+    public static ConcurrentHashMap<Location, Integer> getBackpacksPlacedLocations() {
         return backpacksPlacedLocations;
     }
 
-    public BackPack getBackpackFromLocation(Location location) {
+    public static ConcurrentHashMap<Integer, BackPack> getBackpacks() {
+        return backpacks;
+    }
+
+    public static BackPack getBackpackFromLocation(Location location) {
         if(!getBackpacksPlacedLocations().containsKey(location)) return null;
         return getBackpackFromId(backpacksPlacedLocations.get(location));
     }
 
-    private ConcurrentHashMap<Location, Integer> backpacksPlacedLocations = new ConcurrentHashMap<>();
-    private HashMap<UUID, Integer> currentPage = new HashMap<>();
-
-    public HashMap<UUID, Integer> getCurrentPage() {
+    public static HashMap<UUID, Integer> getCurrentPage() {
         return currentPage;
     }
 
-    public HashMap<UUID, Integer> getCurrentBackpackId() {
+    public static HashMap<UUID, Integer> getCurrentBackpackId() {
         return currentBackpackId;
     }
 
-    public BackPack getPlayerCurrentBackpack(Player player){
+    public static BackPack getPlayerCurrentBackpack(Player player){
         return backpacks.get(currentBackpackId.get(player.getUniqueId()));
     }
 
-    public BackPack getPlayerCurrentBackpack(HumanEntity player){
+    public static BackPack getPlayerCurrentBackpack(HumanEntity player){
         return backpacks.get(currentBackpackId.get(player.getUniqueId()));
     }
 
-    public BackPack getBackpackFromId(int id) {
+    @Nullable
+    public static BackPack getBackpackFromId(int id) {
         if(backpacks.containsKey(id)) return backpacks.get(id);
         Main.getMain().getLogger().severe("Backpack with id " + id + " not found!");
         return null;
     }
 
-    public void setBackpacks(ConcurrentHashMap<Integer, BackPack> backpacks) {
-        this.backpacks = backpacks;
+    public static void setBackpacks(ConcurrentHashMap<Integer, BackPack> hashMap) {
+        backpacks = hashMap;
     }
 
-    public BackPack upgradeBackpack(BackpackType oldType, int oldId) {
+    public static BackPack upgradeBackpack(BackpackType oldType, int oldId) {
         if(oldId == -1) return null;
-
         BackPack oldBackpack = getBackpackFromId(oldId);
 
         backpacks.remove(oldId);
@@ -96,6 +87,7 @@ public class BackPackManager {
                 new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
                 return backPack;
             }
+
             case IRON -> {
                 BackPack backPack = new BackPack("Gold Backpack", Bukkit.createInventory(null, 36, "Gold Backpack"), oldId, BackpackType.GOLD);
                 backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
@@ -108,6 +100,7 @@ public class BackPackManager {
                 new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
                 return backPack;
             }
+
             case GOLD -> {
                 BackPack backPack = new BackPack("Lapis Backpack", Bukkit.createInventory(null, 45, "Lapis Backpack"), oldId, BackpackType.LAPIS);
                 backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
@@ -120,6 +113,7 @@ public class BackPackManager {
                 new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
                 return backPack;
             }
+
             case LAPIS -> {
                 BackPack backPack = new BackPack("Amethyst Backpack", Bukkit.createInventory(null, 54, "Amethyst Backpack"), oldId, BackpackType.AMETHYST);
                 backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
@@ -132,6 +126,7 @@ public class BackPackManager {
                 new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
                 return backPack;
             }
+
             case AMETHYST -> {
                 BackPack backPack = new BackPack("Diamond Backpack", Bukkit.createInventory(null, 54, "Diamond Backpack"), Bukkit.createInventory(null, 27, "Diamond Backpack"), oldId, BackpackType.DIAMOND);
                 backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
@@ -144,6 +139,7 @@ public class BackPackManager {
                 new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
                 return backPack;
             }
+
             case DIAMOND -> {
                 BackPack backPack = new BackPack("Netherite Backpack", Bukkit.createInventory(null, 54, "Netherite Backpack"), Bukkit.createInventory(null, 54, "Netherite Backpack"), oldId, BackpackType.NETHERITE);
                 backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
@@ -162,7 +158,7 @@ public class BackPackManager {
         return null;
     }
 
-    public int getSizeFirstPageFromBackpackType(BackpackType type){
+    public static int getSizeFirstPageFromBackpackType(BackpackType type){
         switch (type){
             case LEATHER: return 18;
             case IRON: return 27;
@@ -174,7 +170,7 @@ public class BackPackManager {
         return 0;
     }
 
-    public int getSizeSecondPageFromBackpackType(BackpackType type){
+    public static int getSizeSecondPageFromBackpackType(BackpackType type){
         switch (type){
             case DIAMOND: return 27;
             case NETHERITE: return 54;

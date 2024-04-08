@@ -3,6 +3,7 @@ package br.com.backpacks.events.inventory;
 import br.com.backpacks.Main;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -17,20 +18,20 @@ public class OnClickBackpack implements Listener {
         if(event.getClickedInventory() == null) return;
         if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.OPENED)) return;
         Player player = (Player) event.getWhoClicked();
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(player);
+        BackPack backPack = BackpackManager.getPlayerCurrentBackpack(player);
         if(backPack == null) return;
 
         if(event.getRawSlot() == event.getInventory().getSize() - 1){
             event.setCancelled(true);
             BackpackAction.clearPlayerAction(player);
-            Main.backPackManager.getCurrentPage().remove(player.getUniqueId());
+            BackpackManager.getCurrentPage().remove(player.getUniqueId());
             player.openInventory(InventoryBuilder.getConfigInv(backPack));
             Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> BackpackAction.setAction(player, BackpackAction.Action.CONFIGMENU), 1L);
         }   else if(event.getRawSlot() == event.getInventory().getSize() - 2){
             if(backPack.getSecondPageSize() == 0) return;
             event.setCancelled(true);
 
-            switch (Main.backPackManager.getCurrentPage().get(player.getUniqueId())) {
+            switch (BackpackManager.getCurrentPage().get(player.getUniqueId())) {
                 case 1 ->{
                     BackpackAction.clearPlayerAction(player);
                     backPack.openSecondPage(player);

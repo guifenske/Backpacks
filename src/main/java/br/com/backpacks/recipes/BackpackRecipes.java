@@ -10,6 +10,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Arrays;
 
 public class BackpackRecipes {
+    private final NamespacedKey MARKER_ID = new NamespacedKey(Main.getMain(), "marker_id");
     private final NamespacedKey IS_BACKPACK = new NamespacedKey(Main.getMain(), "isbackpack");
     private final NamespacedKey BACKPACK_ID = new NamespacedKey(Main.getMain(), "backpackid");
     private final NamespacedKey HAS_BACKPACK = new NamespacedKey(Main.getMain(), "hasbackpack");
@@ -74,6 +75,10 @@ public class BackpackRecipes {
 
     public NamespacedKey getNAMESPACE_DIAMOND_BACKPACK() {
         return NAMESPACE_DIAMOND_BACKPACK;
+    }
+
+    public NamespacedKey getMARKER_ID() {
+        return MARKER_ID;
     }
 
     public Recipe leatherBackpackRecipe() {

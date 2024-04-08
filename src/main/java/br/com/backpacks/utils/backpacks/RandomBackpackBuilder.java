@@ -1,6 +1,5 @@
 package br.com.backpacks.utils.backpacks;
 
-import br.com.backpacks.Main;
 import br.com.backpacks.upgrades.*;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
@@ -32,22 +31,20 @@ public class RandomBackpackBuilder {
 
     public BackPack generateBackpack(){
         generateBackpackType();
-        if(Main.backPackManager.getSizeSecondPageFromBackpackType(type) == 0){
+        if(BackpackManager.getSizeSecondPageFromBackpackType(type) == 0){
             BackPack backPack = new BackPack(name, generateFistPage(), id, type);
-            backPack.setIsBlock(false);
             if(shouldGenerateUpgrades()){
                 backPack.setBackpackUpgrades(generateUpgrades());
             }
-            Main.backPackManager.getBackpacks().put(id, backPack);
+            BackpackManager.getBackpacks().put(id, backPack);
             return backPack;
         }
 
         BackPack backPack = new BackPack(name, generateFistPage(), generateSecondPage(), id, type);
-        backPack.setIsBlock(false);
         if(shouldGenerateUpgrades()){
             backPack.setBackpackUpgrades(generateUpgrades());
         }
-        Main.backPackManager.getBackpacks().put(id, backPack);
+        BackpackManager.getBackpacks().put(id, backPack);
         return backPack;
     }
 
@@ -60,7 +57,7 @@ public class RandomBackpackBuilder {
 
     private Inventory generateFistPage() {
         //generate first page with random loot
-        Inventory firstPage = Bukkit.createInventory(null, Main.backPackManager.getSizeFirstPageFromBackpackType(type), name);
+        Inventory firstPage = Bukkit.createInventory(null, BackpackManager.getSizeFirstPageFromBackpackType(type), name);
 
         // Get the default loot table
         LootTable lootTable = Bukkit.getLootTable(NamespacedKey.minecraft("chests/simple_dungeon"));
@@ -76,7 +73,7 @@ public class RandomBackpackBuilder {
     }
 
     private Inventory generateSecondPage() {
-        return Bukkit.createInventory(null, Main.backPackManager.getSizeSecondPageFromBackpackType(type), name);
+        return Bukkit.createInventory(null, BackpackManager.getSizeSecondPageFromBackpackType(type), name);
     }
 
 
@@ -116,53 +113,45 @@ public class RandomBackpackBuilder {
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }
-                    case SMOKER -> {
-                        FurnaceUpgrade upgrade = new FurnaceUpgrade(UpgradeType.SMOKER, UpgradeManager.lastUpgradeID + 1);
+
+                    case FURNACE, SMOKER, BLAST_FURNACE ->  {
+                        FurnaceUpgrade upgrade = new FurnaceUpgrade(upgradeType, UpgradeManager.lastUpgradeID + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }
-                    case BLAST_FURNACE ->  {
-                        FurnaceUpgrade upgrade = new FurnaceUpgrade(UpgradeType.BLAST_FURNACE, UpgradeManager.lastUpgradeID + 1);
-                        UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
-                        upgrades.add(upgrade);
-                    }
-                    case FURNACE ->  {
-                        FurnaceUpgrade upgrade = new FurnaceUpgrade(UpgradeType.FURNACE, UpgradeManager.lastUpgradeID + 1);
-                        UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
-                        upgrades.add(upgrade);
-                    }
+
                     case AUTOFEED ->  {
                         AutoFeedUpgrade upgrade = new AutoFeedUpgrade(UpgradeManager.lastUpgradeID + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }
+
                     case COLLECTOR ->  {
                         CollectorUpgrade upgrade = new CollectorUpgrade(UpgradeManager.lastUpgradeID + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }
+
                     case LIQUIDTANK ->  {
                         TanksUpgrade upgrade = new TanksUpgrade(UpgradeManager.lastUpgradeID + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }
-                    case ENCAPSULATE ->  {
-                        Upgrade upgrade = new Upgrade(UpgradeType.ENCAPSULATE, UpgradeManager.lastUpgradeID + 1);
-                        UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
-                        upgrades.add(upgrade);
-                    }
+
                     case VILLAGERSFOLLOW ->  {
                         VillagersFollowUpgrade upgrade = new VillagersFollowUpgrade(UpgradeManager.lastUpgradeID + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }
-                    case CRAFTING ->  {
-                        Upgrade upgrade = new Upgrade(UpgradeType.CRAFTING, UpgradeManager.lastUpgradeID + 1);
+
+                    case FILTER, ADVANCED_FILTER -> {
+                        FilterUpgrade upgrade = new FilterUpgrade(upgradeType, UpgradeManager.lastUpgradeID + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }
-                    case UNBREAKABLE ->  {
-                        Upgrade upgrade = new Upgrade(UpgradeType.UNBREAKABLE, UpgradeManager.lastUpgradeID + 1);
+
+                    default -> {
+                        Upgrade upgrade = new Upgrade(upgradeType, UpgradeManager.lastUpgradeID + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }

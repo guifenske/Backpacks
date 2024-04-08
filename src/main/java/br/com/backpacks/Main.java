@@ -15,8 +15,8 @@ import br.com.backpacks.storage.MySQLProvider;
 import br.com.backpacks.storage.StorageManager;
 import br.com.backpacks.utils.Constants;
 import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.backpacks.BackPackManager;
 import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Barrel;
 import org.bukkit.entity.Player;
@@ -25,6 +25,7 @@ import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.SmokingRecipe;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -37,34 +38,21 @@ import java.util.UUID;
 public final class Main extends JavaPlugin {
     private AutoSaveManager autoSaveManager;
     private BackupHandler backupHandler;
-    private List<SmokingRecipe> smokingRecipes = new ArrayList<>();
-    private List<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
-    private List<BlastingRecipe> blastingRecipes = new ArrayList<>();
+    private final List<SmokingRecipe> smokingRecipes = new ArrayList<>();
+    private final List<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
+    private final List<BlastingRecipe> blastingRecipes = new ArrayList<>();
     public static boolean saveComplete = false;
     private static Main main;
     public static Instant start;
     public static String PREFIX = "§8[§6BackPacks§8] ";
     public static final Object lock = new Object();
-    public static final BackPackManager backPackManager = new BackPackManager();
-
-    public void setSmokingRecipes(List<SmokingRecipe> smokingRecipes) {
-        this.smokingRecipes = smokingRecipes;
-    }
 
     public List<SmokingRecipe> getSmokingRecipes() {
         return smokingRecipes;
     }
 
-    public void setFurnaceRecipes(List<FurnaceRecipe> recipes){
-        this.furnaceRecipes = recipes;
-    }
-
     public List<BlastingRecipe> getBlastingRecipes() {
         return blastingRecipes;
-    }
-
-    public void setBlastingRecipes(List<BlastingRecipe> blastingRecipes) {
-        this.blastingRecipes = blastingRecipes;
     }
 
     public List<FurnaceRecipe> getFurnaceRecipes() {
@@ -104,29 +92,28 @@ public final class Main extends JavaPlugin {
             return;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(this, ()->{
-            if(getConfig().getBoolean("debug")){
-                Constants.DEBUG_MODE = true;
-            }
-            if(getConfig().getBoolean("fish_backpack")){
-                Constants.CATCH_BACKPACK = true;
-            }
-            if(getConfig().getBoolean("kill_monster_backpack")){
-                Constants.MONSTER_DROPS_BACKPACK = true;
-            }
+        if (getConfig().getBoolean("debug")) {
+            Constants.DEBUG_MODE = true;
+        }
+        if (getConfig().getBoolean("fish_backpack")) {
+            Constants.CATCH_BACKPACK = true;
+        }
+        if (getConfig().getBoolean("kill_monster_backpack")) {
+            Constants.MONSTER_DROPS_BACKPACK = true;
+        }
 
-            if(getConfig().getBoolean("mysql.enabled")){
-                StorageManager.setProvider(Config.getMySQLProvider());
-                if(!((MySQLProvider) StorageManager.getProvider()).canConnect()){
-                    StorageManager.setProvider(Config.getYamlProvider());
-                }
-            }   else{
+        if (getConfig().getBoolean("mysql.enabled")) {
+            StorageManager.setProvider(Config.getMySQLProvider());
+            if (!((MySQLProvider) StorageManager.getProvider()).canConnect()) {
                 StorageManager.setProvider(Config.getYamlProvider());
             }
+        } else {
+            StorageManager.setProvider(Config.getYamlProvider());
+        }
 
-            ThreadBackpacks.loadAll();
-            UpdateChecker.checkForUpdates();
-        });
+        ThreadBackpacks.loadAll();
+        UpdateChecker.checkForUpdates();
+        updateMarkersIds();
 
         //player
         Bukkit.getPluginManager().registerEvents(new CraftBackpack(), Main.getMain());
@@ -184,7 +171,7 @@ public final class Main extends JavaPlugin {
             player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
         }
 
-        for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
+        for(BackPack backPack : BackpackManager.getBackpacks().values()){
             if(backPack.getLocation() == null) continue;
             Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
             barrel.close();
@@ -260,6 +247,14 @@ public final class Main extends JavaPlugin {
                 continue;
             }
             furnaceRecipes.add((FurnaceRecipe) recipe);
+        }
+    }
+
+    private void updateMarkersIds(){
+        for(BackPack backPack : BackpackManager.getBackpacks().values()){
+            if(!backPack.isShowingNameAbove()) continue;
+            Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
+            backPack.setMarkerId(UUID.fromString(barrel.getPersistentDataContainer().get(new BackpackRecipes().getMARKER_ID(), PersistentDataType.STRING)));
         }
     }
 }

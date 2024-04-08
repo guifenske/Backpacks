@@ -1,8 +1,8 @@
 package br.com.backpacks.events.inventory;
 
-import br.com.backpacks.Main;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,7 +18,7 @@ public class OnClickUpgradesMenu implements Listener {
 
         Player player = (Player) event.getWhoClicked();
 
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(player.getUniqueId()));
+        BackPack backPack = BackpackManager.getBackpackFromId(BackpackManager.getCurrentBackpackId().get(player.getUniqueId()));
 
         if(event.getRawSlot() >= InventoryBuilder.getFreeUpgradesSlots(backPack.getType()) && event.getRawSlot() < event.getInventory().getSize()){
             event.setCancelled(true);

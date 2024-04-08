@@ -27,11 +27,10 @@ public final class BackPack extends UpgradeManager {
     private Location location;
     private boolean locked;
     private Inventory secondPage;
-    private Boolean isBlock = false;
     private final Set<UUID> viewersIds = new HashSet<>();
     private UUID owner;
     private boolean showNameAbove = false;
-    private UUID marker;
+    private UUID markerId;
     private String name;
 
     public BackPack(BackpackType type, int id) {
@@ -159,14 +158,6 @@ public final class BackPack extends UpgradeManager {
         return locked;
     }
 
-    public Boolean isBlock() {
-        return isBlock;
-    }
-
-    public void setIsBlock(Boolean block) {
-        this.isBlock = block;
-    }
-
     public Inventory getFirstPage() {
         return firstPage;
     }
@@ -207,16 +198,30 @@ public final class BackPack extends UpgradeManager {
         this.showNameAbove = showNameAbove;
     }
 
-    public UUID getMarker() {
-        return marker;
-    }
-
     public ArmorStand getMarkerEntity(){
-        return (ArmorStand) Bukkit.getEntity(marker);
+        return (ArmorStand) Bukkit.getEntity(markerId);
     }
 
-    public void setMarker(UUID uuid) {
-        this.marker = uuid;
+    public UUID getMarkerId() {
+        return markerId;
+    }
+
+    public void setMarkerId(UUID uuid) {
+        if(location == null){
+            this.markerId = null;
+            return;
+        }
+
+        this.markerId = uuid;
+        Barrel barrel = (Barrel) location.getBlock().getState();
+        Bukkit.getScheduler().runTask(Main.getMain(), ()->{
+            if(uuid == null){
+                barrel.getPersistentDataContainer().remove(new BackpackRecipes().getMARKER_ID());
+                return;
+            }
+
+            barrel.getPersistentDataContainer().set(new BackpackRecipes().getMARKER_ID(), PersistentDataType.STRING, uuid.toString());
+        });
     }
 
     public void setName(String name) {
@@ -308,16 +313,16 @@ public final class BackPack extends UpgradeManager {
 
     public void open(Player player){
         getViewersIds().add(player.getUniqueId());
-        Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 1);
-        Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
+        BackpackManager.getCurrentPage().put(player.getUniqueId(), 1);
+        BackpackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
         player.openInventory(firstPage);
         BackpackAction.setAction(player, BackpackAction.Action.OPENED);
     }
 
     public void openSecondPage(Player player){
         getViewersIds().add(player.getUniqueId());
-        Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 2);
-        Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
+        BackpackManager.getCurrentPage().put(player.getUniqueId(), 2);
+        BackpackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
         player.openInventory(secondPage);
         BackpackAction.setAction(player, BackpackAction.Action.OPENED);
     }
@@ -403,7 +408,7 @@ public final class BackPack extends UpgradeManager {
         if(secondPage == null) return tempItem;
         hashMap = secondPage.addItem(tempItem);
         if(hashMap.isEmpty()) return null;
-        else return hashMap.get(0);
+        return hashMap.get(0);
     }
 
     public List<ItemStack> getBackpackItems(){
@@ -424,7 +429,7 @@ public final class BackPack extends UpgradeManager {
     }
 
     public void updateBarrelBlock(){
-        if(!isBlock()) return;
+        if(location == null) return;
         Barrel barrel = (Barrel) location.getBlock().getState();
         List<ItemStack> bpItems = getBackpackItems();
         if(bpItems.isEmpty()){
@@ -433,7 +438,9 @@ public final class BackPack extends UpgradeManager {
         }
 
         barrel.getInventory().clear();
-        for(int i = 0 ; i < bpItems.size() ; i++){
+        //27 is the number of slots in a barrel inventory
+        for(int i = 0 ; i < bpItems.size() ; i++) {
+            if(i == 27) break;
             barrel.getInventory().setItem(i, bpItems.get(i));
         }
     }

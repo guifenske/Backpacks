@@ -5,6 +5,7 @@ import br.com.backpacks.events.upgrades.MagnetUpgradeEvents;
 import br.com.backpacks.events.upgrades.VillagersFollowUpgradeEvents;
 import br.com.backpacks.storage.StorageManager;
 import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import org.bukkit.Bukkit;
 
 import java.io.IOException;
@@ -49,7 +50,7 @@ public class ThreadBackpacks {
 
     public static void startTicking(){
         Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getMain(), ()->{
-            for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
+            for(BackPack backPack : BackpackManager.getBackpacks().values()){
                 if(backPack.getOwner() != null){
                     VillagersFollowUpgradeEvents.tick(Bukkit.getPlayer(backPack.getOwner()));
                     MagnetUpgradeEvents.tick(Bukkit.getPlayer(backPack.getOwner()));

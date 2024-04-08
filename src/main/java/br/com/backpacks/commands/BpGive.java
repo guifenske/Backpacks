@@ -3,6 +3,7 @@ package br.com.backpacks.commands;
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import br.com.backpacks.utils.backpacks.BackpackType;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
@@ -43,13 +44,13 @@ public class BpGive implements CommandExecutor, TabCompleter {
         BackPack backPack;
         try{
             BackpackType backpackType = BackpackType.valueOf(args[1]);
-            backPack = new BackPack(backpackType, Main.backPackManager.getLastBackpackID() + 1);
+            backPack = new BackPack(backpackType, BackpackManager.lastBackpackID + 1);
         }   catch (IllegalArgumentException e){
             sender.sendMessage(Main.PREFIX + "§cBackpack type not found!");
             return true;
         }
-        Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
-        Main.backPackManager.setLastBackpackID(Main.backPackManager.getLastBackpackID() + 1);
+        BackpackManager.getBackpacks().put(backPack.getId(), backPack);
+        BackpackManager.lastBackpackID++;
         new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
         new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
         new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();

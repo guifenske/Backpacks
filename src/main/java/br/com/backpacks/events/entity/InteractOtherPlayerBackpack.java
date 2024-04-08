@@ -1,8 +1,8 @@
 package br.com.backpacks.events.entity;
 
-import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -22,7 +22,7 @@ public class InteractOtherPlayerBackpack implements Listener {
 
         if(!clickedEntity.getFacing().getDirection().equals(player.getFacing().getDirection()))  return;
 
-        BackPack backPack = Main.backPackManager.getBackpackFromId(clickedEntity.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        BackPack backPack = BackpackManager.getBackpackFromId(clickedEntity.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
         if(backPack == null) return;
 
         if(!backPack.isLocked()){

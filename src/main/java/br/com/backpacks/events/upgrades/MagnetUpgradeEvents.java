@@ -1,9 +1,9 @@
 package br.com.backpacks.events.upgrades;
 
-import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -13,24 +13,25 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class MagnetUpgradeEvents implements Listener {
 
     public static void tick(Player player){
         if(player == null) return;
         if(!player.getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        BackPack backPack = BackpackManager.getBackpackFromId(player.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
         if(backPack.getUpgradeFromType(UpgradeType.MAGNET) == null) return;
 
         pullItemsNearby(player, player.getLocation());
     }
 
-    public static void tick(BackPack backPack){
+    public static void tick(@NotNull BackPack backPack){
         if(backPack.getUpgradeFromType(UpgradeType.MAGNET) == null) return;
         pullItemsNearby(null, backPack.getLocation().clone());
     }
 
-    private static void pullItemsNearby(Player player, Location location) {
+    private static void pullItemsNearby(Player player, @NotNull Location location) {
         int chunkRadius = 1;
         int maxDistanceSquared = 25;
         int x = (int) location.getX(), z = (int) location.getZ();
@@ -66,8 +67,6 @@ public class MagnetUpgradeEvents implements Listener {
             ((Item) entity).setPickupDelay(0);
         }
         Vector direction = pullTo.subtract(entity.getLocation()).toVector();
-
-        //distribute the velocity of the item evenly in 5 ticks(25 because the distance is squared)
         entity.setVelocity(direction.normalize());
     }
 

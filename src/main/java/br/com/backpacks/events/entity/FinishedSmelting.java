@@ -1,8 +1,8 @@
 package br.com.backpacks.events.entity;
 
-import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import br.com.backpacks.utils.backpacks.RandomBackpackBuilder;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Material;
@@ -23,12 +23,12 @@ public class FinishedSmelting implements Listener {
         ItemMeta meta = driedBackpack.getItemMeta();
         meta.setDisplayName("Unknown Backpack");
         meta.getPersistentDataContainer().set(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER, Main.backPackManager.getLastBackpackID() + 1);
+        meta.getPersistentDataContainer().set(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER, BackpackManager.lastBackpackID + 1);
         RandomBackpackBuilder randomBackpackBuilder = new RandomBackpackBuilder("Unknown Backpack", meta.getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
         BackPack backPack = randomBackpackBuilder.generateBackpack();
         meta.getPersistentDataContainer().set(backPack.getNamespace(), PersistentDataType.INTEGER, 1);
         driedBackpack.setItemMeta(meta);
-        Main.backPackManager.setLastBackpackID(Main.backPackManager.getLastBackpackID() + 1);
+        BackpackManager.lastBackpackID++;
         new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack);
         new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack);
         new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack);

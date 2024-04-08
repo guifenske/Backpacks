@@ -8,6 +8,7 @@ import br.com.backpacks.upgrades.JukeboxUpgrade;
 import br.com.backpacks.utils.Constants;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import br.com.backpacks.utils.backpacks.RandomBackpackBuilder;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import net.kyori.adventure.text.Component;
@@ -30,7 +31,7 @@ public class EntityDeathEvent implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     private void onPlayerDeath(org.bukkit.event.entity.PlayerDeathEvent event){
         if(!event.getPlayer().getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
-        BackPack backpack = Main.backPackManager.getBackpackFromId(event.getPlayer().getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        BackPack backpack = BackpackManager.getBackpackFromId(event.getPlayer().getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
         Player player = event.getPlayer();
         Location location = safeLocation(player.getLocation().toBlockLocation());
 
@@ -50,10 +51,9 @@ public class EntityDeathEvent implements Listener {
         }
         backpack.setOwner(null);
 
-        backpack.setIsBlock(true);
         backpack.setLocation(location);
         InventoryBuilder.updateConfigInv(backpack);
-        Main.backPackManager.getBackpacksPlacedLocations().put(backpack.getLocation(), backpack.getId());
+        BackpackManager.getBackpacksPlacedLocations().put(backpack.getLocation(), backpack.getId());
         player.getPersistentDataContainer().remove(new BackpackRecipes().getHAS_BACKPACK());
         double y = backpack.getLocation().getY() + 1;
         Component component = Component.text(Main.PREFIX + "§cYou died and your backpack was placed on: " + backpack.getLocation().getX() + ", " + backpack.getLocation().getY() + ", " + backpack.getLocation().getZ() + "! Click to teleport!")
@@ -66,9 +66,9 @@ public class EntityDeathEvent implements Listener {
         if(!(event.getEntity() instanceof Monster)) return;
         if(event.getEntity().getKiller() == null) return;
         if(Constants.MONSTER_DROPS_BACKPACK && ThreadLocalRandom.current().nextInt(830) == 69) {
-            RandomBackpackBuilder randomBackpackBuilder = new RandomBackpackBuilder("Unknown Backpack", Main.backPackManager.getLastBackpackID() + 1);
+            RandomBackpackBuilder randomBackpackBuilder = new RandomBackpackBuilder("Unknown Backpack", BackpackManager.lastBackpackID + 1);
             BackPack backPack = randomBackpackBuilder.generateBackpack();
-            Main.backPackManager.setLastBackpackID(Main.backPackManager.getLastBackpackID() + 1);
+            BackpackManager.lastBackpackID++;
             new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
             new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
             new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();

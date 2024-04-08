@@ -3,6 +3,7 @@ package br.com.backpacks.events.inventory;
 import br.com.backpacks.Main;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,7 +16,7 @@ public class OnCloseBackpackConfigMenu implements Listener {
     @EventHandler
     private void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.CONFIGMENU)) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
+        BackPack backPack = BackpackManager.getPlayerCurrentBackpack(event.getPlayer());
         if(backPack == null) return;
 
         BackpackAction.clearPlayerAction(event.getPlayer());

@@ -3,6 +3,7 @@ package br.com.backpacks.events.backpacks;
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,12 +29,12 @@ public class BackpackPlace implements Listener {
             return;
         }
 
-        if(!Main.backPackManager.canOpen()){
+        if(!BackpackManager.canOpen()){
             event.setCancelled(true);
             return;
         }
 
-        BackPack backPack = Main.backPackManager.getBackpackFromId(itemData.get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+        BackPack backPack = BackpackManager.getBackpackFromId(itemData.get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
         if (backPack == null) return;
 
         //enforce removal of the item from the player's inventory
@@ -47,7 +48,6 @@ public class BackpackPlace implements Listener {
             }
         }
         event.getPlayer().getInventory().remove(event.getItemInHand());
-        backPack.setIsBlock(true);
         backPack.setOwner(null);
         Location backpackLocation = event.getBlockPlaced().getLocation();
         backPack.setLocation(backpackLocation);
@@ -56,6 +56,6 @@ public class BackpackPlace implements Listener {
         backPack.updateBarrelBlock();
 
         InventoryBuilder.updateConfigInv(backPack);
-        Main.backPackManager.getBackpacksPlacedLocations().put(backpackLocation, backPack.getId());
+        BackpackManager.getBackpacksPlacedLocations().put(backpackLocation, backPack.getId());
     }
 }

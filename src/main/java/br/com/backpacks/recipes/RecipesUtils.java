@@ -1,11 +1,11 @@
 package br.com.backpacks.recipes;
 
-import br.com.backpacks.Main;
 import br.com.backpacks.upgrades.*;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackpackManager;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -21,7 +21,7 @@ public class RecipesUtils {
         ItemMeta meta = itemStack.getItemMeta();
         if(!meta.getPersistentDataContainer().has(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER)) return null;
 
-        return Main.backPackManager.getBackpackFromId(meta.getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+        return BackpackManager.getBackpackFromId(meta.getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
     }
 
     public static ItemStack getItemFromBackpack(BackPack backPack) {
