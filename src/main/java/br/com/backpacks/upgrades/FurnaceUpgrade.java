@@ -4,6 +4,7 @@ import br.com.backpacks.Main;
 import br.com.backpacks.events.upgrades.FurnaceUpgradeEvents;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeType;
+import br.com.backpacks.utils.backpacks.BackpackAction;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
@@ -138,8 +139,7 @@ public class FurnaceUpgrade extends Upgrade {
         if(getResult() != null && getResult().getAmount() == getResult().getMaxStackSize()) return false;
         if(getFuel() != null && operation >= 0) return true;
         if(operation == 0 && getFuel() == null)    return false;
-        if(operation > 0 && getFuel() == null) return true;
-        return false;
+        return operation > 0 && getFuel() == null;
     }
 
     public void updateInventory(){
@@ -152,6 +152,8 @@ public class FurnaceUpgrade extends Upgrade {
         for(HumanEntity player : getInventory().getViewers()){
             InventoryView view = player.getOpenInventory();
             view.setProperty(InventoryView.Property.COOK_TIME, 0);
+            BackpackAction.clearPlayerAction(player);
+            player.closeInventory();
         }
         if(subTickTask != null) subTickTask.cancel();
         subTickTask = null;

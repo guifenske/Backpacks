@@ -45,7 +45,6 @@ br/com/backpacks/events/upgrades/FurnaceUpgradeEvents$3.class
 br/com/backpacks/events/upgrades/CraftingUpgradeEvents.class
 br/com/backpacks/events/upgrades/JukeboxUpgradeEvents$1.class
 br/com/backpacks/UpdateChecker.class
-br/com/backpacks/utils/backpacks/BackPackManager$1.class
 br/com/backpacks/events/OnDimensionSwitch.class
 br/com/backpacks/recipes/RecipesUtils$1.class
 br/com/backpacks/events/inventory/OnClickInConfigMenu$4.class
@@ -63,7 +62,7 @@ br/com/backpacks/upgrades/FurnaceUpgrade$1.class
 br/com/backpacks/utils/others/FurnaceUtils.class
 br/com/backpacks/utils/backpacks/BackpackType.class
 br/com/backpacks/events/upgrades/FilterUpgradeEvents$1.class
-br/com/backpacks/utils/backpacks/BackPackManager.class
+br/com/backpacks/utils/backpacks/BackpackManager$1.class
 br/com/backpacks/utils/others/JukeboxUtils.class
 br/com/backpacks/events/entity/EntityDeathEvent.class
 br/com/backpacks/commands/BpUpGive.class
@@ -71,6 +70,7 @@ br/com/backpacks/recipes/RecipesUtils.class
 br/com/backpacks/events/upgrades/CollectorUpgradeEvents.class
 br/com/backpacks/commands/BpBackup.class
 br/com/backpacks/storage/SerializationUtils.class
+br/com/backpacks/utils/backpacks/BackpackManager.class
 br/com/backpacks/upgrades/JukeboxUpgrade$2.class
 br/com/backpacks/AutoSaveManager.class
 br/com/backpacks/commands/BpList.class

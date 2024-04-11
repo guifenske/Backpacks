@@ -71,6 +71,7 @@ public class JukeboxUpgrade extends Upgrade {
         if(backpackId != null) JukeboxUpgradeEvents.stopSound(BackpackManager.getBackpackFromId(backpackId), this);
         backpackId = null;
         owner = null;
+        super.closeInventoryGlobally();
     }
 
     public void clearLoopingTask(){

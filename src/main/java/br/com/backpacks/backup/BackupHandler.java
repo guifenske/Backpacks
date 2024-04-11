@@ -96,6 +96,10 @@ public class BackupHandler {
         ConcurrentHashMap<Integer, BackPack> tempBackpacks = new ConcurrentHashMap<>(BackpackManager.getBackpacks());
         ConcurrentHashMap<Integer, Upgrade> tempUpgrades = new ConcurrentHashMap<>(UpgradeManager.getUpgrades());
 
+        for(Upgrade upgrade : UpgradeManager.getUpgrades().values()){
+            upgrade.stopTickingUpgrade();
+        }
+
         Bukkit.getScheduler().runTask(Main.getMain(), ()->{
             deleteAllBackpacks();
             deletionComplete = true;
@@ -138,6 +142,10 @@ public class BackupHandler {
         Instant start = Instant.now();
         rollbackBackpack = new ConcurrentHashMap<>(BackpackManager.getBackpacks());
         rollbackUpgrade = new ConcurrentHashMap<>(UpgradeManager.getUpgrades());
+
+        for(Upgrade upgrade : UpgradeManager.getUpgrades().values()){
+            upgrade.stopTickingUpgrade();
+        }
 
         Bukkit.getScheduler().runTask(Main.getMain(), ()->{
             deleteAllBackpacks();

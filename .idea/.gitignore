@@ -6,3 +6,23 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+../Backpacks.iml
+../build.xml
+../target
+/sshConfigs.xml
+/saveactions_settings.xml
+/vcs.xml
+/webServers.xml
+/discord.xml
+/jarRepositories.xml
+/remote-targets.xml
+/modules.xml
+/misc.xml
+/encodings.xml
+/deployment.xml
+/dataSources.xml
+/compiler.xml
+/ant.xml
+/uiDesigner.xml
+/sqldialects.xml

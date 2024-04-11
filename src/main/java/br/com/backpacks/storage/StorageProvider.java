@@ -14,6 +14,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class StorageProvider {
@@ -88,10 +89,12 @@ public class StorageProvider {
         UpgradeManager.lastUpgradeID = 0;
         UpgradeManager.setUpgrades(hashMap);
         if(hashMap.isEmpty()) return;
-        for(Integer id : hashMap.keySet()){
-            if(UpgradeManager.lastUpgradeID == 0) UpgradeManager.lastUpgradeID = id;
-            if(UpgradeManager.lastUpgradeID < id){
-                UpgradeManager.lastUpgradeID = id;
+        for(Map.Entry<Integer, Upgrade> entry : hashMap.entrySet()){
+            entry.getValue().stopTickingUpgrade();
+
+            if(UpgradeManager.lastUpgradeID == 0) UpgradeManager.lastUpgradeID = entry.getKey();
+            if(UpgradeManager.lastUpgradeID < entry.getKey()){
+                UpgradeManager.lastUpgradeID = entry.getKey();
             }
         }
     }

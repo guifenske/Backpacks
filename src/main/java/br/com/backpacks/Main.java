@@ -84,7 +84,6 @@ public final class Main extends JavaPlugin {
         saveDefaultConfig();
         main = this;
         Constants.VERSION = Bukkit.getMinecraftVersion();
-        start = Instant.now();
 
         if(!Constants.SUPPORTED_VERSIONS.contains(Constants.VERSION)){
             Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§cThis plugin at the moment is only compatible with 1.20.x, 1.19.x, 1.18.x versions.");
@@ -92,27 +91,31 @@ public final class Main extends JavaPlugin {
             return;
         }
 
-        if (getConfig().getBoolean("debug")) {
-            Constants.DEBUG_MODE = true;
-        }
-        if (getConfig().getBoolean("fish_backpack")) {
-            Constants.CATCH_BACKPACK = true;
-        }
-        if (getConfig().getBoolean("kill_monster_backpack")) {
-            Constants.MONSTER_DROPS_BACKPACK = true;
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), ()->{
+            start = Instant.now();
+            if (getConfig().getBoolean("debug")) {
+                Constants.DEBUG_MODE = true;
+            }
+            if (getConfig().getBoolean("fish_backpack")) {
+                Constants.CATCH_BACKPACK = true;
+            }
+            if (getConfig().getBoolean("kill_monster_backpack")) {
+                Constants.MONSTER_DROPS_BACKPACK = true;
+            }
 
-        if (getConfig().getBoolean("mysql.enabled")) {
-            StorageManager.setProvider(Config.getMySQLProvider());
-            if (!((MySQLProvider) StorageManager.getProvider()).canConnect()) {
+            if (getConfig().getBoolean("mysql.enabled")) {
+                StorageManager.setProvider(Config.getMySQLProvider());
+                if (!((MySQLProvider) StorageManager.getProvider()).canConnect()) {
+                    StorageManager.setProvider(Config.getYamlProvider());
+                }
+            } else {
                 StorageManager.setProvider(Config.getYamlProvider());
             }
-        } else {
-            StorageManager.setProvider(Config.getYamlProvider());
-        }
 
-        ThreadBackpacks.loadAll();
-        UpdateChecker.checkForUpdates();
+            ThreadBackpacks.loadAll();
+            UpdateChecker.checkForUpdates();
+        });
+
         updateMarkersIds();
 
         //player
