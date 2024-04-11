@@ -25,21 +25,23 @@ public class IOMenu implements Listener {
 
         switch (event.getRawSlot()){
             case 11 -> {
-                event.getWhoClicked().openInventory(InventoryBuilder.getEditIOMenu(backPack));
-                BackpackAction.setAction(event.getWhoClicked(), BackpackAction.Action.EDITINPUT);
-                event.setCancelled(true);
+                Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
+                    event.getWhoClicked().openInventory(InventoryBuilder.getEditIOMenu(backPack));
+                    BackpackAction.setAction(event.getWhoClicked(), BackpackAction.Action.EDITINPUT);
+                }, 1L);
             }
 
             case 13 -> {
                 backPack.setInputUpgrade(-1);
                 backPack.setOutputUpgrade(-1);
-                event.getWhoClicked().closeInventory();
+                Bukkit.getScheduler().runTaskLater(Main.getMain(), ()-> event.getWhoClicked().closeInventory(), 1L);
             }
 
             case 15 -> {
-                event.getWhoClicked().openInventory(InventoryBuilder.getEditIOMenu(backPack));
-                BackpackAction.setAction(event.getWhoClicked(), BackpackAction.Action.EDITOUTPUT);
-                event.setCancelled(true);
+                Bukkit.getScheduler().runTaskLater(Main.getMain(), ()-> {
+                    event.getWhoClicked().openInventory(InventoryBuilder.getEditIOMenu(backPack));
+                    BackpackAction.setAction(event.getWhoClicked(), BackpackAction.Action.EDITOUTPUT);
+                }, 1L);
             }
         }
     }
@@ -67,12 +69,12 @@ public class IOMenu implements Listener {
 
         if(BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.EDITOUTPUT)){
             backPack.setOutputUpgrade(upgrade.getId());
-            event.getWhoClicked().closeInventory();
+            Bukkit.getScheduler().runTaskLater(Main.getMain(), ()-> event.getWhoClicked().closeInventory(), 1L);
             return;
         }
 
         backPack.setInputUpgrade(upgrade.getId());
-        event.getWhoClicked().closeInventory();
+        Bukkit.getScheduler().runTaskLater(Main.getMain(), ()-> event.getWhoClicked().closeInventory(), 1L);
     }
 
     @EventHandler

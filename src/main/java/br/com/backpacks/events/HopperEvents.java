@@ -34,15 +34,20 @@ public class HopperEvents implements Listener {
             FilterUpgrade advFilterUpgrade = (FilterUpgrade) backPack.getUpgradeFromType(UpgradeType.ADVANCED_FILTER);
             FilterUpgrade filterUpgrade = (FilterUpgrade) backPack.getUpgradeFromType(UpgradeType.FILTER);
             if(advFilterUpgrade != null){
-                if(!advFilterUpgrade.getFilteredItems().contains(event.getItem().getType())){
+                if(!advFilterUpgrade.getFilteredItems().contains(event.getItem())){
                     if(filterUpgrade == null){
                         event.setCancelled(true);
                         return;
                     }
-                    if(!filterUpgrade.getFilteredItems().contains(event.getItem().getType())){
+                    if(!filterUpgrade.getFilteredItems().contains(event.getItem())){
                         event.setCancelled(true);
                         return;
                     }
+                }
+            }   else if(filterUpgrade != null){
+                if(!filterUpgrade.getFilteredItems().contains(event.getItem())){
+                    event.setCancelled(true);
+                    return;
                 }
             }
 
@@ -56,7 +61,7 @@ public class HopperEvents implements Listener {
                 //special case of furnace upgrade that have 2 ways of input
                 if(upgrade instanceof FurnaceUpgrade){
                     if(sideOfInput.equals(BlockFace.DOWN)){
-                        ItemStack itemStack = upgrade.tryAddItem(List.of(0), event.getItem().asOne());
+                        ItemStack itemStack = upgrade.tryAddItem(List.of(0), event.getItem());
                         if(itemStack != null){
                             event.setCancelled(true);
                             return;
@@ -70,30 +75,29 @@ public class HopperEvents implements Listener {
                         return;
                     }
 
-                    ItemStack itemStack = upgrade.tryAddItem(List.of(1), event.getItem().asOne());
+                    ItemStack itemStack = upgrade.tryAddItem(List.of(1), event.getItem());
                     if(itemStack != null){
                         event.setCancelled(true);
                     }
                     return;
                 }
 
-                if(!upgrade.canReceiveSpecificItemAsInput(event.getItem().asOne())){
+                if(!upgrade.canReceiveSpecificItemAsInput(event.getItem())){
                     event.setCancelled(true);
                     return;
                 }
 
-                ItemStack itemStack = upgrade.tryAddItem(upgrade.inputSlots(), event.getItem().asOne());
+                ItemStack itemStack = upgrade.tryAddItem(upgrade.inputSlots(), event.getItem());
                 if(itemStack != null){
                     event.setCancelled(true);
                 }
                 return;
             }
 
-            ItemStack itemStack = backPack.tryAddItem(event.getItem().asOne());
+            ItemStack itemStack = backPack.tryAddItem(event.getItem());
             backPack.updateBarrelBlock();
             if (itemStack != null) {
                 event.setCancelled(true);
-                return;
             }
         }
 

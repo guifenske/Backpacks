@@ -13,6 +13,7 @@ import br.com.backpacks.utils.backpacks.BackpackAction;
 import br.com.backpacks.utils.backpacks.BackpackManager;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Barrel;
 import org.bukkit.entity.ArmorStand;
@@ -23,8 +24,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 public class OnClickInConfigMenu implements Listener {
 
@@ -49,101 +48,74 @@ public class OnClickInConfigMenu implements Listener {
             switch (upgrade.getType()) {
                 case CRAFTING -> {
                     BackpackAction.clearPlayerAction(player);
-                    event.getWhoClicked().openWorkbench(null, true);
-                    BackpackAction.setAction(player, BackpackAction.Action.UPGCRAFTINGGRID);
-                    UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
-                    event.setCancelled(true);
+                    Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
+                        event.getWhoClicked().openWorkbench(null, true);
+                        BackpackAction.setAction(player, BackpackAction.Action.UPGCRAFTINGGRID);
+                        UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
+                    }, 1L);
                 }
 
                 case FURNACE, SMOKER, BLAST_FURNACE -> {
                     BackpackAction.clearPlayerAction(player);
-                    event.getWhoClicked().openInventory(upgrade.getInventory());
-                    BukkitTask task = new BukkitRunnable(){
-                        @Override
-                        public void run() {
-                            BackpackAction.setAction(player, BackpackAction.Action.UPGFURNACE);
-                            UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
-                        }
-                    }.runTaskLater(Main.getMain(), 1L);
-                    event.setCancelled(true);
+                    Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
+                        event.getWhoClicked().openInventory(upgrade.getInventory());
+                        BackpackAction.setAction(player, BackpackAction.Action.UPGFURNACE);
+                        UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
+                    }, 1L);
                 }
 
                 case JUKEBOX -> {
                     BackpackAction.clearPlayerAction(player);
-                    event.getWhoClicked().openInventory(upgrade.getInventory());
-                    BukkitTask task = new BukkitRunnable(){
-                        @Override
-                        public void run() {
-                            BackpackAction.setAction(player, BackpackAction.Action.UPGJUKEBOX);
-                            UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
-                        }
-                    }.runTaskLater(Main.getMain(), 1L);
-                    event.setCancelled(true);
+                    Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
+                        event.getWhoClicked().openInventory(upgrade.getInventory());
+                        BackpackAction.setAction(player, BackpackAction.Action.UPGJUKEBOX);
+                        UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
+                    }, 1L);
                 }
 
                 case AUTOFEED -> {
                     BackpackAction.clearPlayerAction(player);
-                    event.getWhoClicked().openInventory(upgrade.getInventory());
-                    BukkitTask task = new BukkitRunnable(){
-                        @Override
-                        public void run() {
-                            BackpackAction.setAction(player, BackpackAction.Action.UPGAUTOFEED);
-                            UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
-                        }
-                    }.runTaskLater(Main.getMain(), 1L);
-                    event.setCancelled(true);
+                    Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
+                        event.getWhoClicked().openInventory(upgrade.getInventory());
+                        BackpackAction.setAction(player, BackpackAction.Action.UPGAUTOFEED);
+                        UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
+                    }, 1L);
                 }
 
                 case VILLAGERSFOLLOW -> {
                     BackpackAction.clearPlayerAction(player);
-                    event.getWhoClicked().openInventory(upgrade.getInventory());
-                    BukkitTask task = new BukkitRunnable(){
-                        @Override
-                        public void run() {
-                            BackpackAction.setAction(player, BackpackAction.Action.UPGVILLAGERSFOLLOW);
-                            UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
-                        }
-                    }.runTaskLater(Main.getMain(), 1L);
-                    event.setCancelled(true);
+                    Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
+                        event.getWhoClicked().openInventory(upgrade.getInventory());
+                        BackpackAction.setAction(player, BackpackAction.Action.UPGVILLAGERSFOLLOW);
+                        UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
+                    }, 1L);
                 }
 
                 case COLLECTOR -> {
                     BackpackAction.clearPlayerAction(player);
-                    event.getWhoClicked().openInventory(upgrade.getInventory());
-                    BukkitTask task = new BukkitRunnable(){
-                        @Override
-                        public void run() {
-                            BackpackAction.setAction(player, BackpackAction.Action.UPGCOLLECTOR);
-                            UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
-                        }
-                    }.runTaskLater(Main.getMain(), 1L);
-                    event.setCancelled(true);
+                    Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
+                        event.getWhoClicked().openInventory(upgrade.getInventory());
+                        BackpackAction.setAction(player, BackpackAction.Action.UPGCOLLECTOR);
+                        UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
+                    }, 1L);
                 }
 
                 case LIQUIDTANK -> {
                     BackpackAction.clearPlayerAction(player);
-                    event.getWhoClicked().openInventory(upgrade.getInventory());
-                    BukkitTask task = new BukkitRunnable(){
-                        @Override
-                        public void run() {
-                            BackpackAction.setAction(player, BackpackAction.Action.UPGTANKS);
-                            UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
-                        }
-                    }.runTaskLater(Main.getMain(), 1L);
-                    event.setCancelled(true);
+                    Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
+                        event.getWhoClicked().openInventory(upgrade.getInventory());
+                        BackpackAction.setAction(player, BackpackAction.Action.UPGTANKS);
+                        UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
+                    }, 1L);
                 }
 
                 case ADVANCED_FILTER, FILTER -> {
                     BackpackAction.clearPlayerAction(player);
-                    event.getWhoClicked().openInventory(upgrade.getInventory());
-                    BukkitTask task = new BukkitRunnable(){
-                        @Override
-                        public void run() {
-                            BackpackAction.setAction(player, BackpackAction.Action.UPGFILTER);
-                            UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
-                        }
-                    }.runTaskLater(Main.getMain(), 1L);
-                    event.setCancelled(true);
+                    Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
+                        event.getWhoClicked().openInventory(upgrade.getInventory());
+                        BackpackAction.setAction(player, BackpackAction.Action.UPGFILTER);
+                        UpgradeManager.setPlayerCurrentUpgrade(player, upgrade.getId());
+                    }, 1L);
                 }
             }
 
@@ -153,7 +125,8 @@ public class OnClickInConfigMenu implements Listener {
 
         switch (event.getRawSlot()) {
             //go back to the previous page
-            case 45 -> player.closeInventory();
+            case 45 -> Bukkit.getScheduler().runTaskLater(Main.getMain(), ()-> player.closeInventory(), 1L);
+
             //equip or un-equip backpack in the back
             case 53 -> {
                 if(backPack.getLocation() != null)  return;
@@ -190,7 +163,7 @@ public class OnClickInConfigMenu implements Listener {
                 BackpackAction.clearPlayerAction(player);
                 BackpackAction.setAction(player, BackpackAction.Action.RENAMING);
                 player.sendMessage(Main.PREFIX + "§eType the new name of the backpack");
-                player.closeInventory();
+                Bukkit.getScheduler().runTaskLater(Main.getMain(), ()-> player.closeInventory(), 1L);
             }
 
             case 51 -> {
@@ -201,16 +174,18 @@ public class OnClickInConfigMenu implements Listener {
 
             case 36 ->{
                 BackpackAction.clearPlayerAction(player);
-                player.openInventory(InventoryBuilder.getUpgradesInv(backPack));
-                BackpackAction.setAction(player, BackpackAction.Action.UPGMENU);
-                event.setCancelled(true);
+                Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
+                    player.openInventory(InventoryBuilder.getUpgradesInv(backPack));
+                    BackpackAction.setAction(player, BackpackAction.Action.UPGMENU);
+                }, 1L);
             }
 
             case 49 -> {
                 BackpackAction.clearPlayerAction(player);
-                player.openInventory(InventoryBuilder.getIOInv());
-                BackpackAction.setAction(player, BackpackAction.Action.IOMENU);
-                event.setCancelled(true);
+                Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
+                    player.openInventory(InventoryBuilder.getIOInv());
+                    BackpackAction.setAction(player, BackpackAction.Action.IOMENU);
+                }, 1L);
             }
 
             case 48 ->{

@@ -11,10 +11,22 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 public class FilterUpgradeEvents implements Listener {
+
+    @EventHandler
+    private void onDrag(InventoryDragEvent event){
+        if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGFILTER)) return;
+        for(int slot : event.getRawSlots()){
+            if(slot < 9) {
+                event.setCancelled(true);
+                break;
+            }
+        }
+    }
 
     @EventHandler
     private void onClick(InventoryClickEvent event){
