@@ -15,8 +15,6 @@ import java.util.Arrays;
 public class UpgradesRecipes {
     private final NamespacedKey CRAFTING = new NamespacedKey(Main.getMain(), "crafting_upgrade");
     private final NamespacedKey FURNACE = new NamespacedKey(Main.getMain(), "furnace_upgrade");
-    private final NamespacedKey BLAST_FURNACE = new NamespacedKey(Main.getMain(), "blast_furnace_upgrade");
-    private final NamespacedKey SMOKER = new NamespacedKey(Main.getMain(), "smoker_upgrade");
     private final NamespacedKey UNBREAKING = new NamespacedKey(Main.getMain(), "unbreaking_upgrade");
     private final NamespacedKey JUKEBOX = new NamespacedKey(Main.getMain(), "jukebox_upgrade");
     private final NamespacedKey VILLAGERS_FOLLOW = new NamespacedKey(Main.getMain(), "villagers_follow_upgrade");
@@ -37,34 +35,27 @@ public class UpgradesRecipes {
     public NamespacedKey getUPGRADE_ID() {
         return UPGRADE_ID;
     }
-
     public NamespacedKey getCraftingGrid() {
         return CRAFTING;
     }
-
     public NamespacedKey getFurnace() {
         return FURNACE;
     }
     public NamespacedKey getUnbreaking() {
         return UNBREAKING;
     }
-
     public NamespacedKey getJukebox() {
         return JUKEBOX;
     }
-
     public NamespacedKey getVillagersFollow() {
         return VILLAGERS_FOLLOW;
     }
-
     public NamespacedKey getAutoFill() {
         return AUTO_FILL;
     }
-
     public NamespacedKey getAutoFeed() {
         return AUTO_FEED;
     }
-
     public NamespacedKey getLiquidTank() {
         return LIQUID_TANK;
     }
@@ -74,23 +65,12 @@ public class UpgradesRecipes {
     public NamespacedKey getEncapsulate() {
         return ENCAPSULATE;
     }
-
-    public NamespacedKey getBlastFurnace() {
-        return BLAST_FURNACE;
-    }
-
-    public NamespacedKey getSmoker() {
-        return SMOKER;
-    }
-
     public NamespacedKey getMagnet() {
         return MAGNET;
     }
-
     public NamespacedKey getFilter(){
         return FILTER;
     }
-
     public NamespacedKey getAdvancedFilter(){
         return ADVANCED_FILTER;
     }
@@ -291,48 +271,6 @@ public class UpgradesRecipes {
         recipe.setIngredient('R', Material.REDSTONE);
         recipe.setIngredient('M', Material.HOPPER_MINECART);
         recipe.setIngredient('I', Material.IRON_INGOT);
-
-        return recipe;
-    }
-
-    public Recipe getBlastFurnaceRecipe(){
-        ItemStack blastFurnace = new ItemStack(Material.BLAST_FURNACE);
-        ItemMeta meta = blastFurnace.getItemMeta();
-
-        meta.setDisplayName("Blast Furnace Upgrade");
-        meta.setLore(Arrays.asList("§7Blast Furnace Upgrade", "§7§nAllows you to cook ores in the backpack."));
-        meta.getPersistentDataContainer().set(IS_UPGRADE, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(BLAST_FURNACE, PersistentDataType.INTEGER, 1);
-        blastFurnace.setItemMeta(meta);
-
-        ShapedRecipe recipe = new ShapedRecipe(BLAST_FURNACE, blastFurnace);
-
-        recipe.shape("III", "SFS", "III");
-
-        recipe.setIngredient('F', Material.BLAST_FURNACE);
-        recipe.setIngredient('I', Material.IRON_INGOT);
-        recipe.setIngredient('S', Material.SMOOTH_STONE);
-
-        return recipe;
-    }
-
-    public Recipe getSmokerRecipe(){
-        ItemStack smoker = new ItemStack(Material.SMOKER);
-        ItemMeta meta = smoker.getItemMeta();
-
-        meta.setDisplayName("Smoker Upgrade");
-        meta.setLore(Arrays.asList("§7Smoker Upgrade", "§7§nAllows you to cook food in the backpack."));
-        meta.getPersistentDataContainer().set(IS_UPGRADE, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(SMOKER, PersistentDataType.INTEGER, 1);
-        smoker.setItemMeta(meta);
-
-        ShapedRecipe recipe = new ShapedRecipe(SMOKER, smoker);
-
-        recipe.shape("III", "RFR", "III");
-
-        recipe.setIngredient('F', Material.SMOKER);
-        recipe.setIngredient('I', Material.IRON_INGOT);
-        recipe.setIngredient('R', Material.REDSTONE);
 
         return recipe;
     }

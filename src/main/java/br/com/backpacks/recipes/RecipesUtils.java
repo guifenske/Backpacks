@@ -84,14 +84,6 @@ public class RecipesUtils {
                 return new UpgradesRecipes().getFurnace();
             }
 
-            case SMOKER -> {
-                return new UpgradesRecipes().getSmoker();
-            }
-
-            case BLAST_FURNACE -> {
-                return new UpgradesRecipes().getBlastFurnace();
-            }
-
             case LIQUIDTANK -> {
                 return new UpgradesRecipes().getLiquidTank();
             }
@@ -162,14 +154,6 @@ public class RecipesUtils {
                 return Material.HOPPER;
             }
 
-            case SMOKER -> {
-                return Material.SMOKER;
-            }
-
-            case BLAST_FURNACE -> {
-                return Material.BLAST_FURNACE;
-            }
-
             case MAGNET -> {
                 return Material.ENDER_EYE;
             }
@@ -199,15 +183,7 @@ public class RecipesUtils {
             return UpgradeManager.getUpgrades().get(id);
         }
         if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getFurnace(), PersistentDataType.INTEGER)) {
-            UpgradeManager.getUpgrades().put(id, new FurnaceUpgrade(UpgradeType.FURNACE, id));
-            return UpgradeManager.getUpgrades().get(id);
-        }
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getBlastFurnace(), PersistentDataType.INTEGER)) {
-            UpgradeManager.getUpgrades().put(id, new FurnaceUpgrade(UpgradeType.BLAST_FURNACE, id));
-            return UpgradeManager.getUpgrades().get(id);
-        }
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getSmoker(), PersistentDataType.INTEGER)) {
-            UpgradeManager.getUpgrades().put(id, new FurnaceUpgrade(UpgradeType.SMOKER, id));
+            UpgradeManager.getUpgrades().put(id, new FurnaceUpgrade(id));
             return UpgradeManager.getUpgrades().get(id);
         }
         if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getCraftingGrid(), PersistentDataType.INTEGER)) {
@@ -266,14 +242,6 @@ public class RecipesUtils {
 
             case FURNACE -> {
                 return Arrays.asList("§7Furnace Upgrade", "§7§nAllows you to cook items in the backpack.");
-            }
-
-            case BLAST_FURNACE -> {
-                return Arrays.asList("§7Blast Furnace Upgrade", "§7§nAllows you to cook ores in the backpack.");
-            }
-
-            case SMOKER -> {
-                return Arrays.asList("§7Smoker Upgrade", "§7§nAllows you to cook food in the backpack.");
             }
 
             case VILLAGERSFOLLOW -> {

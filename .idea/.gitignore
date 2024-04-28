@@ -9,7 +9,8 @@
 
 ../Backpacks.iml
 ../build.xml
-../target
+../target/
+artifacts/
 /sshConfigs.xml
 /saveactions_settings.xml
 /vcs.xml

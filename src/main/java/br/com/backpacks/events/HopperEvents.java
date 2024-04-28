@@ -58,6 +58,12 @@ public class HopperEvents implements Listener {
                     event.setCancelled(true);
                     return;
                 }
+
+                if(!upgrade.canReceiveSpecificItemAsInput(event.getItem())){
+                    event.setCancelled(true);
+                    return;
+                }
+
                 //special case of furnace upgrade that have 2 ways of input
                 if(upgrade instanceof FurnaceUpgrade){
                     if(sideOfInput.equals(BlockFace.DOWN)){
@@ -79,11 +85,6 @@ public class HopperEvents implements Listener {
                     if(itemStack != null){
                         event.setCancelled(true);
                     }
-                    return;
-                }
-
-                if(!upgrade.canReceiveSpecificItemAsInput(event.getItem())){
-                    event.setCancelled(true);
                     return;
                 }
 

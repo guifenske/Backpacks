@@ -9,7 +9,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,32 +25,11 @@ public class TanksUpgrade extends Upgrade {
         return inventory;
     }
 
-    @Override
-    public boolean canBeInputOrOutputHolder() {
-        return true;
-    }
-
-    @Override
-    public boolean canReceiveSpecificItemAsInput(@NotNull ItemStack itemStack) {
-        return itemStack.getType().toString().contains("BUCKET");
-    }
-
-    @Override
-    public List<Integer> inputSlots() {
-        return List.of(0, 9, 18, 8, 17, 26);
-    }
-
-    @Override
-    public List<Integer> outputSlots() {
-        return List.of(0, 9, 18, 8, 17, 26);
-    }
-
     public TanksUpgrade(int id) {
         super(UpgradeType.LIQUIDTANK, id);
         this.inventory = Bukkit.createInventory(null, 27, "Tanks Upgrade");
         updateInventory();
     }
-
 
     public void updateInventory(){
         ItemStack loremIpsum = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE," ").build();
@@ -119,7 +97,6 @@ public class TanksUpgrade extends Upgrade {
                 ItemStack itemStack = inventory.getItem(26);
                 inventory.setItem(14, itemStack);
                 inventory.setItem(26, null);
-                return;
             }
         }
     }
@@ -133,7 +110,7 @@ public class TanksUpgrade extends Upgrade {
         if(tank == 2){
             if(inventory.getItem(8) == null) return true;
             if(inventory.getItem(17) == null) return true;
-            if(inventory.getItem(26) == null) return true;
+            return inventory.getItem(26) == null;
         }
         return false;
     }

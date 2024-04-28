@@ -39,44 +39,22 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        Upgrade upgrade = null;
+        Upgrade upgrade;
         switch (type){
-            case JUKEBOX -> {
-                upgrade = new JukeboxUpgrade(UpgradeManager.lastUpgradeID + 1);
-            }
-
-            case VILLAGERSFOLLOW -> {
-                upgrade = new VillagersFollowUpgrade(UpgradeManager.lastUpgradeID + 1);
-            }
-
-            case AUTOFEED -> {
-                upgrade = new AutoFeedUpgrade(UpgradeManager.lastUpgradeID + 1);
-            }
-
-            case FURNACE, SMOKER, BLAST_FURNACE -> {
-                upgrade = new FurnaceUpgrade(type, UpgradeManager.lastUpgradeID + 1);
-            }
-
-            case LIQUIDTANK -> {
-                upgrade = new TanksUpgrade(UpgradeManager.lastUpgradeID + 1);
-            }
-
-            case COLLECTOR -> {
-                upgrade = new CollectorUpgrade(UpgradeManager.lastUpgradeID + 1);
-            }
+            case JUKEBOX -> upgrade = new JukeboxUpgrade(UpgradeManager.lastUpgradeID + 1);
+            case VILLAGERSFOLLOW -> upgrade = new VillagersFollowUpgrade(UpgradeManager.lastUpgradeID + 1);
+            case AUTOFEED -> upgrade = new AutoFeedUpgrade(UpgradeManager.lastUpgradeID + 1);
+            case FURNACE -> upgrade = new FurnaceUpgrade(UpgradeManager.lastUpgradeID + 1);
+            case LIQUIDTANK -> upgrade = new TanksUpgrade(UpgradeManager.lastUpgradeID + 1);
+            case COLLECTOR -> upgrade = new CollectorUpgrade(UpgradeManager.lastUpgradeID + 1);
 
             case AUTOFILL -> {
                 sender.sendMessage(Main.PREFIX + args[0] + " isn't a valid UpgradeType!");
                 return true;
             }
 
-            case FILTER, ADVANCED_FILTER -> {
-                upgrade = new FilterUpgrade(type, UpgradeManager.lastUpgradeID + 1);
-            }
-
-            default -> {
-                upgrade = new Upgrade(type, UpgradeManager.lastUpgradeID + 1);
-            }
+            case FILTER, ADVANCED_FILTER -> upgrade = new FilterUpgrade(type, UpgradeManager.lastUpgradeID + 1);
+            default -> upgrade = new Upgrade(type, UpgradeManager.lastUpgradeID + 1);
         }
 
         ItemStack upgradeItem = RecipesUtils.getItemFromUpgrade(upgrade);

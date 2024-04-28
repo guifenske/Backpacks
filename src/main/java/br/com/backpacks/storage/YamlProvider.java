@@ -71,7 +71,7 @@ public final class YamlProvider extends StorageProvider {
             config.set(upgrade.getId() + ".type", upgrade.getType().toString());
             UpgradeType type = upgrade.getType();
             switch (type){
-                case FURNACE, BLAST_FURNACE, SMOKER -> {
+                case FURNACE -> {
                     FurnaceUpgrade furnaceUpgrade = (FurnaceUpgrade) upgrade;
                     if(furnaceUpgrade.getResult() != null)  config.set(upgrade.getId() + ".furnace.result", furnaceUpgrade.getResult());
                     if(furnaceUpgrade.getFuel() != null)  config.set(upgrade.getId() + ".furnace.fuel", furnaceUpgrade.getFuel());
@@ -158,8 +158,8 @@ public final class YamlProvider extends StorageProvider {
             }
 
             switch (type){
-                case FURNACE, BLAST_FURNACE, SMOKER -> {
-                    FurnaceUpgrade upgrade = new FurnaceUpgrade(type, id);
+                case FURNACE -> {
+                    FurnaceUpgrade upgrade = new FurnaceUpgrade(id);
                     if(config.isSet(i + ".furnace.result")){
                         upgrade.setResult(config.getItemStack(i + ".furnace.result"));
                     }

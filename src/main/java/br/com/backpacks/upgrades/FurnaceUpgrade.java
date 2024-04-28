@@ -6,6 +6,7 @@ import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackpackAction;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
@@ -29,7 +30,6 @@ public class FurnaceUpgrade extends Upgrade {
     public CookingRecipe<?> getRecipe() {
         return recipe;
     }
-
     public void setRecipe(CookingRecipe<?> recipe) {
         this.recipe = recipe;
     }
@@ -65,21 +65,12 @@ public class FurnaceUpgrade extends Upgrade {
         return cookItemTicks;
     }
     private final long cookItemTicks;
-    public FurnaceUpgrade(UpgradeType upgradeType, int id){
-        super(upgradeType, id);
-        if(upgradeType.equals(UpgradeType.BLAST_FURNACE)){
-            this.cookItemTicks = 100L;
-            this.inventory = Bukkit.createInventory(null, InventoryType.BLAST_FURNACE);
-            this.cookTimeAmount = 4;
-        }   else if(upgradeType.equals(UpgradeType.SMOKER)){
-            this.cookItemTicks = 100L;
-            this.inventory = Bukkit.createInventory(null, InventoryType.SMOKER);
-            this.cookTimeAmount = 4;
-        }   else{
-            this.cookItemTicks = 200L;
-            this.inventory = Bukkit.createInventory(null, InventoryType.FURNACE);
-            this.cookTimeAmount = 2;
-        }
+
+    public FurnaceUpgrade(int id){
+        super(UpgradeType.FURNACE, id);
+        this.cookItemTicks = 200L;
+        this.inventory = Bukkit.createInventory(null, InventoryType.FURNACE);
+        this.cookTimeAmount = 2;
         updateInventory();
     }
 
@@ -104,6 +95,7 @@ public class FurnaceUpgrade extends Upgrade {
         setCookTime(0);
         if(FurnaceUpgradeEvents.taskMap.containsKey(getId())) FurnaceUpgradeEvents.taskMap.get(getId()).cancel();
         FurnaceUpgradeEvents.taskMap.remove(getId());
+        if(boundFakeBlock != null) boundFakeBlock.setType(Material.AIR);
         setBoundFakeBlock(null);
         clearSubTickTask();
     }

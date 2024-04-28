@@ -131,7 +131,7 @@ public class MySQLProvider extends StorageProvider{
                preparedStatement.setBlob(14, SerializationUtils.nullBlob());
                preparedStatement.setBlob(15, SerializationUtils.nullBlob());
                switch (upgrade.getType()){
-                   case FURNACE, BLAST_FURNACE, SMOKER -> {
+                   case FURNACE -> {
                        FurnaceUpgrade furnaceUpgrade = (FurnaceUpgrade) upgrade;
                        preparedStatement.setBlob(4, SerializationUtils.serializeItem(furnaceUpgrade.getSmelting()));
                        preparedStatement.setBlob(5, SerializationUtils.serializeItem(furnaceUpgrade.getFuel()));
@@ -196,8 +196,8 @@ public class MySQLProvider extends StorageProvider{
                 int id = upgradeSet.getInt("id");
                 UpgradeType type = UpgradeType.valueOf(upgradeSet.getString("upgradeType"));
                 switch (type){
-                    case FURNACE, BLAST_FURNACE, SMOKER -> {
-                        FurnaceUpgrade upgrade = new FurnaceUpgrade(type, id);
+                    case FURNACE -> {
+                        FurnaceUpgrade upgrade = new FurnaceUpgrade(id);
                         upgrade.setSmelting(SerializationUtils.deserializeItem(upgradeSet.getBlob("furnace_smelting").getBinaryStream()));
                         upgrade.setFuel(SerializationUtils.deserializeItem(upgradeSet.getBlob("furnace_fuel").getBinaryStream()));
                         upgrade.setResult(SerializationUtils.deserializeItem(upgradeSet.getBlob("furnace_result").getBinaryStream()));

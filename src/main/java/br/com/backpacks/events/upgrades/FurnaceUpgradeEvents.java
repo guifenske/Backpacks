@@ -16,7 +16,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.CookingRecipe;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -33,19 +35,16 @@ public class FurnaceUpgradeEvents implements Listener {
         }
         upgrade.startSubTick();
 
-        if(upgrade.getBoundFakeBlock() == null) {
-            Location tempLocation = new Location(Bukkit.getWorld("world"), ThreadLocalRandom.current().nextInt(-900, 900), -65, ThreadLocalRandom.current().nextInt(-900, 900));
-            Block tempBlock = tempLocation.getBlock();
-            switch (upgrade.getType()) {
-                case FURNACE -> tempBlock.setType(Material.FURNACE);
-                case SMOKER -> tempBlock.setType(Material.SMOKER);
-                case BLAST_FURNACE -> tempBlock.setType(Material.BLAST_FURNACE);
-            }
-            upgrade.setBoundFakeBlock(tempBlock);
-        }
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
+                if(upgrade.getBoundFakeBlock() == null) {
+                    Location tempLocation = new Location(Bukkit.getWorld("world"), ThreadLocalRandom.current().nextInt(-900, 900), -65, ThreadLocalRandom.current().nextInt(-900, 900));
+                    Block tempBlock = tempLocation.getBlock();
+                    tempBlock.setType(Material.FURNACE);
+                    upgrade.setBoundFakeBlock(tempBlock);
+                }
+
                 if(!upgrade.canTick()){
                     this.cancel();
                     upgrade.stopTickingUpgrade();
@@ -75,8 +74,8 @@ public class FurnaceUpgradeEvents implements Listener {
                     return;
                 }
 
-                if(upgrade.getLastMaxOperation() > 0){
-                    if(upgrade.getLastMaxOperation() != maxOperation) upgrade.setOperation(0);
+                if(upgrade.getLastMaxOperation() > 0 && upgrade.getLastMaxOperation() != maxOperation){
+                    upgrade.setOperation(0);
                 }
 
                 upgrade.setLastMaxOperation(maxOperation);
@@ -152,33 +151,11 @@ public class FurnaceUpgradeEvents implements Listener {
     private static void generalLogic(FurnaceUpgrade upgrade){
         CookingRecipe<?> recipe = upgrade.getRecipe();
         if(recipe == null || !recipe.getInputChoice().test(upgrade.getSmelting())){
-            switch (upgrade.getType()){
-                case FURNACE -> {
-                    for(FurnaceRecipe recipe1 : Main.getMain().getFurnaceRecipes()){
-                        if(recipe1.getInputChoice().test(upgrade.getSmelting())){
-                            upgrade.setRecipe(recipe1);
-                            recipe = recipe1;
-                            break;
-                        }
-                    }
-                }
-                case BLAST_FURNACE -> {
-                    for(BlastingRecipe recipe1 : Main.getMain().getBlastingRecipes()){
-                        if(recipe1.getInputChoice().test(upgrade.getSmelting())){
-                            upgrade.setRecipe(recipe1);
-                            recipe = recipe1;
-                            break;
-                        }
-                    }
-                }
-                case SMOKER -> {
-                    for(SmokingRecipe recipe1 : Main.getMain().getSmokingRecipes()){
-                        if(recipe1.getInputChoice().test(upgrade.getSmelting())){
-                            upgrade.setRecipe(recipe1);
-                            recipe = recipe1;
-                            break;
-                        }
-                    }
+            for(FurnaceRecipe recipe1 : Main.getMain().getFurnaceRecipes()){
+                if(recipe1.getInputChoice().test(upgrade.getSmelting())){
+                    upgrade.setRecipe(recipe1);
+                    recipe = recipe1;
+                    break;
                 }
             }
 
