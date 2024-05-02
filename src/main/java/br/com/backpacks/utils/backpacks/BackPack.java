@@ -32,6 +32,7 @@ public final class BackPack extends UpgradeManager {
     private boolean showNameAbove = false;
     private UUID markerId;
     private String name;
+    private ItemStack backpackItem;
 
     public BackPack(BackpackType type, int id) {
         this.backpackType = type;
@@ -442,6 +443,24 @@ public final class BackPack extends UpgradeManager {
         for(int i = 0 ; i < bpItems.size() ; i++) {
             if(i == 27) break;
             barrel.getInventory().setItem(i, bpItems.get(i));
+        }
+    }
+
+    public void setBackpackItem(ItemStack backpackItem) {
+        this.backpackItem = backpackItem;
+    }
+
+    public ItemStack getBackpackItem() {
+        return backpackItem;
+    }
+
+    public void closeInventoryGlobally(){
+        for(UUID uuid : getViewersIds()){
+            Player player = Bukkit.getPlayer(uuid);
+            getViewersIds().remove(uuid);
+            BackpackManager.getCurrentBackpackId().remove(uuid);
+            BackpackManager.getCurrentPage().remove(uuid);
+            player.closeInventory();
         }
     }
 }

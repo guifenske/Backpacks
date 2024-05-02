@@ -54,6 +54,7 @@ public class BackpackInteract implements Listener {
             BackPack backPack = BackpackManager.getBackpackFromId(event.getItem().getItemMeta().getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
             if(backPack == null) return;
 
+            backPack.setBackpackItem(event.getItem());
             backPack.open(player);
             player.getWorld().playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
         }

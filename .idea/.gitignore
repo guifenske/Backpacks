@@ -8,7 +8,6 @@
 /dataSources.local.xml
 
 ../Backpacks.iml
-../build.xml
 ../target/
 artifacts/
 /sshConfigs.xml
@@ -24,6 +23,5 @@ artifacts/
 /deployment.xml
 /dataSources.xml
 /compiler.xml
-/ant.xml
 /uiDesigner.xml
 /sqldialects.xml

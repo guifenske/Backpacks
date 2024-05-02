@@ -22,6 +22,7 @@ public class OnCloseBackpack implements Listener {
         BackPack backPack = BackpackManager.getPlayerCurrentBackpack(event.getPlayer());
         shouldRemoveBackpack(event, backPack);
         backPack.getViewersIds().remove(event.getPlayer().getUniqueId());
+        backPack.setBackpackItem(null);
         if(backPack.getViewersIds().isEmpty()){
             if(backPack.getLocation() != null){
                 Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
@@ -36,7 +37,6 @@ public class OnCloseBackpack implements Listener {
     private void shouldRemoveBackpack(InventoryCloseEvent event, BackPack backPack) {
         for(ItemStack itemStack : backPack.getFirstPage()){
             if(itemStack == null) continue;
-            if(!itemStack.hasItemMeta()) continue;
             if(itemStack.getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER) && !backPack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
                 if(!event.getPlayer().getInventory().addItem(itemStack).isEmpty()){
                     event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
@@ -49,7 +49,6 @@ public class OnCloseBackpack implements Listener {
         if(backPack.getSecondPage() != null){
             for(ItemStack itemStack : backPack.getSecondPage()){
                 if(itemStack == null) continue;
-                if(!itemStack.hasItemMeta()) continue;
                 if(itemStack.getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER) && !backPack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
                     if(!event.getPlayer().getInventory().addItem(itemStack).isEmpty()){
                         event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);

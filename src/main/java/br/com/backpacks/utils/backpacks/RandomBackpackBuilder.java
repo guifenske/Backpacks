@@ -114,8 +114,8 @@ public class RandomBackpackBuilder {
                         upgrades.add(upgrade);
                     }
 
-                    case FURNACE, SMOKER, BLAST_FURNACE ->  {
-                        FurnaceUpgrade upgrade = new FurnaceUpgrade(upgradeType, UpgradeManager.lastUpgradeID + 1);
+                    case FURNACE ->  {
+                        FurnaceUpgrade upgrade = new FurnaceUpgrade(UpgradeManager.lastUpgradeID + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }

@@ -167,6 +167,8 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if(StorageManager.getProvider() == null) return;
+
         //reload logic
         for(UUID uuid : BackpackAction.getHashMap().keySet()){
             Player player = Bukkit.getPlayer(uuid);
@@ -224,8 +226,6 @@ public final class Main extends JavaPlugin {
         Bukkit.addRecipe(new UpgradesRecipes().getAutoFeedRecipe());
         Bukkit.addRecipe(new UpgradesRecipes().getJukeboxRecipe());
         Bukkit.addRecipe(new UpgradesRecipes().getFurnaceRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getSmokerRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getBlastFurnaceRecipe());
         Bukkit.addRecipe(new UpgradesRecipes().getCraftingRecipe());
         Bukkit.addRecipe(new UpgradesRecipes().getFollowingVillagersRecipe());
         Bukkit.addRecipe(new UpgradesRecipes().getEncapsulateRecipe());

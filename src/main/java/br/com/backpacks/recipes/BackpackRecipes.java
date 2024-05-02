@@ -9,7 +9,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
 
-public class BackpackRecipes {
+public final class BackpackRecipes {
     private final NamespacedKey MARKER_ID = new NamespacedKey(Main.getMain(), "marker_id");
     private final NamespacedKey IS_BACKPACK = new NamespacedKey(Main.getMain(), "isbackpack");
     private final NamespacedKey BACKPACK_ID = new NamespacedKey(Main.getMain(), "backpackid");

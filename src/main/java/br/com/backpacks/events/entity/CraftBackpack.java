@@ -38,8 +38,6 @@ public class CraftBackpack implements Listener {
                 }
                 case FURNACE, SMOKER, BLAST_FURNACE -> {
                     event.getWhoClicked().discoverRecipe(new UpgradesRecipes().getFurnace());
-                    event.getWhoClicked().discoverRecipe(new UpgradesRecipes().getBlastFurnace());
-                    event.getWhoClicked().discoverRecipe(new UpgradesRecipes().getSmoker());
                 }
                 case JUKEBOX, NOTE_BLOCK -> {
                     event.getWhoClicked().discoverRecipe(new UpgradesRecipes().getJukebox());
@@ -82,12 +80,6 @@ public class CraftBackpack implements Listener {
 
         int oldId = -1;
         if(!event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER)) return;
-
-        if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getFurnace(), PersistentDataType.INTEGER)){
-            player.discoverRecipe(new UpgradesRecipes().getSmoker());
-            player.discoverRecipe(new UpgradesRecipes().getBlastFurnace());
-            return;
-        }
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getNAMESPACE_LEATHER_BACKPACK(), PersistentDataType.INTEGER)){
             int id = BackpackManager.lastBackpackID + 1;

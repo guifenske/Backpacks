@@ -13,8 +13,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
-import java.util.UUID;
+import org.bukkit.inventory.ItemStack;
 
 public class RenameBackpack implements Listener {
 
@@ -34,55 +33,23 @@ public class RenameBackpack implements Listener {
 
         BackpackAction.clearPlayerAction(player);
         BackPack backPack = BackpackManager.getPlayerCurrentBackpack(player);
-
-        Bukkit.getScheduler().runTask(Main.getMain(), ()->{
-            for(UUID uuid : backPack.getViewersIds()){
-                if(BackpackManager.getCurrentPage().containsKey(uuid)){
-                    Player player1 = Bukkit.getPlayer(uuid);
-                    if(player1 == null) continue;
-                    BackpackAction.clearPlayerAction(player1);
-                    BackpackAction.getSpectators().remove(player1.getUniqueId());
-                    player1.closeInventory();
-                }
-            }
-        });
+        Bukkit.getScheduler().runTask(Main.getMain(), backPack::closeInventoryGlobally);
 
         if(backPack.getLocation() == null && backPack.getOwner() == null) {
-            player.getInventory().remove(RecipesUtils.getItemFromBackpack(backPack));
+            player.getInventory().remove(backPack.getBackpackItem());
             backPack.setName(newName);
-            Bukkit.getScheduler().runTask(Main.getMain(), ()->{
-                for(UUID uuid : backPack.getViewersIds()){
-                    if(BackpackManager.getCurrentPage().containsKey(uuid)){
-                        Player player1 = Bukkit.getPlayer(uuid);
-                        if(player1 == null) continue;
-                        if(BackpackManager.getCurrentPage().get(uuid) == 1) backPack.open(player1);
-                        else backPack.openSecondPage(player1);
-                    }
-                }
-            });
-            player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
+            ItemStack bpItem = RecipesUtils.getItemFromBackpack(backPack);
+            player.getInventory().addItem(bpItem);
             player.sendMessage(Main.PREFIX + "§aRenamed backpack to " + newName + ".");
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
             return;
         }
 
         if(backPack.isShowingNameAbove()) {
-            Bukkit.getScheduler().runTask(Main.getMain(), () -> {
-                backPack.getMarkerEntity().customName(Component.text(newName));
-            });
+            Bukkit.getScheduler().runTask(Main.getMain(), () -> backPack.getMarkerEntity().customName(Component.text(newName)));
         }
 
         backPack.setName(newName);
-        Bukkit.getScheduler().runTask(Main.getMain(), ()->{
-            for(UUID uuid : backPack.getViewersIds()){
-                if(BackpackManager.getCurrentPage().containsKey(uuid)){
-                    Player player1 = Bukkit.getPlayer(uuid);
-                    if(player1 == null) continue;
-                    if(BackpackManager.getCurrentPage().get(uuid) == 1) backPack.open(player1);
-                    else backPack.openSecondPage(player1);
-                }
-            }
-        });
         player.sendMessage(Main.PREFIX + "§aRenamed backpack to " + newName + ".");
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
     }

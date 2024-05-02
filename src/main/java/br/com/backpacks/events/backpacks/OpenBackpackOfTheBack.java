@@ -1,6 +1,7 @@
 package br.com.backpacks.events.backpacks;
 
 import br.com.backpacks.recipes.BackpackRecipes;
+import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackManager;
 import org.bukkit.Sound;
@@ -21,6 +22,7 @@ public class OpenBackpackOfTheBack implements Listener {
         }
         BackPack backPack = BackpackManager.getBackpackFromId(event.getPlayer().getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
         event.setCancelled(true);
+        backPack.setBackpackItem(RecipesUtils.getItemFromBackpack(backPack));
         backPack.open(event.getPlayer());
         event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
     }

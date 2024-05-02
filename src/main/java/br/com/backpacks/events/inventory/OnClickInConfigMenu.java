@@ -55,7 +55,7 @@ public class OnClickInConfigMenu implements Listener {
                     }, 1L);
                 }
 
-                case FURNACE, SMOKER, BLAST_FURNACE -> {
+                case FURNACE -> {
                     BackpackAction.clearPlayerAction(player);
                     Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
                         event.getWhoClicked().openInventory(upgrade.getInventory());
@@ -133,24 +133,25 @@ public class OnClickInConfigMenu implements Listener {
                 if (backPack.getOwner() != null && backPack.getOwner().equals(player.getUniqueId())){
                     player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
                     player.getPersistentDataContainer().remove(new BackpackRecipes().getHAS_BACKPACK());
-                    if(backPack.getUpgradeFromType(UpgradeType.JUKEBOX) != null){
-                        JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradeFromType(UpgradeType.JUKEBOX);
-                        if(upgrade.getSound() != null){
-                            upgrade.clearLoopingTask();
-                            JukeboxUpgradeEvents.stopSound(player, upgrade);
-                        }
+                    JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradeFromType(UpgradeType.JUKEBOX);
+
+                    if(upgrade != null && upgrade.getSound() != null){
+                        upgrade.clearLoopingTask();
+                        JukeboxUpgradeEvents.stopSound(player, upgrade);
                     }
 
                     backPack.setOwner(null);
-                } else if(backPack.getOwner() == null){
-                    if(player.getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
-                    player.getInventory().remove(RecipesUtils.getItemFromBackpack(backPack));
-                    player.getPersistentDataContainer().set(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER, backPack.getId());
-                    backPack.setOwner(player.getUniqueId());
+                    BackpackAction.clearPlayerAction(player);
+                    Bukkit.getScheduler().runTaskLater(Main.getMain(), backPack::closeInventoryGlobally, 1L);
+                    return;
                 }
 
-                InventoryBuilder.updateConfigInv(backPack);
-        }
+                player.getInventory().remove(backPack.getBackpackItem());
+                player.getPersistentDataContainer().set(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER, backPack.getId());
+                backPack.setOwner(player.getUniqueId());
+                BackpackAction.clearPlayerAction(player);
+                Bukkit.getScheduler().runTaskLater(Main.getMain(), backPack::closeInventoryGlobally, 1L);
+            }
             //rename backpack
             case 52 -> {
                 backPack.getViewersIds().remove(player.getUniqueId());
