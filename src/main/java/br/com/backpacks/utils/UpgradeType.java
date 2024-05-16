@@ -26,5 +26,7 @@ public enum UpgradeType {
 
     ADVANCED_FILTER,
 
-    MAGNET
+    MAGNET,
+
+    EXP_STORAGE
 }

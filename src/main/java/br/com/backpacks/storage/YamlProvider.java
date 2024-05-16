@@ -147,14 +147,14 @@ public final class YamlProvider extends StorageProvider {
     public void loadUpgrades(){
         File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/upgrades.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        UpgradeManager.lastUpgradeID = 0;
+        UpgradeManager.lastUpgradeID.set(0);
 
         for(String i : config.getKeys(false)){
             UpgradeType type = UpgradeType.valueOf(config.getString(i + ".type"));
             int id = Integer.parseInt(i);
-            if(UpgradeManager.lastUpgradeID == 0) UpgradeManager.lastUpgradeID = id;
-            if(UpgradeManager.lastUpgradeID < id){
-                UpgradeManager.lastUpgradeID = id;
+            if(UpgradeManager.lastUpgradeID.get() == 0) UpgradeManager.lastUpgradeID.set(id);
+            if(UpgradeManager.lastUpgradeID.get() < id){
+                UpgradeManager.lastUpgradeID.set(id);
             }
 
             switch (type){
@@ -283,7 +283,7 @@ public final class YamlProvider extends StorageProvider {
     public void loadBackpacks() {
         File file = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/backpacks.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        BackpackManager.lastBackpackID = 0;
+        BackpackManager.lastBackpackID.set(0);
 
         for (String i : config.getKeys(false)) {
             BackPack backPack = new BackPack().deserialize(config, i);
@@ -302,9 +302,9 @@ public final class YamlProvider extends StorageProvider {
             new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
 
             int id = backPack.getId();
-            if(BackpackManager.lastBackpackID == 0) BackpackManager.lastBackpackID = id;
-            if(BackpackManager.lastBackpackID < id){
-                BackpackManager.lastBackpackID = id;
+            if(BackpackManager.lastBackpackID.get() == 0) BackpackManager.lastBackpackID.set(id);
+            if(BackpackManager.lastBackpackID.get() < id){
+                BackpackManager.lastBackpackID.set(id);
             }
         }
     }

@@ -17,21 +17,21 @@ public class FinishedSmelting implements Listener {
 
     @EventHandler
     private void onSmelt(BlockCookEvent event){
-        if(!event.getResult().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getNAMESPACE_DRIED_BACKPACK(), PersistentDataType.INTEGER)) return;
+        if(!event.getResult().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.getNAMESPACE_DRIED_BACKPACK(), PersistentDataType.INTEGER)) return;
 
         ItemStack driedBackpack = new ItemStack(Material.BARREL);
         ItemMeta meta = driedBackpack.getItemMeta();
         meta.setDisplayName("Unknown Backpack");
-        meta.getPersistentDataContainer().set(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER, BackpackManager.lastBackpackID + 1);
-        RandomBackpackBuilder randomBackpackBuilder = new RandomBackpackBuilder("Unknown Backpack", meta.getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+        meta.getPersistentDataContainer().set(BackpackRecipes.isBackpack(), PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(BackpackRecipes.getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER, BackpackManager.lastBackpackID.get() + 1);
+        RandomBackpackBuilder randomBackpackBuilder = new RandomBackpackBuilder("Unknown Backpack", meta.getPersistentDataContainer().get(BackpackRecipes.getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
         BackPack backPack = randomBackpackBuilder.generateBackpack();
         meta.getPersistentDataContainer().set(backPack.getNamespace(), PersistentDataType.INTEGER, 1);
         driedBackpack.setItemMeta(meta);
-        BackpackManager.lastBackpackID++;
-        new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack);
-        new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack);
-        new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack);
+        BackpackManager.lastBackpackID.getAndIncrement();
+        new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
+        new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
+        new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
         event.setResult(driedBackpack);
     }
 }

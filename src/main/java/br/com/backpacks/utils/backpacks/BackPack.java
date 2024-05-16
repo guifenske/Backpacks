@@ -217,11 +217,11 @@ public final class BackPack extends UpgradeManager {
         Barrel barrel = (Barrel) location.getBlock().getState();
         Bukkit.getScheduler().runTask(Main.getMain(), ()->{
             if(uuid == null){
-                barrel.getPersistentDataContainer().remove(new BackpackRecipes().getMARKER_ID());
+                barrel.getPersistentDataContainer().remove(BackpackRecipes.getMARKER_ID());
                 return;
             }
 
-            barrel.getPersistentDataContainer().set(new BackpackRecipes().getMARKER_ID(), PersistentDataType.STRING, uuid.toString());
+            barrel.getPersistentDataContainer().set(BackpackRecipes.getMARKER_ID(), PersistentDataType.STRING, uuid.toString());
         });
     }
 
@@ -269,25 +269,25 @@ public final class BackPack extends UpgradeManager {
     public NamespacedKey getNamespace() {
         switch (getType()) {
             case LEATHER -> {
-                return new BackpackRecipes().getNAMESPACE_LEATHER_BACKPACK();
+                return BackpackRecipes.getNAMESPACE_LEATHER_BACKPACK();
             }
             case IRON -> {
-                return new BackpackRecipes().getNAMESPACE_IRON_BACKPACK();
+                return BackpackRecipes.getNAMESPACE_IRON_BACKPACK();
             }
             case GOLD -> {
-                return new BackpackRecipes().getNAMESPACE_GOLD_BACKPACK();
+                return BackpackRecipes.getNAMESPACE_GOLD_BACKPACK();
             }
             case LAPIS -> {
-                return new BackpackRecipes().getNAMESPACE_LAPIS_BACKPACK();
+                return BackpackRecipes.getNAMESPACE_LAPIS_BACKPACK();
             }
             case AMETHYST -> {
-                return new BackpackRecipes().getNAMESPACE_AMETHYST_BACKPACK();
+                return BackpackRecipes.getNAMESPACE_AMETHYST_BACKPACK();
             }
             case DIAMOND -> {
-                return new BackpackRecipes().getNAMESPACE_DIAMOND_BACKPACK();
+                return BackpackRecipes.getNAMESPACE_DIAMOND_BACKPACK();
             }
             case NETHERITE -> {
-                return new BackpackRecipes().getNAMESPACE_NETHERITE_BACKPACK();
+                return BackpackRecipes.getNAMESPACE_NETHERITE_BACKPACK();
             }
         }
 
@@ -331,14 +331,14 @@ public final class BackPack extends UpgradeManager {
     public ItemStack getFirstItem(){
         for(ItemStack itemStack : firstPage){
             if(itemStack == null) continue;
-            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
+            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
             return itemStack;
         }
 
         if(getSecondPage() != null){
             for(ItemStack itemStack : secondPage){
                 if(itemStack == null) continue;
-                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
+                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
                 return itemStack;
             }
         }
@@ -416,13 +416,13 @@ public final class BackPack extends UpgradeManager {
         List<ItemStack> list = new ArrayList<>();
         for(ItemStack itemStack : firstPage){
             if(itemStack == null) continue;
-            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
+            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
             list.add(itemStack);
         }
         if(secondPage != null){
             for(ItemStack itemStack : secondPage){
                 if(itemStack == null) continue;
-                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
+                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
                 list.add(itemStack);
             }
         }

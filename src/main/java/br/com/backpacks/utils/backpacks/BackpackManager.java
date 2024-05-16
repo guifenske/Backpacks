@@ -11,10 +11,11 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public final class BackpackManager {
     private static boolean canBeOpen = true;
-    public static int lastBackpackID = 0;
+    public static AtomicInteger lastBackpackID = new AtomicInteger(0);
     private static final ConcurrentHashMap<Location, Integer> backpacksPlacedLocations = new ConcurrentHashMap<>();
     private static final HashMap<UUID, Integer> currentPage = new HashMap<>();
     private static ConcurrentHashMap<Integer, BackPack> backpacks = new ConcurrentHashMap<>();

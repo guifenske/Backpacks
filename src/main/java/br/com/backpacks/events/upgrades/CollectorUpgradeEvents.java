@@ -21,8 +21,8 @@ import org.bukkit.persistence.PersistentDataType;
 public class CollectorUpgradeEvents implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void onPickUp(PlayerAttemptPickupItemEvent event){
-        if(!event.getPlayer().getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
-        BackPack backPack = BackpackManager.getBackpackFromId(event.getPlayer().getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        if(!event.getPlayer().getPersistentDataContainer().has(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
+        BackPack backPack = BackpackManager.getBackpackFromId(event.getPlayer().getPersistentDataContainer().get(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER));
         if(backPack == null) return;
         if(backPack.getUpgradeFromType(UpgradeType.COLLECTOR) == null) return;
         CollectorUpgrade upgrade = (CollectorUpgrade) backPack.getUpgradeFromType(UpgradeType.COLLECTOR);

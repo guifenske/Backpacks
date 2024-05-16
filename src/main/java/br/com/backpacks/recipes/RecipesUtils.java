@@ -11,6 +11,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,25 +20,25 @@ public class RecipesUtils {
 
     public static BackPack getBackpackFromItem(ItemStack itemStack){
         ItemMeta meta = itemStack.getItemMeta();
-        if(!meta.getPersistentDataContainer().has(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER)) return null;
+        if(!meta.getPersistentDataContainer().has(BackpackRecipes.isBackpack(), PersistentDataType.INTEGER)) return null;
 
-        return BackpackManager.getBackpackFromId(meta.getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+        return BackpackManager.getBackpackFromId(meta.getPersistentDataContainer().get(BackpackRecipes.getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
     }
 
-    public static ItemStack getItemFromBackpack(BackPack backPack) {
+    public static ItemStack getItemFromBackpack(@NotNull BackPack backPack) {
         ItemStack itemStack = new ItemStack(Material.BARREL);
         ItemMeta meta = itemStack.getItemMeta();
         
         meta.setDisplayName(backPack.getName());
-        meta.getPersistentDataContainer().set(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER, backPack.getId());
+        meta.getPersistentDataContainer().set(BackpackRecipes.isBackpack(), PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(BackpackRecipes.getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER, backPack.getId());
         meta.getPersistentDataContainer().set(backPack.getNamespace(), PersistentDataType.INTEGER, 1);
         itemStack.setItemMeta(meta);
         return itemStack;
     }
 
     public static boolean isItemUpgrade(ItemStack itemStack){
-        return itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().isUpgrade(), PersistentDataType.INTEGER);
+        return itemStack.getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.isUpgrade(), PersistentDataType.INTEGER);
     }
 
     public static ItemStack getItemFromUpgrade(Upgrade upgrade) {
@@ -47,9 +48,9 @@ public class RecipesUtils {
 
         meta.setDisplayName(upgradeType.toString().toUpperCase().charAt(0) + upgradeType.toString().replace("_", " ").substring(1).toLowerCase() + " Upgrade");
         meta.setLore(getLore(upgrade));
-        meta.getPersistentDataContainer().set(new UpgradesRecipes().isUpgrade(), PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(UpgradesRecipes.isUpgrade(), PersistentDataType.INTEGER, 1);
         meta.getPersistentDataContainer().set(getNamespaceFromUpgrade(upgrade), PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(new UpgradesRecipes().getUPGRADE_ID(), PersistentDataType.INTEGER, upgrade.getId());
+        meta.getPersistentDataContainer().set(UpgradesRecipes.getUPGRADE_ID(), PersistentDataType.INTEGER, upgrade.getId());
         itemStack.setItemMeta(meta);
         return itemStack;
     }
@@ -57,55 +58,55 @@ public class RecipesUtils {
     private static NamespacedKey getNamespaceFromUpgrade(Upgrade upgrade){
         switch (upgrade.getType()){
             case CRAFTING -> {
-                return new UpgradesRecipes().getCraftingGrid();
+                return UpgradesRecipes.getCraftingGrid();
             }
 
             case UNBREAKABLE -> {
-                return new UpgradesRecipes().getUnbreaking();
+                return UpgradesRecipes.getUnbreaking();
             }
 
             case JUKEBOX -> {
-                return new UpgradesRecipes().getJukebox();
+                return UpgradesRecipes.getJukebox();
             }
 
             case VILLAGERSFOLLOW -> {
-                return new UpgradesRecipes().getVillagersFollow();
+                return UpgradesRecipes.getVillagersFollow();
             }
 
             case AUTOFILL -> {
-                return new UpgradesRecipes().getAutoFill();
+                return UpgradesRecipes.getAutoFill();
             }
 
             case AUTOFEED -> {
-                return new UpgradesRecipes().getAutoFeed();
+                return UpgradesRecipes.getAutoFeed();
             }
 
             case FURNACE -> {
-                return new UpgradesRecipes().getFurnace();
+                return UpgradesRecipes.getFurnace();
             }
 
             case LIQUIDTANK -> {
-                return new UpgradesRecipes().getLiquidTank();
+                return UpgradesRecipes.getLiquidTank();
             }
 
             case ENCAPSULATE -> {
-                return new UpgradesRecipes().getEncapsulate();
+                return UpgradesRecipes.getEncapsulate();
             }
 
             case COLLECTOR -> {
-                return new UpgradesRecipes().getCollector();
+                return UpgradesRecipes.getCollector();
             }
 
             case MAGNET -> {
-                return new UpgradesRecipes().getMagnet();
+                return UpgradesRecipes.getMagnet();
             }
 
             case FILTER -> {
-                return new UpgradesRecipes().getFilter();
+                return UpgradesRecipes.getFilter();
             }
 
             case ADVANCED_FILTER -> {
-                return new UpgradesRecipes().getAdvancedFilter();
+                return UpgradesRecipes.getAdvancedFilter();
             }
         }
 
@@ -171,58 +172,58 @@ public class RecipesUtils {
     }
 
     public static Upgrade getUpgradeFromItem(ItemStack itemStack) {
-        int id = itemStack.getItemMeta().getPersistentDataContainer().get(new UpgradesRecipes().getUPGRADE_ID(), PersistentDataType.INTEGER);
+        int id = itemStack.getItemMeta().getPersistentDataContainer().get(UpgradesRecipes.getUPGRADE_ID(), PersistentDataType.INTEGER);
         if (UpgradeManager.getUpgradeFromId(id) != null) return UpgradeManager.getUpgradeFromId(id);
 
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getAutoFill(), PersistentDataType.INTEGER)) {
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.getAutoFill(), PersistentDataType.INTEGER)) {
             UpgradeManager.getUpgrades().put(id, new Upgrade(UpgradeType.AUTOFILL, id));
             return UpgradeManager.getUpgrades().get(id);
         }
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getAutoFeed(), PersistentDataType.INTEGER)) {
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.getAutoFeed(), PersistentDataType.INTEGER)) {
             UpgradeManager.getUpgrades().put(id, new AutoFeedUpgrade(id));
             return UpgradeManager.getUpgrades().get(id);
         }
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getFurnace(), PersistentDataType.INTEGER)) {
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.getFurnace(), PersistentDataType.INTEGER)) {
             UpgradeManager.getUpgrades().put(id, new FurnaceUpgrade(id));
             return UpgradeManager.getUpgrades().get(id);
         }
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getCraftingGrid(), PersistentDataType.INTEGER)) {
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.getCraftingGrid(), PersistentDataType.INTEGER)) {
             UpgradeManager.getUpgrades().put(id, new Upgrade(UpgradeType.CRAFTING, id));
             return UpgradeManager.getUpgrades().get(id);
         }
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getJukebox(), PersistentDataType.INTEGER)){
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.getJukebox(), PersistentDataType.INTEGER)){
             UpgradeManager.getUpgrades().put(id, new JukeboxUpgrade(id));
             return UpgradeManager.getUpgrades().get(id);
         }
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getVillagersFollow(), PersistentDataType.INTEGER)){
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.getVillagersFollow(), PersistentDataType.INTEGER)){
             UpgradeManager.getUpgrades().put(id, new VillagersFollowUpgrade(id));
             return UpgradeManager.getUpgrades().get(id);
         }
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getLiquidTank(), PersistentDataType.INTEGER)) {
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.getLiquidTank(), PersistentDataType.INTEGER)) {
             UpgradeManager.getUpgrades().put(id, new TanksUpgrade(id));
             return UpgradeManager.getUpgrades().get(id);
         }
-        if (itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getEncapsulate(), PersistentDataType.INTEGER)) {
+        if (itemStack.getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.getEncapsulate(), PersistentDataType.INTEGER)) {
             UpgradeManager.getUpgrades().put(id, new Upgrade(UpgradeType.ENCAPSULATE, id));
             return UpgradeManager.getUpgrades().get(id);
         }
-        if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getCollector(), PersistentDataType.INTEGER)){
+        if(itemStack.getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.getCollector(), PersistentDataType.INTEGER)){
             UpgradeManager.getUpgrades().put(id, new CollectorUpgrade(id));
             return UpgradeManager.getUpgrades().get(id);
         }
-        if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getUnbreaking(), PersistentDataType.INTEGER)){
+        if(itemStack.getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.getUnbreaking(), PersistentDataType.INTEGER)){
             UpgradeManager.getUpgrades().put(id, new Upgrade(UpgradeType.UNBREAKABLE, id));
             return UpgradeManager.getUpgrades().get(id);
         }
-        if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getMagnet(), PersistentDataType.INTEGER)){
+        if(itemStack.getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.getMagnet(), PersistentDataType.INTEGER)){
             UpgradeManager.getUpgrades().put(id, new Upgrade(UpgradeType.MAGNET, id));
             return UpgradeManager.getUpgrades().get(id);
         }
-        if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getFilter(), PersistentDataType.INTEGER)){
+        if(itemStack.getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.getFilter(), PersistentDataType.INTEGER)){
             UpgradeManager.getUpgrades().put(id, new FilterUpgrade(UpgradeType.FILTER, id));
             return UpgradeManager.getUpgrades().get(id);
         }
-        if(itemStack.getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().getAdvancedFilter(), PersistentDataType.INTEGER)){
+        if(itemStack.getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.getAdvancedFilter(), PersistentDataType.INTEGER)){
             UpgradeManager.getUpgrades().put(id, new FilterUpgrade(UpgradeType.ADVANCED_FILTER, id));
             return UpgradeManager.getUpgrades().get(id);
         }

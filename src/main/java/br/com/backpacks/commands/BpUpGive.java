@@ -41,20 +41,20 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
 
         Upgrade upgrade;
         switch (type){
-            case JUKEBOX -> upgrade = new JukeboxUpgrade(UpgradeManager.lastUpgradeID + 1);
-            case VILLAGERSFOLLOW -> upgrade = new VillagersFollowUpgrade(UpgradeManager.lastUpgradeID + 1);
-            case AUTOFEED -> upgrade = new AutoFeedUpgrade(UpgradeManager.lastUpgradeID + 1);
-            case FURNACE -> upgrade = new FurnaceUpgrade(UpgradeManager.lastUpgradeID + 1);
-            case LIQUIDTANK -> upgrade = new TanksUpgrade(UpgradeManager.lastUpgradeID + 1);
-            case COLLECTOR -> upgrade = new CollectorUpgrade(UpgradeManager.lastUpgradeID + 1);
+            case JUKEBOX -> upgrade = new JukeboxUpgrade(UpgradeManager.lastUpgradeID.get() + 1);
+            case VILLAGERSFOLLOW -> upgrade = new VillagersFollowUpgrade(UpgradeManager.lastUpgradeID.get() + 1);
+            case AUTOFEED -> upgrade = new AutoFeedUpgrade(UpgradeManager.lastUpgradeID.get() + 1);
+            case FURNACE -> upgrade = new FurnaceUpgrade(UpgradeManager.lastUpgradeID.get() + 1);
+            case LIQUIDTANK -> upgrade = new TanksUpgrade(UpgradeManager.lastUpgradeID.get() + 1);
+            case COLLECTOR -> upgrade = new CollectorUpgrade(UpgradeManager.lastUpgradeID.get() + 1);
 
             case AUTOFILL -> {
                 sender.sendMessage(Main.PREFIX + args[0] + " isn't a valid UpgradeType!");
                 return true;
             }
 
-            case FILTER, ADVANCED_FILTER -> upgrade = new FilterUpgrade(type, UpgradeManager.lastUpgradeID + 1);
-            default -> upgrade = new Upgrade(type, UpgradeManager.lastUpgradeID + 1);
+            case FILTER, ADVANCED_FILTER -> upgrade = new FilterUpgrade(type, UpgradeManager.lastUpgradeID.get() + 1);
+            default -> upgrade = new Upgrade(type, UpgradeManager.lastUpgradeID.get() + 1);
         }
 
         ItemStack upgradeItem = RecipesUtils.getItemFromUpgrade(upgrade);
@@ -72,7 +72,7 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
                 return true;
             }
             UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
-            UpgradeManager.lastUpgradeID++;
+            UpgradeManager.lastUpgradeID.getAndIncrement();
             player.playSound(net.kyori.adventure.sound.Sound.sound(Sound.ENTITY_PLAYER_LEVELUP, net.kyori.adventure.sound.Sound.Source.MASTER, 1, 1));
             return true;
         }
@@ -89,7 +89,7 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
         }
 
         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
-        UpgradeManager.lastUpgradeID++;
+        UpgradeManager.lastUpgradeID.getAndIncrement();
         player.playSound(net.kyori.adventure.sound.Sound.sound(Sound.ENTITY_PLAYER_LEVELUP, net.kyori.adventure.sound.Sound.Source.MASTER, 1, 1));
         return true;
     }

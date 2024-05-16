@@ -18,8 +18,8 @@ public class AnvilRenameBackpack implements Listener {
         if(!event.getSlotType().equals(InventoryType.SlotType.RESULT)) return;
         if(event.getCurrentItem() == null) return;
         if(!event.getCurrentItem().hasItemMeta()) return;
-        if(!event.getCurrentItem().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER)) return;
-        BackPack backPack = BackpackManager.getBackpackFromId(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+        if(!event.getCurrentItem().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.isBackpack(), PersistentDataType.INTEGER)) return;
+        BackPack backPack = BackpackManager.getBackpackFromId(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(BackpackRecipes.getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
         backPack.setName(event.getCurrentItem().getItemMeta().getDisplayName());
     }
 }

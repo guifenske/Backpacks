@@ -7,10 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class UpgradeManager {
     private static ConcurrentHashMap<Integer, Upgrade> upgrades = new ConcurrentHashMap<>();
-    public static int lastUpgradeID = 0;
+    public static AtomicInteger lastUpgradeID = new AtomicInteger(0);
     public static void setUpgrades(ConcurrentHashMap<Integer, Upgrade> upgradesList){
         upgrades = upgradesList;
     }

@@ -132,7 +132,7 @@ public class OnClickInConfigMenu implements Listener {
                 if(backPack.getLocation() != null)  return;
                 if (backPack.getOwner() != null && backPack.getOwner().equals(player.getUniqueId())){
                     player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
-                    player.getPersistentDataContainer().remove(new BackpackRecipes().getHAS_BACKPACK());
+                    player.getPersistentDataContainer().remove(BackpackRecipes.getHAS_BACKPACK());
                     JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradeFromType(UpgradeType.JUKEBOX);
 
                     if(upgrade != null && upgrade.getSound() != null){
@@ -147,9 +147,10 @@ public class OnClickInConfigMenu implements Listener {
                 }
 
                 player.getInventory().remove(backPack.getBackpackItem());
-                player.getPersistentDataContainer().set(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER, backPack.getId());
+                player.getPersistentDataContainer().set(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER, backPack.getId());
                 backPack.setOwner(player.getUniqueId());
                 BackpackAction.clearPlayerAction(player);
+                InventoryBuilder.updateConfigInv(backPack);
                 Bukkit.getScheduler().runTaskLater(Main.getMain(), backPack::closeInventoryGlobally, 1L);
             }
             //rename backpack

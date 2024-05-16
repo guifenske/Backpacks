@@ -21,8 +21,8 @@ public class BackpackPlace implements Listener {
         if (!event.getBlockPlaced().getType().equals(Material.BARREL)) return;
 
         PersistentDataContainer itemData = event.getItemInHand().getItemMeta().getPersistentDataContainer();
-        if (!itemData.has(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER)) {
-            if (itemData.has(new BackpackRecipes().getNAMESPACE_WET_BACKPACK(), PersistentDataType.INTEGER)) {
+        if (!itemData.has(BackpackRecipes.getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER)) {
+            if (itemData.has(BackpackRecipes.getNAMESPACE_WET_BACKPACK(), PersistentDataType.INTEGER)) {
                 event.getPlayer().sendMessage(Main.PREFIX + "§cHumm, this thing is to wet to be used as a backpack.");
                 event.setCancelled(true);
             }
@@ -34,14 +34,14 @@ public class BackpackPlace implements Listener {
             return;
         }
 
-        BackPack backPack = BackpackManager.getBackpackFromId(itemData.get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+        BackPack backPack = BackpackManager.getBackpackFromId(itemData.get(BackpackRecipes.getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
         if (backPack == null) return;
 
         //enforce removal of the item from the player's inventory
         //for some reason, Inventory.remove() doesn't remove from offHand slot.
         if(event.getPlayer().getInventory().getItemInOffHand().hasItemMeta() && event.getPlayer().getInventory().getItemInOffHand().getType().equals(Material.BARREL)){
-            if(event.getPlayer().getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER)){
-                int id = event.getPlayer().getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
+            if(event.getPlayer().getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.isBackpack(), PersistentDataType.INTEGER)){
+                int id = event.getPlayer().getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().get(BackpackRecipes.getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
                 if(backPack.getId() == id){
                     event.getPlayer().getInventory().setItemInOffHand(null);
                 }

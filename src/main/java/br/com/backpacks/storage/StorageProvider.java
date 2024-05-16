@@ -45,7 +45,7 @@ public class StorageProvider {
     }
 
     public void loadBackpacks(ConcurrentHashMap<Integer, BackPack> hashMap){
-        BackpackManager.lastBackpackID = 0;
+        BackpackManager.lastBackpackID.set(0);
         BackpackManager.setBackpacks(hashMap);
         BackpackManager.getBackpacksPlacedLocations().clear();
         if(hashMap.isEmpty()) return;
@@ -78,23 +78,23 @@ public class StorageProvider {
             new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
 
             int id = backPack.getId();
-            if(BackpackManager.lastBackpackID == 0) BackpackManager.lastBackpackID = id;
-            if(BackpackManager.lastBackpackID < id){
-                BackpackManager.lastBackpackID = id;
+            if(BackpackManager.lastBackpackID.get() == 0) BackpackManager.lastBackpackID.set(id);
+            if(BackpackManager.lastBackpackID.get() < id){
+                BackpackManager.lastBackpackID.set(id);
             }
         }
     }
 
     public void loadUpgrades(ConcurrentHashMap<Integer, Upgrade> hashMap){
-        UpgradeManager.lastUpgradeID = 0;
+        UpgradeManager.lastUpgradeID.set(0);
         UpgradeManager.setUpgrades(hashMap);
         if(hashMap.isEmpty()) return;
         for(Map.Entry<Integer, Upgrade> entry : hashMap.entrySet()){
             entry.getValue().stopTickingUpgrade();
 
-            if(UpgradeManager.lastUpgradeID == 0) UpgradeManager.lastUpgradeID = entry.getKey();
-            if(UpgradeManager.lastUpgradeID < entry.getKey()){
-                UpgradeManager.lastUpgradeID = entry.getKey();
+            if(UpgradeManager.lastUpgradeID.get() == 0) UpgradeManager.lastUpgradeID.set(entry.getKey());
+            if(UpgradeManager.lastUpgradeID.get() < entry.getKey()){
+                UpgradeManager.lastUpgradeID.set(entry.getKey());
             }
         }
     }

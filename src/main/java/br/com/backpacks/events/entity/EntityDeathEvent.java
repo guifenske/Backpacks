@@ -30,8 +30,8 @@ public class EntityDeathEvent implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     private void onPlayerDeath(org.bukkit.event.entity.PlayerDeathEvent event){
-        if(!event.getPlayer().getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
-        BackPack backpack = BackpackManager.getBackpackFromId(event.getPlayer().getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        if(!event.getPlayer().getPersistentDataContainer().has(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
+        BackPack backpack = BackpackManager.getBackpackFromId(event.getPlayer().getPersistentDataContainer().get(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER));
         Player player = event.getPlayer();
         Location location = safeLocation(player.getLocation().toBlockLocation());
 
@@ -54,7 +54,7 @@ public class EntityDeathEvent implements Listener {
         backpack.setLocation(location);
         InventoryBuilder.updateConfigInv(backpack);
         BackpackManager.getBackpacksPlacedLocations().put(backpack.getLocation(), backpack.getId());
-        player.getPersistentDataContainer().remove(new BackpackRecipes().getHAS_BACKPACK());
+        player.getPersistentDataContainer().remove(BackpackRecipes.getHAS_BACKPACK());
         double y = backpack.getLocation().getY() + 1;
         Component component = Component.text(Main.PREFIX + "§cYou died and your backpack was placed on: " + backpack.getLocation().getX() + ", " + backpack.getLocation().getY() + ", " + backpack.getLocation().getZ() + "! Click to teleport!")
                 .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + backpack.getLocation().getX() + " " + y + " " + backpack.getLocation().getZ()));
@@ -66,9 +66,9 @@ public class EntityDeathEvent implements Listener {
         if(!(event.getEntity() instanceof Monster)) return;
         if(event.getEntity().getKiller() == null) return;
         if(Constants.MONSTER_DROPS_BACKPACK && ThreadLocalRandom.current().nextInt(830) == 69) {
-            RandomBackpackBuilder randomBackpackBuilder = new RandomBackpackBuilder("Unknown Backpack", BackpackManager.lastBackpackID + 1);
+            RandomBackpackBuilder randomBackpackBuilder = new RandomBackpackBuilder("Unknown Backpack", BackpackManager.lastBackpackID.get() + 1);
             BackPack backPack = randomBackpackBuilder.generateBackpack();
-            BackpackManager.lastBackpackID++;
+            BackpackManager.lastBackpackID.getAndIncrement();
             new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
             new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
             new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();

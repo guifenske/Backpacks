@@ -212,29 +212,29 @@ public final class Main extends JavaPlugin {
 
     private void registerRecipes(){
         //Backpacks
-        Bukkit.addRecipe(new BackpackRecipes().leatherBackpackRecipe());
-        Bukkit.addRecipe(new BackpackRecipes().ironBackpackRecipe());
-        Bukkit.addRecipe(new BackpackRecipes().diamondBackpackRecipe());
-        Bukkit.addRecipe(new BackpackRecipes().netheriteBackpackRecipe());
-        Bukkit.addRecipe(new BackpackRecipes().goldBackpackRecipe());
-        Bukkit.addRecipe(new BackpackRecipes().amethystBackpackRecipe());
-        Bukkit.addRecipe(new BackpackRecipes().lapisBackpackRecipe());
-        Bukkit.addRecipe(new BackpackRecipes().driedBackpackRecipe());
+        Bukkit.addRecipe(BackpackRecipes.leatherBackpackRecipe());
+        Bukkit.addRecipe(BackpackRecipes.ironBackpackRecipe());
+        Bukkit.addRecipe(BackpackRecipes.diamondBackpackRecipe());
+        Bukkit.addRecipe(BackpackRecipes.netheriteBackpackRecipe());
+        Bukkit.addRecipe(BackpackRecipes.goldBackpackRecipe());
+        Bukkit.addRecipe(BackpackRecipes.amethystBackpackRecipe());
+        Bukkit.addRecipe(BackpackRecipes.lapisBackpackRecipe());
+        Bukkit.addRecipe(BackpackRecipes.driedBackpackRecipe());
 
 
         //Upgrades
-        Bukkit.addRecipe(new UpgradesRecipes().getAutoFeedRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getJukeboxRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getFurnaceRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getCraftingRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getFollowingVillagersRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getEncapsulateRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getCollectorRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getUnbreakableUpgradeRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getLiquidTankRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getMagnetRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getFilterRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getAdvancedFilterUpgrade());
+        Bukkit.addRecipe(UpgradesRecipes.getAutoFeedRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getJukeboxRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getFurnaceRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getCraftingRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getFollowingVillagersRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getEncapsulateRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getCollectorRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getUnbreakableUpgradeRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getLiquidTankRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getMagnetRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getFilterRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getAdvancedFilterUpgrade());
 
         Iterator<Recipe> iterator = Bukkit.recipeIterator();
         while (iterator.hasNext()){
@@ -257,7 +257,7 @@ public final class Main extends JavaPlugin {
         for(BackPack backPack : BackpackManager.getBackpacks().values()){
             if(!backPack.isShowingNameAbove()) continue;
             Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
-            backPack.setMarkerId(UUID.fromString(barrel.getPersistentDataContainer().get(new BackpackRecipes().getMARKER_ID(), PersistentDataType.STRING)));
+            backPack.setMarkerId(UUID.fromString(barrel.getPersistentDataContainer().get(BackpackRecipes.getMARKER_ID(), PersistentDataType.STRING)));
         }
     }
 }

@@ -274,9 +274,9 @@ public class MySQLProvider extends StorageProvider{
                     }
                 }
 
-                if(UpgradeManager.lastUpgradeID == 0) UpgradeManager.lastUpgradeID = id;
-                if(UpgradeManager.lastUpgradeID < id){
-                    UpgradeManager.lastUpgradeID = id;
+                if(UpgradeManager.lastUpgradeID.get() == 0) UpgradeManager.lastUpgradeID.set(id);
+                if(UpgradeManager.lastUpgradeID.get() < id){
+                    UpgradeManager.lastUpgradeID.set(id);
                 }
                 Main.debugMessage("loaded " + type.toString().toLowerCase() + " upgrade: " + id);
             }
@@ -321,9 +321,9 @@ public class MySQLProvider extends StorageProvider{
                new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
 
                int id = backPack.getId();
-               if(BackpackManager.lastBackpackID == 0) BackpackManager.lastBackpackID = id;
-               if(BackpackManager.lastBackpackID < id){
-                   BackpackManager.lastBackpackID = id;
+               if(BackpackManager.lastBackpackID.get() == 0) BackpackManager.lastBackpackID.set(id);
+               if(BackpackManager.lastBackpackID.get() < id){
+                   BackpackManager.lastBackpackID.set(id);
                }
                Main.debugMessage("loaded backpack " + id);
            }

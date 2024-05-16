@@ -46,6 +46,7 @@ public class BpUpgBackpack implements CommandExecutor {
             player.sendMessage(Main.PREFIX + "An error occurred, please check the console or report to the developer.");
             return true;
         }
+
         BackpackManager.upgradeBackpack(backPack.getType(), backPack.getId());
         player.sendMessage(Main.PREFIX + "Backpack upgraded successfully!");
         player.playSound(Sound.sound(org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, Sound.Source.MASTER, 1, 1));

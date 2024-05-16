@@ -12,70 +12,74 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
 
-public class UpgradesRecipes {
-    private final NamespacedKey CRAFTING = new NamespacedKey(Main.getMain(), "crafting_upgrade");
-    private final NamespacedKey FURNACE = new NamespacedKey(Main.getMain(), "furnace_upgrade");
-    private final NamespacedKey UNBREAKING = new NamespacedKey(Main.getMain(), "unbreaking_upgrade");
-    private final NamespacedKey JUKEBOX = new NamespacedKey(Main.getMain(), "jukebox_upgrade");
-    private final NamespacedKey VILLAGERS_FOLLOW = new NamespacedKey(Main.getMain(), "villagers_follow_upgrade");
-    private final NamespacedKey ENCAPSULATE = new NamespacedKey(Main.getMain(), "encapsulate_upgrade");
-    private final NamespacedKey COLLECTOR = new NamespacedKey(Main.getMain(), "collector_upgrade");
-    private final NamespacedKey AUTO_FILL = new NamespacedKey(Main.getMain(), "auto_fill_upgrade");
-    private final NamespacedKey AUTO_FEED = new NamespacedKey(Main.getMain(), "auto_feed_upgrade");
-    private final NamespacedKey LIQUID_TANK = new NamespacedKey(Main.getMain(), "liquid_tank_upgrade");
-    private final NamespacedKey MAGNET = new NamespacedKey(Main.getMain(), "magnet_upgrade");
-    private final NamespacedKey FILTER = new NamespacedKey(Main.getMain(), "filter_upgrade");
-    private final NamespacedKey ADVANCED_FILTER = new NamespacedKey(Main.getMain(), "advanced_filter_upgrade");
-    private final NamespacedKey UPGRADE_ID = new NamespacedKey(Main.getMain(), "upgrade_id");
-    private final NamespacedKey IS_UPGRADE = new NamespacedKey(Main.getMain(), "is_upgrade");
+public final class UpgradesRecipes {
+    private static final NamespacedKey CRAFTING = new NamespacedKey(Main.getMain(), "crafting_upgrade");
+    private static final NamespacedKey FURNACE = new NamespacedKey(Main.getMain(), "furnace_upgrade");
+    private static final NamespacedKey UNBREAKING = new NamespacedKey(Main.getMain(), "unbreaking_upgrade");
+    private static final NamespacedKey JUKEBOX = new NamespacedKey(Main.getMain(), "jukebox_upgrade");
+    private static final NamespacedKey VILLAGERS_FOLLOW = new NamespacedKey(Main.getMain(), "villagers_follow_upgrade");
+    private static final NamespacedKey ENCAPSULATE = new NamespacedKey(Main.getMain(), "encapsulate_upgrade");
+    private static final NamespacedKey COLLECTOR = new NamespacedKey(Main.getMain(), "collector_upgrade");
+    private static final NamespacedKey AUTO_FILL = new NamespacedKey(Main.getMain(), "auto_fill_upgrade");
+    private static final NamespacedKey AUTO_FEED = new NamespacedKey(Main.getMain(), "auto_feed_upgrade");
+    private static final NamespacedKey LIQUID_TANK = new NamespacedKey(Main.getMain(), "liquid_tank_upgrade");
+    private static final NamespacedKey MAGNET = new NamespacedKey(Main.getMain(), "magnet_upgrade");
+    private static final NamespacedKey FILTER = new NamespacedKey(Main.getMain(), "filter_upgrade");
+    private static final NamespacedKey ADVANCED_FILTER = new NamespacedKey(Main.getMain(), "advanced_filter_upgrade");
+    private static final NamespacedKey XP_STORAGE = new NamespacedKey(Main.getMain(), "xp_storage_upgrade");
+    private static final NamespacedKey UPGRADE_ID = new NamespacedKey(Main.getMain(), "upgrade_id");
+    private static final NamespacedKey IS_UPGRADE = new NamespacedKey(Main.getMain(), "is_upgrade");
 
-    public NamespacedKey isUpgrade() {
+    public static NamespacedKey isUpgrade() {
         return IS_UPGRADE;
     }
-    public NamespacedKey getUPGRADE_ID() {
+    public static NamespacedKey getUPGRADE_ID() {
         return UPGRADE_ID;
     }
-    public NamespacedKey getCraftingGrid() {
+    public static NamespacedKey getCraftingGrid() {
         return CRAFTING;
     }
-    public NamespacedKey getFurnace() {
+    public static NamespacedKey getFurnace() {
         return FURNACE;
     }
-    public NamespacedKey getUnbreaking() {
+    public static NamespacedKey getUnbreaking() {
         return UNBREAKING;
     }
-    public NamespacedKey getJukebox() {
+    public static NamespacedKey getJukebox() {
         return JUKEBOX;
     }
-    public NamespacedKey getVillagersFollow() {
+    public static NamespacedKey getVillagersFollow() {
         return VILLAGERS_FOLLOW;
     }
-    public NamespacedKey getAutoFill() {
+    public static NamespacedKey getAutoFill() {
         return AUTO_FILL;
     }
-    public NamespacedKey getAutoFeed() {
+    public static NamespacedKey getAutoFeed() {
         return AUTO_FEED;
     }
-    public NamespacedKey getLiquidTank() {
+    public static NamespacedKey getLiquidTank() {
         return LIQUID_TANK;
     }
-    public NamespacedKey getCollector() {
+    public static NamespacedKey getCollector() {
         return COLLECTOR;
     }
-    public NamespacedKey getEncapsulate() {
+    public static NamespacedKey getEncapsulate() {
         return ENCAPSULATE;
     }
-    public NamespacedKey getMagnet() {
+    public static NamespacedKey getMagnet() {
         return MAGNET;
     }
-    public NamespacedKey getFilter(){
+    public static NamespacedKey getFilter(){
         return FILTER;
     }
-    public NamespacedKey getAdvancedFilter(){
+    public static NamespacedKey getAdvancedFilter(){
         return ADVANCED_FILTER;
     }
+    public static NamespacedKey getXpStorage(){
+        return XP_STORAGE;
+    }
 
-    public Recipe getCraftingRecipe() {
+    public static Recipe getCraftingRecipe() {
         ItemStack craftingGrid = new ItemStack(Material.CRAFTING_TABLE);
         ItemMeta meta = craftingGrid.getItemMeta();
 
@@ -96,7 +100,7 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getJukeboxRecipe() {
+    public static Recipe getJukeboxRecipe() {
         ItemStack jukebox = new ItemStack(Material.JUKEBOX);
         ItemMeta meta = jukebox.getItemMeta();
 
@@ -119,7 +123,7 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getFollowingVillagersRecipe() {
+    public static Recipe getFollowingVillagersRecipe() {
         ItemStack emeraldBlock = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta meta = emeraldBlock.getItemMeta();
 
@@ -145,7 +149,7 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getAutoFillRecipe(){
+    public static Recipe getAutoFillRecipe(){
         ItemStack autoFill = new ItemStack(Material.DISPENSER);
         ItemMeta meta = autoFill.getItemMeta();
 
@@ -166,7 +170,7 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getFurnaceRecipe(){
+    public static Recipe getFurnaceRecipe(){
         ItemStack furnaceGrid = new ItemStack(Material.FURNACE);
         ItemMeta meta = furnaceGrid.getItemMeta();
 
@@ -187,7 +191,7 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getAutoFeedRecipe(){
+    public static Recipe getAutoFeedRecipe(){
         ItemStack autoFood = new ItemStack(Material.COOKED_BEEF);
         ItemMeta meta = autoFood.getItemMeta();
 
@@ -211,7 +215,7 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getLiquidTankRecipe() {
+    public static Recipe getLiquidTankRecipe() {
         ItemStack liquidTank = new ItemStack(Material.BUCKET);
         ItemMeta meta = liquidTank.getItemMeta();
 
@@ -231,7 +235,7 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getEncapsulateRecipe(){
+    public static Recipe getEncapsulateRecipe(){
         ItemStack encapsulate = new ItemStack(Material.GLASS_BOTTLE);
         ItemMeta meta = encapsulate.getItemMeta();
 
@@ -253,7 +257,7 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getCollectorRecipe(){
+    public static Recipe getCollectorRecipe(){
         ItemStack collector = new ItemStack(Material.HOPPER);
         ItemMeta meta = collector.getItemMeta();
 
@@ -275,7 +279,7 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getUnbreakableUpgradeRecipe(){
+    public static Recipe getUnbreakableUpgradeRecipe(){
         ItemStack unbreak = new ItemStack(Material.ENCHANTED_GOLDEN_APPLE);
         ItemMeta meta = unbreak.getItemMeta();
 
@@ -301,7 +305,7 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getMagnetRecipe() {
+    public static Recipe getMagnetRecipe() {
         ItemStack magnet = new ItemStack(Material.ENDER_EYE);
         ItemMeta meta = magnet.getItemMeta();
 
@@ -321,7 +325,7 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getFilterRecipe(){
+    public static Recipe getFilterRecipe(){
         ItemStack filter = new ItemStack(Material.CHEST);
         ItemMeta meta = filter.getItemMeta();
 
@@ -342,7 +346,7 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getAdvancedFilterUpgrade(){
+    public static Recipe getAdvancedFilterUpgrade(){
         ItemStack filter = new ItemStack(Material.ENDER_CHEST);
         ItemMeta meta = filter.getItemMeta();
 
@@ -357,6 +361,26 @@ public class UpgradesRecipes {
 
         recipe.setIngredient('C', Material.CHEST);
         recipe.setIngredient('F', Material.ITEM_FRAME);
+
+        return recipe;
+    }
+
+    public static Recipe getXpStorageUpgrade(){
+        ItemStack filter = new ItemStack(Material.EXPERIENCE_BOTTLE);
+        ItemMeta meta = filter.getItemMeta();
+
+        meta.setDisplayName("Xp Storage Upgrade");
+        meta.setLore(Arrays.asList("§7Xp Storage Upgrade", "§7§nAllows to store exp on the backpack"));
+        meta.getPersistentDataContainer().set(IS_UPGRADE, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(ADVANCED_FILTER, PersistentDataType.INTEGER, 1);
+        filter.setItemMeta(meta);
+
+        ShapedRecipe recipe = new ShapedRecipe(ADVANCED_FILTER, filter);
+        recipe.shape("CCC", "BEB", "CCC");
+
+        recipe.setIngredient('E', Material.EXPERIENCE_BOTTLE);
+        recipe.setIngredient('B', Material.BUCKET);
+        recipe.setIngredient('C', Material.COPPER_INGOT);
 
         return recipe;
     }

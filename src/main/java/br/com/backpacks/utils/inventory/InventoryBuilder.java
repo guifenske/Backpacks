@@ -5,6 +5,7 @@ import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackManager;
 import br.com.backpacks.utils.backpacks.BackpackType;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -32,8 +33,8 @@ public class InventoryBuilder {
         Inventory inv = Bukkit.createInventory(null, 27, "I/O Menu");
 
         ItemStack resetDefault = new ItemCreator(Material.EMERALD_ORE, "Reset config").build();
-        ItemStack input = new ItemCreator(Material.HOPPER, "Set new input inventory").build();
-        ItemStack output = new ItemCreator(Material.DISPENSER, "Set new output inventory").build();
+        ItemStack input = new ItemCreator(Material.HOPPER, "Set new input upgrade").build();
+        ItemStack output = new ItemCreator(Material.DISPENSER, "Set new output upgrade").build();
 
         inv.setItem(11, input);
         inv.setItem(13, resetDefault);
@@ -63,12 +64,18 @@ public class InventoryBuilder {
                 ItemStack close = new ItemCreator(Material.BARRIER, "Close").build();
                 ItemStack loremIpsum = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").build();
                 ItemStack rename = new ItemCreator(Material.NAME_TAG, "Rename Backpack").build();
-                ItemStack lock = new ItemCreator(Material.WRITABLE_BOOK, "Lock Backpack", Arrays.asList("§7§nLock the access to this backpack", "§7§n from other players when in your back.")).build();
-                ItemStack unlock = new ItemCreator(Material.WRITTEN_BOOK, "Unlock Backpack", Arrays.asList("§7§nUnlock the access to this backpack", "§7§n from other players when in your back.")).build();
                 ItemStack editUpgrades = new ItemCreator(Material.ANVIL, "Edit Upgrades").build();
-                ItemStack editIO = new ItemCreator(Material.HOPPER, "Sets the I/O inventory", Arrays.asList("§7Select upgrades to be the I/O inventories.")).build();
                 ItemStack enableNameAbove = new ItemCreator(Material.POTATO, "Show name above backpack block").build();
                 ItemStack disableNameAbove = new ItemCreator(Material.POISONOUS_POTATO, "Don't show name above backpack block").build();
+
+                ItemStack lock = new ItemCreator().setMaterial(Material.WRITABLE_BOOK).setName(Component.text("Lock Backpack"))
+                        .setLore(Arrays.asList(Component.text("§7§nUnlock the access to this backpack"), Component.text("§7§n from other players when in your back."))).build();
+
+                ItemStack unlock = new ItemCreator().setMaterial(Material.WRITTEN_BOOK).setName(Component.text("Unlock Backpack"))
+                        .setLore(Arrays.asList(Component.text("§7§nUnlock the access to this backpack"), Component.text("§7§n from other players when in your back."))).build();
+
+                ItemStack editIO = new ItemCreator().setMaterial(Material.HOPPER).setName(Component.text("Sets the I/O upgrades"))
+                        .setLore(List.of(Component.text("§7Select upgrades to be the I/O inventories."))).build();
 
                 for(int i = InventoryBuilder.getFreeUpgradesSlots(backPack.getType()); i < 54; i++){
                     inv.setItem(i, loremIpsum);
@@ -169,12 +176,18 @@ public class InventoryBuilder {
         ItemStack close = new ItemCreator(Material.BARRIER, "Close").build();
         ItemStack loremIpsum = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").build();
         ItemStack rename = new ItemCreator(Material.NAME_TAG, "Rename Backpack").build();
-        ItemStack lock = new ItemCreator(Material.WRITABLE_BOOK, "Lock Backpack", Arrays.asList("§7§nLock the access to this backpack", "§7§n from other players when in your back.")).build();
-        ItemStack unlock = new ItemCreator(Material.WRITTEN_BOOK, "Unlock Backpack", Arrays.asList("§7§nUnlock the access to this backpack", "§7§n from other players when in your back.")).build();
         ItemStack editUpgrades = new ItemCreator(Material.ANVIL, "Edit Upgrades").build();
-        ItemStack editIO = new ItemCreator(Material.HOPPER, "Sets the I/O inventory", Arrays.asList("§7Select upgrades to be the I/O inventories.")).build();
         ItemStack enableNameAbove = new ItemCreator(Material.POTATO, "Show name above backpack block").build();
         ItemStack disableNameAbove = new ItemCreator(Material.POISONOUS_POTATO, "Don't show name above backpack block").build();
+
+        ItemStack lock = new ItemCreator().setMaterial(Material.WRITABLE_BOOK).setName(Component.text("Lock Backpack"))
+                .setLore(Arrays.asList(Component.text("§7§nUnlock the access to this backpack"), Component.text("§7§n from other players when in your back."))).build();
+
+        ItemStack unlock = new ItemCreator().setMaterial(Material.WRITTEN_BOOK).setName(Component.text("Unlock Backpack"))
+                .setLore(Arrays.asList(Component.text("§7§nUnlock the access to this backpack"), Component.text("§7§n from other players when in your back."))).build();
+
+        ItemStack editIO = new ItemCreator().setMaterial(Material.HOPPER).setName(Component.text("Sets the I/O upgrades"))
+                .setLore(List.of(Component.text("§7Select upgrades to be the I/O inventories."))).build();
 
         for(int i = 0; i < 9; i++){
             inv.setItem(i, null);

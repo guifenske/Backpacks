@@ -44,13 +44,13 @@ public class BpGive implements CommandExecutor, TabCompleter {
         BackPack backPack;
         try{
             BackpackType backpackType = BackpackType.valueOf(args[1]);
-            backPack = new BackPack(backpackType, BackpackManager.lastBackpackID + 1);
+            backPack = new BackPack(backpackType, BackpackManager.lastBackpackID.get() + 1);
         }   catch (IllegalArgumentException e){
             sender.sendMessage(Main.PREFIX + "§cBackpack type not found!");
             return true;
         }
         BackpackManager.getBackpacks().put(backPack.getId(), backPack);
-        BackpackManager.lastBackpackID++;
+        BackpackManager.lastBackpackID.getAndIncrement();
         new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
         new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
         new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();

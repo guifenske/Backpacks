@@ -109,54 +109,54 @@ public class RandomBackpackBuilder {
                 UpgradeType upgradeType = types.get(indexUpgradeType);
                 switch (upgradeType){
                     case JUKEBOX ->{
-                        JukeboxUpgrade upgrade = new JukeboxUpgrade(UpgradeManager.lastUpgradeID + 1);
+                        JukeboxUpgrade upgrade = new JukeboxUpgrade(UpgradeManager.lastUpgradeID.get() + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }
 
                     case FURNACE ->  {
-                        FurnaceUpgrade upgrade = new FurnaceUpgrade(UpgradeManager.lastUpgradeID + 1);
+                        FurnaceUpgrade upgrade = new FurnaceUpgrade(UpgradeManager.lastUpgradeID.get() + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }
 
                     case AUTOFEED ->  {
-                        AutoFeedUpgrade upgrade = new AutoFeedUpgrade(UpgradeManager.lastUpgradeID + 1);
+                        AutoFeedUpgrade upgrade = new AutoFeedUpgrade(UpgradeManager.lastUpgradeID.get() + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }
 
                     case COLLECTOR ->  {
-                        CollectorUpgrade upgrade = new CollectorUpgrade(UpgradeManager.lastUpgradeID + 1);
+                        CollectorUpgrade upgrade = new CollectorUpgrade(UpgradeManager.lastUpgradeID.get() + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }
 
                     case LIQUIDTANK ->  {
-                        TanksUpgrade upgrade = new TanksUpgrade(UpgradeManager.lastUpgradeID + 1);
+                        TanksUpgrade upgrade = new TanksUpgrade(UpgradeManager.lastUpgradeID.get() + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }
 
                     case VILLAGERSFOLLOW ->  {
-                        VillagersFollowUpgrade upgrade = new VillagersFollowUpgrade(UpgradeManager.lastUpgradeID + 1);
+                        VillagersFollowUpgrade upgrade = new VillagersFollowUpgrade(UpgradeManager.lastUpgradeID.get() + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }
 
                     case FILTER, ADVANCED_FILTER -> {
-                        FilterUpgrade upgrade = new FilterUpgrade(upgradeType, UpgradeManager.lastUpgradeID + 1);
+                        FilterUpgrade upgrade = new FilterUpgrade(upgradeType, UpgradeManager.lastUpgradeID.get() + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }
 
                     default -> {
-                        Upgrade upgrade = new Upgrade(upgradeType, UpgradeManager.lastUpgradeID + 1);
+                        Upgrade upgrade = new Upgrade(upgradeType, UpgradeManager.lastUpgradeID.get() + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
                         upgrades.add(upgrade);
                     }
                 }
-                UpgradeManager.lastUpgradeID++;
+                UpgradeManager.lastUpgradeID.getAndIncrement();
             }
         }
         return upgrades;

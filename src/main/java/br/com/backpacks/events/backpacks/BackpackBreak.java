@@ -128,13 +128,13 @@ public class BackpackBreak implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void onItemDespawn(ItemDespawnEvent event){
         if(!event.getEntity().getItemStack().hasItemMeta())  return;
-        if(!event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER)){
-            if(event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().isUpgrade(), PersistentDataType.INTEGER)){
+        if(!event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.isBackpack(), PersistentDataType.INTEGER)){
+            if(event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.isUpgrade(), PersistentDataType.INTEGER)){
                 if(!BackpackManager.canOpen()){
                     event.setCancelled(true);
                     return;
                 }
-                int id = event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().get(new UpgradesRecipes().getUPGRADE_ID(), PersistentDataType.INTEGER);
+                int id = event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().get(UpgradesRecipes.getUPGRADE_ID(), PersistentDataType.INTEGER);
                 UpgradeManager.getUpgrades().remove(id);
             }
             return;
@@ -145,7 +145,7 @@ public class BackpackBreak implements Listener {
             return;
         }
 
-        int id = event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
+        int id = event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().get(BackpackRecipes.getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
         if(!BackpackManager.getBackpacks().containsKey(id)) return;
         BackPack backPack = BackpackManager.getBackpacks().get(id);
 
@@ -169,12 +169,12 @@ public class BackpackBreak implements Listener {
     private void onEntityDeath(EntityRemoveFromWorldEvent event){
         if(!(event.getEntity() instanceof Item eventItem)) return;
         if(!eventItem.getItemStack().hasItemMeta())  return;
-        if(!eventItem.getItemStack().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER)){
-            if(eventItem.getItemStack().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().isUpgrade(), PersistentDataType.INTEGER)){
+        if(!eventItem.getItemStack().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.isBackpack(), PersistentDataType.INTEGER)){
+            if(eventItem.getItemStack().getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.isUpgrade(), PersistentDataType.INTEGER)){
                 if(!BackpackManager.canOpen()){
                     return;
                 }
-                int id = eventItem.getItemStack().getItemMeta().getPersistentDataContainer().get(new UpgradesRecipes().getUPGRADE_ID(), PersistentDataType.INTEGER);
+                int id = eventItem.getItemStack().getItemMeta().getPersistentDataContainer().get(UpgradesRecipes.getUPGRADE_ID(), PersistentDataType.INTEGER);
                 UpgradeManager.getUpgrades().remove(id);
             }
             return;
@@ -184,7 +184,7 @@ public class BackpackBreak implements Listener {
             return;
         }
 
-        int id = eventItem.getItemStack().getItemMeta().getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
+        int id = eventItem.getItemStack().getItemMeta().getPersistentDataContainer().get(BackpackRecipes.getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
         if(!BackpackManager.getBackpacks().containsKey(id)) return;
         BackPack backPack = BackpackManager.getBackpacks().get(id);
 
