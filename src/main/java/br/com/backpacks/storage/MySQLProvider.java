@@ -175,7 +175,7 @@ public class MySQLProvider extends StorageProvider{
                        preparedStatement.setBlob(16, SerializationUtils.serializeListItemStack(filterUpgrade.getFilteredItems()));
                    }
                }
-               Main.debugMessage("Saving " + upgrade.getType().toString().toLowerCase().replace("_", " ") + " Upgrade " + upgrade.getId());
+               Main.debugMessage("Saving " + upgrade.getType().getName() + " Upgrade " + upgrade.getId());
                preparedStatement.execute();
            }
            connection.close();
@@ -256,11 +256,7 @@ public class MySQLProvider extends StorageProvider{
                         FilterUpgrade upgrade = new FilterUpgrade(type, id);
                         upgrade.setFilteredItems(SerializationUtils.deserializeListItemStack(upgradeSet.getBlob("filter.filtered").getBinaryStream()));
                         if(upgrade.isAdvanced()){
-                            int index = 0;
-                            for(ItemStack itemStack : upgrade.getFilteredItems()){
-                                upgrade.getInventory().setItem(index, itemStack);
-                                index++;
-                            }
+                            upgrade.getInventory().setStorageContents(upgrade.getFilteredItems().toArray(new ItemStack[0]));
                         }   else{
                             upgrade.getInventory().setItem(4, upgrade.getFilteredItems().get(0));
                         }
@@ -278,7 +274,7 @@ public class MySQLProvider extends StorageProvider{
                 if(UpgradeManager.lastUpgradeID.get() < id){
                     UpgradeManager.lastUpgradeID.set(id);
                 }
-                Main.debugMessage("loaded " + type.toString().toLowerCase() + " upgrade: " + id);
+                Main.debugMessage("loaded " + type.getName() + " upgrade: " + id);
             }
             statement.close();
             connection.close();

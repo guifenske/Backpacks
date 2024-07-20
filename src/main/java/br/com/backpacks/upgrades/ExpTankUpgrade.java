@@ -1,18 +1,17 @@
 package br.com.backpacks.upgrades;
 
-import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeType;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 
-public final class ExpStorageUpgrade extends Upgrade {
+public final class ExpTankUpgrade extends TanksUpgrade {
 
     private float totalExp = 0.0F;
     private final Inventory inventory;
 
-    public ExpStorageUpgrade(int id) {
-        super(UpgradeType.EXP_STORAGE, id);
+    public ExpTankUpgrade(int id) {
+        super(UpgradeType.EXP_TANK, id);
         inventory = Bukkit.createInventory(null, 54, Component.text("Exp Storage Upgrade"));
     }
 

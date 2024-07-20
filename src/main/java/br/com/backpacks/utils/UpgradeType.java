@@ -2,31 +2,40 @@ package br.com.backpacks.utils;
 
 
 public enum UpgradeType {
-    FURNACE,
+    FURNACE("Furnace"),
 
-    CRAFTING,
+    CRAFTING("Crafting"),
 
-    JUKEBOX,
+    JUKEBOX("Jukebox"),
 
-    VILLAGERSFOLLOW,
+    VILLAGERSFOLLOW("Villagers Follow"),
 
-    COLLECTOR,
+    COLLECTOR("Collector"),
 
-    ENCAPSULATE,
+    ENCAPSULATE("Encapsulate"),
 
-    AUTOFILL,
+    AUTOFILL("Auto Fill"),
 
-    AUTOFEED,
+    AUTOFEED("Auto Feed"),
 
-    LIQUIDTANK,
+    LIQUIDTANK("Liquid Tank"),
 
-    UNBREAKABLE,
+    UNBREAKABLE("Unbreakable"),
 
-    FILTER,
+    FILTER("Filter"),
 
-    ADVANCED_FILTER,
+    ADVANCED_FILTER("Advanced Filter"),
 
-    MAGNET,
+    MAGNET("Magnet"),
 
-    EXP_STORAGE
+    EXP_TANK("Exp Tank");
+
+    final String name;
+    public String getName(){
+        return name;
+    }
+
+    UpgradeType(String name){
+        this.name = name;
+    }
 }

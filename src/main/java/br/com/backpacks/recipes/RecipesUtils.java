@@ -46,7 +46,7 @@ public class RecipesUtils {
         ItemMeta meta = itemStack.getItemMeta();
         UpgradeType upgradeType = upgrade.getType();
 
-        meta.setDisplayName(upgradeType.toString().toUpperCase().charAt(0) + upgradeType.toString().replace("_", " ").substring(1).toLowerCase() + " Upgrade");
+        meta.setDisplayName(upgradeType.getName() + " Upgrade");
         meta.setLore(getLore(upgrade));
         meta.getPersistentDataContainer().set(UpgradesRecipes.isUpgrade(), PersistentDataType.INTEGER, 1);
         meta.getPersistentDataContainer().set(getNamespaceFromUpgrade(upgrade), PersistentDataType.INTEGER, 1);

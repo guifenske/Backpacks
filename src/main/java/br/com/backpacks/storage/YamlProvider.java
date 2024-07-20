@@ -137,7 +137,7 @@ public final class YamlProvider extends StorageProvider {
                 }
             }
 
-            Main.debugMessage("Saving " + type + " Upgrade");
+            Main.debugMessage("Saving " + type.getName() + " Upgrade");
         }
 
         config.save(file);
@@ -275,7 +275,7 @@ public final class YamlProvider extends StorageProvider {
                     UpgradeManager.getUpgrades().put(id, upgrade);
                 }
             }
-            Main.debugMessage("loading " + type + " upgrade: " + i);
+            Main.debugMessage("loading " + type.getName() + " upgrade: " + i);
         }
     }
 
