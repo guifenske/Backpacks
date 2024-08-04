@@ -6,6 +6,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -348,7 +349,7 @@ public class UpgradesRecipes {
 
         recipe.setIngredient('S', Material.NETHERITE_INGOT);
         recipe.setIngredient('N', Material.NETHER_STAR);
-        recipe.setIngredient('U', unbreakingThree);
+        recipe.setIngredient('U', new RecipeChoice.ExactChoice(unbreakingThree));
 
         return recipe;
     }

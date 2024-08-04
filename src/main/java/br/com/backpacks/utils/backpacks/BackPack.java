@@ -341,7 +341,7 @@ public final class BackPack extends UpgradeManager {
     }
 
     public ItemStack[] getStorageContentsFirstPage() {
-        ItemStack[] array = firstPage.getStorageContents();
+        ItemStack[] array = firstPage.getContents();
         int length = array.length;
 
         if (secondPageSize > 0) {
@@ -356,7 +356,7 @@ public final class BackPack extends UpgradeManager {
     }
 
     public ItemStack[] getStorageContentsSecondPage() {
-        ItemStack[] array = secondPage.getStorageContents();
+        ItemStack[] array = secondPage.getContents();
         int length = array.length;
         ItemStack[] list = new ItemStack[length - 2];
 

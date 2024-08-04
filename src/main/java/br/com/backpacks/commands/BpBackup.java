@@ -12,7 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -75,7 +74,7 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                     BackpackAction.getHashMap().remove(uuid);
                     BackpackAction.getSpectators().remove(uuid);
                     if(player == null) continue;
-                    player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
+                    player.closeInventory();
                 }
 
                 for(Map.Entry<Location, Integer> entry : Main.backPackManager.getBackpacksPlacedLocations().entrySet()){
@@ -115,7 +114,7 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                 BackpackAction.getHashMap().remove(uuid);
                 BackpackAction.getSpectators().remove(uuid);
                 if(player == null) continue;
-                player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
+                player.closeInventory();
             }
 
             for(Map.Entry<Location, Integer> entry : Main.backPackManager.getBackpacksPlacedLocations().entrySet()){

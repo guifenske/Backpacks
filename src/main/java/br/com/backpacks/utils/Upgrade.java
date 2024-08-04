@@ -30,24 +30,26 @@ public class Upgrade {
     public ItemStack tryAddItem(@NotNull List<Integer> slots, @NotNull ItemStack itemStack){
         Inventory inventory = getInventory();
         int amount = itemStack.getAmount();
+        ItemStack itemStack1 = itemStack.clone();
+        itemStack1.setAmount(1);
+
         for(int i : slots){
             if(inventory.getItem(i) == null){
-                inventory.setItem(i, itemStack);
+                inventory.setItem(i, itemStack1);
                 return null;
             }
 
             if(inventory.getItem(i).getAmount() == inventory.getItem(i).getMaxStackSize()) continue;
 
-            if(inventory.getItem(i).isSimilar(itemStack) && inventory.getItem(i).getAmount() + amount <= itemStack.getMaxStackSize()){
-                inventory.getItem(i).add(itemStack.getAmount());
+            if(inventory.getItem(i).isSimilar(itemStack1) && inventory.getItem(i).getAmount() + amount <= itemStack1.getMaxStackSize()){
+                inventory.getItem(i).setAmount(amount + inventory.getItem(i).getAmount());
                 return null;
-            }   else if(inventory.getItem(i).isSimilar(itemStack) && inventory.getItem(i).getAmount() + amount > itemStack.getMaxStackSize()){
-                amount = (inventory.getItem(i).getAmount() + amount) - itemStack.getMaxStackSize();
-                inventory.getItem(i).setAmount(itemStack.getMaxStackSize());
+            }   else if(inventory.getItem(i).isSimilar(itemStack1) && inventory.getItem(i).getAmount() + amount > itemStack1.getMaxStackSize()){
+                amount = (inventory.getItem(i).getAmount() + amount) - itemStack1.getMaxStackSize();
+                inventory.getItem(i).setAmount(itemStack1.getMaxStackSize());
             }
         }
 
-        ItemStack itemStack1 = itemStack.clone();
         itemStack1.setAmount(amount);
         return itemStack1;
     }
@@ -63,5 +65,5 @@ public class Upgrade {
     }
 
     public boolean canReceiveSpecificItemAsInput(@NotNull ItemStack itemStack){return false;}
-    public void stopTickingUpgrade(){};
+    public void stopTicking(){};
 }

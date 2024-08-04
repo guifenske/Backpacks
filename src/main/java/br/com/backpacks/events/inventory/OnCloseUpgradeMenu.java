@@ -49,10 +49,18 @@ public class OnCloseUpgradeMenu implements Listener {
                     }
                     if(shouldSkip) continue;
                 }
+
                 if(item.getAmount() > 1){
-                    event.getPlayer().getInventory().addItem(item.subtract());
-                    event.getInventory().setItem(i, item.asOne());
+                    ItemStack leftOvers = item.clone();
+                    leftOvers.setAmount(item.getAmount() - 1);
+
+                    ItemStack playerItems = item.clone();
+                    playerItems.setAmount(1);
+
+                    event.getPlayer().getInventory().addItem(leftOvers);
+                    event.getInventory().setItem(i, playerItems);
                 }
+
                 newUpgrades.add(upgrade);
                 newUpgradesIds.add(upgrade.getId());
             }   else{
@@ -69,7 +77,7 @@ public class OnCloseUpgradeMenu implements Listener {
                 for(Upgrade upgrade : backPack.getBackpackUpgrades()){
                     //was removed
                     if(!newUpgradesIds.contains(upgrade.getId())){
-                        backPack.stopTickingUpgrade(upgrade.getId());
+                        upgrade.stopTicking();
                     }
                 }
             }

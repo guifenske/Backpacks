@@ -32,7 +32,7 @@ public class ServerLoadEvent implements Listener {
             if(backPack.isShowingNameAbove()){
                 for(Entity entity : backPack.getLocation().getChunk().getEntities()){
                     if(entity instanceof ArmorStand){
-                        if(entity.getLocation().toBlockLocation().equals(backPack.getLocation().toBlockLocation().clone().add(0, 1, 0))){
+                        if(entity.getLocation().subtract(0, 1, 0).getBlock().getLocation().equals(backPack.getLocation())){
                             backPack.setMarker(entity.getUniqueId());
                             break;
                         }
@@ -41,7 +41,7 @@ public class ServerLoadEvent implements Listener {
             }
         }
 
-        //moved this to here to get the recipes after the server loads, resulting in possible more recipes from others plugins
+        //get the recipes after the server loads, resulting in possible more recipes from others plugins
         Iterator<Recipe> iterator = Bukkit.recipeIterator();
         List<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
         List<SmokingRecipe> smokingRecipes = new ArrayList<>();
@@ -70,7 +70,7 @@ public class ServerLoadEvent implements Listener {
         for(Upgrade upgrade : UpgradeManager.getUpgrades().values()){
             if(upgrade.getType().equals(UpgradeType.FURNACE) || upgrade.getType().equals(UpgradeType.BLAST_FURNACE) || upgrade.getType().equals(UpgradeType.SMOKER)){
                 if(!((FurnaceUpgrade) upgrade).canTick()) continue;
-                Furnace.shouldTick.add(upgrade.getId());
+                Furnace.isTicking.add(upgrade.getId());
                 Furnace.tick((FurnaceUpgrade) upgrade);
             }
         }

@@ -19,7 +19,6 @@ public class BackpackInteract implements Listener {
     @EventHandler
     private void generalInteractionEvent(PlayerInteractEvent event){
         Player player = event.getPlayer();
-        if(!event.getAction().isRightClick()) return;
 
         if(event.getItem() != null && player.isSneaking()){
             return;

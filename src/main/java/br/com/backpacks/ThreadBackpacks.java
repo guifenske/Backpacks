@@ -14,6 +14,15 @@ import java.time.Instant;
 public class ThreadBackpacks {
 
     public static void saveAll() throws IOException{
+        if(StorageManager.getProvider() == null){
+            Main.saveComplete = true;
+            synchronized (Main.lock){
+                Main.lock.notifyAll();
+            }
+
+            return;
+        }
+
         try {
             StorageManager.getProvider().saveBackpacks();
             StorageManager.getProvider().saveUpgrades();

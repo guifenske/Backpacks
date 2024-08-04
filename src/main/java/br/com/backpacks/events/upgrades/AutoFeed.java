@@ -31,8 +31,8 @@ public class AutoFeed implements Listener {
         Player player = (Player) event.getEntity();
         if(!player.getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
         BackPack backPack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
-        if(backPack.getUpgradeFromType(UpgradeType.AUTOFEED) == null) return;
-        AutoFeedUpgrade upgrade = (AutoFeedUpgrade) backPack.getUpgradeFromType(UpgradeType.AUTOFEED);
+        if(backPack.getFirstUpgradeFromType(UpgradeType.AUTOFEED) == null) return;
+        AutoFeedUpgrade upgrade = (AutoFeedUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.AUTOFEED);
         if(!upgrade.isEnabled() || backPack.getBackpackItems().isEmpty()) return;
         int need = 20 - player.getFoodLevel();
 
@@ -43,7 +43,7 @@ public class AutoFeed implements Listener {
             int hungerPoints = hungerPointsPerFood(itemStack);
             if(hungerPoints == need){
                 if(itemStack.getAmount() == 1) itemStack.setType(Material.AIR);
-                else itemStack.subtract();
+                else itemStack.setAmount(itemStack.getAmount() - 1);
                 event.setCancelled(true);
                 player.setFoodLevel(player.getFoodLevel() + hungerPoints);
                 player.setSaturation(player.getSaturation() + saturationPointsPerFood(itemStack));
@@ -59,10 +59,11 @@ public class AutoFeed implements Listener {
                 optionalFood = itemStack;
             }
         }
+
         if(lesserHungerPointsItem == null){
             if(player.getHealth() < player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() - 1 && optionalFood != null){
                 if(optionalFood.getAmount() == 1) optionalFood.setType(Material.AIR);
-                else optionalFood.subtract();
+                else optionalFood.setAmount(optionalFood.getAmount() - 1);
                 event.setCancelled(true);
                 player.setFoodLevel(player.getFoodLevel() + hungerPointsPerFood(optionalFood));
                 player.setSaturation(player.getSaturation() + saturationPointsPerFood(optionalFood));
@@ -72,10 +73,12 @@ public class AutoFeed implements Listener {
             }
             return;
         }
+
         ItemStack itemStack = lesserHungerPointsItem;
         if(itemStack.getAmount() == 1) itemStack.setType(Material.AIR);
-        else itemStack.subtract();
+        else itemStack.setAmount(itemStack.getAmount() - 1);
         event.setCancelled(true);
+
         player.setFoodLevel(player.getFoodLevel() + hungerPointsPerFood(itemStack));
         player.setSaturation(player.getSaturation() + saturationPointsPerFood(itemStack));
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1, 1);
@@ -88,7 +91,7 @@ public class AutoFeed implements Listener {
         event.setCancelled(true);
         if(event.getRawSlot() == 13){
             BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-            AutoFeedUpgrade upgrade = (AutoFeedUpgrade) backPack.getUpgradeFromType(UpgradeType.AUTOFEED);
+            AutoFeedUpgrade upgrade = (AutoFeedUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.AUTOFEED);
             upgrade.setEnabled(!upgrade.isEnabled());
             upgrade.updateInventory();
         }
@@ -265,7 +268,7 @@ public class AutoFeed implements Listener {
 
             case CHORUS_FRUIT -> {
                 Location location = player.getLocation().add(ThreadLocalRandom.current().nextInt(-8, 8), 0, ThreadLocalRandom.current().nextInt(-8, 8));
-                player.teleportAsync(player.getWorld().getHighestBlockAt(location).getLocation());
+                player.teleport(player.getWorld().getHighestBlockAt(location).getLocation());
                 player.getWorld().playSound(player.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1,1);
             }
         }

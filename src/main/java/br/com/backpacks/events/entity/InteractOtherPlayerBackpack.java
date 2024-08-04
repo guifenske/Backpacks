@@ -3,7 +3,7 @@ package br.com.backpacks.events.entity;
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.utils.backpacks.BackPack;
-import net.kyori.adventure.sound.Sound;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,7 +27,7 @@ public class InteractOtherPlayerBackpack implements Listener {
 
         if(!backPack.isLocked()){
             backPack.open(player);
-            player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_CHEST_OPEN, Sound.Source.BLOCK, 1, 1));
+            player.playSound(player, Sound.BLOCK_CHEST_OPEN, 1, 1);
         }
     }
 }

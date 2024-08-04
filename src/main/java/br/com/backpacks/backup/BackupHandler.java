@@ -7,7 +7,6 @@ import br.com.backpacks.storage.YamlProvider;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.backpacks.BackPack;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,7 +14,6 @@ import org.bukkit.block.Barrel;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
@@ -103,13 +101,11 @@ public class BackupHandler {
             for(Map.Entry<Location, Integer> entry : Main.backPackManager.getBackpacksPlacedLocations().entrySet()){
                 BackPack backPack = Main.backPackManager.getBackpackFromId(entry.getValue());
                 if(backPack.isShowingNameAbove()){
-                    ArmorStand marker = (ArmorStand) entry.getKey().getWorld().spawnEntity(backPack.getLocation().clone().add(0, 1, 0).toCenterLocation(), EntityType.ARMOR_STAND, CreatureSpawnEvent.SpawnReason.CUSTOM);
+                    ArmorStand marker = (ArmorStand) entry.getKey().getWorld().spawnEntity(backPack.getLocation().clone().add(0, 1, 0), EntityType.ARMOR_STAND);
                     marker.setVisible(false);
                     marker.setSmall(true);
-                    marker.customName(Component.text(backPack.getName()));
+                    marker.setCustomName(backPack.getName());
                     marker.setCustomNameVisible(true);
-                    marker.setCanTick(false);
-                    marker.setCanMove(false);
                     marker.setCollidable(false);
                     marker.setInvulnerable(true);
                     marker.setBasePlate(false);
@@ -163,13 +159,11 @@ public class BackupHandler {
             for(Map.Entry<Location, Integer> entry : Main.backPackManager.getBackpacksPlacedLocations().entrySet()){
                 BackPack backPack = Main.backPackManager.getBackpackFromId(entry.getValue());
                 if(backPack.isShowingNameAbove()){
-                    ArmorStand marker = (ArmorStand) entry.getKey().getWorld().spawnEntity(backPack.getLocation().clone().add(0, 1, 0).toCenterLocation(), EntityType.ARMOR_STAND, CreatureSpawnEvent.SpawnReason.CUSTOM);
+                    ArmorStand marker = (ArmorStand) entry.getKey().getWorld().spawnEntity(backPack.getLocation().clone().add(0, 1, 0), EntityType.ARMOR_STAND);
                     marker.setVisible(false);
                     marker.setSmall(true);
-                    marker.customName(Component.text(backPack.getName()));
+                    marker.setCustomName(backPack.getName());
                     marker.setCustomNameVisible(true);
-                    marker.setCanTick(false);
-                    marker.setCanMove(false);
                     marker.setCollidable(false);
                     marker.setInvulnerable(true);
                     marker.setBasePlate(false);

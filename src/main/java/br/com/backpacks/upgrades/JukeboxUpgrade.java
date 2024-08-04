@@ -5,12 +5,9 @@ import br.com.backpacks.events.upgrades.Jukebox;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.inventory.ItemCreator;
-import net.kyori.adventure.sound.Sound;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -63,10 +60,10 @@ public class JukeboxUpgrade extends Upgrade {
     private Entity owner;
 
     @Override
-    public void stopTickingUpgrade() {
+    public void stopTicking() {
         clearLoopingTask();
         clearParticleTask();
-        if(owner != null) Jukebox.stopSound(owner, this);
+        if(owner != null) Jukebox.stopSound((Player) owner, this);
         if(backpackId != null) Jukebox.stopSound(Main.backPackManager.getBackpackFromId(backpackId), this);
         backpackId = null;
         owner = null;
@@ -82,11 +79,11 @@ public class JukeboxUpgrade extends Upgrade {
         particleTask = null;
     }
 
-    public void startLoopingTask(Entity entity){
+    public void startLoopingTask(Player entity){
         loopingTask = new BukkitRunnable() {
             @Override
             public void run() {
-                entity.playSound(getSound(), Sound.Emitter.self());
+                entity.playSound(entity, getSound(), 1, 1);
             }
         }.runTaskTimer(Main.getMain(), 0L, (Jukebox.durationFromDisc(inventory.getItem(13)) * 20));
     }
@@ -95,7 +92,7 @@ public class JukeboxUpgrade extends Upgrade {
         loopingTask = new BukkitRunnable() {
             @Override
             public void run() {
-                loc.getWorld().playSound(getSound());
+                loc.getWorld().playSound(loc, getSound(), 1, 1);
             }
         }.runTaskTimer(Main.getMain(), 0L, (Jukebox.durationFromDisc(inventory.getItem(13)) * 20));
     }

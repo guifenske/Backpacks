@@ -32,38 +32,53 @@ public class FurnaceUpgrade extends Upgrade {
     public void setRecipe(CookingRecipe<?> recipe) {
         this.recipe = recipe;
     }
+
     public int getCookTime() {
         return cookTime;
     }
+
     public void setCookTime(int cookTime) {
         this.cookTime = cookTime;
     }
+
     private final int cookTimeMultiplier;
+
     private int cookTime = 0;
+
     public int getLastMaxOperation() {
         return lastMaxOperation;
     }
+
     public void setLastMaxOperation(int lastMaxOperation) {
         this.lastMaxOperation = lastMaxOperation;
     }
+
     public int getOperation() {
         return operation;
     }
+
     public void setOperation(int operation) {
         this.operation = operation;
     }
+
     private int operation = 0;
-    public Block getBoundFakeBlock() {
-        return boundFakeBlock;
+
+    public org.bukkit.block.Furnace getBoundFakeBlock() {
+        return (org.bukkit.block.Furnace) boundFakeBlock;
     }
+
     public void setBoundFakeBlock(Block boundFakeBlock) {
         this.boundFakeBlock = boundFakeBlock;
     }
+
     private Block boundFakeBlock;
+
     public long getCookItemTicks() {
         return cookItemTicks;
     }
+
     private final long cookItemTicks;
+
     public FurnaceUpgrade(UpgradeType upgradeType, int id){
         super(upgradeType, id);
         if(upgradeType.equals(UpgradeType.BLAST_FURNACE)){
@@ -102,8 +117,8 @@ public class FurnaceUpgrade extends Upgrade {
     }
 
     @Override
-    public void stopTickingUpgrade() {
-        if(Furnace.shouldTick.contains(getId())) Furnace.shouldTick.remove(getId());
+    public void stopTicking() {
+        if(Furnace.isTicking.contains(getId())) Furnace.isTicking.remove(getId());
         setCookTime(0);
         if(Furnace.taskMap.containsKey(getId())) Furnace.taskMap.get(getId()).cancel();
         Furnace.taskMap.remove(getId());
@@ -142,8 +157,7 @@ public class FurnaceUpgrade extends Upgrade {
         if(getResult() != null && getResult().getAmount() == getResult().getMaxStackSize()) return false;
         if(getFuel() != null && operation >= 0) return true;
         if(operation == 0 && getFuel() == null)    return false;
-        if(operation > 0 && getFuel() == null) return true;
-        return false;
+        return operation > 0 && getFuel() == null;
     }
 
     public void updateInventory(){
@@ -155,7 +169,7 @@ public class FurnaceUpgrade extends Upgrade {
     public void clearSubTickTask(){
         for(HumanEntity player : getInventory().getViewers()){
             InventoryView view = player.getOpenInventory();
-            view.setProperty(InventoryView.Property.COOK_TIME, 0);
+            getBoundFakeBlock().setCookTime((short) 0);
         }
         if(subTickTask != null) subTickTask.cancel();
         subTickTask = null;
@@ -165,7 +179,7 @@ public class FurnaceUpgrade extends Upgrade {
         subTickTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if(!Furnace.shouldTick.contains(getId())){
+                if(!Furnace.isTicking.contains(getId())){
                     this.cancel();
                     return;
                 }
@@ -176,16 +190,15 @@ public class FurnaceUpgrade extends Upgrade {
                 setCookTime(getCookTime() + cookTimeMultiplier);
                 for(HumanEntity player : getInventory().getViewers()){
                     if(Furnace.currentFurnace.containsKey(player.getUniqueId())) {
-                        InventoryView view = player.getOpenInventory();
                         if (Furnace.currentFurnace.get(player.getUniqueId()) == null) {
-                            view.setProperty(InventoryView.Property.COOK_TIME, 0);
+                            getBoundFakeBlock().setCookTime((short) 0);
                             continue;
                         }
                         if (Furnace.currentFurnace.get(player.getUniqueId()).getId() != getId()) {
-                            view.setProperty(InventoryView.Property.COOK_TIME, 0);
+                            getBoundFakeBlock().setCookTime((short) 0);
                             continue;
                         }
-                        view.setProperty(InventoryView.Property.COOK_TIME, getCookTime());
+                        getBoundFakeBlock().setCookTime((short) getCookTime());
                     }
                 }
             }

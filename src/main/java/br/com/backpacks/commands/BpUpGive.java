@@ -101,7 +101,7 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
             }
             UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
             UpgradeManager.lastUpgradeID++;
-            player.playSound(net.kyori.adventure.sound.Sound.sound(Sound.ENTITY_PLAYER_LEVELUP, net.kyori.adventure.sound.Sound.Source.MASTER, 1, 1));
+            player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
             return true;
         }
 
@@ -118,7 +118,7 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
 
         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
         UpgradeManager.lastUpgradeID++;
-        player.playSound(net.kyori.adventure.sound.Sound.sound(Sound.ENTITY_PLAYER_LEVELUP, net.kyori.adventure.sound.Sound.Source.MASTER, 1, 1));
+        player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         return true;
     }
 

@@ -17,9 +17,15 @@ import br.com.backpacks.storage.StorageManager;
 import br.com.backpacks.utils.Constants;
 import br.com.backpacks.utils.backpacks.BackPackManager;
 import br.com.backpacks.utils.backpacks.BackpackAction;
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.SmokingRecipe;
@@ -88,18 +94,37 @@ public final class Main extends JavaPlugin {
         this.autoSaveManager = autoSaveManager;
     }
 
+    private ProtocolManager protocolManager;
+
+    public ProtocolManager getProtocolManager() {
+        return protocolManager;
+    }
+
     @Override
     public void onEnable() {
         saveDefaultConfig();
         main = this;
-        Constants.VERSION = Bukkit.getMinecraftVersion();
+        Constants.VERSION = formatVersion(Bukkit.getServer().getVersion());
         start = Instant.now();
 
         if(!Constants.SUPPORTED_VERSIONS.contains(Constants.VERSION)){
-            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§cThis plugin at the moment is only compatible with 1.20.x, 1.19.x, 1.18.x versions.");
+            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§cThis plugin at the moment is only compatible with 1.21.x versions. Current server version: " + Constants.VERSION);
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+
+        protocolManager = ProtocolLibrary.getProtocolManager();
+        protocolManager.addPacketListener(new PacketAdapter(
+                this,
+                ListenerPriority.NORMAL,
+                PacketType.Play.Server.NAMED_SOUND_EFFECT
+        ) {
+            @Override
+            public void onPacketSending(PacketEvent event) {
+                PacketContainer packet = event.getPacket();
+                getLogger().info(packet.toString());
+            }
+        });
 
         Bukkit.getScheduler().runTaskAsynchronously(this, ()->{
             if(getConfig().getBoolean("debug")){
@@ -180,7 +205,7 @@ public final class Main extends JavaPlugin {
             BackpackAction.getHashMap().remove(uuid);
             BackpackAction.getSpectators().remove(uuid);
             if(player == null) continue;
-            player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
+            player.closeInventory();
         }
 
         Bukkit.getConsoleSender().sendMessage("[Backpacks] Saving backpacks..");
@@ -235,6 +260,10 @@ public final class Main extends JavaPlugin {
         Bukkit.addRecipe(new UpgradesRecipes().getCollectorRecipe());
         Bukkit.addRecipe(new UpgradesRecipes().getUnbreakableUpgradeRecipe());
         Bukkit.addRecipe(new UpgradesRecipes().getLiquidTankRecipe());
+    }
+
+    private String formatVersion(String version){
+        return version.substring(19, 25);
     }
 
 }

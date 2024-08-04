@@ -5,7 +5,6 @@ import br.com.backpacks.upgrades.FurnaceUpgrade;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
 import br.com.backpacks.utils.others.FurnaceUtils;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,11 +12,16 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.FurnaceBurnEvent;
+import org.bukkit.event.inventory.FurnaceSmeltEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -25,7 +29,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Furnace implements Listener {
     public static final ConcurrentHashMap<UUID, FurnaceUpgrade> currentFurnace = new ConcurrentHashMap<>();
     public static final ConcurrentHashMap<Integer, BukkitTask> taskMap = new ConcurrentHashMap<>();
-    public static final IntOpenHashSet shouldTick = new IntOpenHashSet();
+    public static final List<Integer> isTicking = new ArrayList<>();
 
     public static void tick(FurnaceUpgrade upgrade){
         if(upgrade == null){
@@ -49,7 +53,7 @@ public class Furnace implements Listener {
                 public void run() {
                     if(!upgrade.canTick()){
                         this.cancel();
-                        upgrade.stopTickingUpgrade();
+                        upgrade.stopTicking();
                         upgrade.setRecipe(null);
                         Main.debugMessage("Stopping furnace task for " + upgrade.getId() + "!");
                         return;
@@ -70,7 +74,7 @@ public class Furnace implements Listener {
 
                     if(upgrade.getFuel() != null && fuel.equals(FurnaceUtils.Fuel.NOTHING)){
                         this.cancel();
-                        upgrade.stopTickingUpgrade();
+                        upgrade.stopTicking();
                         upgrade.setRecipe(null);
                         Main.getMain().getLogger().severe("Furnace " + upgrade.getId() + " has a invalid fuel! Fuel = " + upgrade.getFuel() + ", if this is a bug or a valid fuel, report to the developer!");
                         return;
@@ -106,14 +110,14 @@ public class Furnace implements Listener {
                 currentFurnace.get(player.getUniqueId()).setFuel(event.getInventory().getItem(1));
                 currentFurnace.get(player.getUniqueId()).setSmelting(event.getInventory().getItem(0));
                 currentFurnace.get(player.getUniqueId()).setResult(event.getInventory().getItem(2));
-                if(!shouldTick.contains(currentFurnace.get(player.getUniqueId()).getId())) {
+                if(!isTicking.contains(currentFurnace.get(player.getUniqueId()).getId())) {
                     if (currentFurnace.get(player.getUniqueId()).canTick()) {
-                        shouldTick.add(currentFurnace.get(player.getUniqueId()).getId());
+                        isTicking.add(currentFurnace.get(player.getUniqueId()).getId());
                         tick(currentFurnace.get(player.getUniqueId()));
                     }
                 }   else{
                     if(!currentFurnace.get(player.getUniqueId()).canTick()){
-                        currentFurnace.get(player.getUniqueId()).stopTickingUpgrade();
+                        currentFurnace.get(player.getUniqueId()).stopTicking();
                     }
                 }
             }
@@ -131,7 +135,7 @@ public class Furnace implements Listener {
         currentFurnace.get(player.getUniqueId()).setResult(event.getInventory().getItem(2));
 
         if(!currentFurnace.get(player.getUniqueId()).canTick()){
-            currentFurnace.get(player.getUniqueId()).stopTickingUpgrade();
+            currentFurnace.get(player.getUniqueId()).stopTicking();
         }
 
         BackpackAction.clearPlayerAction(player);
@@ -183,7 +187,7 @@ public class Furnace implements Listener {
             }
 
             if(recipe == null){
-                upgrade.stopTickingUpgrade();
+                upgrade.stopTicking();
                 upgrade.setRecipe(null);
                 return;
             }
@@ -193,38 +197,57 @@ public class Furnace implements Listener {
         ItemStack result = recipe.getResult();
         if(upgrade.getResult() != null && upgrade.getResult().isSimilar(result)) result = upgrade.getResult();
 
-        FurnaceSmeltEvent e = new FurnaceSmeltEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), result, recipe);
+        FurnaceSmeltEvent e = new FurnaceSmeltEvent(upgrade.getBoundFakeBlock().getBlock(), upgrade.getSmelting(), result);
         Bukkit.getPluginManager().callEvent(e);
 
         if(!e.isCancelled()) {
             if(upgrade.getResult() != null && !upgrade.getResult().isSimilar(e.getResult())){
-                upgrade.stopTickingUpgrade();
+                upgrade.stopTicking();
                 upgrade.setRecipe(null);
                 return;
             }
             if(upgrade.getOperation() == 0 || upgrade.getOperation() >= upgrade.getLastMaxOperation() - 1){
-                FurnaceBurnEvent furnaceBurnEvent = new FurnaceBurnEvent(upgrade.getBoundFakeBlock(), upgrade.getFuel(), upgrade.getCookTime());
+                FurnaceBurnEvent furnaceBurnEvent = new FurnaceBurnEvent(upgrade.getBoundFakeBlock().getBlock(), upgrade.getFuel(), upgrade.getCookTime());
                 Bukkit.getPluginManager().callEvent(furnaceBurnEvent);
+
                 if(!furnaceBurnEvent.isCancelled()) {
                     if (upgrade.getFuel() == null) upgrade.setOperation(0);
                     else upgrade.setOperation(1);
+
                     if (upgrade.getLastMaxOperation() == 100) upgrade.setFuel(new ItemStack(Material.BUCKET));
                     else {
                         if (upgrade.getFuel() == null || upgrade.getFuel().getAmount() == 1) upgrade.setFuel(null);
-                        else upgrade.setFuel(upgrade.getFuel().subtract());
+                        else{
+                            ItemStack fuel = upgrade.getFuel();
+                            fuel.setAmount(fuel.getAmount() - 1);
+
+                            upgrade.setFuel(fuel);
+                        }
                     }
-                }   else{
+
+                }
+
+                else{
                     upgrade.setFuel(furnaceBurnEvent.getFuel());
                 }
             } else upgrade.setOperation(upgrade.getOperation() + 1);
 
-            if(upgrade.getResult() != null) upgrade.setResult(e.getResult().add());
-            else   upgrade.setResult(e.getResult());
+            if(upgrade.getResult() != null){
+                ItemStack smeltedItem = e.getResult();
+                smeltedItem.setAmount(smeltedItem.getAmount() + 1);
+
+                upgrade.setResult(smeltedItem);
+            }   else   upgrade.setResult(e.getResult());
+
             if(e.getSource().getAmount() == 1){
-                upgrade.stopTickingUpgrade();
+                upgrade.stopTicking();
                 upgrade.setRecipe(null);
             }
-            upgrade.setSmelting(e.getSource().subtract());
+
+            ItemStack smeltItemSource = e.getSource();
+            smeltItemSource.setAmount(smeltItemSource.getAmount() - 1);
+
+            upgrade.setSmelting(smeltItemSource);
             upgrade.setCookTime(0);
         }   else{
             upgrade.setSmelting(e.getSource());
@@ -232,7 +255,5 @@ public class Furnace implements Listener {
         }
 
         upgrade.updateInventory();
-        FurnaceStartSmeltEvent e2 = new FurnaceStartSmeltEvent(upgrade.getBoundFakeBlock(), upgrade.getSmelting(), recipe, recipe.getCookingTime());
-        Bukkit.getPluginManager().callEvent(e2);
     }
 }

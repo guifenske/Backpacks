@@ -4,25 +4,22 @@ import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
-import io.papermc.paper.event.player.AsyncChatEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.UUID;
 
 public class RenameBackpack implements Listener {
 
     @EventHandler(ignoreCancelled = true)
-    private void onRename(AsyncChatEvent event){
+    private void onRename(AsyncPlayerChatEvent event){
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.RENAMING)) return;
         Player player = event.getPlayer();
-        TextComponent textComponent = (TextComponent) event.originalMessage();
-        String newName = textComponent.content();
+        String newName = event.getMessage();
         event.setCancelled(true);
 
         if(newName.isEmpty() || newName.length() > 30){
@@ -67,7 +64,7 @@ public class RenameBackpack implements Listener {
 
         if(backPack.isShowingNameAbove()) {
             Bukkit.getScheduler().runTask(Main.getMain(), () -> {
-                backPack.getMarkerEntity().customName(Component.text(newName));
+                backPack.getMarkerEntity().setCustomName(newName);
             });
         }
 

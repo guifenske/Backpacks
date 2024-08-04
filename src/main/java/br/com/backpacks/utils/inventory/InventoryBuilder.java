@@ -51,7 +51,7 @@ public class InventoryBuilder {
         this.backpackId = backPack.getId();
     }
 
-    public void build(){
+    public void build() {
         Inventory inv;
         switch (type){
             case CONFIG -> {

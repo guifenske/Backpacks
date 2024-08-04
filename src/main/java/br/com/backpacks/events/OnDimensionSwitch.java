@@ -6,7 +6,7 @@ import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
-import net.kyori.adventure.sound.Sound;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +21,7 @@ public class OnDimensionSwitch implements Listener {
         int id = player.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER);
         BackPack backPack = Main.backPackManager.getBackpackFromId(id);
         if(backPack == null) return;
-        JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradeFromType(UpgradeType.JUKEBOX);
+        JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
         if(upgrade == null) return;
 
         if(upgrade.getSound() == null) return;

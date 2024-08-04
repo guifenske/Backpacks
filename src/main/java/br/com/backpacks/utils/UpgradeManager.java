@@ -51,13 +51,12 @@ public class UpgradeManager {
         return false;
     }
 
-    //get the upgrade from all upgrades, in the backpack or not
     public static Upgrade getUpgradeFromId(int id) {
         if(upgrades.containsKey(id)) return upgrades.get(id);
         return null;
     }
 
-    public Upgrade getUpgradeFromType(UpgradeType type){
+    public Upgrade getFirstUpgradeFromType(UpgradeType type){
         for(Upgrade upgrade : getBackpackUpgrades()) {
             if(upgrade.getType() == type) {
                return upgrade;
@@ -78,12 +77,12 @@ public class UpgradeManager {
 
     public void stopTickingAllUpgrades(){
         for(Upgrade upgrade : getBackpackUpgrades()){
-            upgrade.stopTickingUpgrade();
+            upgrade.stopTicking();
         }
     }
 
     public void stopTickingUpgrade(int upgradeID){
-        UpgradeManager.getUpgradeFromId(upgradeID).stopTickingUpgrade();
+        UpgradeManager.getUpgradeFromId(upgradeID).stopTicking();
     }
 
     private Integer inputUpgrade = -1;

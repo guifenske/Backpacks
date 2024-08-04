@@ -13,7 +13,6 @@ import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.block.Barrel;
 import org.bukkit.entity.ArmorStand;
@@ -21,7 +20,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -142,8 +140,8 @@ public class OnClickInConfigMenu implements Listener {
                 if (backPack.getOwner() != null && backPack.getOwner().equals(player.getUniqueId())){
                     player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
                     player.getPersistentDataContainer().remove(new BackpackRecipes().getHAS_BACKPACK());
-                    if(backPack.getUpgradeFromType(UpgradeType.JUKEBOX) != null){
-                        JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getUpgradeFromType(UpgradeType.JUKEBOX);
+                    if(backPack.getFirstUpgradeFromType(UpgradeType.JUKEBOX) != null){
+                        JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
                         if(upgrade.getSound() != null){
                             upgrade.clearLoopingTask();
                             Jukebox.stopSound(player, upgrade);
@@ -198,13 +196,11 @@ public class OnClickInConfigMenu implements Listener {
             case 48 ->{
                 if(!backPack.isBlock()) return;
                 if(!backPack.isShowingNameAbove()){
-                    ArmorStand marker = (ArmorStand) player.getWorld().spawnEntity(backPack.getLocation().clone().add(0, 1, 0).toCenterLocation(), EntityType.ARMOR_STAND, CreatureSpawnEvent.SpawnReason.CUSTOM);
+                    ArmorStand marker = (ArmorStand) player.getWorld().spawnEntity(backPack.getLocation().clone().add(0, 1, 0), EntityType.ARMOR_STAND);
                     marker.setVisible(false);
                     marker.setSmall(true);
-                    marker.customName(Component.text(backPack.getName()));
+                    marker.setCustomName(backPack.getName());
                     marker.setCustomNameVisible(true);
-                    marker.setCanTick(false);
-                    marker.setCanMove(false);
                     marker.setCollidable(false);
                     marker.setInvulnerable(true);
                     marker.setBasePlate(false);

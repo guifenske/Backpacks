@@ -6,7 +6,6 @@ import br.com.backpacks.upgrades.VillagersFollowUpgrade;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
-import com.destroystokyo.paper.entity.Pathfinder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,7 +30,7 @@ public class VillagersFollow implements Listener {
             return;
         }
         BackPack backpack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
-        VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) backpack.getUpgradeFromType(UpgradeType.VILLAGERSFOLLOW);
+        VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.VILLAGERSFOLLOW);
         if(upgrade == null) return;
 
         if (!upgrade.isEnabled()) {
@@ -39,7 +38,7 @@ public class VillagersFollow implements Listener {
         }
 
         //move nearby villagers in a 10 blocks radius
-        moveNearbyVillagers(player.getLocation().toBlockLocation(), player, 100);
+        moveNearbyVillagers(player.getLocation(), player, 100);
     }
 
     @EventHandler
@@ -49,7 +48,7 @@ public class VillagersFollow implements Listener {
         }
         event.setCancelled(true);
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
-        VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) backPack.getUpgradeFromType(UpgradeType.VILLAGERSFOLLOW);
+        VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.VILLAGERSFOLLOW);
 
         if (event.getRawSlot() == 13) {
             upgrade.setEnabled(!upgrade.isEnabled());
@@ -74,8 +73,7 @@ public class VillagersFollow implements Listener {
 
     private static void moveToPlayer(Mob entity, Player player) {
         Bukkit.getScheduler().runTask(Main.getMain(), () ->{
-            Pathfinder pathfinder = entity.getPathfinder();
-            pathfinder.moveTo(player, 0.55D);
+            entity.setTarget(player);
         });
     }
 
@@ -87,7 +85,6 @@ public class VillagersFollow implements Listener {
         //iterates over chunks around location
         for (int chX = -chunkRadius; chX <= chunkRadius; chX++) {
             for (int chZ = -chunkRadius; chZ <= chunkRadius; chZ++) {
-                if(!new Location(world, x + (chX * 16), 0, z + (chZ * 16)).isChunkLoaded()) continue;
                 for (Entity e : new Location(world, x + (chX * 16), 0, z + (chZ * 16)).getChunk().getEntities()) {
                     if (e.getLocation().distanceSquared(l) <= distanceSquared && e.getType().equals(EntityType.VILLAGER)){
                         moveToPlayer((Mob) e, player);

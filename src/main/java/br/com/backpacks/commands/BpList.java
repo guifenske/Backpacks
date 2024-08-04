@@ -6,7 +6,6 @@ import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
 import br.com.backpacks.utils.inventory.ItemCreator;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -66,10 +65,12 @@ public class BpList implements CommandExecutor, Listener {
             BackPack backPack = Main.backPackManager.getBackpackFromId(backpacksIds.get(page.get(player.getUniqueId()) * 52 + i));
             ItemStack backpackItem = RecipesUtils.getItemFromBackpack(backPack);
             ItemMeta meta = backpackItem.getItemMeta();
-            meta.lore(List.of(Component.text("Id: " + backPack.getId())));
+            meta.setLore(List.of("Id: " + backPack.getId()));
+
             if(backPack.isBlock()){
-                meta.lore(List.of(Component.text("Id: " + backPack.getId()) ,Component.text("Location: " + backPack.getLocation().getX() + " " + backPack.getLocation().getY() + " " + backPack.getLocation().getZ())));
+                meta.setLore(List.of("Id: " + backPack.getId(), "Location: " + backPack.getLocation().getX() + " " + backPack.getLocation().getY() + " " + backPack.getLocation().getZ()));
             }
+
             backpackItem.setItemMeta(meta);
             inventory.setItem(i, backpackItem);
         }

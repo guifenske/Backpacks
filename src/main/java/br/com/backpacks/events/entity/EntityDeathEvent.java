@@ -10,17 +10,14 @@ import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.RandomBackpackBuilder;
 import br.com.backpacks.utils.inventory.InventoryBuilder;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Barrel;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -28,21 +25,18 @@ import java.util.concurrent.ThreadLocalRandom;
 public class EntityDeathEvent implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    private void onPlayerDeath(org.bukkit.event.entity.PlayerDeathEvent event){
-        if(!event.getPlayer().getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
-        BackPack backpack = Main.backPackManager.getBackpackFromId(event.getPlayer().getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
-        Player player = event.getPlayer();
-        Location location = safeLocation(player.getLocation().toBlockLocation());
+    private void onPlayerDeath(PlayerDeathEvent event){
+        if(!event.getEntity().getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
+        BackPack backpack = Main.backPackManager.getBackpackFromId(event.getEntity().getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        Player player = event.getEntity();
+        Location location = safeLocation(player.getLocation().getBlock().getLocation());
 
         location.setYaw(0.0f);
         location.setPitch(0.0f);
         location.getBlock().setType(Material.BARREL);
-        //we need to do this to trigger the hopper event
-        Barrel barrel = (Barrel) location.getBlock().getState();
-        barrel.getInventory().addItem(new ItemStack(Material.STICK));
 
-        if(backpack.getUpgradeFromType(UpgradeType.JUKEBOX) != null){
-            JukeboxUpgrade upgrade = (JukeboxUpgrade) backpack.getUpgradeFromType(UpgradeType.JUKEBOX);
+        if(backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX) != null){
+            JukeboxUpgrade upgrade = (JukeboxUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
             if(upgrade.getSound() != null){
                 upgrade.clearLoopingTask();
                 Jukebox.stopSound(player, upgrade);
@@ -52,13 +46,14 @@ public class EntityDeathEvent implements Listener {
 
         backpack.setIsBlock(true);
         backpack.setLocation(location);
+
+        backpack.updateBarrelBlock();
+
         InventoryBuilder.updateConfigInv(backpack);
         Main.backPackManager.getBackpacksPlacedLocations().put(backpack.getLocation(), backpack.getId());
         player.getPersistentDataContainer().remove(new BackpackRecipes().getHAS_BACKPACK());
-        double y = backpack.getLocation().getY() + 1;
-        Component component = Component.text(Main.PREFIX + "§cYou died and your backpack was placed on: " + backpack.getLocation().getX() + ", " + backpack.getLocation().getY() + ", " + backpack.getLocation().getZ() + "! Click to tp!")
-                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + backpack.getLocation().getX() + " " + y + " " + backpack.getLocation().getZ()));
-        player.sendMessage(component.toString());
+
+        player.sendMessage(Main.PREFIX + "§cYou died and your backpack was placed on: " + backpack.getLocation().getX() + ", " + backpack.getLocation().getY() + ", " + backpack.getLocation().getZ());
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -78,7 +73,7 @@ public class EntityDeathEvent implements Listener {
     }
 
     private Location safeLocation(Location location){
-        while(location.getBlock().isSolid()){
+        while(!location.getBlock().isEmpty()){
             location.add(0, 1, 0);
         }
         return location;

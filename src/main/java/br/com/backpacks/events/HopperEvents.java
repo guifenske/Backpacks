@@ -39,40 +39,42 @@ public class HopperEvents implements Listener {
                 //special case of furnace upgrade that have 2 ways of input
                 if(upgrade instanceof FurnaceUpgrade){
                     if(sideOfInput.equals(BlockFace.DOWN)){
-                        ItemStack itemStack = upgrade.tryAddItem(List.of(0), event.getItem().asOne());
+                        ItemStack itemStack = upgrade.tryAddItem(List.of(0), event.getItem());
                         if(itemStack != null){
                             event.setCancelled(true);
                             return;
                         }
 
-                        if(((FurnaceUpgrade) upgrade).canTick() && !Furnace.shouldTick.contains(upgrade.getId())){
-                            Furnace.shouldTick.add(upgrade.getId());
+                        if(((FurnaceUpgrade) upgrade).canTick() && !Furnace.isTicking.contains(upgrade.getId())){
+                            Furnace.isTicking.add(upgrade.getId());
                             Furnace.tick((FurnaceUpgrade) upgrade);
                         }
 
                         return;
                     }
 
-                    ItemStack itemStack = upgrade.tryAddItem(List.of(1), event.getItem().asOne());
+                    ItemStack itemStack = upgrade.tryAddItem(List.of(1), event.getItem());
                     if(itemStack != null){
                         event.setCancelled(true);
                     }
                     return;
                 }
 
-                if(!upgrade.canReceiveSpecificItemAsInput(event.getItem().asOne())){
+                if(!upgrade.canReceiveSpecificItemAsInput(event.getItem())){
                     event.setCancelled(true);
                     return;
                 }
 
-                ItemStack itemStack = upgrade.tryAddItem(upgrade.inputSlots(), event.getItem().asOne());
+                ItemStack itemStack = upgrade.tryAddItem(upgrade.inputSlots(), event.getItem());
                 if(itemStack != null){
                     event.setCancelled(true);
                 }
                 return;
             }
 
-            List<ItemStack> list = backPack.tryAddItem(event.getItem().asOne());
+            ItemStack itemStack = event.getItem().clone();
+            itemStack.setAmount(1);
+            List<ItemStack> list = backPack.tryAddItem(itemStack);
             if (!list.isEmpty()) {
                 event.setCancelled(true);
                 return;
@@ -96,17 +98,28 @@ public class HopperEvents implements Listener {
                 if(upgrade.getFirstOutputItem() == null){
                     return;
                 }
-                if(event.getDestination().addItem(upgrade.getFirstOutputItem().asOne()).isEmpty()){
-                    upgrade.getFirstOutputItem().subtract();
+
+                ItemStack outputItem = upgrade.getFirstOutputItem().clone();
+                int amount = outputItem.getAmount();
+                outputItem.setAmount(1);
+
+                if(event.getDestination().addItem(outputItem).isEmpty()){
+                    upgrade.getFirstOutputItem().setAmount(amount - 1);
                 }
+
                 return;
             }
 
             if (backPack.getFirstItem() == null){
                 return;
             }
-            if (event.getDestination().addItem(backPack.getFirstItem().asOne()).isEmpty()) {
-                backPack.getFirstItem().subtract();
+
+            ItemStack outputItem = backPack.getFirstItem().clone();
+            int amount = outputItem.getAmount();
+            outputItem.setAmount(1);
+
+            if (event.getDestination().addItem(outputItem).isEmpty()) {
+                backPack.getFirstItem().setAmount(amount - 1);
                 backPack.updateBarrelBlock();
             }
         }

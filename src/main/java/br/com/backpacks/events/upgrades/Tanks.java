@@ -34,7 +34,7 @@ public class Tanks implements Listener {
         if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGTANKS)) return;
         if(!event.getRawSlots().contains(12) && !event.getRawSlots().contains(14)) return;
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-        TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getUpgradeFromType(UpgradeType.LIQUIDTANK);
+        TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.LIQUIDTANK);
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
             generalLogic(tanksUpgrade, 1);
             generalLogic(tanksUpgrade, 2);
@@ -50,14 +50,14 @@ public class Tanks implements Listener {
         switch (event.getRawSlot()){
             case 12 -> {
                 BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-                TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getUpgradeFromType(UpgradeType.LIQUIDTANK);
+                TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.LIQUIDTANK);
                 Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
                     generalLogic(tanksUpgrade, 1);
                 }, 1L);
             }
             case 14 ->{
                 BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-                TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getUpgradeFromType(UpgradeType.LIQUIDTANK);
+                TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.LIQUIDTANK);
                 Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
                     generalLogic(tanksUpgrade, 2);
                 }, 1L);

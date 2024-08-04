@@ -3,7 +3,6 @@ package br.com.backpacks.commands;
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.utils.backpacks.BackPack;
-import net.kyori.adventure.sound.Sound;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -47,7 +46,8 @@ public class BpUpgBackpack implements CommandExecutor {
         }
         Main.backPackManager.upgradeBackpack(backPack.getType(), backPack.getId());
         player.sendMessage(Main.PREFIX + "Backpack upgraded successfully!");
-        player.playSound(Sound.sound(org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, Sound.Source.MASTER, 1, 1));
+
+        player.playSound(player, org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         return true;
     }
 }
