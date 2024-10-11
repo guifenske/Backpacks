@@ -1,30 +1,54 @@
 package br.com.backpacks.utils;
 
 
+import br.com.backpacks.recipes.UpgradesRecipes;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+
 public enum UpgradeType {
-    FURNACE,
+    AUTOFEED("Auto Feed", UpgradesRecipes.AUTOFEED, Material.COOKED_BEEF),
 
-    BLAST_FURNACE,
+    AUTOFILL("Auto Fill", UpgradesRecipes.AUTOFILL, Material.DISPENSER),
 
-    SMOKER,
+    COLLECTOR("Collector", UpgradesRecipes.COLLECTOR, Material.HOPPER),
 
-    CRAFTING,
+    CRAFTING_GRID("Crafting Grid", UpgradesRecipes.CRAFTING_GRID, Material.CRAFTING_TABLE),
 
-    JUKEBOX,
+    ENCAPSULATE("Encapsulate", UpgradesRecipes.ENCAPSULATE, Material.GLASS_BOTTLE),
 
-    VILLAGERSFOLLOW,
+    FURNACE("Furnace", UpgradesRecipes.FURNACE, Material.FURNACE),
 
-    COLLECTOR,
+    JUKEBOX("Jukebox", UpgradesRecipes.JUKEBOX, Material.JUKEBOX),
 
-    ENCAPSULATE,
+    LIQUID_TANK("Liquid Tank", UpgradesRecipes.LIQUID_TANK, Material.BUCKET),
 
-    AUTOFILL,
+    MAGNET("Magnet", UpgradesRecipes.MAGNET, Material.ENDER_EYE),
 
-    AUTOFEED,
+    UNBREAKABLE("Unbreakable", UpgradesRecipes.UNBREAKABLE, Material.ENCHANTED_GOLDEN_APPLE),
 
-    LIQUIDTANK,
+    VILLAGER_BAIT("Villager Bait", UpgradesRecipes.VILLAGER_BAIT, Material.EMERALD_BLOCK);
 
-    UNBREAKABLE,
+    UpgradeType(String name, NamespacedKey key, Material material) {
+        this.name = name;
+        this.key = key;
+        this.material = material;
+    }
 
-    MAGNET
+    private final String name;
+
+    private final NamespacedKey key;
+
+    private final Material material;
+
+    public String getName() {
+        return name;
+    }
+
+    public NamespacedKey getKey() {
+        return key;
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
 }

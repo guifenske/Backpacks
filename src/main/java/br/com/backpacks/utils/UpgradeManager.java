@@ -67,7 +67,7 @@ public class UpgradeManager {
 
     public static boolean canUpgradeStack(Upgrade upgrade){
         switch (upgrade.getType()){
-            case FURNACE, CRAFTING, ENCAPSULATE, SMOKER, BLAST_FURNACE, UNBREAKABLE -> {
+            case FURNACE, CRAFTING_GRID, ENCAPSULATE, UNBREAKABLE -> {
                 return true;
             }
         }

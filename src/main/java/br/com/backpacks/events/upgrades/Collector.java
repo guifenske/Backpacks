@@ -24,8 +24,8 @@ public class Collector implements Listener {
         if(!(event.getEntity() instanceof Player)) return;
         Player player = (Player) event.getEntity();
 
-        if(!player.getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        if(!player.getPersistentDataContainer().has(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
+        BackPack backPack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER));
         if(backPack == null) return;
 
         if(backPack.getFirstUpgradeFromType(UpgradeType.COLLECTOR) == null) return;

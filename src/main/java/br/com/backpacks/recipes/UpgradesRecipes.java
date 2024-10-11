@@ -14,89 +14,31 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Arrays;
 
 public class UpgradesRecipes {
-    private final NamespacedKey CRAFTINGGRID = new NamespacedKey(Main.getMain(), "craftinggrid");
-    private final NamespacedKey FURNACEGRID = new NamespacedKey(Main.getMain(), "furnacegrid");
-    private final NamespacedKey BLASTFURNACE = new NamespacedKey(Main.getMain(), "blastfurnace");
-    private final NamespacedKey SMOKER = new NamespacedKey(Main.getMain(), "smoker");
-    private final NamespacedKey UNBREAKING = new NamespacedKey(Main.getMain(), "unbreaking");
-    private final NamespacedKey JUKEBOX = new NamespacedKey(Main.getMain(), "jukebox");
-    private final NamespacedKey VILLAGERSFOLLOW = new NamespacedKey(Main.getMain(), "villagerfollow");
-    private final NamespacedKey ENCAPSULATE = new NamespacedKey(Main.getMain(), "encapsulate");
-    private final NamespacedKey COLLECTOR = new NamespacedKey(Main.getMain(), "collector");
-    private final NamespacedKey AUTOFILL = new NamespacedKey(Main.getMain(), "autofill");
-    private final NamespacedKey AUTOFEED = new NamespacedKey(Main.getMain(), "autofeed");
-    private final NamespacedKey LIQUIDTANK = new NamespacedKey(Main.getMain(), "liquidtank");
-    private final NamespacedKey UPGRADEID = new NamespacedKey(Main.getMain(), "upgradeid");
-    private final NamespacedKey MAGNET = new NamespacedKey(Main.getMain(), "magnet");
-    private final NamespacedKey NAMESPACEISUPGRADE = new NamespacedKey(Main.getMain(), "isupgrade");
+    public static final NamespacedKey CRAFTING_GRID = new NamespacedKey(Main.getMain(), "crafting_grid");
+    public static final NamespacedKey FURNACE = new NamespacedKey(Main.getMain(), "furnace");
+    public static final NamespacedKey UNBREAKABLE = new NamespacedKey(Main.getMain(), "unbreakable");
+    public static final NamespacedKey JUKEBOX = new NamespacedKey(Main.getMain(), "jukebox");
+    public static final NamespacedKey VILLAGER_BAIT = new NamespacedKey(Main.getMain(), "villager_bait");
+    public static final NamespacedKey ENCAPSULATE = new NamespacedKey(Main.getMain(), "encapsulate");
+    public static final NamespacedKey COLLECTOR = new NamespacedKey(Main.getMain(), "collector");
+    public static final NamespacedKey AUTOFILL = new NamespacedKey(Main.getMain(), "autofill");
+    public static final NamespacedKey AUTOFEED = new NamespacedKey(Main.getMain(), "autofeed");
+    public static final NamespacedKey LIQUID_TANK = new NamespacedKey(Main.getMain(), "liquid_tank");
+    public static final NamespacedKey UPGRADE_ID = new NamespacedKey(Main.getMain(), "upgrade_id");
+    public static final NamespacedKey MAGNET = new NamespacedKey(Main.getMain(), "magnet");
+    public static final NamespacedKey IS_UPGRADE = new NamespacedKey(Main.getMain(), "is_upgrade");
 
-    public NamespacedKey isUpgrade() {
-        return NAMESPACEISUPGRADE;
-    }
-    public NamespacedKey getUPGRADEID() {
-        return UPGRADEID;
-    }
-
-    public NamespacedKey getCraftingGrid() {
-        return CRAFTINGGRID;
-    }
-
-    public NamespacedKey getFurnace() {
-        return FURNACEGRID;
-    }
-    public NamespacedKey getUNBREAKING() {
-        return UNBREAKING;
-    }
-
-    public NamespacedKey getJukebox() {
-        return JUKEBOX;
-    }
-
-    public NamespacedKey getVillagersFollow() {
-        return VILLAGERSFOLLOW;
-    }
-
-    public NamespacedKey getAutoFill() {
-        return AUTOFILL;
-    }
-
-    public NamespacedKey getAutoFeed() {
-        return AUTOFEED;
-    }
-
-    public NamespacedKey getLiquidTank() {
-        return LIQUIDTANK;
-    }
-    public NamespacedKey getCOLLECTOR() {
-        return COLLECTOR;
-    }
-    public NamespacedKey getENCAPSULATE() {
-        return ENCAPSULATE;
-    }
-
-    public NamespacedKey getBLASTFURNACE() {
-        return BLASTFURNACE;
-    }
-
-    public NamespacedKey getSMOKER() {
-        return SMOKER;
-    }
-
-    public NamespacedKey getMAGNET() {
-        return MAGNET;
-    }
-
-    public Recipe getCraftingTableRecipe() {
+    public static Recipe getCraftingTableRecipe() {
         ItemStack craftingGrid = new ItemStack(Material.CRAFTING_TABLE);
         ItemMeta meta = craftingGrid.getItemMeta();
 
         meta.setDisplayName("Crafting Table Upgrade");
         meta.setLore(Arrays.asList("§7Crafting Table Upgrade", "§7§nAllows you to craft items in the backpack."));
-        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(CRAFTINGGRID, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(IS_UPGRADE, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(CRAFTING_GRID, PersistentDataType.INTEGER, 1);
         craftingGrid.setItemMeta(meta);
 
-        ShapedRecipe recipe = new ShapedRecipe(CRAFTINGGRID, craftingGrid);
+        ShapedRecipe recipe = new ShapedRecipe(CRAFTING_GRID, craftingGrid);
 
         recipe.shape("LIL", "ICI", "LIL");
 
@@ -107,13 +49,13 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getJukeboxRecipe() {
+    public static Recipe getJukeboxRecipe() {
         ItemStack jukebox = new ItemStack(Material.JUKEBOX);
         ItemMeta meta = jukebox.getItemMeta();
 
         meta.setDisplayName("Jukebox Upgrade");
         meta.setLore(Arrays.asList("§7Jukebox Upgrade", "§7§nAllows you to play music discs in the backpack."));
-        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(IS_UPGRADE, PersistentDataType.INTEGER, 1);
         meta.getPersistentDataContainer().set(JUKEBOX, PersistentDataType.INTEGER, 1);
         jukebox.setItemMeta(meta);
 
@@ -130,18 +72,18 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getFollowingVillagersRecipe() {
+    public static Recipe getFollowingVillagersRecipe() {
         ItemStack emeraldBlock = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta meta = emeraldBlock.getItemMeta();
 
         meta.setDisplayName("Following Villagers Upgrade");
         meta.setLore(Arrays.asList("§Following Villagers Upgrade", "§7§nAllows you to attract villagers when the backpack is equipped",
                 "§7§n and you are holding an emerald block."));
-        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(VILLAGERSFOLLOW, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(IS_UPGRADE, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(VILLAGER_BAIT, PersistentDataType.INTEGER, 1);
         emeraldBlock.setItemMeta(meta);
 
-        ShapedRecipe recipe = new ShapedRecipe(VILLAGERSFOLLOW, emeraldBlock);
+        ShapedRecipe recipe = new ShapedRecipe(VILLAGER_BAIT, emeraldBlock);
 
         recipe.shape("GCS", "BTB", "EEE");
 
@@ -156,13 +98,13 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getAutoFillRecipe(){
+    public static Recipe getAutoFillRecipe(){
         ItemStack autoFill = new ItemStack(Material.DISPENSER);
         ItemMeta meta = autoFill.getItemMeta();
 
         meta.setDisplayName("Auto Fill Upgrade");
         meta.setLore(Arrays.asList("§7Auto Fill Upgrade", "§7§nAutomatically fills an item of your choice in the desired slot."));
-        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(IS_UPGRADE, PersistentDataType.INTEGER, 1);
         meta.getPersistentDataContainer().set(AUTOFILL, PersistentDataType.INTEGER, 1);
         autoFill.setItemMeta(meta);
 
@@ -177,17 +119,17 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getFurnaceRecipe(){
+    public static Recipe getFurnaceRecipe(){
         ItemStack furnaceGrid = new ItemStack(Material.FURNACE);
         ItemMeta meta = furnaceGrid.getItemMeta();
 
         meta.setDisplayName("Furnace Upgrade");
         meta.setLore(Arrays.asList("§7Furnace Upgrade", "§7§nAllows you to cook items in the backpack."));
-        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(FURNACEGRID, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(IS_UPGRADE, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(FURNACE, PersistentDataType.INTEGER, 1);
         furnaceGrid.setItemMeta(meta);
 
-        ShapedRecipe recipe = new ShapedRecipe(FURNACEGRID, furnaceGrid);
+        ShapedRecipe recipe = new ShapedRecipe(FURNACE, furnaceGrid);
 
         recipe.shape("III", "RFR", "III");
 
@@ -198,13 +140,13 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getAutoFeedRecipe(){
+    public static Recipe getAutoFeedRecipe(){
         ItemStack autoFood = new ItemStack(Material.COOKED_BEEF);
         ItemMeta meta = autoFood.getItemMeta();
 
         meta.setDisplayName("Auto Feed Upgrade");
         meta.setLore(Arrays.asList("§7Auto Feed Upgrade", "§7§nAllows the backpack to automatically eat the food stored in it."));
-        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(IS_UPGRADE, PersistentDataType.INTEGER, 1);
         meta.getPersistentDataContainer().set(AUTOFEED, PersistentDataType.INTEGER, 1);
         autoFood.setItemMeta(meta);
 
@@ -222,17 +164,17 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getLiquidTankRecipe() {
+    public static Recipe getLiquidTankRecipe() {
         ItemStack liquidTank = new ItemStack(Material.BUCKET);
         ItemMeta meta = liquidTank.getItemMeta();
 
         meta.setDisplayName("Liquid Tank Upgrade");
         meta.setLore(Arrays.asList("§7Liquid Tank Upgrade", "§7§nAllows you to store liquids in the backpack."));
-        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(LIQUIDTANK, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(IS_UPGRADE, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(LIQUID_TANK, PersistentDataType.INTEGER, 1);
         liquidTank.setItemMeta(meta);
 
-        ShapedRecipe recipe = new ShapedRecipe(LIQUIDTANK, liquidTank);
+        ShapedRecipe recipe = new ShapedRecipe(LIQUID_TANK, liquidTank);
 
         recipe.shape("BGB", "BGB", "BGB");
 
@@ -242,13 +184,13 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getEncapsulateRecipe(){
+    public static Recipe getEncapsulateRecipe(){
         ItemStack encapsulate = new ItemStack(Material.GLASS_BOTTLE);
         ItemMeta meta = encapsulate.getItemMeta();
 
         meta.setDisplayName("Encapsulate Upgrade");
         meta.setLore(Arrays.asList("§7Encapsulate Upgrade", "§7§nAllows you to store backpacks inside the backpack."));
-        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(IS_UPGRADE, PersistentDataType.INTEGER, 1);
         meta.getPersistentDataContainer().set(ENCAPSULATE, PersistentDataType.INTEGER, 1);
         encapsulate.setItemMeta(meta);
 
@@ -264,14 +206,14 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getCollectorRecipe(){
+    public static Recipe getCollectorRecipe(){
         ItemStack collector = new ItemStack(Material.HOPPER);
         ItemMeta meta = collector.getItemMeta();
 
         meta.setDisplayName("Collector Upgrade");
         meta.setLore(Arrays.asList("§7Collector Upgrade", "§7§nAllows you to collect items from the ground directly into your backpack."
                                     , "§7§n§oThis upgrade only work if the backpack is being worn."));
-        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(IS_UPGRADE, PersistentDataType.INTEGER, 1);
         meta.getPersistentDataContainer().set(COLLECTOR, PersistentDataType.INTEGER, 1);
         collector.setItemMeta(meta);
 
@@ -286,64 +228,22 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getBlastFurnaceRecipe(){
-        ItemStack blastFurnace = new ItemStack(Material.BLAST_FURNACE);
-        ItemMeta meta = blastFurnace.getItemMeta();
-
-        meta.setDisplayName("Blast Furnace Upgrade");
-        meta.setLore(Arrays.asList("§7Blast Furnace Upgrade", "§7§nAllows you to cook ores in the backpack."));
-        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(BLASTFURNACE, PersistentDataType.INTEGER, 1);
-        blastFurnace.setItemMeta(meta);
-
-        ShapedRecipe recipe = new ShapedRecipe(BLASTFURNACE, blastFurnace);
-
-        recipe.shape("III", "SFS", "III");
-
-        recipe.setIngredient('F', Material.BLAST_FURNACE);
-        recipe.setIngredient('I', Material.IRON_INGOT);
-        recipe.setIngredient('S', Material.SMOOTH_STONE);
-
-        return recipe;
-    }
-
-    public Recipe getSmokerRecipe(){
-        ItemStack smoker = new ItemStack(Material.SMOKER);
-        ItemMeta meta = smoker.getItemMeta();
-
-        meta.setDisplayName("Smoker Upgrade");
-        meta.setLore(Arrays.asList("§7Smoker Upgrade", "§7§nAllows you to cook food in the backpack."));
-        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(SMOKER, PersistentDataType.INTEGER, 1);
-        smoker.setItemMeta(meta);
-
-        ShapedRecipe recipe = new ShapedRecipe(SMOKER, smoker);
-
-        recipe.shape("III", "RFR", "III");
-
-        recipe.setIngredient('F', Material.SMOKER);
-        recipe.setIngredient('I', Material.IRON_INGOT);
-        recipe.setIngredient('R', Material.REDSTONE);
-
-        return recipe;
-    }
-
-    public Recipe getUnbreakableUpgradeRecipe(){
+    public static Recipe getUnbreakableUpgradeRecipe(){
         ItemStack unbreak = new ItemStack(Material.ENCHANTED_GOLDEN_APPLE);
         ItemMeta meta = unbreak.getItemMeta();
 
         meta.setDisplayName("Unbreakable Upgrade");
         meta.setLore(Arrays.asList("§7Unbreakable Upgrade", "§7§nMake the backpack unbreakable."));
-        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(UNBREAKING, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(IS_UPGRADE, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(UNBREAKABLE, PersistentDataType.INTEGER, 1);
         unbreak.setItemMeta(meta);
 
         ItemStack unbreakingThree = new ItemStack(Material.ENCHANTED_BOOK);
         ItemMeta meta2 = unbreakingThree.getItemMeta();
-        meta2.addEnchant(Enchantment.DURABILITY, 3, false);
+        meta2.addEnchant(Enchantment.UNBREAKING, 3, false);
         unbreakingThree.setItemMeta(meta2);
 
-        ShapedRecipe recipe = new ShapedRecipe(UNBREAKING, unbreak);
+        ShapedRecipe recipe = new ShapedRecipe(UNBREAKABLE, unbreak);
 
         recipe.shape("NSN", "UUU", "NSN");
 
@@ -354,13 +254,13 @@ public class UpgradesRecipes {
         return recipe;
     }
 
-    public Recipe getMagnetRecipe() {
+    public static Recipe getMagnetRecipe() {
         ItemStack magnet = new ItemStack(Material.ENDER_EYE);
         ItemMeta meta = magnet.getItemMeta();
 
         meta.setDisplayName("Magnet Upgrade");
         meta.setLore(Arrays.asList("§7Magnet Upgrade", "§7§nPull dropped items on the ground directly into your backpack."));
-        meta.getPersistentDataContainer().set(NAMESPACEISUPGRADE, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(IS_UPGRADE, PersistentDataType.INTEGER, 1);
         meta.getPersistentDataContainer().set(MAGNET, PersistentDataType.INTEGER, 1);
         magnet.setItemMeta(meta);
 

@@ -10,73 +10,21 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Arrays;
 
 public class BackpackRecipes {
-    private final NamespacedKey IS_BACKPACK = new NamespacedKey(Main.getMain(), "isbackpack");
-    private final NamespacedKey BACKPACK_ID = new NamespacedKey(Main.getMain(), "backpackid");
-    private final NamespacedKey HAS_BACKPACK = new NamespacedKey(Main.getMain(), "hasbackpack");
-    private final NamespacedKey IS_CONFIG_ITEM = new NamespacedKey(Main.getMain(), "isconfigitem");
-    private final NamespacedKey NAMESPACE_LEATHER_BACKPACK = new NamespacedKey(Main.getMain(), "leatherbackpack");
-    private final NamespacedKey NAMESPACE_IRON_BACKPACK = new NamespacedKey(Main.getMain(), "ironbackpack");
-    private final NamespacedKey NAMESPACE_GOLD_BACKPACK = new NamespacedKey(Main.getMain(), "goldbackpack");
-    private final NamespacedKey NAMESPACE_LAPIS_BACKPACK = new NamespacedKey(Main.getMain(), "lapisbackpack");
-    private final NamespacedKey NAMESPACE_AMETHYST_BACKPACK = new NamespacedKey(Main.getMain(), "amethystbackpack");
-    private final NamespacedKey NAMESPACE_DRIED_BACKPACK = new NamespacedKey(Main.getMain(), "driedbackpack");
-    private final NamespacedKey NAMESPACE_WET_BACKPACK = new NamespacedKey(Main.getMain(), "wetbackpack");
-    private final NamespacedKey NAMESPACE_DIAMOND_BACKPACK = new NamespacedKey(Main.getMain(), "diamondbackpack");
-    private final NamespacedKey NAMESPACE_NETHERITE_BACKPACK = new NamespacedKey(Main.getMain(), "netheritebackpack");
+    public static final NamespacedKey IS_BACKPACK = new NamespacedKey(Main.getMain(), "isbackpack");
+    public static final NamespacedKey BACKPACK_ID = new NamespacedKey(Main.getMain(), "backpackid");
+    public static final NamespacedKey HAS_BACKPACK = new NamespacedKey(Main.getMain(), "hasbackpack");
+    public static final NamespacedKey IS_CONFIG_ITEM = new NamespacedKey(Main.getMain(), "isconfigitem");
+    public static final NamespacedKey NAMESPACE_LEATHER_BACKPACK = new NamespacedKey(Main.getMain(), "leatherbackpack");
+    public static final NamespacedKey NAMESPACE_IRON_BACKPACK = new NamespacedKey(Main.getMain(), "ironbackpack");
+    public static final NamespacedKey NAMESPACE_GOLD_BACKPACK = new NamespacedKey(Main.getMain(), "goldbackpack");
+    public static final NamespacedKey NAMESPACE_LAPIS_BACKPACK = new NamespacedKey(Main.getMain(), "lapisbackpack");
+    public static final NamespacedKey NAMESPACE_AMETHYST_BACKPACK = new NamespacedKey(Main.getMain(), "amethystbackpack");
+    public static final NamespacedKey NAMESPACE_DRIED_BACKPACK = new NamespacedKey(Main.getMain(), "driedbackpack");
+    public static final NamespacedKey NAMESPACE_WET_BACKPACK = new NamespacedKey(Main.getMain(), "wetbackpack");
+    public static final NamespacedKey NAMESPACE_DIAMOND_BACKPACK = new NamespacedKey(Main.getMain(), "diamondbackpack");
+    public static final NamespacedKey NAMESPACE_NETHERITE_BACKPACK = new NamespacedKey(Main.getMain(), "netheritebackpack");
 
-    public NamespacedKey isBackpack() {
-        return IS_BACKPACK;
-    }
-
-    public NamespacedKey getNAMESPACE_DRIED_BACKPACK() {
-        return NAMESPACE_DRIED_BACKPACK;
-    }
-
-    public NamespacedKey getIS_CONFIG_ITEM() {
-        return IS_CONFIG_ITEM;
-    }
-
-    public NamespacedKey getNAMESPACE_IRON_BACKPACK() {
-        return NAMESPACE_IRON_BACKPACK;
-    }
-
-    public NamespacedKey getNAMESPACE_LEATHER_BACKPACK() {
-        return NAMESPACE_LEATHER_BACKPACK;
-    }
-
-    public NamespacedKey getNAMESPACE_WET_BACKPACK() {
-        return NAMESPACE_WET_BACKPACK;
-    }
-
-    public NamespacedKey getNAMESPACE_BACKPACK_ID() {
-        return BACKPACK_ID;
-    }
-
-    public NamespacedKey getHAS_BACKPACK() {
-        return HAS_BACKPACK;
-    }
-
-    public NamespacedKey getNAMESPACE_AMETHYST_BACKPACK() {
-        return NAMESPACE_AMETHYST_BACKPACK;
-    }
-
-    public NamespacedKey getNAMESPACE_NETHERITE_BACKPACK() {
-        return NAMESPACE_NETHERITE_BACKPACK;
-    }
-
-    public NamespacedKey getNAMESPACE_GOLD_BACKPACK() {
-        return NAMESPACE_GOLD_BACKPACK;
-    }
-
-    public NamespacedKey getNAMESPACE_LAPIS_BACKPACK() {
-        return NAMESPACE_LAPIS_BACKPACK;
-    }
-
-    public NamespacedKey getNAMESPACE_DIAMOND_BACKPACK() {
-        return NAMESPACE_DIAMOND_BACKPACK;
-    }
-
-    public Recipe leatherBackpackRecipe() {
+    public static Recipe leatherBackpackRecipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -96,7 +44,7 @@ public class BackpackRecipes {
         return recipe;
     }
 
-    public Recipe ironBackpackRecipe() {
+    public static Recipe ironBackpackRecipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -116,7 +64,7 @@ public class BackpackRecipes {
         return recipe;
     }
 
-    public Recipe goldBackpackRecipe() {
+    public static Recipe goldBackpackRecipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -136,7 +84,7 @@ public class BackpackRecipes {
         return recipe;
     }
 
-    public Recipe lapisBackpackRecipe() {
+    public static Recipe lapisBackpackRecipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -156,7 +104,7 @@ public class BackpackRecipes {
         return recipe;
     }
 
-    public Recipe amethystBackpackRecipe() {
+    public static Recipe amethystBackpackRecipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -176,7 +124,7 @@ public class BackpackRecipes {
         return recipe;
     }
 
-    public Recipe diamondBackpackRecipe() {
+    public static Recipe diamondBackpackRecipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -196,7 +144,7 @@ public class BackpackRecipes {
         return recipe;
     }
 
-    public Recipe netheriteBackpackRecipe() {
+    public static Recipe netheriteBackpackRecipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = backpack.getItemMeta();
 
@@ -215,7 +163,7 @@ public class BackpackRecipes {
         return recipe;
     }
 
-    public FurnaceRecipe driedBackpackRecipe() {
+    public static FurnaceRecipe driedBackpackRecipe() {
         ItemStack driedBackpack = new ItemStack(org.bukkit.Material.BARREL);
         ItemMeta meta = driedBackpack.getItemMeta();
 

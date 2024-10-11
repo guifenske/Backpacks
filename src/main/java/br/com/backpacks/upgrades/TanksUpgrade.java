@@ -47,7 +47,7 @@ public class TanksUpgrade extends Upgrade {
     }
 
     public TanksUpgrade(int id) {
-        super(UpgradeType.LIQUIDTANK, id);
+        super(UpgradeType.LIQUID_TANK, id);
         this.inventory = Bukkit.createInventory(null, 27, "Tanks Upgrade");
         updateInventory();
     }

@@ -46,14 +46,14 @@ public class OnClickInConfigMenu implements Listener {
             }
 
             switch (upgrade.getType()) {
-                case CRAFTING -> {
+                case CRAFTING_GRID -> {
                     BackpackAction.clearPlayerAction(player);
                     event.getWhoClicked().openWorkbench(null, true);
                     BackpackAction.setAction(player, BackpackAction.Action.UPGCRAFTINGGRID);
                     event.setCancelled(true);
                 }
 
-                case FURNACE, SMOKER, BLAST_FURNACE -> {
+                case FURNACE -> {
                     BackpackAction.clearPlayerAction(player);
                     event.getWhoClicked().openInventory(upgrade.getInventory());
                     BukkitTask task = new BukkitRunnable(){
@@ -90,7 +90,7 @@ public class OnClickInConfigMenu implements Listener {
                     event.setCancelled(true);
                 }
 
-                case VILLAGERSFOLLOW -> {
+                case VILLAGER_BAIT -> {
                     BackpackAction.clearPlayerAction(player);
                     event.getWhoClicked().openInventory(upgrade.getInventory());
                     BukkitTask task = new BukkitRunnable(){
@@ -114,7 +114,7 @@ public class OnClickInConfigMenu implements Listener {
                     event.setCancelled(true);
                 }
 
-                case LIQUIDTANK -> {
+                case LIQUID_TANK -> {
                     BackpackAction.clearPlayerAction(player);
                     event.getWhoClicked().openInventory(upgrade.getInventory());
                     BukkitTask task = new BukkitRunnable(){
@@ -139,7 +139,7 @@ public class OnClickInConfigMenu implements Listener {
                 if(backPack.isBlock())  return;
                 if (backPack.getOwner() != null && backPack.getOwner().equals(player.getUniqueId())){
                     player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
-                    player.getPersistentDataContainer().remove(new BackpackRecipes().getHAS_BACKPACK());
+                    player.getPersistentDataContainer().remove(BackpackRecipes.HAS_BACKPACK);
                     if(backPack.getFirstUpgradeFromType(UpgradeType.JUKEBOX) != null){
                         JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
                         if(upgrade.getSound() != null){
@@ -150,9 +150,9 @@ public class OnClickInConfigMenu implements Listener {
 
                     backPack.setOwner(null);
                 } else if(backPack.getOwner() == null){
-                    if(player.getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
-                    player.getInventory().remove(RecipesUtils.getItemFromBackpack(backPack));
-                    player.getPersistentDataContainer().set(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER, backPack.getId());
+                    if(player.getPersistentDataContainer().has(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER)) return;
+                    backPack.removeBackpackItem(player);
+                    player.getPersistentDataContainer().set(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER, backPack.getId());
                     backPack.setOwner(player.getUniqueId());
                 }
 
@@ -196,7 +196,7 @@ public class OnClickInConfigMenu implements Listener {
             case 48 ->{
                 if(!backPack.isBlock()) return;
                 if(!backPack.isShowingNameAbove()){
-                    ArmorStand marker = (ArmorStand) player.getWorld().spawnEntity(backPack.getLocation().clone().add(0, 1, 0), EntityType.ARMOR_STAND);
+                    ArmorStand marker = (ArmorStand) player.getWorld().spawnEntity(backPack.getLocation().clone().add(0.5, 1, 0.5), EntityType.ARMOR_STAND);
                     marker.setVisible(false);
                     marker.setSmall(true);
                     marker.setCustomName(backPack.getName());
@@ -205,6 +205,7 @@ public class OnClickInConfigMenu implements Listener {
                     marker.setInvulnerable(true);
                     marker.setBasePlate(false);
                     marker.setMarker(true);
+                    marker.setPersistent(true);
                     backPack.setMarker(marker.getUniqueId());
                     backPack.setShowNameAbove(true);
                 }   else{

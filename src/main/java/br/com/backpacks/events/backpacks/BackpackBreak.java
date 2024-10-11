@@ -14,6 +14,7 @@ import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,14 +31,17 @@ public class BackpackBreak implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     private void playerBreak(BlockBreakEvent event){
+
         if(!event.getBlock().getType().equals(Material.BARREL)) return;
         if(!Main.backPackManager.canOpen()){
             event.setCancelled(true);
             return;
         }
+
         if(Main.backPackManager.getBackpackFromLocation(event.getBlock().getLocation()) == null) return;
 
-        event.setDropItems(false);
+        event.setCancelled(true);
+
 
         BackPack backPack = Main.backPackManager.getBackpackFromLocation(event.getBlock().getLocation());
         ItemStack backpackItem = RecipesUtils.getItemFromBackpack(backPack);
@@ -50,6 +54,7 @@ public class BackpackBreak implements Listener {
                 Jukebox.stopSound(backPack, upgrade);
             }
         }
+
         for(UUID uuid : BackpackAction.getHashMap().keySet()){
             Player player = Bukkit.getPlayer(uuid);
             if(player == null) continue;
@@ -70,6 +75,7 @@ public class BackpackBreak implements Listener {
         InventoryBuilder.updateConfigInv(backPack);
         Location location = event.getBlock().getLocation();
         Main.backPackManager.getBackpacksPlacedLocations().remove(location);
+        event.getBlock().setType(Material.AIR, true);
         event.getPlayer().getWorld().dropItemNaturally(location, backpackItem);
     }
 
@@ -81,6 +87,7 @@ public class BackpackBreak implements Listener {
                 event.setCancelled(true);
                 continue;
             }
+
             if(Main.backPackManager.getBackpackFromLocation(block.getLocation()) == null) continue;
 
             event.setCancelled(true);
@@ -126,7 +133,7 @@ public class BackpackBreak implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void onItemDespawn(ItemDespawnEvent event){
         if(!event.getEntity().getItemStack().hasItemMeta())  return;
-        if(!event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER)){
+        if(!event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.isBackpack(), PersistentDataType.INTEGER)){
             if(event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(new UpgradesRecipes().isUpgrade(), PersistentDataType.INTEGER)){
                 if(!Main.backPackManager.canOpen()){
                     event.setCancelled(true);
@@ -143,7 +150,7 @@ public class BackpackBreak implements Listener {
             return;
         }
 
-        int id = event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
+        int id = event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().get(BackpackRecipes.getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER);
         if(!Main.backPackManager.getBackpacks().containsKey(id)) return;
         BackPack backPack = Main.backPackManager.getBackpacks().get(id);
 

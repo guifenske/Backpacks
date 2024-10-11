@@ -1,15 +1,19 @@
 package br.com.backpacks.events.backpacks;
 
 import br.com.backpacks.Main;
+import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.UUID;
 
@@ -44,9 +48,15 @@ public class RenameBackpack implements Listener {
         });
 
         if(!backPack.isBlock() && backPack.getOwner() == null) {
-            player.getInventory().remove(RecipesUtils.getItemFromBackpack(backPack));
+            backPack.removeBackpackItem(player);
             backPack.setName(newName);
+
+            player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
+            player.sendMessage(Main.PREFIX + "§aRenamed backpack to " + newName + ".");
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+
             Bukkit.getScheduler().runTask(Main.getMain(), ()->{
+
                 for(UUID uuid : backPack.getViewersIds()){
                     if(Main.backPackManager.getCurrentPage().containsKey(uuid)){
                         Player player1 = Bukkit.getPlayer(uuid);
@@ -56,9 +66,6 @@ public class RenameBackpack implements Listener {
                     }
                 }
             });
-            player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
-            player.sendMessage(Main.PREFIX + "§aRenamed backpack to " + newName + ".");
-            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
             return;
         }
 

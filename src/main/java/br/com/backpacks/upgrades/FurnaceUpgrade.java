@@ -1,28 +1,26 @@
 package br.com.backpacks.upgrades;
 
-import br.com.backpacks.Main;
 import br.com.backpacks.events.upgrades.Furnace;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeType;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class FurnaceUpgrade extends Upgrade {
     private ItemStack result;
     private ItemStack fuel;
     private ItemStack smelting;
     private int lastMaxOperation = -1;
-    private final Inventory inventory;
+    private Inventory inventory;
     private CookingRecipe<?> recipe;
 
     public CookingRecipe<?> getRecipe() {
@@ -40,8 +38,6 @@ public class FurnaceUpgrade extends Upgrade {
     public void setCookTime(int cookTime) {
         this.cookTime = cookTime;
     }
-
-    private final int cookTimeMultiplier;
 
     private int cookTime = 0;
 
@@ -63,8 +59,8 @@ public class FurnaceUpgrade extends Upgrade {
 
     private int operation = 0;
 
-    public org.bukkit.block.Furnace getBoundFakeBlock() {
-        return (org.bukkit.block.Furnace) boundFakeBlock;
+    public Block getBoundFakeBlock() {
+        return boundFakeBlock;
     }
 
     public void setBoundFakeBlock(Block boundFakeBlock) {
@@ -79,21 +75,21 @@ public class FurnaceUpgrade extends Upgrade {
 
     private final long cookItemTicks;
 
-    public FurnaceUpgrade(UpgradeType upgradeType, int id){
-        super(upgradeType, id);
-        if(upgradeType.equals(UpgradeType.BLAST_FURNACE)){
-            this.cookItemTicks = 100L;
-            this.inventory = Bukkit.createInventory(null, InventoryType.BLAST_FURNACE);
-            this.cookTimeMultiplier = 4;
-        }   else if(upgradeType.equals(UpgradeType.SMOKER)){
-            this.cookItemTicks = 100L;
-            this.inventory = Bukkit.createInventory(null, InventoryType.SMOKER);
-            this.cookTimeMultiplier = 4;
-        }   else{
-            this.cookItemTicks = 200L;
-            this.inventory = Bukkit.createInventory(null, InventoryType.FURNACE);
-            this.cookTimeMultiplier = 2;
-        }
+    public FurnaceUpgrade(int id){
+        super(UpgradeType.FURNACE, id);
+
+        this.cookItemTicks = 200L;
+        this.inventory = null;
+    }
+
+    //todo: save location of the furnace so we can load it again, instead of creating a new one
+    public void createFurnaceInventory(){
+        Location tempLocation = new Location(Bukkit.getWorld("world"), ThreadLocalRandom.current().nextInt(-900, 900), -65, ThreadLocalRandom.current().nextInt(-900, 900));
+        Block tempBlock = tempLocation.getBlock();
+
+        tempBlock.setType(Material.FURNACE);
+        setBoundFakeBlock(tempBlock);
+        this.inventory = ((org.bukkit.block.Furnace) getBoundFakeBlock()).getInventory();
         updateInventory();
     }
 
@@ -118,7 +114,10 @@ public class FurnaceUpgrade extends Upgrade {
 
     @Override
     public void stopTicking() {
-        if(Furnace.isTicking.contains(getId())) Furnace.isTicking.remove(getId());
+        if(Furnace.isTicking.contains(getId())){
+            Furnace.isTicking.remove((Integer) getId());
+        }
+
         setCookTime(0);
         if(Furnace.taskMap.containsKey(getId())) Furnace.taskMap.get(getId()).cancel();
         Furnace.taskMap.remove(getId());
@@ -152,7 +151,7 @@ public class FurnaceUpgrade extends Upgrade {
         this.smelting = smelting;
     }
 
-    public boolean canTick(){
+    public boolean canSmelt(){
         if(getSmelting() == null)   return false;
         if(getResult() != null && getResult().getAmount() == getResult().getMaxStackSize()) return false;
         if(getFuel() != null && operation >= 0) return true;
@@ -167,15 +166,14 @@ public class FurnaceUpgrade extends Upgrade {
     }
 
     public void clearSubTickTask(){
-        for(HumanEntity player : getInventory().getViewers()){
-            InventoryView view = player.getOpenInventory();
-            getBoundFakeBlock().setCookTime((short) 0);
-        }
+        if(getBoundFakeBlock() == null) return;
+
         if(subTickTask != null) subTickTask.cancel();
         subTickTask = null;
     }
 
-    public void startSubTick(){
+  /*  public void startSubTick(){
+
         subTickTask = new BukkitRunnable() {
             @Override
             public void run() {
@@ -183,27 +181,28 @@ public class FurnaceUpgrade extends Upgrade {
                     this.cancel();
                     return;
                 }
-                if(!canTick()){
+
+                if(!canSmelt()){
                     this.cancel();
                     return;
                 }
-                setCookTime(getCookTime() + cookTimeMultiplier);
-                for(HumanEntity player : getInventory().getViewers()){
-                    if(Furnace.currentFurnace.containsKey(player.getUniqueId())) {
-                        if (Furnace.currentFurnace.get(player.getUniqueId()) == null) {
-                            getBoundFakeBlock().setCookTime((short) 0);
-                            continue;
-                        }
-                        if (Furnace.currentFurnace.get(player.getUniqueId()).getId() != getId()) {
-                            getBoundFakeBlock().setCookTime((short) 0);
-                            continue;
-                        }
-                        getBoundFakeBlock().setCookTime((short) getCookTime());
-                    }
+
+                if(getBoundFakeBlock() == null){
+                    this.cancel();
+                    return;
                 }
+
+                org.bukkit.block.Furnace furnace = (org.bukkit.block.Furnace) getBoundFakeBlock().getState();
+
+                setCookTime(getCookTime() + cookTimeMultiplier);
+                furnace.setCookTime((short) getCookTime());
+
             }
         }.runTaskTimer(Main.getMain(), 0L, 2L);
     }
+
+
+   */
 
     public Inventory getInventory(){
         return inventory;

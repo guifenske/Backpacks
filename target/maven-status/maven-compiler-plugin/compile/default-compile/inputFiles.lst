@@ -1,72 +1,71 @@
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/commands/BpUpgBackpack.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/storage/YamlProvider.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/ConfigItemsEvents.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/upgrades/JukeboxUpgrade.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/InteractOtherPlayerBackpack.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/Upgrade.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/backpacks/RandomBackpackBuilder.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/others/JukeboxUtils.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/backpacks/BackpackAction.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/AutoSaveManager.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/storage/StorageManager.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/upgrades/VillagersFollowUpgrade.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/commands/BpGive.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/OnClickBackpack.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/upgrades/CollectorUpgrade.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/backup/ZipUtils.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/PlayerJoinLeaveEvent.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/OnCloseBackpack.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/recipes/BackpackRecipes.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/UpgradeType.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/VillagersFollow.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/Tanks.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/storage/SerializationUtils.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/recipes/RecipesUtils.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/CraftingTable.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/CraftBackpack.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/Jukebox.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/commands/BpReload.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/ThreadBackpacks.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/Constants.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/UpdateChecker.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/backup/BackupHandler.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/Main.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/storage/StorageProvider.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/backpacks/BackPackManager.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/ServerLoadEvent.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/Magnet.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/Fishing.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/IOMenu.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/commands/BpBackup.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/upgrades/AutoFeedUpgrade.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/upgrades/FurnaceUpgrade.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/upgrades/TanksUpgrade.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/OnClickUpgradesMenu.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/backpacks/RenameBackpack.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/commands/BpList.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/others/FurnaceUtils.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/Furnace.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/OnCloseUpgradeMenu.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/backpacks/BackpackBreak.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/backpacks/OpenBackpackOfTheBack.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/AnvilRenameBackpack.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/inventory/ItemCreator.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/backpacks/BackpackType.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/FinishedSmelting.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/storage/MySQLProvider.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/Config.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/backup/ScheduledBackupService.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/backpacks/BackPack.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/inventory/InventoryBuilder.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/backpacks/BackpackInteract.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/commands/BpUpGive.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/recipes/UpgradesRecipes.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/AutoFeed.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/OnDimensionSwitch.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/OnClickInConfigMenu.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/EntityDeathEvent.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/HopperEvents.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/OnCloseBackpackConfigMenu.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/Collector.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/backpacks/BackpackPlace.java
-/home/guilherme/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/UpgradeManager.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/Fishing.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/CraftingTable.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/OnClickInConfigMenu.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/ConfigItemsEvents.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/Magnet.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/PlayerJoinLeaveEvent.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/backup/ScheduledBackupService.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/IOMenu.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/HopperEvents.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/OnClickUpgradesMenu.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/OnCloseBackpackConfigMenu.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/backpacks/BackpackPlace.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/commands/BpUpgBackpack.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/UpgradeManager.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/ThreadBackpacks.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/backpacks/BackpackBreak.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/commands/BpList.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/upgrades/JukeboxUpgrade.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/commands/BpReload.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/FinishedSmelting.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/AutoFeed.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/UpgradeType.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/upgrades/VillagerBaitUpgrade.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/upgrades/FurnaceUpgrade.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/upgrades/TanksUpgrade.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/upgrades/AutoFeedUpgrade.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/backpacks/RandomBackpackBuilder.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/backpacks/BackpackInteract.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/AnvilRenameBackpack.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/others/FurnaceUtils.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/OnCloseUpgradeMenu.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/Jukebox.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/Config.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/Tanks.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/backup/BackupHandler.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/commands/BpBackup.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/backpacks/BackPackManager.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/CraftBackpack.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/backpacks/BackPack.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/Collector.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/AutoSaveManager.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/commands/BpUpGive.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/inventory/InventoryBuilder.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/InteractOtherPlayerBackpack.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/UpdateChecker.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/VillagersFollow.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/storage/StorageProvider.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/Constants.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/entity/EntityDeathEvent.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/storage/MySQLProvider.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/others/JukeboxUtils.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/storage/YamlProvider.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/Upgrade.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/storage/StorageManager.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/backpacks/BackpackAction.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/storage/SerializationUtils.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/upgrades/CollectorUpgrade.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/OnDimensionSwitch.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/Main.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/recipes/RecipesUtils.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/recipes/UpgradesRecipes.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/commands/BpGive.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/recipes/BackpackRecipes.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/backup/ZipUtils.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/backpacks/RenameBackpack.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/OnCloseBackpack.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/inventory/OnClickBackpack.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/inventory/ItemCreator.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/backpacks/OpenBackpackOfTheBack.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/events/upgrades/Furnace.java
+/home/guilherme/Área de trabalho/IdeaProjects/Backpacks/src/main/java/br/com/backpacks/utils/backpacks/BackpackType.java

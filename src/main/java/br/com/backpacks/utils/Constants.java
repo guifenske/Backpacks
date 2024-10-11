@@ -8,5 +8,5 @@ public class Constants {
     public static boolean MONSTER_DROPS_BACKPACK = true;
     public static boolean CATCH_BACKPACK = true;
     public static String VERSION = "";
-    public static List<String> SUPPORTED_VERSIONS = List.of("1.20.4", "1.21.x");
+    public static List<String> SUPPORTED_VERSIONS = List.of("1.21", "1.21.1");
 }

@@ -85,7 +85,7 @@ public class SerializationUtils {
         dataOutput.writeInt(inventory.getSize());
         for(int i = 0; i < inventory.getSize(); i++){
             if(inventory.getItem(i) == null) continue;
-            if(inventory.getItem(i).hasItemMeta() && inventory.getItem(i).getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
+            if(inventory.getItem(i).hasItemMeta() && inventory.getItem(i).getItemMeta().getPersistentDataContainer().has(BackpackRecipes.getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
             dataOutput.writeInt(i);
             dataOutput.writeObject(inventory.getItem(i));
         }

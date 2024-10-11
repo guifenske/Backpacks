@@ -18,11 +18,11 @@ public class InteractOtherPlayerBackpack implements Listener {
         Entity clickedEntity = event.getRightClicked();
         Player player = event.getPlayer();
 
-        if (!clickedEntity.getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
+        if (!clickedEntity.getPersistentDataContainer().has(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
 
         if(!clickedEntity.getFacing().getDirection().equals(player.getFacing().getDirection()))  return;
 
-        BackPack backPack = Main.backPackManager.getBackpackFromId(clickedEntity.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        BackPack backPack = Main.backPackManager.getBackpackFromId(clickedEntity.getPersistentDataContainer().get(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER));
         if(backPack == null) return;
 
         if(!backPack.isLocked()){

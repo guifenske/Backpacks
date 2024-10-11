@@ -29,32 +29,40 @@ public class AutoFeed implements Listener {
     @EventHandler
     private static void tick(FoodLevelChangeEvent event){
         Player player = (Player) event.getEntity();
-        if(!player.getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        if(!player.getPersistentDataContainer().has(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER)) return;
+        BackPack backPack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER));
+
         if(backPack.getFirstUpgradeFromType(UpgradeType.AUTOFEED) == null) return;
         AutoFeedUpgrade upgrade = (AutoFeedUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.AUTOFEED);
+
         if(!upgrade.isEnabled() || backPack.getBackpackItems().isEmpty()) return;
         int need = 20 - player.getFoodLevel();
 
         ItemStack lesserHungerPointsItem = null;
         ItemStack optionalFood = null;
+
         for(ItemStack itemStack : backPack.getBackpackItems()){
             if(!checkFood(itemStack)) continue;
             int hungerPoints = hungerPointsPerFood(itemStack);
+
             if(hungerPoints == need){
                 if(itemStack.getAmount() == 1) itemStack.setType(Material.AIR);
                 else itemStack.setAmount(itemStack.getAmount() - 1);
+
                 event.setCancelled(true);
                 player.setFoodLevel(player.getFoodLevel() + hungerPoints);
                 player.setSaturation(player.getSaturation() + saturationPointsPerFood(itemStack));
                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1, 1);
+
                 applyEffectPerFood(player, itemStack);
                 return;
             }   else if(hungerPoints < need){
                 if(lesserHungerPointsItem == null) lesserHungerPointsItem = itemStack;
+
                 else if(hungerPoints > hungerPointsPerFood(lesserHungerPointsItem)){
                     lesserHungerPointsItem = itemStack;
                 }
+
             }   else{
                 optionalFood = itemStack;
             }
@@ -239,7 +247,7 @@ public class AutoFeed implements Listener {
             case PUFFERFISH -> {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 300, 3));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 1200, 2));
-                player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 300, 1));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 300, 1));
             }
 
             case HONEY_BOTTLE -> player.removePotionEffect(PotionEffectType.POISON);
@@ -257,7 +265,7 @@ public class AutoFeed implements Listener {
             case ENCHANTED_GOLDEN_APPLE -> {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 2400, 4));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 400, 2));
-                player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 6000, 1));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 6000, 1));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 6000, 1));
             }
 

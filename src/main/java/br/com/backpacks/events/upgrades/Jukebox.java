@@ -65,7 +65,7 @@ public class Jukebox implements Listener {
 
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
         JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
-        boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER) || backPack.isBlock();
+        boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER) || backPack.isBlock();
 
         switch (event.getRawSlot()){
             case 9 ->{

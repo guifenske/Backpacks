@@ -17,8 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static br.com.backpacks.utils.UpgradeType.*;
-
 public class BpUpGive implements CommandExecutor, TabCompleter {
 
     @Override
@@ -47,8 +45,8 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
                 upgrade = new JukeboxUpgrade(UpgradeManager.lastUpgradeID + 1);
             }
 
-            case VILLAGERSFOLLOW -> {
-                upgrade = new VillagersFollowUpgrade(UpgradeManager.lastUpgradeID + 1);
+            case VILLAGER_BAIT -> {
+                upgrade = new VillagerBaitUpgrade(UpgradeManager.lastUpgradeID + 1);
             }
 
             case AUTOFEED -> {
@@ -56,18 +54,10 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
             }
 
             case FURNACE -> {
-                upgrade = new FurnaceUpgrade(FURNACE, UpgradeManager.lastUpgradeID + 1);
+                upgrade = new FurnaceUpgrade(UpgradeManager.lastUpgradeID + 1);
             }
 
-            case SMOKER -> {
-                upgrade = new FurnaceUpgrade(SMOKER, UpgradeManager.lastUpgradeID + 1);
-            }
-
-            case BLAST_FURNACE -> {
-                upgrade = new FurnaceUpgrade(BLAST_FURNACE, UpgradeManager.lastUpgradeID + 1);
-            }
-
-            case LIQUIDTANK -> {
+            case LIQUID_TANK -> {
                 upgrade = new TanksUpgrade(UpgradeManager.lastUpgradeID + 1);
             }
 

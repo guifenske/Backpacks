@@ -1,15 +1,27 @@
 package br.com.backpacks;
 
 import br.com.backpacks.backup.BackupHandler;
+import br.com.backpacks.events.upgrades.Furnace;
 import br.com.backpacks.events.upgrades.Magnet;
 import br.com.backpacks.events.upgrades.VillagersFollow;
 import br.com.backpacks.storage.StorageManager;
+import br.com.backpacks.upgrades.FurnaceUpgrade;
+import br.com.backpacks.utils.Upgrade;
+import br.com.backpacks.utils.UpgradeManager;
+import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.Recipe;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class ThreadBackpacks {
 
@@ -41,18 +53,66 @@ public class ThreadBackpacks {
         StorageManager.getProvider().loadBackpacks();
 
         Instant finish = Instant.now();
-        Main.getMain().getLogger().info("Hello from Backpacks! " + Duration.between(Main.start, finish).toMillis() + "ms");
         BackupHandler backupHandler = Config.getBackupHandler();
+
         if(backupHandler != null){
             backupHandler.getScheduledBackupService().start();
         }
+
         Main.getMain().setBackupHandler(backupHandler);
 
         AutoSaveManager autoSaveManager = Config.getAutoSaveManager();
         if(autoSaveManager != null){
             autoSaveManager.start();
         }
+
         Main.getMain().setAutoSaveManager(autoSaveManager);
+
+        Bukkit.getScheduler().runTask(Main.getMain(), ()->{
+
+            for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
+                if(backPack.isShowingNameAbove()){
+                    for(Entity entity : backPack.getLocation().getChunk().getEntities()){
+                        if(entity instanceof ArmorStand){
+                            if(entity.getLocation().subtract(0, 1, 0).getBlock().getLocation().equals(backPack.getLocation())){
+                                backPack.setMarker(entity.getUniqueId());
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            //get the recipes after the server loads, resulting in possible more recipes from others plugins
+            Iterator<Recipe> iterator = Bukkit.recipeIterator();
+            List<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
+
+            while (iterator.hasNext()){
+                Recipe recipe = iterator.next();
+
+                if(!(recipe instanceof FurnaceRecipe)){
+                    continue;
+                }
+
+                furnaceRecipes.add((FurnaceRecipe) recipe);
+            }
+
+            Main.getMain().setFurnaceRecipes(furnaceRecipes);
+            ThreadBackpacks.startTicking();
+
+            for(Upgrade upgrade : UpgradeManager.getUpgrades().values()){
+                if(upgrade.getType().equals(UpgradeType.FURNACE)){
+                    FurnaceUpgrade furnaceUpgrade = (FurnaceUpgrade) upgrade;
+                    furnaceUpgrade.createFurnaceInventory();
+
+                    if(!((FurnaceUpgrade) upgrade).canSmelt()) continue;
+                    Furnace.isTicking.add(upgrade.getId());
+                    Furnace.tick((FurnaceUpgrade) upgrade);
+                }
+            }
+
+            Main.getMain().getLogger().info("Hello from Backpacks! " + Duration.between(Main.start, finish).toMillis() + "ms");
+        });
     }
 
     public static void startTicking(){

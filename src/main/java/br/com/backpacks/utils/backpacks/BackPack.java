@@ -7,7 +7,6 @@ import br.com.backpacks.utils.inventory.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Barrel;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.ArmorStand;
@@ -37,7 +36,7 @@ public final class BackPack extends UpgradeManager {
     public BackPack(BackpackType type, int id) {
         this.backpackType = type;
         this.id = id;
-        this.name = getDefaultName();
+        this.name = type.getName();
         updateSizeOfPages();
         firstPage = Bukkit.createInventory(null, firstPageSize, name);
         if(secondPageSize > 0){
@@ -232,62 +231,6 @@ public final class BackPack extends UpgradeManager {
         }
     }
 
-    private String getDefaultName(){
-        switch (getType()){
-            case LEATHER -> {
-                return "Leather Backpack";
-            }
-            case IRON -> {
-                return "Iron Backpack";
-            }
-            case GOLD -> {
-                return "Gold Backpack";
-            }
-            case LAPIS -> {
-                return "Lapis Backpack";
-            }
-            case AMETHYST -> {
-                return "Amethyst Backpack";
-            }
-            case DIAMOND -> {
-                return "Diamond Backpack";
-            }
-            case NETHERITE -> {
-                return "Netherite Backpack";
-            }
-        }
-
-        return "Backpack";
-    }
-
-    public NamespacedKey getNamespace() {
-        switch (getType()) {
-            case LEATHER -> {
-                return new BackpackRecipes().getNAMESPACE_LEATHER_BACKPACK();
-            }
-            case IRON -> {
-                return new BackpackRecipes().getNAMESPACE_IRON_BACKPACK();
-            }
-            case GOLD -> {
-                return new BackpackRecipes().getNAMESPACE_GOLD_BACKPACK();
-            }
-            case LAPIS -> {
-                return new BackpackRecipes().getNAMESPACE_LAPIS_BACKPACK();
-            }
-            case AMETHYST -> {
-                return new BackpackRecipes().getNAMESPACE_AMETHYST_BACKPACK();
-            }
-            case DIAMOND -> {
-                return new BackpackRecipes().getNAMESPACE_DIAMOND_BACKPACK();
-            }
-            case NETHERITE -> {
-                return new BackpackRecipes().getNAMESPACE_NETHERITE_BACKPACK();
-            }
-        }
-
-        return null;
-    }
-
     private void updateSizeOfPages(){
         switch (getType()){
             case LEATHER -> firstPageSize = 18;
@@ -325,14 +268,14 @@ public final class BackPack extends UpgradeManager {
     public ItemStack getFirstItem(){
         for(ItemStack itemStack : firstPage){
             if(itemStack == null) continue;
-            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
+            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_CONFIG_ITEM, PersistentDataType.INTEGER)) continue;
             return itemStack;
         }
 
         if(getSecondPage() != null){
             for(ItemStack itemStack : secondPage){
                 if(itemStack == null) continue;
-                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
+                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_CONFIG_ITEM, PersistentDataType.INTEGER)) continue;
                 return itemStack;
             }
         }
@@ -366,8 +309,8 @@ public final class BackPack extends UpgradeManager {
 
 
     public void setConfigOptionItems(){
-        ItemStack arrowLeft = new ItemCreator(Material.ARROW, "§aPrevious").build();
-        ItemStack arrowRight = new ItemCreator(Material.ARROW, "§aNext").build();
+        ItemStack arrowLeft = new ItemCreator(Material.ARROW, "§aPrevious Page").build();
+        ItemStack arrowRight = new ItemCreator(Material.ARROW, "§aNext Page").build();
         ItemStack config = new ItemCreator(Material.NETHER_STAR, "§6Config").build();
 
         firstPage.setItem(firstPageSize - 1, config);
@@ -414,18 +357,21 @@ public final class BackPack extends UpgradeManager {
 
     public List<ItemStack> getBackpackItems(){
         List<ItemStack> list = new ArrayList<>();
+
         for(ItemStack itemStack : firstPage){
             if(itemStack == null) continue;
-            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
+            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_CONFIG_ITEM, PersistentDataType.INTEGER)) continue;
             list.add(itemStack);
         }
+
         if(secondPage != null){
             for(ItemStack itemStack : secondPage){
                 if(itemStack == null) continue;
-                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(new BackpackRecipes().getIS_CONFIG_ITEM(), PersistentDataType.INTEGER)) continue;
+                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_CONFIG_ITEM, PersistentDataType.INTEGER)) continue;
                 list.add(itemStack);
             }
         }
+
         return list;
     }
 
@@ -433,6 +379,7 @@ public final class BackPack extends UpgradeManager {
         if(!isBlock()) return;
         Barrel barrel = (Barrel) location.getBlock().getState();
         List<ItemStack> bpItems = getBackpackItems();
+
         if(bpItems.isEmpty()){
             barrel.getInventory().clear();
             return;
@@ -441,6 +388,18 @@ public final class BackPack extends UpgradeManager {
         barrel.getInventory().clear();
         for(int i = 0 ; i < bpItems.size() ; i++){
             barrel.getInventory().setItem(i, bpItems.get(i));
+        }
+    }
+
+    public void removeBackpackItem(Player player){
+        for(ItemStack stack : player.getInventory().getContents()){
+            if(stack == null) continue;
+            if(!stack.getType().equals(Material.BARREL)) continue;
+            if(!stack.hasItemMeta()) continue;
+            if(!stack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.BACKPACK_ID)) continue;
+            if(stack.getItemMeta().getPersistentDataContainer().get(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER).equals(id)){
+                player.getInventory().removeItem(stack);
+            }
         }
     }
 }

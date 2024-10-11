@@ -5,7 +5,6 @@ import br.com.backpacks.commands.*;
 import br.com.backpacks.events.ConfigItemsEvents;
 import br.com.backpacks.events.HopperEvents;
 import br.com.backpacks.events.OnDimensionSwitch;
-import br.com.backpacks.events.ServerLoadEvent;
 import br.com.backpacks.events.backpacks.*;
 import br.com.backpacks.events.entity.*;
 import br.com.backpacks.events.inventory.*;
@@ -17,18 +16,9 @@ import br.com.backpacks.storage.StorageManager;
 import br.com.backpacks.utils.Constants;
 import br.com.backpacks.utils.backpacks.BackPackManager;
 import br.com.backpacks.utils.backpacks.BackpackAction;
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.SmokingRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -40,9 +30,7 @@ import java.util.UUID;
 public final class Main extends JavaPlugin {
     private AutoSaveManager autoSaveManager;
     private BackupHandler backupHandler;
-    private List<SmokingRecipe> smokingRecipes = new ArrayList<>();
     private List<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
-    private List<BlastingRecipe> blastingRecipes = new ArrayList<>();
     public static boolean saveComplete = false;
     private static Main main;
     public static Instant start;
@@ -50,24 +38,8 @@ public final class Main extends JavaPlugin {
     public static final Object lock = new Object();
     public static final BackPackManager backPackManager = new BackPackManager();
 
-    public void setSmokingRecipes(List<SmokingRecipe> smokingRecipes) {
-        this.smokingRecipes = smokingRecipes;
-    }
-
-    public List<SmokingRecipe> getSmokingRecipes() {
-        return smokingRecipes;
-    }
-
     public void setFurnaceRecipes(List<FurnaceRecipe> recipes){
         this.furnaceRecipes = recipes;
-    }
-
-    public List<BlastingRecipe> getBlastingRecipes() {
-        return blastingRecipes;
-    }
-
-    public void setBlastingRecipes(List<BlastingRecipe> blastingRecipes) {
-        this.blastingRecipes = blastingRecipes;
     }
 
     public List<FurnaceRecipe> getFurnaceRecipes() {
@@ -94,18 +66,11 @@ public final class Main extends JavaPlugin {
         this.autoSaveManager = autoSaveManager;
     }
 
-    private ProtocolManager protocolManager;
-
-    public ProtocolManager getProtocolManager() {
-        return protocolManager;
-    }
-
     @Override
     public void onEnable() {
         saveDefaultConfig();
         main = this;
         Constants.VERSION = formatVersion(Bukkit.getServer().getVersion());
-        start = Instant.now();
 
         if(!Constants.SUPPORTED_VERSIONS.contains(Constants.VERSION)){
             Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§cThis plugin at the moment is only compatible with 1.21.x versions. Current server version: " + Constants.VERSION);
@@ -113,20 +78,8 @@ public final class Main extends JavaPlugin {
             return;
         }
 
-        protocolManager = ProtocolLibrary.getProtocolManager();
-        protocolManager.addPacketListener(new PacketAdapter(
-                this,
-                ListenerPriority.NORMAL,
-                PacketType.Play.Server.NAMED_SOUND_EFFECT
-        ) {
-            @Override
-            public void onPacketSending(PacketEvent event) {
-                PacketContainer packet = event.getPacket();
-                getLogger().info(packet.toString());
-            }
-        });
-
         Bukkit.getScheduler().runTaskAsynchronously(this, ()->{
+            start = Instant.now();
             if(getConfig().getBoolean("debug")){
                 Constants.DEBUG_MODE = true;
             }
@@ -174,7 +127,6 @@ public final class Main extends JavaPlugin {
         //others
         Bukkit.getPluginManager().registerEvents(new HopperEvents(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new ConfigItemsEvents(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new ServerLoadEvent(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new BpList(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new EntityDeathEvent(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new OnDimensionSwitch(), Main.getMain());
@@ -238,14 +190,14 @@ public final class Main extends JavaPlugin {
 
     private void registerRecipes(){
         //Backpacks
-        Bukkit.addRecipe(new BackpackRecipes().leatherBackpackRecipe());
-        Bukkit.addRecipe(new BackpackRecipes().ironBackpackRecipe());
-        Bukkit.addRecipe(new BackpackRecipes().diamondBackpackRecipe());
-        Bukkit.addRecipe(new BackpackRecipes().netheriteBackpackRecipe());
-        Bukkit.addRecipe(new BackpackRecipes().goldBackpackRecipe());
-        Bukkit.addRecipe(new BackpackRecipes().amethystBackpackRecipe());
-        Bukkit.addRecipe(new BackpackRecipes().lapisBackpackRecipe());
-        Bukkit.addRecipe(new BackpackRecipes().driedBackpackRecipe());
+        Bukkit.addRecipe(BackpackRecipes.leatherBackpackRecipe());
+        Bukkit.addRecipe(BackpackRecipes.ironBackpackRecipe());
+        Bukkit.addRecipe(BackpackRecipes.diamondBackpackRecipe());
+        Bukkit.addRecipe(BackpackRecipes.netheriteBackpackRecipe());
+        Bukkit.addRecipe(BackpackRecipes.goldBackpackRecipe());
+        Bukkit.addRecipe(BackpackRecipes.amethystBackpackRecipe());
+        Bukkit.addRecipe(BackpackRecipes.lapisBackpackRecipe());
+        Bukkit.addRecipe(BackpackRecipes.driedBackpackRecipe());
 
 
         //Upgrades
@@ -263,7 +215,7 @@ public final class Main extends JavaPlugin {
     }
 
     private String formatVersion(String version){
-        return version.substring(19, 25);
+        return version.substring(33, version.length() - 1);
     }
 
 }

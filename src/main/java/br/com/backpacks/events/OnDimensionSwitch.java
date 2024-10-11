@@ -16,9 +16,9 @@ import org.bukkit.persistence.PersistentDataType;
 public class OnDimensionSwitch implements Listener {
     @EventHandler
     private void onSwitch(PlayerChangedWorldEvent event){
-        if(!event.getPlayer().getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
+        if(!event.getPlayer().getPersistentDataContainer().has(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
         Player player = event.getPlayer();
-        int id = player.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER);
+        int id = player.getPersistentDataContainer().get(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER);
         BackPack backPack = Main.backPackManager.getBackpackFromId(id);
         if(backPack == null) return;
         JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);

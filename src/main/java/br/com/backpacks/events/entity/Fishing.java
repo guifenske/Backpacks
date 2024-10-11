@@ -26,8 +26,8 @@ public class Fishing implements Listener {
                ItemMeta meta = wetbackpack.getItemMeta();
                meta.setDisplayName("Wet Backpack");
                meta.setLore(Arrays.asList("Uhh, it looks really WET and unusable..", "Humm, what i could do with it?"));
-               meta.getPersistentDataContainer().set(new BackpackRecipes().isBackpack(), PersistentDataType.INTEGER, -1);
-               meta.getPersistentDataContainer().set(new BackpackRecipes().getNAMESPACE_WET_BACKPACK(), PersistentDataType.INTEGER, 1);
+               meta.getPersistentDataContainer().set(BackpackRecipes.isBackpack(), PersistentDataType.INTEGER, -1);
+               meta.getPersistentDataContainer().set(BackpackRecipes.getNAMESPACE_WET_BACKPACK(), PersistentDataType.INTEGER, 1);
                wetbackpack.setItemMeta(meta);
                item.setItemStack(wetbackpack);
            }

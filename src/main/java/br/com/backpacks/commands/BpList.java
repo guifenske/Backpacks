@@ -115,7 +115,7 @@ public class BpList implements CommandExecutor, Listener {
         }
         if(event.getRawSlot() > 52) return;
         if(event.getCurrentItem() == null) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new BackpackRecipes().getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+        BackPack backPack = Main.backPackManager.getBackpackFromId(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(BackpackRecipes.getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
 
         BackpackAction.clearPlayerAction(player);
         Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{

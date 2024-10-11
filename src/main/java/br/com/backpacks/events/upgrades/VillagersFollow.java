@@ -2,7 +2,7 @@ package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
-import br.com.backpacks.upgrades.VillagersFollowUpgrade;
+import br.com.backpacks.upgrades.VillagerBaitUpgrade;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
@@ -25,12 +25,13 @@ import org.bukkit.scheduler.BukkitTask;
 public class VillagersFollow implements Listener {
     public static void tick(Player player) {
         if(player == null) return;
-        if (!player.getPersistentDataContainer().has(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
+        if (!player.getPersistentDataContainer().has(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
         if (!player.getInventory().getItemInMainHand().getType().equals(Material.EMERALD_BLOCK) && !player.getInventory().getItemInOffHand().getType().equals(Material.EMERALD_BLOCK)) {
             return;
         }
-        BackPack backpack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(new BackpackRecipes().getHAS_BACKPACK(), PersistentDataType.INTEGER));
-        VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.VILLAGERSFOLLOW);
+
+        BackPack backpack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        VillagerBaitUpgrade upgrade = (VillagerBaitUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.VILLAGER_BAIT);
         if(upgrade == null) return;
 
         if (!upgrade.isEnabled()) {
@@ -48,7 +49,7 @@ public class VillagersFollow implements Listener {
         }
         event.setCancelled(true);
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
-        VillagersFollowUpgrade upgrade = (VillagersFollowUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.VILLAGERSFOLLOW);
+        VillagerBaitUpgrade upgrade = (VillagerBaitUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.VILLAGER_BAIT);
 
         if (event.getRawSlot() == 13) {
             upgrade.setEnabled(!upgrade.isEnabled());
@@ -71,9 +72,10 @@ public class VillagersFollow implements Listener {
         }.runTaskLater(Main.getMain(), 1L);
     }
 
-    private static void moveToPlayer(Mob entity, Player player) {
+    private static void moveToPlayer(Mob mob, Player player) {
         Bukkit.getScheduler().runTask(Main.getMain(), () ->{
-            entity.setTarget(player);
+            mob.setTarget(player);
+            mob.getPathfinder().moveTo(player, 1.5);
         });
     }
 
