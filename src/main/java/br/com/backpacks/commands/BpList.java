@@ -30,21 +30,26 @@ import java.util.UUID;
 
 public class BpList implements CommandExecutor, Listener {
     private HashMap<UUID, Integer> page = new HashMap<>();
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if(sender instanceof ConsoleCommandSender){
             sender.sendMessage(Main.PREFIX + "§cThis command can only be used by players.");
             return true;
         }
+
         if(args.length > 0){
             sender.sendMessage(Main.PREFIX + "§cInvalid arguments, use just /bplist");
             return true;
         }
+
         Player player = (Player) sender;
+
         if(!player.isOp()){
             player.sendMessage(Main.PREFIX + "§cYou don't have permission to use this command.");
             return true;
         }
+
         page.put(player.getUniqueId(), 0);
         player.openInventory(inventory(player));
         Bukkit.getScheduler().runTaskLater(Main.getMain(), ()-> BackpackAction.getSpectators().put(player.getUniqueId(), true), 1L);
@@ -94,28 +99,35 @@ public class BpList implements CommandExecutor, Listener {
                 player.sendMessage(Main.PREFIX + "§cYou are already in the first page.");
                 return;
             }
+
             page.put(player.getUniqueId(), page.get(player.getUniqueId()) - 1);
             Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
                 player.openInventory(inventory(player));
                 BackpackAction.getSpectators().put(player.getUniqueId(), true);
             }, 1L);
+
             return;
         }
+
         if(event.getRawSlot() == 53){
             if(page.get(player.getUniqueId()) >= Main.backPackManager.getBackpacks().size() / 52){
                 player.sendMessage(Main.PREFIX + "§cYou are already in the last page.");
                 return;
             }
+
             page.put(player.getUniqueId(), page.get(player.getUniqueId()) + 1);
             Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
                 player.openInventory(inventory(player));
                 BackpackAction.getSpectators().put(player.getUniqueId(), true);
             }, 1L);
+
             return;
         }
+
         if(event.getRawSlot() > 52) return;
         if(event.getCurrentItem() == null) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(BackpackRecipes.getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+
+        BackPack backPack = Main.backPackManager.getBackpackFromId(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER));
 
         BackpackAction.clearPlayerAction(player);
         Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{

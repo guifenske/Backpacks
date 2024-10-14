@@ -15,7 +15,7 @@ public class ItemCreator {
         this.itemStack = new ItemStack(material, 1);
         ItemMeta meta = this.itemStack.getItemMeta();
         meta.setDisplayName(name);
-        meta.getPersistentDataContainer().set(BackpackRecipes.getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(BackpackRecipes.IS_CONFIG_ITEM, PersistentDataType.INTEGER, 1);
         this.itemStack.setItemMeta(meta);
     }
 
@@ -24,7 +24,7 @@ public class ItemCreator {
         ItemMeta meta = this.itemStack.getItemMeta();
         meta.setDisplayName(name);
         meta.setLore(lore);
-        meta.getPersistentDataContainer().set(BackpackRecipes.getIS_CONFIG_ITEM(), PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(BackpackRecipes.IS_CONFIG_ITEM, PersistentDataType.INTEGER, 1);
         this.itemStack.setItemMeta(meta);
     }
 

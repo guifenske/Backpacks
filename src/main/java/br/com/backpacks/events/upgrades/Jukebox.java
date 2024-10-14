@@ -7,15 +7,16 @@ import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
 import br.com.backpacks.utils.others.JukeboxUtils;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.sound.*;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -26,11 +27,11 @@ public class Jukebox implements Listener {
     public static List<Integer> discsSlots = List.of(6,7,8,15,16,17,24,25,26);
 
     public static Boolean checkDisk(@NotNull ItemStack itemStack){
-        return itemStack.getType().toString().endsWith("DISC");
+        return itemStack.getType().toString().contains("_DISC_");
     }
 
     public static Sound getSoundFromItem(@NotNull ItemStack itemStack){
-        return Sound.valueOf(itemStack.getType().name());
+        return Sound.sound(Key.key(itemStack.getType().toString().toLowerCase().replace("disc_", "disc.")), Sound.Source.MUSIC, 1, 1);
     }
 
     public static void playSound(JukeboxUpgrade upgrade, Player entity) {
@@ -41,23 +42,26 @@ public class Jukebox implements Listener {
         }
 
         upgrade.setOwner(entity);
-        entity.playSound(entity, upgrade.getSound(), 1, 1);
+        entity.playSound(upgrade.getSound(), Sound.Emitter.self());
     }
 
     public static void playSound(JukeboxUpgrade upgrade, BackPack backPack) {
-        upgrade.startParticleTask(backPack.getLocation().clone().add(0, 1, 0));
+        upgrade.startParticleTask(backPack.getLocation().toCenterLocation().add(0, 1, 0));
+
         if(upgrade.isLooping()){
             upgrade.setBackpackId(backPack.getId());
             upgrade.startLoopingTask(backPack.getLocation());
             return;
         }
+
         upgrade.setBackpackId(backPack.getId());
-        backPack.getLocation().getWorld().playSound(backPack.getLocation(), upgrade.getSound(), 1, 1);
+        backPack.getLocation().getWorld().playSound(backPack.getLocation(), upgrade.getSound().name().value(), SoundCategory.RECORDS, 1, 1);
     }
 
     @EventHandler
     private void onClick(InventoryClickEvent event){
         if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGJUKEBOX)) return;
+
         if(blankSlots.contains(event.getRawSlot())){
             event.setCancelled(true);
             return;
@@ -65,41 +69,51 @@ public class Jukebox implements Listener {
 
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
         JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
-        boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER) || backPack.isBlock();
+        boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(BackpackRecipes.HAS_BACKPACK) || backPack.isBlock();
 
         switch (event.getRawSlot()){
             case 9 ->{
                 event.setCancelled(true);
+
                 if(!canUse) return;
                 if(upgrade.getSound() != null) return;
+
                 if(upgrade.isLooping()){
                     upgrade.setIsLooping(false);
                     upgrade.updateInventory();
                 }
+
                 else{
                     upgrade.setIsLooping(true);
                     upgrade.getInventory().setItem(9, JukeboxUpgrade.getDisableLoopItem());
                 }
             }
+
             case 10 -> {
                 event.setCancelled(true);
                 if(!canUse) return;
+
                 if(event.getInventory().getItem(13) == null) return;
                 if(upgrade.getSound() != null) return;
                 if(!checkDisk(event.getInventory().getItem(13))) return;
+
                 Sound sound = getSoundFromItem(event.getInventory().getItem(13));
                 upgrade.setSound(sound);
+
+                Main.getMain().getLogger().info("teste " + sound);
                 if(backPack.getOwner() == null) playSound(upgrade, backPack);
                 else playSound(upgrade, (Player) event.getWhoClicked());
             }
+
             case 11 -> {
                 event.setCancelled(true);
                 if(!canUse) return;
+
                 if(upgrade.getSound() == null) return;
                 if(backPack.getOwner() == null) stopSound(backPack, upgrade);
                 else stopSound ((Player) event.getWhoClicked(), upgrade);
-                upgrade.setSound(null);
             }
+
         }
 
     }
@@ -107,8 +121,7 @@ public class Jukebox implements Listener {
     public static void stopSound(BackPack backPack, JukeboxUpgrade upgrade){
         upgrade.clearParticleTask();
         upgrade.clearLoopingTask();
-        // todo
-        // backPack.getLocation().getWorld().stopSound(upgrade.getSound());
+        backPack.getLocation().getWorld().stopSound(SoundStop.named(upgrade.getSound().name()));
         upgrade.setSound(null);
     }
 
@@ -122,33 +135,40 @@ public class Jukebox implements Listener {
     @EventHandler
     private void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGJUKEBOX)) return;
+
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
+
         for(int i : discsSlots){
             if(event.getInventory().getItem(i) == null) continue;
+
             if(!checkDisk(event.getInventory().getItem(i))){
                 List<ItemStack> itemStack = new ArrayList<>(event.getPlayer().getInventory().addItem(event.getInventory().getItem(i)).values());
                 if(!itemStack.isEmpty()){
                     event.getPlayer().getWorld().dropItemNaturally(event.getPlayer().getLocation(), itemStack.get(0));
                 }
+
                 event.getInventory().setItem(i, null);
             }
+
         }
+
         if(event.getInventory().getItem(13) != null && !checkDisk(event.getInventory().getItem(13))){
             List<ItemStack> itemStack = new ArrayList<>(event.getPlayer().getInventory().addItem(event.getInventory().getItem(13)).values());
             if(!itemStack.isEmpty()){
                 event.getPlayer().getWorld().dropItemNaturally(event.getPlayer().getLocation(), itemStack.get(0));
             }
+
             event.getInventory().setItem(13, null);
-        }   else if(event.getInventory().getItem(13) == null && upgrade.getSound() != null){
+        }
+
+        else if(event.getInventory().getItem(13) == null && upgrade.getSound() != null){
             if(backPack.getOwner() == null) stopSound(backPack, upgrade);
             else stopSound ((Player) event.getPlayer(), upgrade);
         }
 
         BackpackAction.clearPlayerAction(event.getPlayer());
-        Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
-            backPack.open((Player) event.getPlayer());
-        }, 1L);
+        Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> backPack.open((Player) event.getPlayer()), 1L);
     }
 
 

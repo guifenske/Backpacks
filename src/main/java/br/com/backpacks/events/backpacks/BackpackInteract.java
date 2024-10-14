@@ -44,8 +44,8 @@ public class BackpackInteract implements Listener {
         }
 
         if(event.getItem() == null) return;
-        if(!event.getItem().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER)){
-            if(event.getItem().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.getNAMESPACE_WET_BACKPACK(), PersistentDataType.INTEGER)){
+        if(!event.getItem().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER)){
+            if(event.getItem().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.NAMESPACE_WET_BACKPACK, PersistentDataType.INTEGER)){
                 event.getPlayer().sendMessage(Main.PREFIX + "§cHumm, this thing is too wet to be used as a backpack.");
                 event.setCancelled(true);
             }
@@ -54,7 +54,7 @@ public class BackpackInteract implements Listener {
 
         event.setCancelled(true);
         if(Main.backPackManager.canOpen()) {
-            BackPack backPack = Main.backPackManager.getBackpackFromId(event.getItem().getItemMeta().getPersistentDataContainer().get(BackpackRecipes.getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+            BackPack backPack = Main.backPackManager.getBackpackFromId(event.getItem().getItemMeta().getPersistentDataContainer().get(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER));
             if(backPack == null) return;
             backPack.setIsBlock(false);
 

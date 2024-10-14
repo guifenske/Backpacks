@@ -15,8 +15,9 @@ public class Magnet implements Listener {
 
     public static void tick(Player player){
         if(player == null) return;
-        if(!player.getPersistentDataContainer().has(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER));
+
+        if(!player.getPersistentDataContainer().has(BackpackRecipes.HAS_BACKPACK)) return;
+        BackPack backPack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER));
         if(backPack.getFirstUpgradeFromType(UpgradeType.MAGNET) == null) return;
 
         pullItemsNearby(player, player.getLocation());
@@ -38,6 +39,7 @@ public class Magnet implements Listener {
             for (int chZ = -chunkRadius; chZ <= chunkRadius; chZ++) {
                 for (Entity e : new Location(world, x + (chX * 16), 0, z + (chZ * 16)).getChunk().getEntities()) {
                     double distanceSquared = location.distanceSquared(e.getLocation());
+
                     if ((e.getType().equals(EntityType.ITEM) || e.getType().equals(EntityType.EXPERIENCE_ORB)) && distanceSquared <= maxDistanceSquared){
 
                         if(player != null){

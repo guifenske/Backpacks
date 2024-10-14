@@ -5,19 +5,19 @@ import org.bukkit.NamespacedKey;
 
 public enum BackpackType {
 
-    LEATHER ("Leather Backpack", BackpackRecipes.getNAMESPACE_LEATHER_BACKPACK()),
+    LEATHER ("Leather Backpack", BackpackRecipes.NAMESPACE_LEATHER_BACKPACK),
 
-    IRON ("Iron Backpack", BackpackRecipes.getNAMESPACE_IRON_BACKPACK()),
+    IRON ("Iron Backpack", BackpackRecipes.NAMESPACE_IRON_BACKPACK),
 
-    GOLD ("Gold Backpack", BackpackRecipes.getNAMESPACE_GOLD_BACKPACK()),
+    GOLD ("Gold Backpack", BackpackRecipes.NAMESPACE_GOLD_BACKPACK),
 
-    LAPIS ("Lapis Backpack", BackpackRecipes.getNAMESPACE_LAPIS_BACKPACK()),
+    LAPIS ("Lapis Backpack", BackpackRecipes.NAMESPACE_LAPIS_BACKPACK),
 
-    AMETHYST ("Amethyst Backpack", BackpackRecipes.getNAMESPACE_AMETHYST_BACKPACK()),
+    AMETHYST ("Amethyst Backpack", BackpackRecipes.NAMESPACE_AMETHYST_BACKPACK),
 
-    DIAMOND ("Diamond Backpack", BackpackRecipes.getNAMESPACE_DIAMOND_BACKPACK()),
+    DIAMOND ("Diamond Backpack", BackpackRecipes.NAMESPACE_DIAMOND_BACKPACK),
 
-    NETHERITE ("Netherite Backpack", BackpackRecipes.getNAMESPACE_NETHERITE_BACKPACK());
+    NETHERITE ("Netherite Backpack", BackpackRecipes.NAMESPACE_NETHERITE_BACKPACK);
 
     BackpackType(String name, NamespacedKey key){
         this.name = name;

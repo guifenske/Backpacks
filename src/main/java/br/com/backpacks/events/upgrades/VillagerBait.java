@@ -22,15 +22,16 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-public class VillagersFollow implements Listener {
+public class VillagerBait implements Listener {
     public static void tick(Player player) {
         if(player == null) return;
-        if (!player.getPersistentDataContainer().has(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
+        if (!player.getPersistentDataContainer().has(BackpackRecipes.HAS_BACKPACK)) return;
+
         if (!player.getInventory().getItemInMainHand().getType().equals(Material.EMERALD_BLOCK) && !player.getInventory().getItemInOffHand().getType().equals(Material.EMERALD_BLOCK)) {
             return;
         }
 
-        BackPack backpack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        BackPack backpack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER));
         VillagerBaitUpgrade upgrade = (VillagerBaitUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.VILLAGER_BAIT);
         if(upgrade == null) return;
 

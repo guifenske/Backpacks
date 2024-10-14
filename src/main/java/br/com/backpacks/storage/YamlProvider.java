@@ -1,5 +1,6 @@
 package br.com.backpacks.storage;
 
+import br.com.backpacks.Config;
 import br.com.backpacks.Main;
 import br.com.backpacks.upgrades.*;
 import br.com.backpacks.utils.Upgrade;
@@ -141,7 +142,14 @@ public final class YamlProvider extends StorageProvider {
         UpgradeManager.lastUpgradeID = 0;
 
         for(String i : config.getKeys(false)){
-            UpgradeType type = UpgradeType.valueOf(config.getString(i + ".type"));
+            UpgradeType type;
+
+            try{
+                type = UpgradeType.valueOf(config.getString(i + ".type"));
+            }   catch (IllegalArgumentException e){
+                continue;
+            }
+
             int id = Integer.parseInt(i);
             if(UpgradeManager.lastUpgradeID == 0) UpgradeManager.lastUpgradeID = id;
 

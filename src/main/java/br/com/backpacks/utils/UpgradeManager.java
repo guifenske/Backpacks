@@ -58,10 +58,13 @@ public class UpgradeManager {
 
     public Upgrade getFirstUpgradeFromType(UpgradeType type){
         for(Upgrade upgrade : getBackpackUpgrades()) {
+
             if(upgrade.getType() == type) {
                return upgrade;
             }
+
         }
+
         return null;
     }
 

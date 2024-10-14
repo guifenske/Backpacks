@@ -21,11 +21,10 @@ import java.util.List;
 public class Collector implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void onPickUp(EntityPickupItemEvent event){
-        if(!(event.getEntity() instanceof Player)) return;
-        Player player = (Player) event.getEntity();
+        if(!(event.getEntity() instanceof Player player)) return;
 
-        if(!player.getPersistentDataContainer().has(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        if(!player.getPersistentDataContainer().has(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER)) return;
+        BackPack backPack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER));
         if(backPack == null) return;
 
         if(backPack.getFirstUpgradeFromType(UpgradeType.COLLECTOR) == null) return;
@@ -45,10 +44,11 @@ public class Collector implements Listener {
 
         if(!list.isEmpty()){
             event.getItem().setItemStack(list.get(0));
-        }   else {
+        }
+
+        else {
             event.setCancelled(true);
-            //todo: make a way through packets
-            //player.playPickupItemAnimation(event.getItem());
+            player.playPickupItemAnimation(event.getItem());
             event.getItem().remove();
         }
     }
@@ -65,12 +65,14 @@ public class Collector implements Listener {
                     upgrade.setEnabled(!upgrade.isEnabled());
                     upgrade.updateInventory();
                 }
+
                 case 13 -> {
                     BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
                     CollectorUpgrade upgrade = (CollectorUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.COLLECTOR);
                     upgrade.setMode(upgrade.getMode() == 0 ? 1 : 0);
                     upgrade.updateInventory();
                 }
+
             }
         }
     }

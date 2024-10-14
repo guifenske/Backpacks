@@ -5,6 +5,7 @@ import br.com.backpacks.events.upgrades.Jukebox;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.inventory.ItemCreator;
+import net.kyori.adventure.sound.Sound;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -83,7 +84,7 @@ public class JukeboxUpgrade extends Upgrade {
         loopingTask = new BukkitRunnable() {
             @Override
             public void run() {
-                entity.playSound(entity, getSound(), 1, 1);
+                entity.playSound(sound, Sound.Emitter.self());
             }
         }.runTaskTimer(Main.getMain(), 0L, (Jukebox.durationFromDisc(inventory.getItem(13)) * 20));
     }
@@ -92,7 +93,7 @@ public class JukeboxUpgrade extends Upgrade {
         loopingTask = new BukkitRunnable() {
             @Override
             public void run() {
-                loc.getWorld().playSound(loc, getSound(), 1, 1);
+                loc.getWorld().playSound(loc, String.valueOf(sound), SoundCategory.RECORDS, 1, 1);
             }
         }.runTaskTimer(Main.getMain(), 0L, (Jukebox.durationFromDisc(inventory.getItem(13)) * 20));
     }

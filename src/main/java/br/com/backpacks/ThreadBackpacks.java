@@ -3,13 +3,14 @@ package br.com.backpacks;
 import br.com.backpacks.backup.BackupHandler;
 import br.com.backpacks.events.upgrades.Furnace;
 import br.com.backpacks.events.upgrades.Magnet;
-import br.com.backpacks.events.upgrades.VillagersFollow;
+import br.com.backpacks.events.upgrades.VillagerBait;
 import br.com.backpacks.storage.StorageManager;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.backpacks.BackPackManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -26,7 +27,7 @@ import java.util.List;
 public class ThreadBackpacks {
 
     public static void saveAll() throws IOException{
-        if(StorageManager.getProvider() == null){
+        if(StorageManager.getProvider() == null || Main.backPackManager.getBackpacks().isEmpty() || UpgradeManager.getUpgrades().isEmpty()){
             Main.saveComplete = true;
             synchronized (Main.lock){
                 Main.lock.notifyAll();
@@ -119,7 +120,7 @@ public class ThreadBackpacks {
         Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getMain(), ()->{
             for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
                 if(backPack.getOwner() != null){
-                    VillagersFollow.tick(Bukkit.getPlayer(backPack.getOwner()));
+                    VillagerBait.tick(Bukkit.getPlayer(backPack.getOwner()));
                     Magnet.tick(Bukkit.getPlayer(backPack.getOwner()));
                 }   else if(backPack.getLocation() != null){
                     Magnet.tick(backPack);

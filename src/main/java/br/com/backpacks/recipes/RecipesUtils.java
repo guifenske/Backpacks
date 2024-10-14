@@ -18,9 +18,9 @@ public class RecipesUtils {
 
     public static BackPack getBackpackFromItem(ItemStack itemStack){
         ItemMeta meta = itemStack.getItemMeta();
-        if(!meta.getPersistentDataContainer().has(BackpackRecipes.isBackpack(), PersistentDataType.INTEGER)) return null;
+        if(!meta.getPersistentDataContainer().has(BackpackRecipes.IS_BACKPACK)) return null;
 
-        return Main.backPackManager.getBackpackFromId(meta.getPersistentDataContainer().get(BackpackRecipes.getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER));
+        return Main.backPackManager.getBackpackFromId(meta.getPersistentDataContainer().get(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER));
     }
 
     public static ItemStack getItemFromBackpack(BackPack backPack) {
@@ -28,9 +28,10 @@ public class RecipesUtils {
         ItemMeta meta = itemStack.getItemMeta();
         
         meta.setDisplayName(backPack.getName());
-        meta.getPersistentDataContainer().set(BackpackRecipes.isBackpack(), PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(BackpackRecipes.getNAMESPACE_BACKPACK_ID(), PersistentDataType.INTEGER, backPack.getId());
+        meta.getPersistentDataContainer().set(BackpackRecipes.IS_BACKPACK, PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER, backPack.getId());
         meta.getPersistentDataContainer().set(backPack.getType().getKey(), PersistentDataType.INTEGER, 1);
+
         itemStack.setItemMeta(meta);
         return itemStack;
     }
@@ -46,9 +47,11 @@ public class RecipesUtils {
 
         meta.setDisplayName(upgradeType.toString().toUpperCase().charAt(0) + upgradeType.toString().toLowerCase().substring(1) + " Upgrade");
         meta.setLore(getLore(upgrade));
+
         meta.getPersistentDataContainer().set(UpgradesRecipes.IS_UPGRADE, PersistentDataType.INTEGER, 1);
         meta.getPersistentDataContainer().set(upgradeType.getKey(), PersistentDataType.INTEGER, 1);
         meta.getPersistentDataContainer().set(UpgradesRecipes.UPGRADE_ID, PersistentDataType.INTEGER, upgrade.getId());
+
         itemStack.setItemMeta(meta);
         return itemStack;
     }

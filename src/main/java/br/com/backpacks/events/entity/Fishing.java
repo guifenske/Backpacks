@@ -22,14 +22,17 @@ public class Fishing implements Listener {
            if(Constants.CATCH_BACKPACK && ThreadLocalRandom.current().nextInt(1, 100) == 69){
                event.setExpToDrop(20);
                Item item = (Item) event.getCaught();
-               ItemStack wetbackpack = new ItemStack(Material.BARREL);
-               ItemMeta meta = wetbackpack.getItemMeta();
+               ItemStack wetBackpack = new ItemStack(Material.BARREL);
+
+               ItemMeta meta = wetBackpack.getItemMeta();
                meta.setDisplayName("Wet Backpack");
-               meta.setLore(Arrays.asList("Uhh, it looks really WET and unusable..", "Humm, what i could do with it?"));
-               meta.getPersistentDataContainer().set(BackpackRecipes.isBackpack(), PersistentDataType.INTEGER, -1);
-               meta.getPersistentDataContainer().set(BackpackRecipes.getNAMESPACE_WET_BACKPACK(), PersistentDataType.INTEGER, 1);
-               wetbackpack.setItemMeta(meta);
-               item.setItemStack(wetbackpack);
+               meta.setLore(Arrays.asList("Uhh, it looks really WET and unusable..", "Humm, what could I do with it?"));
+
+               meta.getPersistentDataContainer().set(BackpackRecipes.IS_BACKPACK, PersistentDataType.INTEGER, -1);
+               meta.getPersistentDataContainer().set(BackpackRecipes.NAMESPACE_WET_BACKPACK, PersistentDataType.INTEGER, 1);
+
+               wetBackpack.setItemMeta(meta);
+               item.setItemStack(wetBackpack);
            }
        }
     }

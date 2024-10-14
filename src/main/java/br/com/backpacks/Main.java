@@ -70,7 +70,8 @@ public final class Main extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         main = this;
-        Constants.VERSION = formatVersion(Bukkit.getServer().getVersion());
+
+        Constants.VERSION = Bukkit.getServer().getMinecraftVersion();
 
         if(!Constants.SUPPORTED_VERSIONS.contains(Constants.VERSION)){
             Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§cThis plugin at the moment is only compatible with 1.21.x versions. Current server version: " + Constants.VERSION);
@@ -136,7 +137,7 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new Furnace(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new Jukebox(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new AutoFeed(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new VillagersFollow(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new VillagerBait(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new Collector(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new Tanks(), Main.getMain());
 
@@ -151,22 +152,24 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
+
         //reload logic
-        for(UUID uuid : BackpackAction.getHashMap().keySet()){
-            Player player = Bukkit.getPlayer(uuid);
-            BackpackAction.getHashMap().remove(uuid);
-            BackpackAction.getSpectators().remove(uuid);
-            if(player == null) continue;
-            player.closeInventory();
+        if(!BackpackAction.getHashMap().isEmpty()){
+            for(UUID uuid : BackpackAction.getHashMap().keySet()){
+                Player player = Bukkit.getPlayer(uuid);
+                BackpackAction.getHashMap().remove(uuid);
+                BackpackAction.getSpectators().remove(uuid);
+                if(player == null) continue;
+                player.closeInventory();
+            }
         }
 
-        Bukkit.getConsoleSender().sendMessage("[Backpacks] Saving backpacks..");
+        Main.getMain().getLogger().info("[Backpacks] Saving backpacks..");
         saveConfig();
 
         try {
             ThreadBackpacks.saveAll();
         } catch (IOException e) {
-            Main.getMain().getLogger().severe("Something went wrong, please report to the developer!");
             throw new RuntimeException(e);
         }
 
@@ -201,21 +204,15 @@ public final class Main extends JavaPlugin {
 
 
         //Upgrades
-        Bukkit.addRecipe(new UpgradesRecipes().getAutoFeedRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getJukeboxRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getFurnaceRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getSmokerRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getBlastFurnaceRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getCraftingTableRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getFollowingVillagersRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getEncapsulateRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getCollectorRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getUnbreakableUpgradeRecipe());
-        Bukkit.addRecipe(new UpgradesRecipes().getLiquidTankRecipe());
-    }
-
-    private String formatVersion(String version){
-        return version.substring(33, version.length() - 1);
+        Bukkit.addRecipe(UpgradesRecipes.getAutoFeedRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getJukeboxRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getFurnaceRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getCraftingTableRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getFollowingVillagersRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getEncapsulateRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getCollectorRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getUnbreakableUpgradeRecipe());
+        Bukkit.addRecipe(UpgradesRecipes.getLiquidTankRecipe());
     }
 
 }

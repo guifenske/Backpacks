@@ -26,8 +26,9 @@ public class EntityDeathEvent implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     private void onPlayerDeath(PlayerDeathEvent event){
-        if(!event.getEntity().getPersistentDataContainer().has(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER)) return;
-        BackPack backpack = Main.backPackManager.getBackpackFromId(event.getEntity().getPersistentDataContainer().get(BackpackRecipes.getHAS_BACKPACK(), PersistentDataType.INTEGER));
+        if(!event.getEntity().getPersistentDataContainer().has(BackpackRecipes.HAS_BACKPACK)) return;
+        BackPack backpack = Main.backPackManager.getBackpackFromId(event.getEntity().getPersistentDataContainer().get(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER));
+
         Player player = event.getEntity();
         Location location = safeLocation(player.getLocation().getBlock().getLocation());
 
@@ -42,6 +43,7 @@ public class EntityDeathEvent implements Listener {
                 Jukebox.stopSound(player, upgrade);
             }
         }
+
         backpack.setOwner(null);
 
         backpack.setIsBlock(true);
@@ -51,7 +53,7 @@ public class EntityDeathEvent implements Listener {
 
         InventoryBuilder.updateConfigInv(backpack);
         Main.backPackManager.getBackpacksPlacedLocations().put(backpack.getLocation(), backpack.getId());
-        player.getPersistentDataContainer().remove(BackpackRecipes.getHAS_BACKPACK());
+        player.getPersistentDataContainer().remove(BackpackRecipes.HAS_BACKPACK);
 
         player.sendMessage(Main.PREFIX + "§cYou died and your backpack was placed on: " + backpack.getLocation().getX() + ", " + backpack.getLocation().getY() + ", " + backpack.getLocation().getZ());
     }
