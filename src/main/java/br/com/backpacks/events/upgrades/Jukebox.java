@@ -31,7 +31,7 @@ public class Jukebox implements Listener {
     }
 
     public static Sound getSoundFromItem(@NotNull ItemStack itemStack){
-        return Sound.sound(Key.key(itemStack.getType().toString().toLowerCase().replace("disc_", "disc.")), Sound.Source.MUSIC, 1, 1);
+        return Sound.sound(Key.key(itemStack.getType().toString().toLowerCase().replace("disc_", "disc.")), Sound.Source.RECORD, 1, 1);
     }
 
     public static void playSound(JukeboxUpgrade upgrade, Player entity) {
@@ -100,7 +100,6 @@ public class Jukebox implements Listener {
                 Sound sound = getSoundFromItem(event.getInventory().getItem(13));
                 upgrade.setSound(sound);
 
-                Main.getMain().getLogger().info("teste " + sound);
                 if(backPack.getOwner() == null) playSound(upgrade, backPack);
                 else playSound(upgrade, (Player) event.getWhoClicked());
             }

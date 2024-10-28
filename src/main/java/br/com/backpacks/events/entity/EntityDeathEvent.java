@@ -9,7 +9,6 @@ import br.com.backpacks.utils.Constants;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.RandomBackpackBuilder;
-import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Monster;
@@ -51,7 +50,7 @@ public class EntityDeathEvent implements Listener {
 
         backpack.updateBarrelBlock();
 
-        InventoryBuilder.updateConfigInv(backpack);
+        backpack.getConfigMenu().refreshMenu();
         Main.backPackManager.getBackpacksPlacedLocations().put(backpack.getLocation(), backpack.getId());
         player.getPersistentDataContainer().remove(BackpackRecipes.HAS_BACKPACK);
 
@@ -66,9 +65,6 @@ public class EntityDeathEvent implements Listener {
             RandomBackpackBuilder randomBackpackBuilder = new RandomBackpackBuilder("Unknown Backpack", Main.backPackManager.getLastBackpackID() + 1);
             BackPack backPack = randomBackpackBuilder.generateBackpack();
             Main.backPackManager.setLastBackpackID(Main.backPackManager.getLastBackpackID() + 1);
-            new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
-            new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
-            new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
 
             event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), RecipesUtils.getItemFromBackpack(backPack));
         }
@@ -78,6 +74,7 @@ public class EntityDeathEvent implements Listener {
         while(!location.getBlock().isEmpty()){
             location.add(0, 1, 0);
         }
+
         return location;
     }
 }

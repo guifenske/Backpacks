@@ -5,7 +5,6 @@ import br.com.backpacks.upgrades.*;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
-import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -22,9 +21,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomBackpackBuilder {
 
-    private int id;
-    private String name;
+    private final int id;
+    private final String name;
     private BackpackType type;
+
     public RandomBackpackBuilder(String name, int id) {
         this.name = name;
         this.id = id;
@@ -32,21 +32,26 @@ public class RandomBackpackBuilder {
 
     public BackPack generateBackpack(){
         generateBackpackType();
-        if(Main.backPackManager.getSizeSecondPageFromBackpackType(type) == 0){
+
+        if(type.getSecondPageSize() == 0){
             BackPack backPack = new BackPack(name, generateFistPage(), id, type);
             backPack.setIsBlock(false);
+
             if(shouldGenerateUpgrades()){
                 backPack.setBackpackUpgrades(generateUpgrades());
             }
+
             Main.backPackManager.getBackpacks().put(id, backPack);
             return backPack;
         }
 
         BackPack backPack = new BackPack(name, generateFistPage(), generateSecondPage(), id, type);
         backPack.setIsBlock(false);
+
         if(shouldGenerateUpgrades()){
             backPack.setBackpackUpgrades(generateUpgrades());
         }
+
         Main.backPackManager.getBackpacks().put(id, backPack);
         return backPack;
     }
@@ -60,7 +65,7 @@ public class RandomBackpackBuilder {
 
     private Inventory generateFistPage() {
         //generate first page with random loot
-        Inventory firstPage = Bukkit.createInventory(null, Main.backPackManager.getSizeFirstPageFromBackpackType(type), name);
+        Inventory firstPage = Bukkit.createInventory(null, type.getFirstPageSize(), name);
 
         // Get the default loot table
         LootTable lootTable = Bukkit.getLootTable(NamespacedKey.minecraft("chests/simple_dungeon"));
@@ -76,23 +81,27 @@ public class RandomBackpackBuilder {
     }
 
     private Inventory generateSecondPage() {
-        return Bukkit.createInventory(null, Main.backPackManager.getSizeSecondPageFromBackpackType(type), name);
+        return Bukkit.createInventory(null, type.getSecondPageSize(), name);
     }
 
 
     private ItemStack[] applyRandomOrderToLoot(List<ItemStack> loot, Inventory inventory){
-
         List<ItemStack> newLoot = new ArrayList<>();
+
         for(int i = 0; i < inventory.getSize() - 3; i++){
             newLoot.add(null);
         }
+
         for(ItemStack item : loot){
             int randomIndex = ThreadLocalRandom.current().nextInt(inventory.getSize() - 3);
+
             while(newLoot.get(randomIndex) != null){
                 randomIndex = ThreadLocalRandom.current().nextInt(inventory.getSize() - 3);
             }
+
             newLoot.set(randomIndex, item);
         }
+
         return newLoot.toArray(new ItemStack[0]);
     }
 
@@ -104,15 +113,16 @@ public class RandomBackpackBuilder {
 
     private List<Upgrade> generateUpgrades(){
         List<UpgradeType> types = List.of(UpgradeType.values());
-        int bound = InventoryBuilder.getFreeUpgradesSlots(type);
+        int bound = type.getMaxUpgrades();
         List<Upgrade> upgrades = new ArrayList<>();
 
         for(int i = 1; i <= bound; i++){
+
             if(ThreadLocalRandom.current().nextBoolean()){
                 int indexUpgradeType = ThreadLocalRandom.current().nextInt(types.size() - 1);
                 UpgradeType upgradeType = types.get(indexUpgradeType);
-                switch (upgradeType){
 
+                switch (upgradeType){
                     case JUKEBOX ->{
                         JukeboxUpgrade upgrade = new JukeboxUpgrade(UpgradeManager.lastUpgradeID + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
@@ -168,6 +178,7 @@ public class RandomBackpackBuilder {
                     }
 
                 }
+
                 UpgradeManager.lastUpgradeID++;
             }
         }

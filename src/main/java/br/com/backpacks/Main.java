@@ -68,8 +68,8 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        saveDefaultConfig();
         main = this;
+        saveDefaultConfig();
 
         Constants.VERSION = Bukkit.getServer().getMinecraftVersion();
 
@@ -79,24 +79,22 @@ public final class Main extends JavaPlugin {
             return;
         }
 
+        Main.start = Instant.now();
+
         Bukkit.getScheduler().runTaskAsynchronously(this, ()->{
-            start = Instant.now();
-            if(getConfig().getBoolean("debug")){
-                Constants.DEBUG_MODE = true;
-            }
-            if(getConfig().getBoolean("fish_backpack")){
-                Constants.CATCH_BACKPACK = true;
-            }
-            if(getConfig().getBoolean("kill_monster_backpack")){
-                Constants.MONSTER_DROPS_BACKPACK = true;
-            }
+            Constants.DEBUG_MODE = getConfig().getBoolean("debug");
+            Constants.CATCH_BACKPACK = getConfig().getBoolean("fish_backpack");
+            Constants.MONSTER_DROPS_BACKPACK = getConfig().getBoolean("kill_monster_backpack");
 
             if(getConfig().getBoolean("mysql.enabled")){
                 StorageManager.setProvider(Config.getMySQLProvider());
+
                 if(!((MySQLProvider) StorageManager.getProvider()).canConnect()){
                     StorageManager.setProvider(Config.getYamlProvider());
                 }
-            }   else{
+            }
+
+            else{
                 StorageManager.setProvider(Config.getYamlProvider());
             }
 
@@ -116,14 +114,10 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new BackpackBreak(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new BackpackPlace(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new OnClickBackpack(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new OnClickInConfigMenu(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new OnCloseBackpackConfigMenu(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new RenameBackpack(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new OpenBackpackOfTheBack(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new OnCloseBackpack(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new OnCloseUpgradeMenu(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new OnClickUpgradesMenu(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new IOMenu(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new MenuListener(), Main.getMain());
 
         //others
         Bukkit.getPluginManager().registerEvents(new HopperEvents(), Main.getMain());

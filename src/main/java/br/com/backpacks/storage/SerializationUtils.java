@@ -1,6 +1,7 @@
 package br.com.backpacks.storage;
 
 import br.com.backpacks.recipes.BackpackRecipes;
+import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.backpacks.BackPack;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -167,9 +168,12 @@ public class SerializationUtils {
 
     public static void deserializeUpgradesIds(InputStream inputStream, BackPack backPack) throws IOException, ClassNotFoundException {
         if (inputStream == null || inputStream.available() == 0) return;
+
         BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
+
         List<Integer> list = new ArrayList<>();
         int size = dataInput.readInt();
+
         if(size == 0){
             dataInput.close();
             return;
@@ -179,8 +183,16 @@ public class SerializationUtils {
             dataInput.close();
             return;
         }
+
         for(int i = 0; i < size; i++){
-            list.add(dataInput.readInt());
+            int id = dataInput.readInt();
+
+            if(!UpgradeManager.getUpgrades().containsKey(id)){
+                UpgradeManager.getUpgrades().remove(id);
+                continue;
+            }
+
+            list.add(id);
         }
 
         backPack.setUpgradesIds(list);

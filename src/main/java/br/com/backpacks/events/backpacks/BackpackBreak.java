@@ -10,11 +10,9 @@ import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
-import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -72,7 +70,10 @@ public class BackpackBreak implements Listener {
         backPack.setLocation(null);
         backPack.setIsBlock(false);
         backPack.setOwner(null);
-        InventoryBuilder.updateConfigInv(backPack);
+        //InventoryBuilder.updateConfigInv(backPack);
+
+        backPack.getConfigMenu().refreshMenu();
+
         Location location = event.getBlock().getLocation();
         Main.backPackManager.getBackpacksPlacedLocations().remove(location);
         event.getBlock().setType(Material.AIR, true);
@@ -123,7 +124,10 @@ public class BackpackBreak implements Listener {
             backPack.setLocation(null);
             backPack.setIsBlock(false);
             backPack.setOwner(null);
-            InventoryBuilder.updateConfigInv(backPack);
+           // InventoryBuilder.updateConfigInv(backPack);
+
+            backPack.getConfigMenu().refreshMenu();
+
             Main.backPackManager.getBackpacksPlacedLocations().remove(location);
             block.getWorld().dropItemNaturally(location, backpackItem);
             break;
@@ -170,7 +174,6 @@ public class BackpackBreak implements Listener {
             }
         }
 
-        InventoryBuilder.deleteAllMenusFromBackpack(backPack);
         Main.backPackManager.getBackpacks().remove(id);
     }
 }

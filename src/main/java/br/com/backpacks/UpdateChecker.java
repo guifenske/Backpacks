@@ -32,19 +32,24 @@ public class UpdateChecker {
             Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Could not find versions for this plugin, aborting update check.");
             return;
         }
+
         if (!CURRENT_VERSION.equals(latestVersion)) {
             Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "An update is available! Latest version: " + latestVersion);
-        } else {
-            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "You are on the latest version!");
+        }
+
+        else {
+            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "You are on the latest version: " + latestVersion);
         }
     }
 
     private static String parseVersion(String response) {
-        Pattern pattern = Pattern.compile("\"version_number\":\"([^\"]*)\"");
+        Pattern pattern = Pattern.compile("\"version_number\":\"([^\"]*)");
         Matcher matcher = pattern.matcher(response);
+
         if (matcher.find()) {
             return matcher.group(1);
         }
+
         return null;
     }
 }

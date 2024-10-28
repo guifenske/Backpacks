@@ -1,4 +1,4 @@
-package br.com.backpacks.utils.inventory;
+package br.com.backpacks.utils.menu;
 
 import br.com.backpacks.recipes.BackpackRecipes;
 import org.bukkit.Material;

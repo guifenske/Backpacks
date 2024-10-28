@@ -41,11 +41,13 @@ public class RecipesUtils {
     }
 
     public static ItemStack getItemFromUpgrade(Upgrade upgrade) {
+        if(upgrade == null) return null;
+
         ItemStack itemStack = new ItemStack(getMaterialFromUpgrade(upgrade));
         ItemMeta meta = itemStack.getItemMeta();
         UpgradeType upgradeType = upgrade.getType();
 
-        meta.setDisplayName(upgradeType.toString().toUpperCase().charAt(0) + upgradeType.toString().toLowerCase().substring(1) + " Upgrade");
+        meta.setDisplayName(upgradeType.getName() + " Upgrade");
         meta.setLore(getLore(upgrade));
 
         meta.getPersistentDataContainer().set(UpgradesRecipes.IS_UPGRADE, PersistentDataType.INTEGER, 1);

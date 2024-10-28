@@ -25,9 +25,11 @@ public class BackpackAction {
 
         UPGAUTOFEED,
 
-        UPGVILLAGERSFOLLOW,
+        UPGVILLAGERBAIT,
 
         UPGCOLLECTOR,
+
+        UPGAUTOFILL,
 
         IOMENU,
 

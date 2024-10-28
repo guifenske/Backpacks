@@ -1,13 +1,11 @@
 package br.com.backpacks.storage;
 
-import br.com.backpacks.Config;
 import br.com.backpacks.Main;
 import br.com.backpacks.upgrades.*;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -80,57 +78,67 @@ public final class YamlProvider extends StorageProvider {
             UpgradeType type = upgrade.getType();
             switch (type){
                 case FURNACE -> {
-                    Main.debugMessage("Saving furnace upgrade " + upgrade.getId());
                     FurnaceUpgrade furnaceUpgrade = (FurnaceUpgrade) upgrade;
+
                     if(furnaceUpgrade.getResult() != null)  config.set(upgrade.getId() + ".furnace.result", furnaceUpgrade.getResult());
                     if(furnaceUpgrade.getFuel() != null)  config.set(upgrade.getId() + ".furnace.fuel", furnaceUpgrade.getFuel());
+
                     if(furnaceUpgrade.getSmelting() != null)  config.set(upgrade.getId() + ".furnace.smelting", furnaceUpgrade.getSmelting());
                     if(furnaceUpgrade.getOperation() > 0)   config.set(upgrade.getId() + ".furnace.operation", furnaceUpgrade.getOperation());
+
                     if(furnaceUpgrade.getLastMaxOperation() > 0)   config.set(upgrade.getId() + ".furnace.maxoperation", furnaceUpgrade.getLastMaxOperation());
                 }
+
                 case JUKEBOX -> {
                     JukeboxUpgrade jukeboxUpgrade = (JukeboxUpgrade) upgrade;
-                    Main.debugMessage("Saving jukebox upgrade " + jukeboxUpgrade.getId());
+
                     if(!jukeboxUpgrade.getDiscs().isEmpty()){
                         for(Map.Entry<Integer, ItemStack> item : jukeboxUpgrade.getDiscs().entrySet()){
                             config.set(upgrade.getId() + ".jukebox.discs." + item.getKey(), item.getValue().getType().name());
                         }
                     }
+
                     if(jukeboxUpgrade.getInventory().getItem(13) != null)    config.set(upgrade.getId() + ".jukebox.playing", jukeboxUpgrade.getInventory().getItem(13).getType().name());
                 }
+
                 case AUTOFEED -> {
                     AutoFeedUpgrade autoFeedUpgrade = (AutoFeedUpgrade) upgrade;
-                    Main.debugMessage("Saving auto feed upgrade " + autoFeedUpgrade.getId());
                     config.set(upgrade.getId() + ".autofeed.enabled", autoFeedUpgrade.isEnabled());
                 }
+
                 case VILLAGER_BAIT -> {
                     VillagerBaitUpgrade followUpgrade = (VillagerBaitUpgrade) upgrade;
-                    Main.debugMessage("Saving villager upgrade " + followUpgrade.getId());
                     config.set(upgrade.getId() + ".villager.enabled", followUpgrade.isEnabled());
                 }
+
                 case COLLECTOR -> {
                     CollectorUpgrade collectorUpgrade = (CollectorUpgrade) upgrade;
-                    Main.debugMessage("Saving collector upgrade " + collectorUpgrade.getId());
                     config.set(upgrade.getId() + ".collector.enabled", collectorUpgrade.isEnabled());
                     config.set(upgrade.getId() + ".collector.mode", collectorUpgrade.getMode());
                 }
+
                 case LIQUID_TANK -> {
                     TanksUpgrade tanksUpgrade = (TanksUpgrade) upgrade;
-                    Main.debugMessage("Saving tank upgrade " + tanksUpgrade.getId());
+
                     if(!tanksUpgrade.getItemsPerTank(1).isEmpty()){
                         for(Map.Entry<Integer, ItemStack> item : tanksUpgrade.getItemsPerTank(1).entrySet()){
                             config.set(upgrade.getId() + ".tank1." + item.getKey(), item.getValue());
                         }
                     }
+
                     if(!tanksUpgrade.getItemsPerTank(2).isEmpty()){
                         for(Map.Entry<Integer, ItemStack> item : tanksUpgrade.getItemsPerTank(2).entrySet()){
                             config.set(upgrade.getId() + ".tank2." + item.getKey(), item.getValue());
                         }
                     }
+
                     if(tanksUpgrade.getInventory().getItem(12) != null) config.set(upgrade.getId() + ".12", tanksUpgrade.getInventory().getItem(12));
                     if(tanksUpgrade.getInventory().getItem(14) != null) config.set(upgrade.getId() + ".14", tanksUpgrade.getInventory().getItem(14));
                 }
             }
+
+            Main.debugMessage("Saving " + upgrade.getType().getName() + " Upgrade");
+
         }
         config.save(file);
     }
@@ -160,6 +168,7 @@ public final class YamlProvider extends StorageProvider {
             switch (type){
                 case FURNACE -> {
                     FurnaceUpgrade upgrade = new FurnaceUpgrade(id);
+
                     if(config.isSet(i + ".furnace.result")){
                         upgrade.setResult(config.getItemStack(i + ".furnace.result"));
                     }
@@ -180,12 +189,12 @@ public final class YamlProvider extends StorageProvider {
                         upgrade.setLastMaxOperation(config.getInt(i + ".furnace.maxoperation"));
                     }
 
-                    Main.debugMessage("furnace loaded: " + i);
                    // upgrade.updateInventory();
                     UpgradeManager.getUpgrades().put(id, upgrade);
                 }
                 case JUKEBOX -> {
                     JukeboxUpgrade upgrade = new JukeboxUpgrade(id);
+
                     if(config.isSet(i + ".jukebox.discs")){
                         Set<String> keys = config.getConfigurationSection(i + ".jukebox.discs").getKeys(false);
                         for(String s : keys){
@@ -197,11 +206,11 @@ public final class YamlProvider extends StorageProvider {
                         upgrade.getInventory().setItem(13, upgrade.getSoundFromName(config.getString(i + ".jukebox.playing")));
                     }
 
-                    Main.debugMessage("loading jukebox: " + i);
                     UpgradeManager.getUpgrades().put(id, upgrade);
                 }
                 case COLLECTOR -> {
                     CollectorUpgrade upgrade = new CollectorUpgrade(id);
+
                     if(config.isSet(i + ".collector.enabled")){
                         upgrade.setEnabled(config.getBoolean(i + ".collector.enabled"));
                     }
@@ -210,30 +219,32 @@ public final class YamlProvider extends StorageProvider {
                         upgrade.setMode(config.getInt(i + ".collector.mode"));
                     }
 
-                    Main.debugMessage("loading collector: " + i);
                     upgrade.updateInventory();
                     UpgradeManager.getUpgrades().put(id, upgrade);
                 }
+
                 case VILLAGER_BAIT -> {
                     VillagerBaitUpgrade upgrade = new VillagerBaitUpgrade(id);
+
                     if (config.isSet(i + ".villager.enabled")) {
                         upgrade.setEnabled(config.getBoolean(i + ".villager.enabled"));
                     }
 
-                    Main.debugMessage("loading villagers follow: " + i);
                     upgrade.updateInventory();
                     UpgradeManager.getUpgrades().put(id, upgrade);
                 }
+
                 case AUTOFEED -> {
                     AutoFeedUpgrade upgrade = new AutoFeedUpgrade(id);
+
                     if(config.isSet(i + ".autofeed.enabled")){
                         upgrade.setEnabled(config.getBoolean(i + ".autofeed.enabled"));
                     }
 
                     upgrade.updateInventory();
-                    Main.debugMessage("loading auto feed: " + i);
                     UpgradeManager.getUpgrades().put(id, upgrade);
                 }
+
                 case LIQUID_TANK -> {
                     TanksUpgrade upgrade = new TanksUpgrade(id);
                     if(config.isSet(i + ".tank1")){
@@ -258,15 +269,17 @@ public final class YamlProvider extends StorageProvider {
                         upgrade.getInventory().setItem(14, config.getItemStack(i + ".14"));
                     }
 
-                    Main.debugMessage("loading tank upgrade: " + i);
                     UpgradeManager.getUpgrades().put(id, upgrade);
                 }
+
                 default -> {
                     Upgrade upgrade = new Upgrade(type, id);
                     UpgradeManager.getUpgrades().put(id, upgrade);
-                    Main.debugMessage("loading " + type.toString().toLowerCase() + " upgrade: " + i);
                 }
             }
+
+            Main.debugMessage("Loading " + type.getName() + " upgrade: " + i);
+
         }
     }
 
@@ -279,21 +292,9 @@ public final class YamlProvider extends StorageProvider {
         for (String i : config.getKeys(false)) {
 
             BackPack backPack = new BackPack().deserialize(config, i);
-            if(config.isSet(i + ".loc")){
-                backPack.setLocation(SerializationUtils.deserializeLocationAsList(config.getStringList(i + ".loc")));
-                backPack.setIsBlock(true);
-                if(config.isSet(i + ".shownameabove")){
-                    backPack.setShowNameAbove(true);
-                }
-                Main.backPackManager.getBackpacksPlacedLocations().put(backPack.getLocation(), backPack.getId());
-            }
 
             Main.debugMessage("Loading backpack " + backPack.getName() + " id " + backPack.getId());
             Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
-
-            new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
-            new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
-            new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
 
             int id = backPack.getId();
             if(Main.backPackManager.getLastBackpackID() == 0) Main.backPackManager.setLastBackpackID(id);
@@ -312,6 +313,7 @@ public final class YamlProvider extends StorageProvider {
         int i = 0;
         int i1 = 0;
         config.set(backPack.getId() + ".1", null);
+
         for(ItemStack itemStack : backPack.getStorageContentsFirstPage()){
             if(itemStack == null){
                 i++;
@@ -324,6 +326,7 @@ public final class YamlProvider extends StorageProvider {
 
         if(backPack.getSecondPage() != null){
             config.set(backPack.getId() + ".2", null);
+
             for(ItemStack itemStack : backPack.getStorageContentsSecondPage()){
                 if(itemStack == null){
                     i1++;

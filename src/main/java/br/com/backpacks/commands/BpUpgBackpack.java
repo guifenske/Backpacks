@@ -29,6 +29,7 @@ public class BpUpgBackpack implements CommandExecutor {
         }
 
         ItemStack itemStack = player.getInventory().getItemInMainHand();
+
         if(itemStack.getType().isAir()){
             player.sendMessage(Main.PREFIX + "Item in main hand is null, please use when holding a backpack");
             return true;
@@ -40,11 +41,13 @@ public class BpUpgBackpack implements CommandExecutor {
         }
 
         BackPack backPack = RecipesUtils.getBackpackFromItem(player.getInventory().getItemInMainHand());
+
         if(backPack == null){
-            player.sendMessage(Main.PREFIX + "An error occurred, please check the console or report to the developer.");
+            player.sendMessage(Main.PREFIX + "Item in main hand isn't a backpack");
             return true;
         }
-        Main.backPackManager.upgradeBackpack(backPack.getType(), backPack.getId());
+
+        Main.backPackManager.upgradeBackpack(backPack);
         player.sendMessage(Main.PREFIX + "Backpack upgraded successfully!");
 
         player.playSound(player, org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1, 1);

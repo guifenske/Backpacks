@@ -2,8 +2,9 @@ package br.com.backpacks.utils.backpacks;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
+import br.com.backpacks.storage.SerializationUtils;
 import br.com.backpacks.utils.UpgradeManager;
-import br.com.backpacks.utils.inventory.ItemCreator;
+import br.com.backpacks.utils.menu.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -32,6 +33,9 @@ public final class BackPack extends UpgradeManager {
     private boolean showNameAbove = false;
     private UUID marker;
     private String name;
+    private BackpackConfigMenu configMenu;
+    private UpgradesMenu upgradesMenu;
+    private UpgradesInputOutputMenu upgradesInputOutputMenu;
 
     public BackPack(BackpackType type, int id) {
         this.backpackType = type;
@@ -39,10 +43,16 @@ public final class BackPack extends UpgradeManager {
         this.name = type.getName();
         updateSizeOfPages();
         firstPage = Bukkit.createInventory(null, firstPageSize, name);
+
         if(secondPageSize > 0){
             secondPage = Bukkit.createInventory(null, secondPageSize, name);
         }
+
         setConfigOptionItems();
+
+        configMenu = new BackpackConfigMenu(54, this.name + "'s Config", this);
+        upgradesMenu = new UpgradesMenu(9, this.name + "'s Upgrades", this);
+        upgradesInputOutputMenu = new UpgradesInputOutputMenu(27, this.name + "'s Upgrades Input/Output", this);
     }
 
     public BackPack(String name, Inventory firstPage, int id, BackpackType type) {
@@ -51,6 +61,10 @@ public final class BackPack extends UpgradeManager {
         this.name = name;
         this.firstPage = firstPage;
         this.id = id;
+
+        configMenu = new BackpackConfigMenu(54, this.name + " Config", this);
+        upgradesMenu = new UpgradesMenu(9, this.name + "'s Upgrades", this);
+        upgradesInputOutputMenu = new UpgradesInputOutputMenu(27, this.name + "'s Upgrades Input/Output", this);
 
         updateSizeOfPages();
         setConfigOptionItems();
@@ -67,6 +81,10 @@ public final class BackPack extends UpgradeManager {
         this.secondPage = secondPage;
         this.firstPage = firstPage;
         this.id = id;
+
+        configMenu = new BackpackConfigMenu(54, this.name + " Config", this);
+        upgradesMenu = new UpgradesMenu(9, this.name + "'s Upgrades", this);
+        upgradesInputOutputMenu = new UpgradesInputOutputMenu(27, this.name + "'s Upgrades Input/Output", this);
 
         updateSizeOfPages();
         setConfigOptionItems();
@@ -88,6 +106,8 @@ public final class BackPack extends UpgradeManager {
 
         if(config.isSet(id + ".u")){
             List<Integer> upgradesIds = config.getIntegerList(id + ".u");
+
+            upgradesIds.removeIf(upgradeId -> !UpgradeManager.getUpgrades().containsKey(upgradeId));
             setUpgradesIds(upgradesIds);
         }
 
@@ -129,6 +149,19 @@ public final class BackPack extends UpgradeManager {
 
             }
         }
+
+        if(config.isSet(id + ".loc")){
+            setLocation(SerializationUtils.deserializeLocationAsList(config.getStringList(id + ".loc")));
+            setIsBlock(true);
+            if(config.isSet(id + ".shownameabove")){
+                setShowNameAbove(true);
+            }
+            Main.backPackManager.getBackpacksPlacedLocations().put(getLocation(), getId());
+        }
+
+        configMenu = new BackpackConfigMenu(54, this.name + "'s Config", this);
+        upgradesMenu = new UpgradesMenu(9, this.name + "'s Upgrades", this);
+        upgradesInputOutputMenu = new UpgradesInputOutputMenu(27, this.name + "'s Upgrades Input/Output", this);
 
         setConfigOptionItems();
         return this;
@@ -234,14 +267,20 @@ public final class BackPack extends UpgradeManager {
     private void updateSizeOfPages(){
         switch (getType()){
             case LEATHER -> firstPageSize = 18;
+
             case IRON -> firstPageSize = 27;
+
             case GOLD -> firstPageSize = 36;
+
             case LAPIS -> firstPageSize = 45;
+
             case AMETHYST -> firstPageSize = 54;
+
             case DIAMOND ->{
                 firstPageSize = 54;
                 secondPageSize = 27;
             }
+
             case NETHERITE ->{
                 firstPageSize = 54;
                 secondPageSize = 54;
@@ -327,6 +366,7 @@ public final class BackPack extends UpgradeManager {
             if(item == null)    continue;
             if(item.isSimilar(itemStack)) return true;
         }
+
         if(secondPageSize > 0){
             for(ItemStack item : secondPage){
                 if(item == null)    continue;
@@ -402,4 +442,39 @@ public final class BackPack extends UpgradeManager {
             }
         }
     }
+
+    public BackpackConfigMenu getConfigMenu(){
+        return configMenu;
+    }
+
+    public UpgradesMenu getUpgradesMenu(){
+        return upgradesMenu;
+    }
+
+    public UpgradesInputOutputMenu getUpgradesInputOutputMenu() {
+        return upgradesInputOutputMenu;
+    }
+
+    public Menu getPlayerCurrentMenu(Player player){
+        switch (BackpackAction.getAction(player)){
+            case UPGMENU -> {
+                return upgradesMenu;
+            }
+
+            case CONFIGMENU -> {
+                return configMenu;
+            }
+
+            case IOMENU -> {
+                return upgradesInputOutputMenu;
+            }
+
+            case EDITINPUT, EDITOUTPUT -> {
+                return upgradesInputOutputMenu.getEditInputOutputMenu();
+            }
+        }
+
+        return null;
+    }
+
 }

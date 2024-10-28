@@ -7,7 +7,6 @@ import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackType;
-import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -177,7 +176,8 @@ public class MySQLProvider extends StorageProvider{
                    }
 
                }
-               Main.debugMessage("Saving " + upgrade.getType().toString().toLowerCase() + " upgrade " + upgrade.getId());
+
+               Main.debugMessage("Saving " + upgrade.getType().getName() + " upgrade " + upgrade.getId());
                preparedStatement.execute();
            }
            connection.close();
@@ -202,51 +202,67 @@ public class MySQLProvider extends StorageProvider{
                 switch (type){
                     case FURNACE -> {
                         FurnaceUpgrade upgrade = new FurnaceUpgrade(id);
+
                         upgrade.setSmelting(SerializationUtils.deserializeItem(upgradeSet.getBlob("furnace_smelting").getBinaryStream()));
                         upgrade.setFuel(SerializationUtils.deserializeItem(upgradeSet.getBlob("furnace_fuel").getBinaryStream()));
+
                         upgrade.setResult(SerializationUtils.deserializeItem(upgradeSet.getBlob("furnace_result").getBinaryStream()));
                         upgrade.setOperation(upgradeSet.getInt("furnace_operation"));
+
                         upgrade.setLastMaxOperation(upgradeSet.getInt("furnace_maxoperation"));
                         upgrade.updateInventory();
+
                         UpgradeManager.getUpgrades().put(id, upgrade);
                     }
 
                     case JUKEBOX -> {
                         JukeboxUpgrade upgrade = new JukeboxUpgrade(id);
+
                         upgrade.deserializeDiscs(upgradeSet.getBlob("jukebox_discs").getBinaryStream());
                         if(upgradeSet.getString("jukebox_playing") != null) upgrade.getInventory().setItem(13, new ItemStack(Material.valueOf(upgradeSet.getString("jukebox_playing"))));
+
                         upgrade.updateInventory();
                         UpgradeManager.getUpgrades().put(id, upgrade);
                     }
 
                     case COLLECTOR -> {
                         CollectorUpgrade upgrade = new CollectorUpgrade(id);
+
                         upgrade.setMode(upgradeSet.getInt("collector_mode"));
                         upgrade.setEnabled(upgradeSet.getBoolean("enabled"));
+
                         upgrade.updateInventory();
+
                         UpgradeManager.getUpgrades().put(id, upgrade);
                     }
 
                     case VILLAGER_BAIT -> {
                         VillagerBaitUpgrade upgrade = new VillagerBaitUpgrade(id);
+
                         upgrade.setEnabled(upgradeSet.getBoolean("enabled"));
                         upgrade.updateInventory();
+
                         UpgradeManager.getUpgrades().put(id, upgrade);
                     }
 
                     case AUTOFEED -> {
                         AutoFeedUpgrade upgrade = new AutoFeedUpgrade(id);
+
                         upgrade.setEnabled(upgradeSet.getBoolean("enabled"));
                         upgrade.updateInventory();
+
                         UpgradeManager.getUpgrades().put(id, upgrade);
                     }
 
                     case LIQUID_TANK -> {
                         TanksUpgrade upgrade = new TanksUpgrade(id);
+
                         upgrade.deserializeTank(upgradeSet.getBlob("tank_1").getBinaryStream());
                         upgrade.deserializeTank(upgradeSet.getBlob("tank_2").getBinaryStream());
+
                         upgrade.getInventory().setItem(12, SerializationUtils.deserializeItem(upgradeSet.getBlob("tank_input_1").getBinaryStream()));
                         upgrade.getInventory().setItem(14, SerializationUtils.deserializeItem(upgradeSet.getBlob("tank_input_2").getBinaryStream()));
+
                         upgrade.updateInventory();
                         UpgradeManager.getUpgrades().put(id, upgrade);
                     }
@@ -262,7 +278,7 @@ public class MySQLProvider extends StorageProvider{
                     UpgradeManager.lastUpgradeID = id;
                 }
 
-                Main.debugMessage("loaded " + type.toString().toLowerCase() + " upgrade: " + id);
+                Main.debugMessage("Loading " + type.getName() + " Upgrade: " + id);
             }
 
             statement.close();
@@ -290,7 +306,9 @@ public class MySQLProvider extends StorageProvider{
 
                if(SerializationUtils.deserializeLocationFromStream(backpackSet.getBlob("loc").getBinaryStream()) == null){
                    backPack.setLocation(null);
-               }    else{
+               }
+
+               else{
                    backPack.setLocation(SerializationUtils.deserializeLocationFromStream(backpackSet.getBlob("loc").getBinaryStream()));
                    Main.backPackManager.getBackpacksPlacedLocations().put(backPack.getLocation(), backPack.getId());
                }
@@ -307,11 +325,8 @@ public class MySQLProvider extends StorageProvider{
                SerializationUtils.deserializeItemsToInventory(backpackSet.getBlob("firstPage").getBinaryStream(), backPack.getFirstPage());
                SerializationUtils.deserializeItemsToInventory(backpackSet.getBlob("secondPage").getBinaryStream(), backPack.getSecondPage());
                SerializationUtils.deserializeUpgradesIds(backpackSet.getBlob("upgradesIds").getBinaryStream(), backPack);
+
                Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
-               
-               new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
-               new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
-               new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
 
                int id = backPack.getId();
                if(Main.backPackManager.getLastBackpackID() == 0) Main.backPackManager.setLastBackpackID(id);

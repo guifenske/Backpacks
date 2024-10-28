@@ -1,7 +1,6 @@
 package br.com.backpacks.utils.backpacks;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.HumanEntity;
@@ -76,111 +75,54 @@ public class BackPackManager {
         this.backpacks = backpacks;
     }
 
-    public BackPack upgradeBackpack(BackpackType oldType, int oldId) {
-        if(oldId == -1) return null;
+    public void upgradeBackpack(BackPack backPack) {
+        if(backPack == null) return;
+        backpacks.remove(backPack.getId());
 
-        BackPack oldBackpack = getBackpackFromId(oldId);
-
-        backpacks.remove(oldId);
-
-        switch (oldType){
+        switch (backPack.getType()){
             case LEATHER ->{
-                BackPack backPack = new BackPack("Iron Backpack", Bukkit.createInventory(null, 27, "Iron Backpack"), oldId, BackpackType.IRON);
-                backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
-                backPack.setConfigOptionItems();
-                backPack.setBackpackUpgrades(oldBackpack.getBackpackUpgrades());
-                backpacks.put(oldId, backPack);
-                InventoryBuilder.deleteAllMenusFromBackpack(backPack);
-                new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
-                new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
-                new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
-                return backPack;
+                BackPack newBackpack = new BackPack("Iron Backpack", Bukkit.createInventory(null, 27, "Iron Backpack"), backPack.getId(), BackpackType.IRON);
+                newBackpack.getFirstPage().setStorageContents(backPack.getStorageContentsFirstPage());
+                newBackpack.setBackpackUpgrades(backPack.getBackpackUpgrades());
+                backpacks.put(backPack.getId(), newBackpack);
             }
+
             case IRON -> {
-                BackPack backPack = new BackPack("Gold Backpack", Bukkit.createInventory(null, 36, "Gold Backpack"), oldId, BackpackType.GOLD);
-                backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
-                backPack.setConfigOptionItems();
-                backPack.setBackpackUpgrades(oldBackpack.getBackpackUpgrades());
-                backpacks.put(oldId, backPack);
-                InventoryBuilder.deleteAllMenusFromBackpack(backPack);
-                new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
-                new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
-                new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
-                return backPack;
+                BackPack newBackpack = new BackPack("Gold Backpack", Bukkit.createInventory(null, 36, "Gold Backpack"), backPack.getId(), BackpackType.GOLD);
+                newBackpack.getFirstPage().setStorageContents(backPack.getStorageContentsFirstPage());
+                newBackpack.setBackpackUpgrades(backPack.getBackpackUpgrades());
+                backpacks.put(backPack.getId(), newBackpack);
             }
+
             case GOLD -> {
-                BackPack backPack = new BackPack("Lapis Backpack", Bukkit.createInventory(null, 45, "Lapis Backpack"), oldId, BackpackType.LAPIS);
-                backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
-                backPack.setConfigOptionItems();
-                backPack.setBackpackUpgrades(oldBackpack.getBackpackUpgrades());
-                backpacks.put(oldId, backPack);
-                InventoryBuilder.deleteAllMenusFromBackpack(backPack);
-                new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
-                new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
-                new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
-                return backPack;
+                BackPack newBackpack = new BackPack("Lapis Backpack", Bukkit.createInventory(null, 45, "Lapis Backpack"), backPack.getId(), BackpackType.LAPIS);
+                newBackpack.getFirstPage().setStorageContents(backPack.getStorageContentsFirstPage());
+                newBackpack.setBackpackUpgrades(backPack.getBackpackUpgrades());
+                backpacks.put(backPack.getId(), newBackpack);
             }
+
             case LAPIS -> {
-                BackPack backPack = new BackPack("Amethyst Backpack", Bukkit.createInventory(null, 54, "Amethyst Backpack"), oldId, BackpackType.AMETHYST);
-                backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
-                backPack.setConfigOptionItems();
-                backPack.setBackpackUpgrades(oldBackpack.getBackpackUpgrades());
-                backpacks.put(oldId, backPack);
-                InventoryBuilder.deleteAllMenusFromBackpack(backPack);
-                new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
-                new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
-                new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
-                return backPack;
+                BackPack newBackpack = new BackPack("Amethyst Backpack", Bukkit.createInventory(null, 54, "Amethyst Backpack"), backPack.getId(), BackpackType.AMETHYST);
+                newBackpack.getFirstPage().setStorageContents(backPack.getStorageContentsFirstPage());
+                newBackpack.setBackpackUpgrades(backPack.getBackpackUpgrades());
+                backpacks.put(backPack.getId(), newBackpack);
             }
+
             case AMETHYST -> {
-                BackPack backPack = new BackPack("Diamond Backpack", Bukkit.createInventory(null, 54, "Diamond Backpack"), Bukkit.createInventory(null, 27, "Diamond Backpack"), oldId, BackpackType.DIAMOND);
-                backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
-                backPack.setConfigOptionItems();
-                backPack.setBackpackUpgrades(oldBackpack.getBackpackUpgrades());
-                backpacks.put(oldId, backPack);
-                InventoryBuilder.deleteAllMenusFromBackpack(backPack);
-                new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
-                new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
-                new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
-                return backPack;
+                BackPack newBackpack = new BackPack("Diamond Backpack", Bukkit.createInventory(null, 54, "Diamond Backpack"), Bukkit.createInventory(null, 27, "Diamond Backpack"), backPack.getId(), BackpackType.DIAMOND);
+                newBackpack.getFirstPage().setStorageContents(backPack.getStorageContentsFirstPage());
+                newBackpack.setBackpackUpgrades(backPack.getBackpackUpgrades());
+                backpacks.put(backPack.getId(), newBackpack);
             }
+
             case DIAMOND -> {
-                BackPack backPack = new BackPack("Netherite Backpack", Bukkit.createInventory(null, 54, "Netherite Backpack"), Bukkit.createInventory(null, 54, "Netherite Backpack"), oldId, BackpackType.NETHERITE);
-                backPack.getFirstPage().setStorageContents(oldBackpack.getStorageContentsFirstPage());
-                backPack.getSecondPage().setStorageContents(oldBackpack.getStorageContentsSecondPage());
-                backPack.setConfigOptionItems();
-                backPack.setBackpackUpgrades(oldBackpack.getBackpackUpgrades());
-                backpacks.put(oldId, backPack);
-                InventoryBuilder.deleteAllMenusFromBackpack(backPack);
-                new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack).build();
-                new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack).build();
-                new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack).build();
-                return backPack;
+                BackPack newBackpack = new BackPack("Netherite Backpack", Bukkit.createInventory(null, 54, "Netherite Backpack"), Bukkit.createInventory(null, 54, "Netherite Backpack"), backPack.getId(), BackpackType.NETHERITE);
+                newBackpack.getFirstPage().setStorageContents(backPack.getStorageContentsFirstPage());
+                newBackpack.getSecondPage().setStorageContents(backPack.getStorageContentsSecondPage());
+                newBackpack.setBackpackUpgrades(backPack.getBackpackUpgrades());
+                backpacks.put(backPack.getId(), newBackpack);
             }
         }
-
-        return null;
-    }
-
-    public int getSizeFirstPageFromBackpackType(BackpackType type){
-        switch (type){
-            case LEATHER: return 18;
-            case IRON: return 27;
-            case GOLD: return 36;
-            case LAPIS: return 45;
-            case AMETHYST, DIAMOND, NETHERITE: return 54;
-        }
-
-        return 0;
-    }
-
-    public int getSizeSecondPageFromBackpackType(BackpackType type){
-        switch (type){
-            case DIAMOND: return 27;
-            case NETHERITE: return 54;
-        }
-
-        return 0;
     }
 }
 

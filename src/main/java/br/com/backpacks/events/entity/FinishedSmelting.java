@@ -4,7 +4,6 @@ import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.RandomBackpackBuilder;
-import br.com.backpacks.utils.inventory.InventoryBuilder;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,10 +31,6 @@ public class FinishedSmelting implements Listener {
         meta.getPersistentDataContainer().set(backPack.getType().getKey(), PersistentDataType.INTEGER, 1);
         driedBackpack.setItemMeta(meta);
         Main.backPackManager.setLastBackpackID(Main.backPackManager.getLastBackpackID() + 1);
-
-        new InventoryBuilder(InventoryBuilder.MenuType.CONFIG, backPack);
-        new InventoryBuilder(InventoryBuilder.MenuType.UPGMENU, backPack);
-        new InventoryBuilder(InventoryBuilder.MenuType.EDIT_IO_MENU, backPack);
 
         event.setResult(driedBackpack);
     }

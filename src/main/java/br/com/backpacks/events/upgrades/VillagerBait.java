@@ -45,7 +45,7 @@ public class VillagerBait implements Listener {
 
     @EventHandler
     private static void onClick(InventoryClickEvent event) {
-        if (!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGVILLAGERSFOLLOW)) {
+        if (!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGVILLAGERBAIT)) {
             return;
         }
         event.setCancelled(true);
@@ -60,7 +60,7 @@ public class VillagerBait implements Listener {
 
     @EventHandler
     private static void onClose(InventoryCloseEvent event) {
-        if (!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGVILLAGERSFOLLOW)) {
+        if (!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGVILLAGERBAIT)) {
             return;
         }
         BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
