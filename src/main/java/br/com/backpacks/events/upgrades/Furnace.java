@@ -66,7 +66,7 @@ public class Furnace implements Listener {
 
             FurnaceView view = (FurnaceView) player.getOpenInventory();
 
-            if(view.getBurnTime() == 0.0 && view.getTopInventory().getFuel() == null){
+            if(view.getBurnTime() == 0.0 && currentFurnace.get(player.getUniqueId()).canBeRemoved()){
                 currentFurnace.get(player.getUniqueId()).stopTicking();
                 Main.debugMessage("Stopping virtual furnace id " + currentFurnace.get(player.getUniqueId()).getId());
             }

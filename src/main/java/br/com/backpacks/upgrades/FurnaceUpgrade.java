@@ -99,6 +99,14 @@ public class FurnaceUpgrade extends Upgrade {
         this.furnace = furnace;
     }
 
+    public boolean canBeRemoved(){
+        if(this.furnace == null){
+            return true;
+        }
+
+        return this.furnace.getInventory().getFuel() == null && this.furnace.getInventory().getSmelting() == null && this.furnace.getInventory().getResult() == null;
+    }
+
     public org.bukkit.block.Furnace getFurnace() {
         return furnace;
     }
