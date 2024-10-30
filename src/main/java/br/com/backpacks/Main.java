@@ -17,6 +17,7 @@ import br.com.backpacks.utils.Constants;
 import br.com.backpacks.utils.backpacks.BackPackManager;
 import br.com.backpacks.utils.backpacks.BackpackAction;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -79,28 +80,30 @@ public final class Main extends JavaPlugin {
             return;
         }
 
+        for(World world : Bukkit.getWorlds()){
+            Main.getMain().getLogger().info(world.getKey() + "");
+        }
+
         Main.start = Instant.now();
 
-        Bukkit.getScheduler().runTaskAsynchronously(this, ()->{
-            Constants.DEBUG_MODE = getConfig().getBoolean("debug");
-            Constants.CATCH_BACKPACK = getConfig().getBoolean("fish_backpack");
-            Constants.MONSTER_DROPS_BACKPACK = getConfig().getBoolean("kill_monster_backpack");
+        Constants.DEBUG_MODE = getConfig().getBoolean("debug");
+        Constants.CATCH_BACKPACK = getConfig().getBoolean("fish_backpack");
+        Constants.MONSTER_DROPS_BACKPACK = getConfig().getBoolean("kill_monster_backpack");
 
-            if(getConfig().getBoolean("mysql.enabled")){
-                StorageManager.setProvider(Config.getMySQLProvider());
+        if(getConfig().getBoolean("mysql.enabled")){
+            StorageManager.setProvider(Config.getMySQLProvider());
 
-                if(!((MySQLProvider) StorageManager.getProvider()).canConnect()){
-                    StorageManager.setProvider(Config.getYamlProvider());
-                }
-            }
-
-            else{
+            if(!((MySQLProvider) StorageManager.getProvider()).canConnect()){
                 StorageManager.setProvider(Config.getYamlProvider());
             }
+        }
 
-            ThreadBackpacks.loadAll();
-            UpdateChecker.checkForUpdates();
-        });
+        else{
+            StorageManager.setProvider(Config.getYamlProvider());
+        }
+
+        ThreadBackpacks.loadAll();
+        UpdateChecker.checkForUpdates();
 
         //player
         Bukkit.getPluginManager().registerEvents(new CraftBackpack(), Main.getMain());

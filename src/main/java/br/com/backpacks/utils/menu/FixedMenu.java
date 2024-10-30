@@ -22,12 +22,12 @@ public class FixedMenu extends Menu{
     }
 
     @Override
-    void addButton(Button button) {
+    protected void addButton(Button button) {
         this.buttons[button.getSlot()] = button;
     }
 
     @Override
-    void displayTo(Player player) {
+    public void displayTo(Player player) {
         Inventory inventory = Bukkit.createInventory(null, this.size, title);
 
         for(Button button : buttons){

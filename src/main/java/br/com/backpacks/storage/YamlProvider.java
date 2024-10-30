@@ -7,6 +7,8 @@ import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Furnace;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
@@ -80,13 +82,10 @@ public final class YamlProvider extends StorageProvider {
                 case FURNACE -> {
                     FurnaceUpgrade furnaceUpgrade = (FurnaceUpgrade) upgrade;
 
-                    if(furnaceUpgrade.getResult() != null)  config.set(upgrade.getId() + ".furnace.result", furnaceUpgrade.getResult());
-                    if(furnaceUpgrade.getFuel() != null)  config.set(upgrade.getId() + ".furnace.fuel", furnaceUpgrade.getFuel());
-
-                    if(furnaceUpgrade.getSmelting() != null)  config.set(upgrade.getId() + ".furnace.smelting", furnaceUpgrade.getSmelting());
-                    if(furnaceUpgrade.getOperation() > 0)   config.set(upgrade.getId() + ".furnace.operation", furnaceUpgrade.getOperation());
-
-                    if(furnaceUpgrade.getLastMaxOperation() > 0)   config.set(upgrade.getId() + ".furnace.maxoperation", furnaceUpgrade.getLastMaxOperation());
+                    if(furnaceUpgrade.getFurnace() != null){
+                        List<String> data = SerializationUtils.serializeLocationToList(furnaceUpgrade.getFurnace().getLocation());
+                        config.set(upgrade.getId() + ".furnace.loc", data);
+                    }
                 }
 
                 case JUKEBOX -> {
@@ -169,27 +168,13 @@ public final class YamlProvider extends StorageProvider {
                 case FURNACE -> {
                     FurnaceUpgrade upgrade = new FurnaceUpgrade(id);
 
-                    if(config.isSet(i + ".furnace.result")){
-                        upgrade.setResult(config.getItemStack(i + ".furnace.result"));
+                    if(config.isSet(i + ".furnace.loc")){
+                        Block block = SerializationUtils.deserializeLocationAsList(config.getStringList(i + ".furnace.loc")).getBlock();
+
+                        Furnace furnace = (Furnace) block.getState();
+                        upgrade.setFurnace(furnace);
                     }
 
-                    if(config.isSet(i + ".furnace.fuel")){
-                        upgrade.setFuel(config.getItemStack(i + ".furnace.fuel"));
-                    }
-
-                    if(config.isSet(i + ".furnace.smelting")){
-                        upgrade.setSmelting(config.getItemStack(i + ".furnace.smelting"));
-                    }
-
-                    if(config.isSet(i + ".furnace.operation")){
-                        upgrade.setOperation(config.getInt(i + ".furnace.operation"));
-                    }
-
-                    if(config.isSet(i + ".furnace.maxoperation")){
-                        upgrade.setLastMaxOperation(config.getInt(i + ".furnace.maxoperation"));
-                    }
-
-                   // upgrade.updateInventory();
                     UpgradeManager.getUpgrades().put(id, upgrade);
                 }
                 case JUKEBOX -> {

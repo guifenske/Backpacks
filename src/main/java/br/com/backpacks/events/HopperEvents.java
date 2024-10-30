@@ -45,13 +45,19 @@ public class HopperEvents implements Listener {
                             return;
                         }
 
+                        /*
                         if(((FurnaceUpgrade) upgrade).canSmelt() && !Furnace.isTicking.contains(upgrade.getId())){
                             Furnace.isTicking.add(upgrade.getId());
                             Furnace.tick((FurnaceUpgrade) upgrade);
                         }
 
+
+
+                         */
                         return;
                     }
+
+
 
                     ItemStack itemStack = upgrade.tryAddItem(List.of(1), event.getItem());
                     if(itemStack != null){

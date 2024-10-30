@@ -40,7 +40,7 @@ public class VillagerBait implements Listener {
         }
 
         //move nearby villagers in a 10 blocks radius
-        moveNearbyVillagers(player.getLocation(), player, 100);
+        moveNearbyVillagers(player, 100);
     }
 
     @EventHandler
@@ -80,16 +80,16 @@ public class VillagerBait implements Listener {
         });
     }
 
-    private static void moveNearbyVillagers(Location l, Player player, int distanceSquared) {
+    private static void moveNearbyVillagers(Player player, int distanceSquared) {
         int chunkRadius = 1;
-        int x = (int) l.getX(), z = (int) l.getZ();
-        World world = l.getWorld();
+        int x = (int) player.getLocation().getX(), z = (int) player.getLocation().getZ();
+        World world = player.getLocation().getWorld();
 
         //iterates over chunks around location
         for (int chX = -chunkRadius; chX <= chunkRadius; chX++) {
             for (int chZ = -chunkRadius; chZ <= chunkRadius; chZ++) {
                 for (Entity e : new Location(world, x + (chX * 16), 0, z + (chZ * 16)).getChunk().getEntities()) {
-                    if (e.getLocation().distanceSquared(l) <= distanceSquared && e.getType().equals(EntityType.VILLAGER)){
+                    if (e.getLocation().distanceSquared(player.getLocation()) <= distanceSquared && e.getType().equals(EntityType.VILLAGER)){
                         moveToPlayer((Mob) e, player);
                     }
                 }

@@ -1,4 +1,4 @@
-package br.com.backpacks.utils.menu;
+package br.com.backpacks.utils.menu.backpacksMenus;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesUtils;
@@ -6,6 +6,9 @@ import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.utils.menu.Button;
+import br.com.backpacks.utils.menu.DynamicMenu;
+import br.com.backpacks.utils.menu.ItemCreator;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;

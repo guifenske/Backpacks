@@ -101,16 +101,15 @@ public class ThreadBackpacks {
             Main.getMain().setFurnaceRecipes(furnaceRecipes);
             ThreadBackpacks.startTicking();
 
+            /*
             for(Upgrade upgrade : UpgradeManager.getUpgrades().values()){
                 if(upgrade.getType().equals(UpgradeType.FURNACE)){
-                    FurnaceUpgrade furnaceUpgrade = (FurnaceUpgrade) upgrade;
-                    furnaceUpgrade.createFurnaceInventory();
-
-                    if(!((FurnaceUpgrade) upgrade).canSmelt()) continue;
                     Furnace.isTicking.add(upgrade.getId());
                     Furnace.tick((FurnaceUpgrade) upgrade);
                 }
             }
+
+             */
 
             Main.getMain().getLogger().info("Hello from Backpacks! " + Duration.between(Main.start, finish).toMillis() + "ms");
         });

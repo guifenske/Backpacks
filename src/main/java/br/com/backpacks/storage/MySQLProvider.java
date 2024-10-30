@@ -138,11 +138,15 @@ public class MySQLProvider extends StorageProvider{
                switch (upgrade.getType()){
                    case FURNACE -> {
                        FurnaceUpgrade furnaceUpgrade = (FurnaceUpgrade) upgrade;
+
+                       /*
                        preparedStatement.setBlob(4, SerializationUtils.serializeItem(furnaceUpgrade.getSmelting()));
                        preparedStatement.setBlob(5, SerializationUtils.serializeItem(furnaceUpgrade.getFuel()));
                        preparedStatement.setBlob(6, SerializationUtils.serializeItem(furnaceUpgrade.getResult()));
                        preparedStatement.setInt(7, furnaceUpgrade.getOperation());
                        preparedStatement.setInt(8, furnaceUpgrade.getLastMaxOperation());
+
+                        */
                    }
 
                    case JUKEBOX -> {
@@ -203,6 +207,7 @@ public class MySQLProvider extends StorageProvider{
                     case FURNACE -> {
                         FurnaceUpgrade upgrade = new FurnaceUpgrade(id);
 
+                        /*
                         upgrade.setSmelting(SerializationUtils.deserializeItem(upgradeSet.getBlob("furnace_smelting").getBinaryStream()));
                         upgrade.setFuel(SerializationUtils.deserializeItem(upgradeSet.getBlob("furnace_fuel").getBinaryStream()));
 
@@ -211,6 +216,8 @@ public class MySQLProvider extends StorageProvider{
 
                         upgrade.setLastMaxOperation(upgradeSet.getInt("furnace_maxoperation"));
                         upgrade.updateInventory();
+
+                         */
 
                         UpgradeManager.getUpgrades().put(id, upgrade);
                     }

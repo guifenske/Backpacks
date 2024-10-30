@@ -1,4 +1,4 @@
-package br.com.backpacks.utils.menu;
+package br.com.backpacks.utils.menu.backpacksMenus;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.events.upgrades.Furnace;
@@ -12,6 +12,9 @@ import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.utils.menu.Button;
+import br.com.backpacks.utils.menu.DynamicMenu;
+import br.com.backpacks.utils.menu.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Barrel;
@@ -268,7 +271,10 @@ public class BackpackConfigMenu extends DynamicMenu {
                             player.openWorkbench(null, true);
                         }
 
-                        player.openInventory(upgrade.getInventory());
+                        else{
+                            player.openInventory(upgrade.getInventory());
+                        }
+
 
                         Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
                             BackpackAction.setAction(player, upgrade.getType().getAction());
