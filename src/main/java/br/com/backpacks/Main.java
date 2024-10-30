@@ -14,10 +14,12 @@ import br.com.backpacks.recipes.UpgradesRecipes;
 import br.com.backpacks.storage.MySQLProvider;
 import br.com.backpacks.storage.StorageManager;
 import br.com.backpacks.utils.Constants;
+import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackPackManager;
 import br.com.backpacks.utils.backpacks.BackpackAction;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.block.Barrel;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,21 +33,12 @@ import java.util.UUID;
 public final class Main extends JavaPlugin {
     private AutoSaveManager autoSaveManager;
     private BackupHandler backupHandler;
-    private List<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
     public static boolean saveComplete = false;
     private static Main main;
     public static Instant start;
     public static String PREFIX = "§8[§6BackPacks§8] ";
     public static final Object lock = new Object();
     public static final BackPackManager backPackManager = new BackPackManager();
-
-    public void setFurnaceRecipes(List<FurnaceRecipe> recipes){
-        this.furnaceRecipes = recipes;
-    }
-
-    public List<FurnaceRecipe> getFurnaceRecipes() {
-        return furnaceRecipes;
-    }
 
     public static Main getMain() {
         return main;
@@ -78,10 +71,6 @@ public final class Main extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§cThis plugin at the moment is only compatible with 1.21.x versions. Current server version: " + Constants.VERSION);
             Bukkit.getPluginManager().disablePlugin(this);
             return;
-        }
-
-        for(World world : Bukkit.getWorlds()){
-            Main.getMain().getLogger().info(world.getKey() + "");
         }
 
         Main.start = Instant.now();
@@ -154,9 +143,19 @@ public final class Main extends JavaPlugin {
         if(!BackpackAction.getHashMap().isEmpty()){
             for(UUID uuid : BackpackAction.getHashMap().keySet()){
                 Player player = Bukkit.getPlayer(uuid);
+
+                if(player == null) continue;
+
+                BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(player);
+
+                if(backPack.getLocation() != null){
+                    Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
+                    barrel.close();
+                }
+
                 BackpackAction.getHashMap().remove(uuid);
                 BackpackAction.getSpectators().remove(uuid);
-                if(player == null) continue;
+
                 player.closeInventory();
             }
         }

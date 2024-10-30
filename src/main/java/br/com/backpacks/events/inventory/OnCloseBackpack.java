@@ -21,6 +21,7 @@ public class OnCloseBackpack implements Listener {
 
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         shouldRemoveBackpack(event, backPack);
+
         backPack.getViewersIds().remove(event.getPlayer().getUniqueId());
         if(backPack.getViewersIds().isEmpty()){
             if(backPack.getLocation() != null){

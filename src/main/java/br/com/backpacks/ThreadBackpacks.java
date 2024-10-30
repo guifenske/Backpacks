@@ -27,7 +27,7 @@ import java.util.List;
 public class ThreadBackpacks {
 
     public static void saveAll() throws IOException{
-        if(StorageManager.getProvider() == null || Main.backPackManager.getBackpacks().isEmpty() || UpgradeManager.getUpgrades().isEmpty()){
+        if(StorageManager.getProvider() == null || (Main.backPackManager.getBackpacks().isEmpty() && UpgradeManager.getUpgrades().isEmpty())){
             Main.saveComplete = true;
             synchronized (Main.lock){
                 Main.lock.notifyAll();
@@ -53,7 +53,6 @@ public class ThreadBackpacks {
         StorageManager.getProvider().loadUpgrades();
         StorageManager.getProvider().loadBackpacks();
 
-        Instant finish = Instant.now();
         BackupHandler backupHandler = Config.getBackupHandler();
 
         if(backupHandler != null){
@@ -69,50 +68,23 @@ public class ThreadBackpacks {
 
         Main.getMain().setAutoSaveManager(autoSaveManager);
 
-        Bukkit.getScheduler().runTask(Main.getMain(), ()->{
-
-            for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
-                if(backPack.isShowingNameAbove()){
-                    for(Entity entity : backPack.getLocation().getChunk().getEntities()){
-                        if(entity instanceof ArmorStand){
-                            if(entity.getLocation().subtract(0, 1, 0).getBlock().getLocation().equals(backPack.getLocation())){
-                                backPack.setMarker(entity.getUniqueId());
-                                break;
-                            }
+        for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
+            if(backPack.isShowingNameAbove()){
+                for(Entity entity : backPack.getLocation().getChunk().getEntities()){
+                    if(entity instanceof ArmorStand){
+                        if(entity.getLocation().subtract(0, 1, 0).getBlock().getLocation().equals(backPack.getLocation())){
+                            backPack.setMarker(entity.getUniqueId());
+                            break;
                         }
                     }
                 }
             }
+        }
 
-            //get the recipes after the server loads, resulting in possible more recipes from others plugins
-            Iterator<Recipe> iterator = Bukkit.recipeIterator();
-            List<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
+        Instant finish = Instant.now();
 
-            while (iterator.hasNext()){
-                Recipe recipe = iterator.next();
-
-                if(!(recipe instanceof FurnaceRecipe)){
-                    continue;
-                }
-
-                furnaceRecipes.add((FurnaceRecipe) recipe);
-            }
-
-            Main.getMain().setFurnaceRecipes(furnaceRecipes);
-            ThreadBackpacks.startTicking();
-
-            /*
-            for(Upgrade upgrade : UpgradeManager.getUpgrades().values()){
-                if(upgrade.getType().equals(UpgradeType.FURNACE)){
-                    Furnace.isTicking.add(upgrade.getId());
-                    Furnace.tick((FurnaceUpgrade) upgrade);
-                }
-            }
-
-             */
-
-            Main.getMain().getLogger().info("Hello from Backpacks! " + Duration.between(Main.start, finish).toMillis() + "ms");
-        });
+        Main.getMain().getLogger().info("Hello from Backpacks! " + Duration.between(Main.start, finish).toMillis() + "ms");
+        ThreadBackpacks.startTicking();
     }
 
     public static void startTicking(){

@@ -11,7 +11,6 @@ br\com\backpacks\events\upgrades\Furnace.class
 br\com\backpacks\Config.class
 br\com\backpacks\events\inventory\MenuListener.class
 br\com\backpacks\AutoSaveManager$1.class
-br\com\backpacks\utils\others\FurnaceUtils$Fuel.class
 br\com\backpacks\utils\backpacks\RandomBackpackBuilder$1.class
 br\com\backpacks\utils\menu\backpacksMenus\UpgradesEditInputOutputMenu$3.class
 br\com\backpacks\commands\BpReload.class
@@ -49,7 +48,6 @@ br\com\backpacks\utils\menu\backpacksMenus\BackpackConfigMenu$10.class
 br\com\backpacks\events\entity\InteractOtherPlayerBackpack.class
 br\com\backpacks\events\upgrades\AutoFeed$1.class
 br\com\backpacks\utils\backpacks\BackPack$1.class
-br\com\backpacks\utils\others\FurnaceUtils.class
 br\com\backpacks\utils\menu\backpacksMenus\BackpackConfigMenu$5.class
 br\com\backpacks\events\upgrades\AutoFeed$2.class
 br\com\backpacks\utils\menu\backpacksMenus\BackpackConfigMenu$1.class
