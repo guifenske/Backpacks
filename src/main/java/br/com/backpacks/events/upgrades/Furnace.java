@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.view.FurnaceView;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -41,7 +41,7 @@ public class Furnace implements Listener {
     }
 
     @EventHandler
-    private void onFurnaceExplode(BlockExplodeEvent event){
+    private void onFurnaceExplode(EntityExplodeEvent event){
         for(Upgrade upgrade : UpgradeManager.getUpgrades().values()){
             if(!upgrade.getType().equals(UpgradeType.FURNACE)) continue;
             FurnaceUpgrade furnaceUpgrade = (FurnaceUpgrade) upgrade;
@@ -49,7 +49,7 @@ public class Furnace implements Listener {
             if(furnaceUpgrade.getFurnace() == null) continue;
             for(Block block : event.blockList()){
                 if(block.getLocation().equals(furnaceUpgrade.getFurnace().getLocation())){
-                    event.setCancelled(true);
+                    event.blockList().remove(block);
                     return;
                 }
             }
@@ -68,7 +68,7 @@ public class Furnace implements Listener {
 
             if(view.getBurnTime() == 0.0 && currentFurnace.get(player.getUniqueId()).canBeRemoved()){
                 currentFurnace.get(player.getUniqueId()).stopTicking();
-                Main.debugMessage("Stopping virtual furnace id " + currentFurnace.get(player.getUniqueId()).getId());
+                Main.debugMessage("Removing virtual furnace id " + currentFurnace.get(player.getUniqueId()).getId());
             }
         }
 

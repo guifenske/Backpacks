@@ -40,7 +40,6 @@ public class BackpackBreak implements Listener {
 
         event.setCancelled(true);
 
-
         BackPack backPack = Main.backPackManager.getBackpackFromLocation(event.getBlock().getLocation());
         ItemStack backpackItem = RecipesUtils.getItemFromBackpack(backPack);
 
@@ -56,10 +55,13 @@ public class BackpackBreak implements Listener {
         for(UUID uuid : BackpackAction.getHashMap().keySet()){
             Player player = Bukkit.getPlayer(uuid);
             if(player == null) continue;
+
             BackpackAction.clearPlayerAction(player);
             BackpackAction.getSpectators().remove(uuid);
+
             Main.backPackManager.getCurrentPage().remove(uuid);
             Main.backPackManager.getCurrentBackpackId().remove(uuid);
+
             backPack.getViewersIds().remove(uuid);
             player.closeInventory();
         }
@@ -70,7 +72,6 @@ public class BackpackBreak implements Listener {
         backPack.setLocation(null);
         backPack.setIsBlock(false);
         backPack.setOwner(null);
-        //InventoryBuilder.updateConfigInv(backPack);
 
         backPack.getConfigMenu().refreshMenu();
 
@@ -84,14 +85,15 @@ public class BackpackBreak implements Listener {
     private void explosionBreak(EntityExplodeEvent event){
         for(Block block : event.blockList()){
             if(!block.getType().equals(Material.BARREL)) continue;
+
             if(!Main.backPackManager.canOpen()){
-                event.setCancelled(true);
+                event.blockList().remove(block);
                 continue;
             }
 
             if(Main.backPackManager.getBackpackFromLocation(block.getLocation()) == null) continue;
 
-            event.setCancelled(true);
+            event.blockList().remove(block);
             block.setType(Material.AIR);
 
             BackPack backPack = Main.backPackManager.getBackpackFromLocation(block.getLocation());
@@ -110,21 +112,24 @@ public class BackpackBreak implements Listener {
             for(UUID uuid : BackpackAction.getHashMap().keySet()){
                 Player player = Bukkit.getPlayer(uuid);
                 if(player == null) continue;
+
                 BackpackAction.clearPlayerAction(player);
                 BackpackAction.getSpectators().remove(uuid);
+
                 Main.backPackManager.getCurrentPage().remove(uuid);
                 Main.backPackManager.getCurrentBackpackId().remove(uuid);
+
                 backPack.getViewersIds().remove(uuid);
                 player.closeInventory();
             }
 
             backPack.setShowNameAbove(false);
             if(backPack.getMarker() != null) backPack.getMarkerEntity().remove();
+
             backPack.setMarker(null);
             backPack.setLocation(null);
             backPack.setIsBlock(false);
             backPack.setOwner(null);
-           // InventoryBuilder.updateConfigInv(backPack);
 
             backPack.getConfigMenu().refreshMenu();
 
