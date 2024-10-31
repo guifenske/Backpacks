@@ -3,6 +3,7 @@ package br.com.backpacks.utils;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -21,9 +22,12 @@ public class Upgrade {
     public int getId() {
         return id;
     }
+
+    @Nullable
     public Inventory getInventory() {
         return null;
     }
+
     public boolean isAdvanced(){return false;}
     public List<Integer> inputSlots(){return null;}
     public List<Integer> outputSlots(){return null;}

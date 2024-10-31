@@ -265,13 +265,17 @@ public class BackpackConfigMenu extends DynamicMenu {
                             UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
                         }
 
-                        BackpackAction.clearPlayerAction(player);
-
                         if(upgrade.getType().equals(UpgradeType.CRAFTING_GRID)){
+                            BackpackAction.clearPlayerAction(player);
                             player.openWorkbench(null, true);
                         }
 
                         else{
+                            if(upgrade.getInventory() == null){
+                                return;
+                            }
+
+                            BackpackAction.clearPlayerAction(player);
                             player.openInventory(upgrade.getInventory());
                         }
 
