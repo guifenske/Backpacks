@@ -77,7 +77,7 @@ public class FurnaceUpgrade extends Upgrade {
 
                     block = chunk.getBlock(randomX, randomY, randomZ);
 
-                    if(block.getType().isSolid()) {
+                    if(!block.getType().isAir()) {
                         block.setType(Material.FURNACE);
                         return (org.bukkit.block.Furnace) block.getState();
                     }
@@ -89,7 +89,7 @@ public class FurnaceUpgrade extends Upgrade {
     public Inventory getInventory(){
         if(this.furnace == null){
             this.furnace = createFurnace();
-            Main.getMain().getLogger().info("Furnace created at " + furnace.getLocation());
+            Main.debugMessage("Furnace created at " + furnace.getLocation());
         }
 
         return furnace.getInventory();
