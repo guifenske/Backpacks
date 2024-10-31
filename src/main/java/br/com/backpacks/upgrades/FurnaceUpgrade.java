@@ -77,7 +77,7 @@ public class FurnaceUpgrade extends Upgrade {
 
                     block = chunk.getBlock(randomX, randomY, randomZ);
 
-                    if(!block.getType().isAir()) {
+                    if(block.getType().isAir()) {
                         block.setType(Material.FURNACE);
                         return (org.bukkit.block.Furnace) block.getState();
                     }
