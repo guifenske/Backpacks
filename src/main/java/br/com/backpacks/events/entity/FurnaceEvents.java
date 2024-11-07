@@ -2,17 +2,24 @@ package br.com.backpacks.events.entity;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
+import br.com.backpacks.upgrades.FurnaceUpgrade;
+import br.com.backpacks.utils.Upgrade;
+import br.com.backpacks.utils.UpgradeManager;
+import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.RandomBackpackBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockCookEvent;
+import org.bukkit.event.inventory.FurnaceStartSmeltEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-public class FinishedSmelting implements Listener {
+public class FurnaceEvents implements Listener {
 
     @EventHandler
     private void onSmelt(BlockCookEvent event){
@@ -33,5 +40,23 @@ public class FinishedSmelting implements Listener {
         Main.backPackManager.setLastBackpackID(Main.backPackManager.getLastBackpackID() + 1);
 
         event.setResult(driedBackpack);
+    }
+
+    @EventHandler
+    private void onStartSmelt(FurnaceStartSmeltEvent event){
+        for(Upgrade upgrade : UpgradeManager.getUpgradesFromType(UpgradeType.FURNACE)){
+            FurnaceUpgrade furnaceUpgrade = (FurnaceUpgrade) upgrade;
+
+            if(furnaceUpgrade.getFurnace() == null) continue;
+            if(!furnaceUpgrade.getFurnace().getLocation().equals(event.getBlock().getLocation())) continue;
+
+            Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
+                for(Player player : Bukkit.getOnlinePlayers()){
+                    player.sendBlockChange(event.getBlock().getLocation(), Material.AIR.createBlockData());
+                }
+            }, 2L);
+
+            return;
+        }
     }
 }

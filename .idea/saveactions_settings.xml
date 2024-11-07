@@ -8,6 +8,7 @@
         <option value="noActionIfCompileErrors" />
         <option value="organizeImports" />
         <option value="reload" />
+        <option value="missingOverrideAnnotation" />
       </set>
     </option>
     <option name="configurationPath" value="" />

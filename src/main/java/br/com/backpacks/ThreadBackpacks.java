@@ -1,28 +1,18 @@
 package br.com.backpacks;
 
 import br.com.backpacks.backup.BackupHandler;
-import br.com.backpacks.events.upgrades.Furnace;
 import br.com.backpacks.events.upgrades.Magnet;
 import br.com.backpacks.events.upgrades.VillagerBait;
 import br.com.backpacks.storage.StorageManager;
-import br.com.backpacks.upgrades.FurnaceUpgrade;
-import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
-import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.backpacks.BackPackManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
-import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.Recipe;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class ThreadBackpacks {
 

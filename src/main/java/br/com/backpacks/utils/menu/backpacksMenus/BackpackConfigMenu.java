@@ -285,6 +285,15 @@ public class BackpackConfigMenu extends DynamicMenu {
 
                             if(upgrade.getType().equals(UpgradeType.FURNACE)){
                                 Furnace.currentFurnace.put(player.getUniqueId(), ((FurnaceUpgrade) upgrade));
+
+                                Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
+                                    FurnaceUpgrade furnaceUpgrade = (FurnaceUpgrade) upgrade;
+
+                                    for(Player player1 : Bukkit.getOnlinePlayers()){
+                                        player1.sendBlockChange(furnaceUpgrade.getFurnace().getLocation(), Material.AIR.createBlockData());
+                                    }
+
+                                }, 1L);
                             }
                         }, 1L);
 

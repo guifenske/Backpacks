@@ -18,16 +18,12 @@ import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackPackManager;
 import br.com.backpacks.utils.backpacks.BackpackAction;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.block.Barrel;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public final class Main extends JavaPlugin {
@@ -97,7 +93,7 @@ public final class Main extends JavaPlugin {
         //player
         Bukkit.getPluginManager().registerEvents(new CraftBackpack(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new Fishing(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new FinishedSmelting(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new FurnaceEvents(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new InteractOtherPlayerBackpack(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new AnvilRenameBackpack(), Main.getMain());
 

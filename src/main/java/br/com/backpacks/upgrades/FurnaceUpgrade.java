@@ -1,21 +1,11 @@
 package br.com.backpacks.upgrades;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.events.upgrades.Furnace;
 import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeType;
-import net.kyori.adventure.audience.ForwardingAudience;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.entity.*;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.CookingRecipe;
-import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.view.FurnaceView;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -89,7 +79,7 @@ public class FurnaceUpgrade extends Upgrade {
     public Inventory getInventory(){
         if(this.furnace == null){
             this.furnace = createFurnace();
-            Main.debugMessage("Furnace created at " + furnace.getLocation());
+            Main.debugMessage("Virtual furnace created at " + furnace.getLocation());
         }
 
         return furnace.getInventory();

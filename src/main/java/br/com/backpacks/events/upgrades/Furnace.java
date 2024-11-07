@@ -11,7 +11,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.view.FurnaceView;
@@ -23,22 +22,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Furnace implements Listener {
     public static final ConcurrentHashMap<UUID, FurnaceUpgrade> currentFurnace = new ConcurrentHashMap<>();
-
-    @EventHandler
-    private void onBreakFurnace(BlockBreakEvent event){
-        for(Upgrade upgrade : UpgradeManager.getUpgrades().values()){
-            if(!upgrade.getType().equals(UpgradeType.FURNACE)) continue;
-            FurnaceUpgrade furnaceUpgrade = (FurnaceUpgrade) upgrade;
-
-            if(furnaceUpgrade.getFurnace() == null) continue;
-
-            if(event.getBlock().getLocation().equals(furnaceUpgrade.getFurnace().getLocation())){
-                event.setCancelled(true);
-                event.getPlayer().sendMessage(Main.PREFIX + "Hey! It looks like you found the \"virtual furnace\", this block will disappear once it's not used anymore!");
-                return;
-            }
-        }
-    }
 
     @EventHandler
     private void onFurnaceExplode(EntityExplodeEvent event){
