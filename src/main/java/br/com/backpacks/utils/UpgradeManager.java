@@ -24,9 +24,11 @@ public class UpgradeManager {
     public List<Upgrade> getBackpackUpgrades() {
         if(this.backpackUpgrades.isEmpty()) return new ArrayList<>();
         List<Upgrade> upgrades1 = new ArrayList<>();
+
         for (Integer upgrade : backpackUpgrades) {
             upgrades1.add(getUpgradeFromId(upgrade));
         }
+
         return upgrades1;
     }
 
@@ -84,10 +86,6 @@ public class UpgradeManager {
         }
     }
 
-    public void stopTickingUpgrade(int upgradeID){
-        UpgradeManager.getUpgradeFromId(upgradeID).stopTicking();
-    }
-
     private Integer inputUpgrade = -1;
     private Integer outputUpgrade = -1;
 
@@ -106,4 +104,17 @@ public class UpgradeManager {
     public void setOutputUpgrade(int outputUpgrade){
         this.outputUpgrade = outputUpgrade;
     }
+
+    public static List<Upgrade> getUpgradesFromType(UpgradeType type){
+        List<Upgrade> upgrades1 = new ArrayList<>();
+
+        for(Upgrade upgrade : upgrades.values()){
+            if(upgrade.getType().equals(upgrade.getType())){
+                upgrades1.add(upgrade);
+            }
+        }
+
+        return upgrades1;
+    }
+
 }
