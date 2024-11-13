@@ -458,6 +458,10 @@ public final class BackPack extends UpgradeManager {
         return upgradesInputOutputMenu;
     }
 
+    public void forceReloadConfigMenu(){
+        configMenu = new BackpackConfigMenu(54, name + "'s Config Menu", this);
+    }
+
     public Menu getPlayerCurrentMenu(Player player){
         switch (BackpackAction.getAction(player)){
             case UPGMENU -> {

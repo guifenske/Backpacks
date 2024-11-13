@@ -17,28 +17,27 @@ import br.com.backpacks.utils.Constants;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackPackManager;
 import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.utils.scheduler.TickComponent;
+import br.com.backpacks.utils.scheduler.TickManager;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.block.Barrel;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public final class Main extends JavaPlugin {
     private AutoSaveManager autoSaveManager;
     private BackupHandler backupHandler;
-    public static boolean saveComplete = false;
+    public boolean saveComplete = false;
     private static Main main;
-    public static Instant start;
-    public static String PREFIX = "§8[§6BackPacks§8] ";
-    public static final Object lock = new Object();
+    public Instant start;
+    public final String PREFIX = "§8[§6BackPacks§8] ";
+    public final Object lock = new Object();
     public static final BackPackManager backPackManager = new BackPackManager();
+    private final TickManager tickManager = new TickManager();
 
     public static Main getMain() {
         return main;
@@ -60,6 +59,10 @@ public final class Main extends JavaPlugin {
         this.autoSaveManager = autoSaveManager;
     }
 
+    public TickManager getTickManager() {
+        return tickManager;
+    }
+
     @Override
     public void onEnable() {
         main = this;
@@ -68,12 +71,12 @@ public final class Main extends JavaPlugin {
         Constants.VERSION = Bukkit.getServer().getMinecraftVersion();
 
         if(!Constants.SUPPORTED_VERSIONS.contains(Constants.VERSION)){
-            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "§cThis plugin at the moment is only compatible with 1.21.x versions. Current server version: " + Constants.VERSION);
+            Bukkit.getConsoleSender().sendMessage(Main.getMain().PREFIX + "§cThis plugin at the moment is only compatible with 1.21.x versions. Current server version: " + Constants.VERSION);
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
 
-        Main.start = Instant.now();
+        main.start = Instant.now();
 
         Constants.DEBUG_MODE = getConfig().getBoolean("debug");
         Constants.CATCH_BACKPACK = getConfig().getBoolean("fish_backpack");
@@ -91,13 +94,30 @@ public final class Main extends JavaPlugin {
             StorageManager.setProvider(Config.getYamlProvider());
         }
 
-        ThreadBackpacks.loadAll();
+        StorageManager.loadAll();
+
+        tickManager.startAsyncTicking();
+
+        tickManager.addAsyncComponent(new TickComponent(5) {
+            @Override
+            public void tick() {
+                for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
+                    if(backPack.getOwner() != null){
+                        VillagerBait.tick(Bukkit.getPlayer(backPack.getOwner()));
+                        Magnet.tick(Bukkit.getPlayer(backPack.getOwner()));
+                    }   else if(backPack.getLocation() != null){
+                        Magnet.tick(backPack);
+                    }
+                }
+            }
+        }, 0);
+
         UpdateChecker.checkForUpdates();
 
         //player
         Bukkit.getPluginManager().registerEvents(new CraftBackpack(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new Fishing(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new FinishedSmelting(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new FurnaceEvents(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new InteractOtherPlayerBackpack(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new AnvilRenameBackpack(), Main.getMain());
 
@@ -163,13 +183,9 @@ public final class Main extends JavaPlugin {
         Main.getMain().getLogger().info("[Backpacks] Saving backpacks..");
         saveConfig();
 
-        try {
-            ThreadBackpacks.saveAll();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        StorageManager.saveAll(false);
 
-        synchronized (lock) {
+        synchronized (main.lock) {
             while (!saveComplete) {
                 try {
                     lock.wait();

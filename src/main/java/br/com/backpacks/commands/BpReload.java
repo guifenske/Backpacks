@@ -19,7 +19,7 @@ public class BpReload implements CommandExecutor {
         if(args.length > 0) return false;
         if(sender instanceof Player player){
             if(!player.isOp()){
-                player.sendMessage(Main.PREFIX + "§cYou don't have permission to use this command");
+                player.sendMessage(Main.getMain().PREFIX + "§cYou don't have permission to use this command");
                 return true;
             }
         }
@@ -68,7 +68,7 @@ public class BpReload implements CommandExecutor {
             Main.getMain().setAutoSaveManager(autoSaveManager);
         }
 
-        sender.sendMessage(Main.PREFIX + "§aConfig reloaded successfully.");
+        sender.sendMessage(Main.getMain().PREFIX + "§aConfig reloaded successfully.");
 
         return true;
     }

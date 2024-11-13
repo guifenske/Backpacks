@@ -31,10 +31,10 @@ public class BpBackup implements CommandExecutor, TabCompleter {
 
         if(sender instanceof Player player){
             if(!player.isOp()){
-                player.sendMessage(Main.PREFIX + "§cYou don't have permission to use this command");
+                player.sendMessage(Main.getMain().PREFIX + "§cYou don't have permission to use this command");
                 return true;
             }   else if(Main.getMain().getBackupHandler() == null){
-                player.sendMessage(Main.PREFIX + "§cBackup feature is disabled..");
+                player.sendMessage(Main.getMain().PREFIX + "§cBackup feature is disabled..");
                 return true;
             }
         }

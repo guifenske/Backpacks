@@ -34,19 +34,19 @@ public class BpList implements CommandExecutor, Listener {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if(sender instanceof ConsoleCommandSender){
-            sender.sendMessage(Main.PREFIX + "§cThis command can only be used by players.");
+            sender.sendMessage(Main.getMain().PREFIX + "§cThis command can only be used by players.");
             return true;
         }
 
         if(args.length > 0){
-            sender.sendMessage(Main.PREFIX + "§cInvalid arguments, use just /bplist");
+            sender.sendMessage(Main.getMain().PREFIX + "§cInvalid arguments, use just /bplist");
             return true;
         }
 
         Player player = (Player) sender;
 
         if(!player.isOp()){
-            player.sendMessage(Main.PREFIX + "§cYou don't have permission to use this command.");
+            player.sendMessage(Main.getMain().PREFIX + "§cYou don't have permission to use this command.");
             return true;
         }
 
@@ -96,7 +96,7 @@ public class BpList implements CommandExecutor, Listener {
 
         if(event.getRawSlot() == 52){
             if(page.get(player.getUniqueId()) < 1){
-                player.sendMessage(Main.PREFIX + "§cYou are already in the first page.");
+                player.sendMessage(Main.getMain().PREFIX + "§cYou are already in the first page.");
                 return;
             }
 
@@ -111,7 +111,7 @@ public class BpList implements CommandExecutor, Listener {
 
         if(event.getRawSlot() == 53){
             if(page.get(player.getUniqueId()) >= Main.backPackManager.getBackpacks().size() / 52){
-                player.sendMessage(Main.PREFIX + "§cYou are already in the last page.");
+                player.sendMessage(Main.getMain().PREFIX + "§cYou are already in the last page.");
                 return;
             }
 

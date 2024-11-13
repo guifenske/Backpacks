@@ -6,7 +6,6 @@ import br.com.backpacks.upgrades.JukeboxUpgrade;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
-import br.com.backpacks.utils.others.JukeboxUtils;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.*;
 import org.bukkit.Bukkit;
@@ -172,7 +171,7 @@ public class Jukebox implements Listener {
 
 
     public static int durationFromDisc(@NotNull ItemStack disc){
-        switch (JukeboxUtils.Sound.valueOf(disc.getType().name())){
+        switch (disc.getType()){
             case MUSIC_DISC_13, MUSIC_DISC_5 -> {
                 return 178;
             }

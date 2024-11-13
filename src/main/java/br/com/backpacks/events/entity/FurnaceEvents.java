@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-public class FinishedSmelting implements Listener {
+public class FurnaceEvents implements Listener {
 
     @EventHandler
     private void onSmelt(BlockCookEvent event){

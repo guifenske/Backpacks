@@ -24,21 +24,21 @@ public class UpdateChecker {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             latestVersion = parseVersion(response.body());
         } catch (IOException | InterruptedException e) {
-            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Could not find versions for this plugin, aborting update check.");
+            Bukkit.getConsoleSender().sendMessage(Main.getMain().PREFIX + "Could not find versions for this plugin, aborting update check.");
             return;
         }
 
         if (latestVersion == null || latestVersion.equals("null")) {
-            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "Could not find versions for this plugin, aborting update check.");
+            Bukkit.getConsoleSender().sendMessage(Main.getMain().PREFIX + "Could not find versions for this plugin, aborting update check.");
             return;
         }
 
         if (!CURRENT_VERSION.equals(latestVersion)) {
-            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "An update is available! Latest version: " + latestVersion);
+            Bukkit.getConsoleSender().sendMessage(Main.getMain().PREFIX + "An update is available! Latest version: " + latestVersion);
         }
 
         else {
-            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "You are on the latest version: " + latestVersion);
+            Bukkit.getConsoleSender().sendMessage(Main.getMain().PREFIX + "You are on the latest version: " + latestVersion);
         }
     }
 

@@ -6,10 +6,13 @@ import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.utils.scheduler.TickComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
@@ -164,106 +167,121 @@ public final class YamlProvider extends StorageProvider {
                 UpgradeManager.lastUpgradeID = id;
             }
 
-            switch (type){
-                case FURNACE -> {
-                    FurnaceUpgrade upgrade = new FurnaceUpgrade(id);
+            try{
+                switch (type){
+                    case FURNACE -> {
+                        FurnaceUpgrade upgrade = new FurnaceUpgrade(id);
 
-                    if(config.isSet(i + ".furnace.loc")){
-                        Block block = SerializationUtils.deserializeLocationAsList(config.getStringList(i + ".furnace.loc")).getBlock();
+                        if(config.isSet(i + ".furnace.loc")){
+                            Block block = SerializationUtils.deserializeLocationAsList(config.getStringList(i + ".furnace.loc")).getBlock();
 
-                        Furnace furnace = (Furnace) block.getState();
-                        upgrade.setFurnace(furnace);
-                    }
-
-                    UpgradeManager.getUpgrades().put(id, upgrade);
-                }
-                case JUKEBOX -> {
-                    JukeboxUpgrade upgrade = new JukeboxUpgrade(id);
-
-                    if(config.isSet(i + ".jukebox.discs")){
-                        Set<String> keys = config.getConfigurationSection(i + ".jukebox.discs").getKeys(false);
-                        for(String s : keys){
-                            upgrade.getInventory().setItem(Integer.parseInt(s), new ItemStack(Material.getMaterial(config.getString(i + ".jukebox.discs." + s))));
+                            Furnace furnace = (Furnace) block.getState();
+                            upgrade.setFurnace(furnace);
                         }
+
+                        upgrade.setTickComponentId(Main.getMain().getTickManager().addAsyncComponent(new TickComponent(10) {
+                            @Override
+                            public void tick() {
+                                for(Player player : Bukkit.getOnlinePlayers()){
+                                    player.sendBlockChange(upgrade.getFurnace().getLocation(), Material.AIR.createBlockData());
+                                }
+                            }
+                        }, 10).getId());
+
+                        UpgradeManager.getUpgrades().put(id, upgrade);
                     }
 
-                    if(config.isSet(i + ".jukebox.playing")){
-                        upgrade.getInventory().setItem(13, upgrade.getSoundFromName(config.getString(i + ".jukebox.playing")));
-                    }
+                    case JUKEBOX -> {
+                        JukeboxUpgrade upgrade = new JukeboxUpgrade(id);
 
-                    UpgradeManager.getUpgrades().put(id, upgrade);
-                }
-                case COLLECTOR -> {
-                    CollectorUpgrade upgrade = new CollectorUpgrade(id);
-
-                    if(config.isSet(i + ".collector.enabled")){
-                        upgrade.setEnabled(config.getBoolean(i + ".collector.enabled"));
-                    }
-
-                    if(config.isSet(i + ".collector.mode")){
-                        upgrade.setMode(config.getInt(i + ".collector.mode"));
-                    }
-
-                    upgrade.updateInventory();
-                    UpgradeManager.getUpgrades().put(id, upgrade);
-                }
-
-                case VILLAGER_BAIT -> {
-                    VillagerBaitUpgrade upgrade = new VillagerBaitUpgrade(id);
-
-                    if (config.isSet(i + ".villager.enabled")) {
-                        upgrade.setEnabled(config.getBoolean(i + ".villager.enabled"));
-                    }
-
-                    upgrade.updateInventory();
-                    UpgradeManager.getUpgrades().put(id, upgrade);
-                }
-
-                case AUTOFEED -> {
-                    AutoFeedUpgrade upgrade = new AutoFeedUpgrade(id);
-
-                    if(config.isSet(i + ".autofeed.enabled")){
-                        upgrade.setEnabled(config.getBoolean(i + ".autofeed.enabled"));
-                    }
-
-                    upgrade.updateInventory();
-                    UpgradeManager.getUpgrades().put(id, upgrade);
-                }
-
-                case LIQUID_TANK -> {
-                    TanksUpgrade upgrade = new TanksUpgrade(id);
-                    if(config.isSet(i + ".tank1")){
-                        Set<String> keys = config.getConfigurationSection(i + ".tank1").getKeys(false);
-                        for(String s : keys){
-                            upgrade.getInventory().setItem(Integer.parseInt(s), config.getItemStack(i + ".tank1." + s));
+                        if(config.isSet(i + ".jukebox.discs")){
+                            Set<String> keys = config.getConfigurationSection(i + ".jukebox.discs").getKeys(false);
+                            for(String s : keys){
+                                upgrade.getInventory().setItem(Integer.parseInt(s), new ItemStack(Material.getMaterial(config.getString(i + ".jukebox.discs." + s))));
+                            }
                         }
-                    }
 
-                    if(config.isSet(i + ".tank2")){
-                        Set<String> keys = config.getConfigurationSection(i + ".tank2").getKeys(false);
-                        for(String s : keys){
-                            upgrade.getInventory().setItem(Integer.parseInt(s), config.getItemStack(i + ".tank2." + s));
+                        if(config.isSet(i + ".jukebox.playing")){
+                            upgrade.getInventory().setItem(13, upgrade.getSoundFromName(config.getString(i + ".jukebox.playing")));
                         }
+
+                        UpgradeManager.getUpgrades().put(id, upgrade);
                     }
 
-                    if(config.isSet(i + ".12")){
-                        upgrade.getInventory().setItem(12, config.getItemStack(i + ".12"));
+                    case COLLECTOR -> {
+                        CollectorUpgrade upgrade = new CollectorUpgrade(id);
+
+                        if(config.isSet(i + ".collector.enabled")){
+                            upgrade.setEnabled(config.getBoolean(i + ".collector.enabled"));
+                        }
+
+                        if(config.isSet(i + ".collector.mode")){
+                            upgrade.setMode(config.getInt(i + ".collector.mode"));
+                        }
+
+                        upgrade.updateInventory();
+                        UpgradeManager.getUpgrades().put(id, upgrade);
                     }
 
-                    if(config.isSet(i + ".14")){
-                        upgrade.getInventory().setItem(14, config.getItemStack(i + ".14"));
+                    case VILLAGER_BAIT -> {
+                        VillagerBaitUpgrade upgrade = new VillagerBaitUpgrade(id);
+
+                        if (config.isSet(i + ".villager.enabled")) {
+                            upgrade.setEnabled(config.getBoolean(i + ".villager.enabled"));
+                        }
+
+                        upgrade.updateInventory();
+                        UpgradeManager.getUpgrades().put(id, upgrade);
                     }
 
-                    UpgradeManager.getUpgrades().put(id, upgrade);
+                    case AUTOFEED -> {
+                        AutoFeedUpgrade upgrade = new AutoFeedUpgrade(id);
+
+                        if(config.isSet(i + ".autofeed.enabled")){
+                            upgrade.setEnabled(config.getBoolean(i + ".autofeed.enabled"));
+                        }
+
+                        upgrade.updateInventory();
+                        UpgradeManager.getUpgrades().put(id, upgrade);
+                    }
+
+                    case LIQUID_TANK -> {
+                        TanksUpgrade upgrade = new TanksUpgrade(id);
+                        if(config.isSet(i + ".tank1")){
+                            Set<String> keys = config.getConfigurationSection(i + ".tank1").getKeys(false);
+                            for(String s : keys){
+                                upgrade.getInventory().setItem(Integer.parseInt(s), config.getItemStack(i + ".tank1." + s));
+                            }
+                        }
+
+                        if(config.isSet(i + ".tank2")){
+                            Set<String> keys = config.getConfigurationSection(i + ".tank2").getKeys(false);
+                            for(String s : keys){
+                                upgrade.getInventory().setItem(Integer.parseInt(s), config.getItemStack(i + ".tank2." + s));
+                            }
+                        }
+
+                        if(config.isSet(i + ".12")){
+                            upgrade.getInventory().setItem(12, config.getItemStack(i + ".12"));
+                        }
+
+                        if(config.isSet(i + ".14")){
+                            upgrade.getInventory().setItem(14, config.getItemStack(i + ".14"));
+                        }
+
+                        UpgradeManager.getUpgrades().put(id, upgrade);
+                    }
+
+                    default -> {
+                        Upgrade upgrade = new Upgrade(type, id);
+                        UpgradeManager.getUpgrades().put(id, upgrade);
+                    }
                 }
 
-                default -> {
-                    Upgrade upgrade = new Upgrade(type, id);
-                    UpgradeManager.getUpgrades().put(id, upgrade);
-                }
+                Main.debugMessage("Loading " + type.getName() + " upgrade: " + i);
+            }   catch (Exception ignored){
+
             }
-
-            Main.debugMessage("Loading " + type.getName() + " upgrade: " + i);
 
         }
     }

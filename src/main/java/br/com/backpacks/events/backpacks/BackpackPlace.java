@@ -22,7 +22,7 @@ public class  BackpackPlace implements Listener {
 
         if (!itemData.has(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER)) {
             if (itemData.has(BackpackRecipes.NAMESPACE_WET_BACKPACK, PersistentDataType.INTEGER)) {
-                event.getPlayer().sendMessage(Main.PREFIX + "§cHumm, this thing is to wet to be used as a backpack.");
+                event.getPlayer().sendMessage(Main.getMain().PREFIX + "§cHumm, this thing is to wet to be used as a backpack.");
                 event.setCancelled(true);
             }
             return;
@@ -38,6 +38,7 @@ public class  BackpackPlace implements Listener {
 
         //enforce removal of the item from the player's inventory
         //for some reason, Inventory.remove() doesn't remove from offHand slot.
+
         //TODO: cleanup logic
         if(event.getPlayer().getInventory().getItemInOffHand().hasItemMeta() && event.getPlayer().getInventory().getItemInOffHand().getType().equals(Material.BARREL)){
 
@@ -59,8 +60,6 @@ public class  BackpackPlace implements Listener {
 
         //we need to do this to trigger the hopper event
         backPack.updateBarrelBlock();
-
-       // InventoryBuilder.updateConfigInv(backPack);
 
         backPack.getConfigMenu().refreshMenu();
 

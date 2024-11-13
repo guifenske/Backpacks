@@ -23,7 +23,7 @@ public class MenuListener implements Listener {
 
         Menu menu = backPack.getPlayerCurrentMenu(player);
         if(menu == null){
-            //maybe cancel the event when the process of migrating the upgrades inventories to menus is completed
+            //may cancel the event when the process of migrating the upgrades inventories to menus is completed
             return;
         }
 

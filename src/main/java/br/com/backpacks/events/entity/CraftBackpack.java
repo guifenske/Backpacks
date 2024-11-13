@@ -18,8 +18,8 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class CraftBackpack implements Listener {
 
-    private static final String DONTHAVEBACKPACKMSG =  Main.PREFIX + "§cIt looks that you don't have a backpack to upgrade in the recipe!";
-    private static final String NOTCORRECTTYPE =  Main.PREFIX + "§cYou don't have the correct type of backpack to upgrade!";
+    private static final String DONTHAVEBACKPACKMSG =  Main.getMain().PREFIX + "§cIt looks that you don't have a backpack to upgrade in the recipe!";
+    private static final String NOTCORRECTTYPE =  Main.getMain().PREFIX + "§cYou don't have the correct type of backpack to upgrade!";
 
     @EventHandler
     private static void craftBackpackEvent(CraftItemEvent event){

@@ -22,7 +22,7 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if(args.length > 2 || args.length < 1){
-            sender.sendMessage(Main.PREFIX + "Please use: /bpupgive <UpgradeType> <Player> or /bpupgive <UpgradeType>");
+            sender.sendMessage(Main.getMain().PREFIX + "Please use: /bpupgive <UpgradeType> <Player> or /bpupgive <UpgradeType>");
             return true;
         }
 
@@ -30,12 +30,12 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
         try{
             type = UpgradeType.valueOf(args[0]);
         }   catch (IllegalArgumentException e){
-            sender.sendMessage(Main.PREFIX + args[0] + " isn't a valid UpgradeType!");
+            sender.sendMessage(Main.getMain().PREFIX + args[0] + " isn't a valid UpgradeType!");
             return true;
         }
 
         if(!sender.isOp()){
-            sender.sendMessage(Main.PREFIX + "You aren't a operator!");
+            sender.sendMessage(Main.getMain().PREFIX + "You aren't a operator!");
             return true;
         }
 
@@ -66,7 +66,7 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
             }
 
             case AUTOFILL -> {
-                sender.sendMessage(Main.PREFIX + args[0] + " isn't a valid UpgradeType!");
+                sender.sendMessage(Main.getMain().PREFIX + args[0] + " isn't a valid UpgradeType!");
                 return true;
             }
 
@@ -79,14 +79,14 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
 
         if(args.length == 1){
             if(sender instanceof ConsoleCommandSender){
-                sender.sendMessage(Main.PREFIX + "This command can only be executed as a player, please use: /bpupgive <UpgradeType> <Player>");
+                sender.sendMessage(Main.getMain().PREFIX + "This command can only be executed as a player, please use: /bpupgive <UpgradeType> <Player>");
                 return true;
             }
 
             Player player = (Player) sender;
 
             if(!player.getInventory().addItem(upgradeItem).isEmpty()){
-                player.sendMessage(Main.PREFIX + "Your inventory is full!");
+                player.sendMessage(Main.getMain().PREFIX + "Your inventory is full!");
                 return true;
             }
             UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
@@ -97,12 +97,12 @@ public class BpUpGive implements CommandExecutor, TabCompleter {
 
         Player player = Bukkit.getPlayer(args[1]);
         if(player == null){
-            sender.sendMessage(Main.PREFIX + "Invalid Player!");
+            sender.sendMessage(Main.getMain().PREFIX + "Invalid Player!");
             return true;
         }
 
         if(!player.getInventory().addItem(upgradeItem).isEmpty()){
-            sender.sendMessage(Main.PREFIX + "The player inventory is full!");
+            sender.sendMessage(Main.getMain().PREFIX + "The player inventory is full!");
             return true;
         }
 

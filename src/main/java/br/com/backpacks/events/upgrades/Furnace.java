@@ -34,7 +34,7 @@ public class Furnace implements Listener {
 
             if(event.getBlock().getLocation().equals(furnaceUpgrade.getFurnace().getLocation())){
                 event.setCancelled(true);
-                event.getPlayer().sendMessage(Main.PREFIX + "Hey! It looks like you found the \"virtual furnace\", this block will disappear once it's not used anymore!");
+                event.getPlayer().sendMessage(Main.getMain().PREFIX + "Hey! It looks like you found the \"virtual furnace\", this block will disappear once it's not used anymore!");
                 return;
             }
         }

@@ -20,13 +20,13 @@ public class BpGive implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if(args.length != 2){
-            sender.sendMessage(Main.PREFIX + "§cUsage: /bpgive <player> <backpackType>");
+            sender.sendMessage(Main.getMain().PREFIX + "§cUsage: /bpgive <player> <backpackType>");
             return true;
         }
 
         if(sender instanceof Player player){
             if(!player.isOp()){
-                player.sendMessage(Main.PREFIX + "§cYou don't have permission to use this command");
+                player.sendMessage(Main.getMain().PREFIX + "§cYou don't have permission to use this command");
                 return true;
             }
         }
@@ -34,12 +34,12 @@ public class BpGive implements CommandExecutor, TabCompleter {
         Player target = Bukkit.getPlayerExact(args[0]);
 
         if(target == null){
-            sender.sendMessage(Main.PREFIX + "§cPlayer not found!");
+            sender.sendMessage(Main.getMain().PREFIX + "§cPlayer not found!");
             return true;
         }
 
         if(!target.isOnline()){
-            sender.sendMessage(Main.PREFIX + "§cPlayer is not online!");
+            sender.sendMessage(Main.getMain().PREFIX + "§cPlayer is not online!");
             return true;
         }
 
@@ -49,7 +49,7 @@ public class BpGive implements CommandExecutor, TabCompleter {
             BackpackType backpackType = BackpackType.valueOf(args[1]);
             backPack = new BackPack(backpackType, Main.backPackManager.getLastBackpackID() + 1);
         }   catch (IllegalArgumentException e){
-            sender.sendMessage(Main.PREFIX + "§cBackpack type not found!");
+            sender.sendMessage(Main.getMain().PREFIX + "§cBackpack type not found!");
             return true;
         }
 
@@ -57,13 +57,13 @@ public class BpGive implements CommandExecutor, TabCompleter {
         Main.backPackManager.setLastBackpackID(Main.backPackManager.getLastBackpackID() + 1);
 
         if(!target.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack)).isEmpty()){
-            sender.sendMessage(Main.PREFIX + "§cPlayer inventory is full! Dropped item on the ground.");
+            sender.sendMessage(Main.getMain().PREFIX + "§cPlayer inventory is full! Dropped item on the ground.");
             target.getWorld().dropItem(target.getLocation(), RecipesUtils.getItemFromBackpack(backPack));
             return true;
         }
 
-        sender.sendMessage(Main.PREFIX + "§aBackpack given to " + target.getName());
-        target.sendMessage(Main.PREFIX + "§aYou received a backpack from " + sender.getName());
+        sender.sendMessage(Main.getMain().PREFIX + "§aBackpack given to " + target.getName());
+        target.sendMessage(Main.getMain().PREFIX + "§aYou received a backpack from " + sender.getName());
         return true;
     }
 

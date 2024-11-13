@@ -54,7 +54,7 @@ public class EntityDeathEvent implements Listener {
         Main.backPackManager.getBackpacksPlacedLocations().put(backpack.getLocation(), backpack.getId());
         player.getPersistentDataContainer().remove(BackpackRecipes.HAS_BACKPACK);
 
-        player.sendMessage(Main.PREFIX + "§cYou died and your backpack was placed on: " + backpack.getLocation().getX() + ", " + backpack.getLocation().getY() + ", " + backpack.getLocation().getZ());
+        player.sendMessage(Main.getMain().PREFIX + "§cYou died and your backpack was placed on: " + backpack.getLocation().getX() + ", " + backpack.getLocation().getY() + ", " + backpack.getLocation().getZ());
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -15,40 +15,40 @@ public class BpUpgBackpack implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if(args.length > 0){
-            sender.sendMessage(Main.PREFIX + "Please just use: /bpupgbackpack");
+            sender.sendMessage(Main.getMain().PREFIX + "Please just use: /bpupgbackpack");
             return true;
         }
         if(!(sender instanceof Player player)){
-            Bukkit.getConsoleSender().sendMessage(Main.PREFIX + "This command can only be executed by players!");
+            Bukkit.getConsoleSender().sendMessage(Main.getMain().PREFIX + "This command can only be executed by players!");
             return true;
         }
 
         if(!player.isOp()){
-            player.sendMessage(Main.PREFIX + "§cYou don't have permission to use this command");
+            player.sendMessage(Main.getMain().PREFIX + "§cYou don't have permission to use this command");
             return true;
         }
 
         ItemStack itemStack = player.getInventory().getItemInMainHand();
 
         if(itemStack.getType().isAir()){
-            player.sendMessage(Main.PREFIX + "Item in main hand is null, please use when holding a backpack");
+            player.sendMessage(Main.getMain().PREFIX + "Item in main hand is null, please use when holding a backpack");
             return true;
         }
 
         if(!itemStack.hasItemMeta()){
-            player.sendMessage(Main.PREFIX + "Item in main hand isn't a backpack");
+            player.sendMessage(Main.getMain().PREFIX + "Item in main hand isn't a backpack");
             return true;
         }
 
         BackPack backPack = RecipesUtils.getBackpackFromItem(player.getInventory().getItemInMainHand());
 
         if(backPack == null){
-            player.sendMessage(Main.PREFIX + "Item in main hand isn't a backpack");
+            player.sendMessage(Main.getMain().PREFIX + "Item in main hand isn't a backpack");
             return true;
         }
 
         Main.backPackManager.upgradeBackpack(backPack);
-        player.sendMessage(Main.PREFIX + "Backpack upgraded successfully!");
+        player.sendMessage(Main.getMain().PREFIX + "Backpack upgraded successfully!");
 
         player.playSound(player, org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         return true;

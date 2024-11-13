@@ -28,15 +28,17 @@ public class BackpackInteract implements Listener {
             return;
         }
 
-        if(event.getAction().equals(RIGHT_CLICK_BLOCK) && (event.getClickedBlock().getType().equals(Material.BARREL))){
+        if(event.getAction().equals(RIGHT_CLICK_BLOCK) && event.getClickedBlock().getType().equals(Material.BARREL)){
             if(Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
 
             event.setCancelled(true);
             if(Main.backPackManager.canOpen()){
                 BackPack backPack = Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation());
                 backPack.open(player);
+
                 Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
                 barrel.open();
+
                 backPack.setIsBlock(true);
                 player.getWorld().playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
             }
@@ -44,9 +46,10 @@ public class BackpackInteract implements Listener {
         }
 
         if(event.getItem() == null) return;
+
         if(!event.getItem().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER)){
             if(event.getItem().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.NAMESPACE_WET_BACKPACK, PersistentDataType.INTEGER)){
-                event.getPlayer().sendMessage(Main.PREFIX + "§cHumm, this thing is too wet to be used as a backpack.");
+                event.getPlayer().sendMessage(Main.getMain().PREFIX + "§cHumm, this thing is too wet to be used as a backpack.");
                 event.setCancelled(true);
             }
             return;

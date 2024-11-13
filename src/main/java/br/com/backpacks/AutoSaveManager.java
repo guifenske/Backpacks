@@ -1,6 +1,7 @@
 package br.com.backpacks;
 
 import br.com.backpacks.storage.StorageManager;
+import br.com.backpacks.utils.scheduler.TickComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -8,12 +9,9 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class AutoSaveManager {
-    private BukkitTask task;
+    private int tickComponentId = 0;
     private TimeUnit type;
     private int interval;
-
-    public AutoSaveManager(){
-    }
 
     public TimeUnit getType() {
         return type;
@@ -43,19 +41,17 @@ public class AutoSaveManager {
             case HOURS -> time = interval * 20 * 60 * 60;
         }
 
-        this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getMain(), ()->{
-            try {
-                StorageManager.getProvider().saveUpgrades();
-                StorageManager.getProvider().saveBackpacks();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        tickComponentId = Main.getMain().getTickManager().addAsyncComponent(new TickComponent(time) {
+            @Override
+            public void tick() {
+                StorageManager.saveAll(false);
             }
-        }, time, time);
+        }, time).getId();
     }
 
     public void cancel(){
-        if(task != null){
-            task.cancel();
+        if(tickComponentId != 0){
+            Main.getMain().getTickManager().removeComponentFromQueue(tickComponentId);
         }
     }
 }

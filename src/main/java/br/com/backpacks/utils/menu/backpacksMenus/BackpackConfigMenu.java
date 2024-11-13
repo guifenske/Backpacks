@@ -232,7 +232,7 @@ public class BackpackConfigMenu extends DynamicMenu {
                 BackpackAction.clearPlayerAction(player);
                 BackpackAction.setAction(player, BackpackAction.Action.RENAMING);
 
-                player.sendMessage(Main.PREFIX + "§eType the new name of the backpack");
+                player.sendMessage(Main.getMain().PREFIX + "§eType the new name of the backpack");
                 player.closeInventory();
             }
         });

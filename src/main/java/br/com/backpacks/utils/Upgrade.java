@@ -10,6 +10,7 @@ import java.util.List;
 public class Upgrade {
     private final UpgradeType type;
     private final int id;
+
     public Upgrade(UpgradeType type, int id) {
         this.type = type;
         this.id = id;
@@ -29,8 +30,11 @@ public class Upgrade {
     }
 
     public boolean isAdvanced(){return false;}
+
     public List<Integer> inputSlots(){return null;}
+
     public List<Integer> outputSlots(){return null;}
+
     public ItemStack tryAddItem(@NotNull List<Integer> slots, @NotNull ItemStack itemStack){
         Inventory inventory = getInventory();
         int amount = itemStack.getAmount();
@@ -48,7 +52,9 @@ public class Upgrade {
             if(inventory.getItem(i).isSimilar(itemStack1) && inventory.getItem(i).getAmount() + amount <= itemStack1.getMaxStackSize()){
                 inventory.getItem(i).setAmount(amount + inventory.getItem(i).getAmount());
                 return null;
-            }   else if(inventory.getItem(i).isSimilar(itemStack1) && inventory.getItem(i).getAmount() + amount > itemStack1.getMaxStackSize()){
+            }
+
+            else if(inventory.getItem(i).isSimilar(itemStack1) && inventory.getItem(i).getAmount() + amount > itemStack1.getMaxStackSize()){
                 amount = (inventory.getItem(i).getAmount() + amount) - itemStack1.getMaxStackSize();
                 inventory.getItem(i).setAmount(itemStack1.getMaxStackSize());
             }
@@ -69,5 +75,6 @@ public class Upgrade {
     }
 
     public boolean canReceiveSpecificItemAsInput(@NotNull ItemStack itemStack){return false;}
+
     public void stopTicking(){};
 }
