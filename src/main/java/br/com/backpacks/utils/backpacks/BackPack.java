@@ -3,7 +3,9 @@ package br.com.backpacks.utils.backpacks;
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.storage.SerializationUtils;
+import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.UpgradeManager;
+import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.menu.*;
 import br.com.backpacks.utils.menu.backpacksMenus.BackpackConfigMenu;
 import br.com.backpacks.utils.menu.backpacksMenus.UpgradesInputOutputMenu;
@@ -21,7 +23,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
-public final class BackPack extends UpgradeManager {
+public final class BackPack {
     private int id;
     private Inventory firstPage;
     private int firstPageSize;
@@ -30,8 +32,7 @@ public final class BackPack extends UpgradeManager {
     private Location location;
     private boolean locked;
     private Inventory secondPage;
-    private Boolean isBlock = false;
-    private final Set<UUID> viewersIds = new HashSet<>();
+    private boolean isBlock = false;
     private UUID owner;
     private boolean showNameAbove = false;
     private UUID marker;
@@ -39,12 +40,17 @@ public final class BackPack extends UpgradeManager {
     private BackpackConfigMenu configMenu;
     private UpgradesMenu upgradesMenu;
     private UpgradesInputOutputMenu upgradesInputOutputMenu;
+    private Integer inputUpgrade = -1;
+    private Integer outputUpgrade = -1;
+    private final Set<UUID> viewersIds = new HashSet<>();
+    private final List<Integer> backpackUpgrades = new ArrayList<>();
 
     public BackPack(BackpackType type, int id) {
         this.backpackType = type;
         this.id = id;
         this.name = type.getName();
         updateSizeOfPages();
+
         firstPage = Bukkit.createInventory(null, firstPageSize, name);
 
         if(secondPageSize > 0){
@@ -268,41 +274,22 @@ public final class BackPack extends UpgradeManager {
     }
 
     private void updateSizeOfPages(){
-        switch (getType()){
-            case LEATHER -> firstPageSize = 18;
-
-            case IRON -> firstPageSize = 27;
-
-            case GOLD -> firstPageSize = 36;
-
-            case LAPIS -> firstPageSize = 45;
-
-            case AMETHYST -> firstPageSize = 54;
-
-            case DIAMOND ->{
-                firstPageSize = 54;
-                secondPageSize = 27;
-            }
-
-            case NETHERITE ->{
-                firstPageSize = 54;
-                secondPageSize = 54;
-            }
-        }
+        firstPageSize = getType().getFirstPageSize();
+        secondPageSize = getType().getSecondPageSize();
     }
 
     public void open(Player player){
         getViewersIds().add(player.getUniqueId());
-        Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 1);
-        Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
+        Main.backPackManager.setPlayerCurrentPage(player, 1);
+        Main.backPackManager.setPlayerCurrentBackpack(player, this);
         player.openInventory(firstPage);
         BackpackAction.setAction(player, BackpackAction.Action.OPENED);
     }
 
     public void openSecondPage(Player player){
         getViewersIds().add(player.getUniqueId());
-        Main.backPackManager.getCurrentPage().put(player.getUniqueId(), 2);
-        Main.backPackManager.getCurrentBackpackId().put(player.getUniqueId(), id);
+        Main.backPackManager.setPlayerCurrentPage(player, 2);
+        Main.backPackManager.setPlayerCurrentBackpack(player, this);
         player.openInventory(secondPage);
         BackpackAction.setAction(player, BackpackAction.Action.OPENED);
     }
@@ -482,6 +469,69 @@ public final class BackPack extends UpgradeManager {
         }
 
         return null;
+    }
+
+    public List<Integer> getUpgradesIds() {
+        return backpackUpgrades;
+    }
+
+    public List<Upgrade> getBackpackUpgrades() {
+        if(this.backpackUpgrades.isEmpty()) return new ArrayList<>();
+        List<Upgrade> upgrades1 = new ArrayList<>();
+
+        for (Integer upgradeId : backpackUpgrades) {
+            upgrades1.add(UpgradeManager.getUpgradeFromId(upgradeId));
+        }
+
+        return upgrades1;
+    }
+
+    public void setUpgradesIds(List<Integer> list){
+        this.backpackUpgrades.clear();
+        this.backpackUpgrades.addAll(list);
+    }
+
+    public Boolean containsUpgradeType(UpgradeType upgradeType) {
+        for(Upgrade upgrade1 : getBackpackUpgrades()) {
+            if(upgrade1.getType() == upgradeType) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Upgrade getFirstUpgradeFromType(UpgradeType type){
+        for(Upgrade upgrade : getBackpackUpgrades()) {
+
+            if(upgrade.getType() == type) {
+                return upgrade;
+            }
+
+        }
+
+        return null;
+    }
+
+    public void stopTickingAllUpgrades(){
+        for(Upgrade upgrade : getBackpackUpgrades()){
+            upgrade.stopTicking();
+        }
+    }
+
+    public Integer getInputUpgrade() {
+        return inputUpgrade;
+    }
+
+    public Integer getOutputUpgrade() {
+        return outputUpgrade;
+    }
+
+    public void setInputUpgrade(int inputUpgrade){
+        this.inputUpgrade = inputUpgrade;
+    }
+
+    public void setOutputUpgrade(int outputUpgrade){
+        this.outputUpgrade = outputUpgrade;
     }
 
 }

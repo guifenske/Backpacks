@@ -48,8 +48,11 @@ public class VillagerBait implements Listener {
         if (!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGVILLAGERBAIT)) {
             return;
         }
+
+        Player player = (Player) event.getWhoClicked();
+
         event.setCancelled(true);
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getWhoClicked().getUniqueId()));
+        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(player);
         VillagerBaitUpgrade upgrade = (VillagerBaitUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.VILLAGER_BAIT);
 
         if (event.getRawSlot() == 13) {
@@ -63,7 +66,11 @@ public class VillagerBait implements Listener {
         if (!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGVILLAGERBAIT)) {
             return;
         }
-        BackPack backPack = Main.backPackManager.getBackpackFromId(Main.backPackManager.getCurrentBackpackId().get(event.getPlayer().getUniqueId()));
+
+        Player player = (Player) event.getPlayer();
+
+        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(player);
+
         BackpackAction.clearPlayerAction(event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
@@ -76,7 +83,7 @@ public class VillagerBait implements Listener {
     private static void moveToPlayer(Mob mob, Player player) {
         Bukkit.getScheduler().runTask(Main.getMain(), () ->{
             mob.setTarget(player);
-            mob.getPathfinder().moveTo(player, 1.5);
+            mob.getPathfinder().moveTo(player, 0.5);
         });
     }
 

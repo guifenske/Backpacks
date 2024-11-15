@@ -87,7 +87,7 @@ public class CraftBackpack implements Listener {
             player.discoverRecipe(BackpackRecipes.NAMESPACE_IRON_BACKPACK);
             player.discoverRecipe(UpgradesRecipes.CRAFTING_GRID);
 
-            BackPack backPack =  new BackPack("Leather Backpack", Bukkit.createInventory(null, 18, "Leather Backpack"), id, BackpackType.LEATHER);
+            BackPack backPack =  new BackPack(BackpackType.LEATHER, id);
             updateResult(event, id);
 
             Main.backPackManager.getBackpacks().put(id, backPack);

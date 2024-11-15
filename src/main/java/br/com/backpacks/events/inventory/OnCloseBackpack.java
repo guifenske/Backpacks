@@ -6,11 +6,11 @@ import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
 import org.bukkit.block.Barrel;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 
 public class OnCloseBackpack implements Listener {
 
@@ -18,6 +18,8 @@ public class OnCloseBackpack implements Listener {
     private void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.OPENED)) return;
         BackpackAction.clearPlayerAction(event.getPlayer());
+
+        Player player = (Player) event.getPlayer();
 
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
         shouldRemoveBackpack(event, backPack);
@@ -30,8 +32,8 @@ public class OnCloseBackpack implements Listener {
             }
         }
 
-        Main.backPackManager.getCurrentPage().remove(event.getPlayer().getUniqueId());
-        Main.backPackManager.getCurrentBackpackId().remove(event.getPlayer().getUniqueId());
+        Main.backPackManager.clearPlayerCurrentPage(player);
+        Main.backPackManager.clearPlayerCurrentBackpack(player);
     }
 
     private void shouldRemoveBackpack(InventoryCloseEvent event, BackPack backPack) {

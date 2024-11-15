@@ -22,7 +22,9 @@ public class OnClickBackpack implements Listener {
         if(event.getRawSlot() == event.getInventory().getSize() - 1){
             event.setCancelled(true);
             BackpackAction.clearPlayerAction(player);
-            Main.backPackManager.getCurrentPage().remove(player.getUniqueId());
+
+            Main.backPackManager.clearPlayerCurrentPage(player);
+
             backPack.getConfigMenu().displayTo(player);
             Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> BackpackAction.setAction(player, BackpackAction.Action.CONFIGMENU), 1L);
         }
@@ -31,12 +33,13 @@ public class OnClickBackpack implements Listener {
             if(backPack.getSecondPageSize() == 0) return;
             event.setCancelled(true);
 
-            switch (Main.backPackManager.getCurrentPage().get(player.getUniqueId())) {
+            switch (Main.backPackManager.getPlayerCurrentPage(player)) {
                 case 1 ->{
                     BackpackAction.clearPlayerAction(player);
                     backPack.openSecondPage(player);
                     event.setCancelled(true);
                 }
+
                 case 2 -> {
                     BackpackAction.clearPlayerAction(player);
                     backPack.open(player);

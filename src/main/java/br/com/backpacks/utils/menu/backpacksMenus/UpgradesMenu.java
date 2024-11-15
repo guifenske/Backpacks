@@ -55,7 +55,6 @@ public class UpgradesMenu extends DynamicMenu {
 
     @Override
     public void onClose(Player player, BackPack backPack) {
-        List<Upgrade> newUpgrades = new ArrayList<>();
         List<Integer> newUpgradesIds = new ArrayList<>();
 
         for(int i = 0; i < backPack.getType().getMaxUpgrades(); i++){
@@ -71,7 +70,9 @@ public class UpgradesMenu extends DynamicMenu {
                 if(!UpgradeManager.canUpgradeStack(upgrade)){
                     boolean shouldSkip = false;
 
-                    for(Upgrade upgrade1 : newUpgrades){
+                    for(int id : newUpgradesIds){
+                        Upgrade upgrade1 = UpgradeManager.getUpgradeFromId(id);
+
                         if(upgrade1.getType() == upgrade.getType()){
                             inventory.remove(item);
                             player.getInventory().addItem(item);
@@ -94,7 +95,6 @@ public class UpgradesMenu extends DynamicMenu {
                     inventory.setItem(i, playerItems);
                 }
 
-                newUpgrades.add(upgrade);
                 newUpgradesIds.add(upgrade.getId());
             }
 
@@ -106,7 +106,7 @@ public class UpgradesMenu extends DynamicMenu {
 
         //stop ticking upgrades when not in the backpack
         if(!backPack.getBackpackUpgrades().isEmpty()){
-            if(newUpgrades.isEmpty()){
+            if(newUpgradesIds.isEmpty()){
                 backPack.stopTickingAllUpgrades();
             }
 
@@ -120,10 +120,11 @@ public class UpgradesMenu extends DynamicMenu {
             }
         }
 
-        backPack.setBackpackUpgrades(newUpgrades);
+        backPack.setUpgradesIds(newUpgradesIds);
         backPack.getConfigMenu().addUpgradesInView();
 
         backpack.getUpgradesInputOutputMenu().getEditInputOutputMenu().refreshMenu();
+
         BackpackAction.clearPlayerAction(player);
          BukkitTask task = new BukkitRunnable() {
             @Override

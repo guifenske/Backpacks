@@ -38,7 +38,7 @@ public class RandomBackpackBuilder {
             backPack.setIsBlock(false);
 
             if(shouldGenerateUpgrades()){
-                backPack.setBackpackUpgrades(generateUpgrades());
+                backPack.setUpgradesIds(generateUpgrades());
             }
 
             Main.backPackManager.getBackpacks().put(id, backPack);
@@ -49,7 +49,7 @@ public class RandomBackpackBuilder {
         backPack.setIsBlock(false);
 
         if(shouldGenerateUpgrades()){
-            backPack.setBackpackUpgrades(generateUpgrades());
+            backPack.setUpgradesIds(generateUpgrades());
         }
 
         Main.backPackManager.getBackpacks().put(id, backPack);
@@ -111,10 +111,11 @@ public class RandomBackpackBuilder {
         return booleans.get(index);
     }
 
-    private List<Upgrade> generateUpgrades(){
+    private List<Integer> generateUpgrades(){
         List<UpgradeType> types = List.of(UpgradeType.values());
         int bound = type.getMaxUpgrades();
-        List<Upgrade> upgrades = new ArrayList<>();
+
+        List<Integer> upgradesIds = new ArrayList<>();
 
         for(int i = 1; i <= bound; i++){
 
@@ -126,55 +127,43 @@ public class RandomBackpackBuilder {
                     case JUKEBOX ->{
                         JukeboxUpgrade upgrade = new JukeboxUpgrade(UpgradeManager.lastUpgradeID + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
-                        upgrades.add(upgrade);
+                        upgradesIds.add(upgrade.getId());
                     }
 
                     case FURNACE ->  {
                         FurnaceUpgrade upgrade = new FurnaceUpgrade(UpgradeManager.lastUpgradeID + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
-                        upgrades.add(upgrade);
+                        upgradesIds.add(upgrade.getId());
                     }
 
                     case AUTOFEED ->  {
                         AutoFeedUpgrade upgrade = new AutoFeedUpgrade(UpgradeManager.lastUpgradeID + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
-                        upgrades.add(upgrade);
+                        upgradesIds.add(upgrade.getId());
                     }
 
                     case COLLECTOR ->  {
                         CollectorUpgrade upgrade = new CollectorUpgrade(UpgradeManager.lastUpgradeID + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
-                        upgrades.add(upgrade);
+                        upgradesIds.add(upgrade.getId());
                     }
 
                     case LIQUID_TANK ->  {
                         TanksUpgrade upgrade = new TanksUpgrade(UpgradeManager.lastUpgradeID + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
-                        upgrades.add(upgrade);
-                    }
-
-                    case ENCAPSULATE ->  {
-                        Upgrade upgrade = new Upgrade(UpgradeType.ENCAPSULATE, UpgradeManager.lastUpgradeID + 1);
-                        UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
-                        upgrades.add(upgrade);
+                        upgradesIds.add(upgrade.getId());
                     }
 
                     case VILLAGER_BAIT ->  {
                         VillagerBaitUpgrade upgrade = new VillagerBaitUpgrade(UpgradeManager.lastUpgradeID + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
-                        upgrades.add(upgrade);
+                        upgradesIds.add(upgrade.getId());
                     }
 
-                    case CRAFTING_GRID ->  {
-                        Upgrade upgrade = new Upgrade(UpgradeType.CRAFTING_GRID, UpgradeManager.lastUpgradeID + 1);
+                    default -> {
+                        Upgrade upgrade = new Upgrade(upgradeType, UpgradeManager.lastUpgradeID + 1);
                         UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
-                        upgrades.add(upgrade);
-                    }
-
-                    case UNBREAKABLE ->  {
-                        Upgrade upgrade = new Upgrade(UpgradeType.UNBREAKABLE, UpgradeManager.lastUpgradeID + 1);
-                        UpgradeManager.getUpgrades().put(upgrade.getId(), upgrade);
-                        upgrades.add(upgrade);
+                        upgradesIds.add(upgrade.getId());
                     }
 
                 }
@@ -182,6 +171,7 @@ public class RandomBackpackBuilder {
                 UpgradeManager.lastUpgradeID++;
             }
         }
-        return upgrades;
+
+        return upgradesIds;
     }
 }

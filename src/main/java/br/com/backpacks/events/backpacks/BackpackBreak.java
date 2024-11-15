@@ -14,12 +14,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.ItemDespawnEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -45,6 +45,7 @@ public class BackpackBreak implements Listener {
 
         if(backPack.getFirstUpgradeFromType(UpgradeType.JUKEBOX) != null){
             JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
+
             if(upgrade.getSound() != null){
                 upgrade.clearParticleTask();
                 upgrade.clearLoopingTask();
@@ -52,15 +53,15 @@ public class BackpackBreak implements Listener {
             }
         }
 
-        for(UUID uuid : BackpackAction.getHashMap().keySet()){
+        for(UUID uuid : backPack.getViewersIds()){
             Player player = Bukkit.getPlayer(uuid);
             if(player == null) continue;
 
             BackpackAction.clearPlayerAction(player);
             BackpackAction.getSpectators().remove(uuid);
 
-            Main.backPackManager.getCurrentPage().remove(uuid);
-            Main.backPackManager.getCurrentBackpackId().remove(uuid);
+            Main.backPackManager.clearPlayerCurrentPage(player);
+            Main.backPackManager.clearPlayerCurrentBackpack(player);
 
             backPack.getViewersIds().remove(uuid);
             player.closeInventory();
@@ -109,15 +110,15 @@ public class BackpackBreak implements Listener {
                 }
             }
 
-            for(UUID uuid : BackpackAction.getHashMap().keySet()){
+            for(UUID uuid : backPack.getViewersIds()){
                 Player player = Bukkit.getPlayer(uuid);
                 if(player == null) continue;
 
                 BackpackAction.clearPlayerAction(player);
                 BackpackAction.getSpectators().remove(uuid);
 
-                Main.backPackManager.getCurrentPage().remove(uuid);
-                Main.backPackManager.getCurrentBackpackId().remove(uuid);
+                Main.backPackManager.clearPlayerCurrentPage(player);
+                Main.backPackManager.clearPlayerCurrentBackpack(player);
 
                 backPack.getViewersIds().remove(uuid);
                 player.closeInventory();
@@ -143,15 +144,17 @@ public class BackpackBreak implements Listener {
     private void onItemDespawn(ItemDespawnEvent event){
         if(!event.getEntity().getItemStack().hasItemMeta())  return;
 
-        if(!event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_BACKPACK, PersistentDataType.INTEGER)){
+        if(!event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_BACKPACK)){
 
-            if(event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.IS_UPGRADE, PersistentDataType.INTEGER)){
+            if(event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.IS_UPGRADE)){
                 if(!Main.backPackManager.canOpen()){
                     event.setCancelled(true);
                     return;
                 }
 
                 int id = event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().get(UpgradesRecipes.UPGRADE_ID, PersistentDataType.INTEGER);
+
+                UpgradeManager.getUpgradeFromId(id).stopTicking();
                 UpgradeManager.getUpgrades().remove(id);
             }
 
@@ -175,6 +178,7 @@ public class BackpackBreak implements Listener {
 
         if(!backPack.getUpgradesIds().isEmpty()){
             for(int i : backPack.getUpgradesIds()){
+                UpgradeManager.getUpgradeFromId(i).stopTicking();
                 UpgradeManager.getUpgrades().remove(i);
             }
         }

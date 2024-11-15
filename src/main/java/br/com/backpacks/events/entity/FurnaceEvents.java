@@ -41,22 +41,4 @@ public class FurnaceEvents implements Listener {
 
         event.setResult(driedBackpack);
     }
-
-    @EventHandler
-    private void onStartSmelt(FurnaceStartSmeltEvent event){
-        for(Upgrade upgrade : UpgradeManager.getUpgradesFromType(UpgradeType.FURNACE)){
-            FurnaceUpgrade furnaceUpgrade = (FurnaceUpgrade) upgrade;
-
-            if(furnaceUpgrade.getFurnace() == null) continue;
-            if(!furnaceUpgrade.getFurnace().getLocation().equals(event.getBlock().getLocation())) continue;
-
-            Bukkit.getScheduler().runTaskLater(Main.getMain(), ()->{
-                for(Player player : Bukkit.getOnlinePlayers()){
-                    player.sendBlockChange(event.getBlock().getLocation(), Material.AIR.createBlockData());
-                }
-            }, 2L);
-
-            return;
-        }
-    }
 }

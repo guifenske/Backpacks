@@ -4,6 +4,7 @@ import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackType;
+import br.com.backpacks.utils.backpacks.RandomBackpackBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -45,12 +46,16 @@ public class BpGive implements CommandExecutor, TabCompleter {
 
         BackPack backPack;
 
-        try{
-            BackpackType backpackType = BackpackType.valueOf(args[1]);
-            backPack = new BackPack(backpackType, Main.backPackManager.getLastBackpackID() + 1);
-        }   catch (IllegalArgumentException e){
-            sender.sendMessage(Main.getMain().PREFIX + "§cBackpack type not found!");
-            return true;
+        if(!args[1].equalsIgnoreCase("RANDOM")){
+            try{
+                BackpackType backpackType = BackpackType.valueOf(args[1]);
+                backPack = new BackPack(backpackType, Main.backPackManager.getLastBackpackID() + 1);
+            }   catch (IllegalArgumentException e){
+                sender.sendMessage(Main.getMain().PREFIX + "§cBackpack type not found!");
+                return true;
+            }
+        }   else{
+            backPack = new RandomBackpackBuilder("Random Backpack", Main.backPackManager.getLastBackpackID() + 1).generateBackpack();
         }
 
         Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
@@ -69,7 +74,7 @@ public class BpGive implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        List<String> listBackTypes = List.of("LEATHER", "IRON", "GOLD", "LAPIS", "AMETHYST", "DIAMOND", "NETHERITE");
+        List<String> listBackTypes = List.of("LEATHER", "IRON", "GOLD", "LAPIS", "AMETHYST", "DIAMOND", "NETHERITE", "RANDOM");
         List<String> listPlayerNames = new ArrayList<>();
 
         for(Player player : Bukkit.getOnlinePlayers()){
