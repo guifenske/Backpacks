@@ -3,12 +3,17 @@ package br.com.backpacks.utils.scheduler;
 public abstract class TickComponent {
     private static int componentCount = 0;
 
-    private final int maxTickCount;
-    private int currentTick = 0;
     private final int id;
+    private int maxTickCount;
+    private int currentTick = 0;
 
     public TickComponent(int tickDelay){
         this.maxTickCount = tickDelay;
+        this.id = componentCount;
+        componentCount++;
+    }
+
+    public TickComponent(){
         this.id = componentCount;
         componentCount++;
     }

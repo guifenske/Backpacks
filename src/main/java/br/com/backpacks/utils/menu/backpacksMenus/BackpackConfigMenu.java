@@ -13,14 +13,15 @@ import br.com.backpacks.utils.UpgradeType;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
 import br.com.backpacks.utils.menu.Button;
-import br.com.backpacks.utils.menu.DynamicMenu;
 import br.com.backpacks.utils.menu.ItemCreator;
+import br.com.backpacks.utils.menu.Menu;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Barrel;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -29,21 +30,17 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.Arrays;
 import java.util.List;
 
-public class BackpackConfigMenu extends DynamicMenu {
-    private final BackPack backPack;
-
-    public BackpackConfigMenu(int size, String title, BackPack backPack){
-        super(size, title);
-        this.backPack = backPack;
-
-       refreshMenu();
+public class BackpackConfigMenu extends Menu {
+    public BackpackConfigMenu(BackPack backPack){
+        super(54, "Config Menu", backPack);
+        refreshMenu();
     }
 
     public void refreshMenu(){
         ItemStack blank = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").build();
         ItemStack equipBackpack = new ItemCreator(Material.CHEST, "Equip Backpack").build();
         ItemStack unequipBackpack = new ItemCreator(Material.ENDER_CHEST, "Unequip Backpack").build();
-        ItemStack close = new ItemCreator(Material.BARRIER, "Close").build();
+        ItemStack closeInventoryItem = new ItemCreator(Material.BARRIER, "Close").build();
         ItemStack rename = new ItemCreator(Material.NAME_TAG, "Rename Backpack").build();
         ItemStack lock = new ItemCreator(Material.WRITABLE_BOOK, "Lock Backpack", Arrays.asList("§7§nLock the access to this backpack", "§7§n from other players when in your back.")).build();
         ItemStack unlock = new ItemCreator(Material.WRITTEN_BOOK, "Unlock Backpack", Arrays.asList("§7§nUnlock the access to this backpack", "§7§n from other players when in your back.")).build();
@@ -84,7 +81,7 @@ public class BackpackConfigMenu extends DynamicMenu {
                     @Override
                     public void onClick(Player player) {
                         backPack.setLocked(!backPack.isLocked());
-                        refreshButtonInMenu(this);
+                        refreshButton(this);
                     }
                 });
             }
@@ -169,7 +166,7 @@ public class BackpackConfigMenu extends DynamicMenu {
                         backPack.setShowNameAbove(false);
                     }
 
-                    refreshButtonInMenu(this);
+                    refreshButton(this);
                 }
             });
         }
@@ -191,7 +188,7 @@ public class BackpackConfigMenu extends DynamicMenu {
         addButton(new Button(45) {
             @Override
             public ItemStack getItem() {
-                return close;
+                return closeInventoryItem;
             }
 
             @Override
@@ -305,7 +302,7 @@ public class BackpackConfigMenu extends DynamicMenu {
     }
 
     @Override
-    public void onClose(Player player, BackPack backPack) {
+    public void onClose(Player player) {
         BackpackAction.clearPlayerAction(player);
 
         BukkitTask task = new BukkitRunnable() {
@@ -314,5 +311,10 @@ public class BackpackConfigMenu extends DynamicMenu {
                 backPack.open(player);
             }
         }.runTaskLater(Main.getMain(), 1L);
+    }
+
+    @Override
+    public void onClickBottomInventory(Player player, InventoryClickEvent event) {
+        event.setCancelled(true);
     }
 }

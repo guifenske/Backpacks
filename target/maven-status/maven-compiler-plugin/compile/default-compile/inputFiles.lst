@@ -7,7 +7,6 @@ C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\backup\
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\events\entity\CraftBackpack.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\utils\scheduler\TickComponent.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\events\upgrades\Collector.java
-C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\utils\menu\FixedMenu.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\events\backpacks\RenameBackpack.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\utils\menu\backpacksMenus\UpgradesEditInputOutputMenu.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\UpdateChecker.java
@@ -17,6 +16,7 @@ C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\upgrade
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\events\upgrades\Jukebox.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\events\upgrades\VillagerBait.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\utils\menu\backpacksMenus\UpgradesInputOutputMenu.java
+C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\events\backpacks\OpenEquippedBackpack.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\events\entity\EntityDeathEvent.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\utils\backpacks\BackPack.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\utils\backpacks\BackpackAction.java
@@ -34,6 +34,7 @@ C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\events\
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\events\entity\Fishing.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\upgrades\VillagerBaitUpgrade.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\events\entity\FurnaceEvents.java
+C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\storage\StorageProviderType.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\events\inventory\MenuListener.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\backup\BackupHandler.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\events\upgrades\Magnet.java
@@ -53,7 +54,6 @@ C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\events\
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\storage\SerializationUtils.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\utils\backpacks\BackpackType.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\commands\BpUpGive.java
-C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\utils\menu\DynamicMenu.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\events\entity\PlayerJoinLeaveEvent.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\recipes\BackpackRecipes.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\utils\Upgrade.java
@@ -65,7 +65,6 @@ C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\backup\
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\utils\UpgradeType.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\recipes\RecipesUtils.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\upgrades\JukeboxUpgrade.java
-C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\events\backpacks\OpenBackpackOfTheBack.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\storage\StorageManager.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\events\inventory\OnClickBackpack.java
 C:\Users\Guilherme\IdeaProjects\Backpacks\src\main\java\br\com\backpacks\events\inventory\OnCloseBackpack.java

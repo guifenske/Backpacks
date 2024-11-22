@@ -9,13 +9,13 @@ import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class StorageProvider {
-    private final StorageManager.StorageProviderType type;
+    private final StorageProviderType type;
 
-    public StorageProvider(StorageManager.StorageProviderType type) {
+    public StorageProvider(StorageProviderType type) {
         this.type = type;
     }
 
-    public StorageManager.StorageProviderType getType() {
+    public StorageProviderType getType() {
         return type;
     }
 

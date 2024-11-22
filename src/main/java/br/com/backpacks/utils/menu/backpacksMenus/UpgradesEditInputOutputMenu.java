@@ -6,22 +6,20 @@ import br.com.backpacks.utils.Upgrade;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
 import br.com.backpacks.utils.menu.Button;
-import br.com.backpacks.utils.menu.DynamicMenu;
 import br.com.backpacks.utils.menu.ItemCreator;
+import br.com.backpacks.utils.menu.Menu;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class UpgradesEditInputOutputMenu extends DynamicMenu {
-    private final BackPack backPack;
+public class UpgradesEditInputOutputMenu extends Menu {
 
     public UpgradesEditInputOutputMenu(int size, String title, BackPack backPack) {
-        super(size, title);
-
-        this.backPack = backPack;
+        super(size, title, backPack);
         refreshMenu();
     }
 
@@ -92,10 +90,16 @@ public class UpgradesEditInputOutputMenu extends DynamicMenu {
     }
 
     @Override
-    public void onClose(Player player, BackPack backPack) {
+    public void onClose(Player player) {
         BackpackAction.clearPlayerAction(player);
+
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
             backPack.open(player);
         }, 1L);
+    }
+
+    @Override
+    public void onClickBottomInventory(Player player, InventoryClickEvent event) {
+        event.setCancelled(true);
     }
 }

@@ -1,21 +1,41 @@
 package br.com.backpacks.utils.menu;
 
 import br.com.backpacks.utils.backpacks.BackPack;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 
 public abstract class Menu {
-    protected final Button[] buttons;
-    protected final int size;
+    private final Button[] buttons;
+    private final int size;
+    protected final BackPack backPack;
+    protected final Inventory inventory;
 
-    public Menu(int size){
+    public Menu(int size, String title, BackPack backPack){
         this.buttons = new Button[size];
         this.size = size;
+        this.backPack = backPack;
+        this.inventory = Bukkit.createInventory(null, size, backPack.getName() + "'s " + title);
     }
 
-    abstract void addButton(Button button);
+    public int getSize(){
+        return this.size;
+    }
 
-    abstract void displayTo(Player player);
+    protected void addButton(Button button){
+        buttons[button.getSlot()] = button;
+        refreshButton(button);
+    }
+
+    protected void refreshButton(Button button){
+        inventory.setItem(button.getSlot(), button.getItem());
+    }
+
+    public void displayTo(Player player){
+        player.openInventory(inventory);
+    }
 
     public Button getButton(int slot){
         try{
@@ -25,12 +45,8 @@ public abstract class Menu {
         }
     }
 
-    public int getSize(){
-        return this.size;
-    }
+    public abstract void onClose(Player player);
 
-    public abstract void onClose(Player player, BackPack backPack);
-
-    public abstract void onClickBottomInventory(Player player, BackPack backPack, InventoryClickEvent event);
+    public abstract void onClickBottomInventory(Player player, InventoryClickEvent event);
 
 }

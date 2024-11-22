@@ -26,12 +26,12 @@ import java.util.*;
 public final class BackPack {
     private int id;
     private Inventory firstPage;
+    private Inventory secondPage;
     private int firstPageSize;
     private int secondPageSize;
     private BackpackType backpackType;
     private Location location;
     private boolean locked;
-    private Inventory secondPage;
     private boolean isBlock = false;
     private UUID owner;
     private boolean showNameAbove = false;
@@ -43,12 +43,13 @@ public final class BackPack {
     private Integer inputUpgrade = -1;
     private Integer outputUpgrade = -1;
     private final Set<UUID> viewersIds = new HashSet<>();
-    private final List<Integer> backpackUpgrades = new ArrayList<>();
+    private final List<Integer> backpackUpgradesIds = new ArrayList<>();
 
     public BackPack(BackpackType type, int id) {
         this.backpackType = type;
         this.id = id;
         this.name = type.getName();
+
         updateSizeOfPages();
 
         firstPage = Bukkit.createInventory(null, firstPageSize, name);
@@ -57,11 +58,11 @@ public final class BackPack {
             secondPage = Bukkit.createInventory(null, secondPageSize, name);
         }
 
-        setConfigOptionItems();
+        setConfigItems();
 
-        configMenu = new BackpackConfigMenu(54, this.name + "'s Config", this);
-        upgradesMenu = new UpgradesMenu(9, this.name + "'s Upgrades", this);
-        upgradesInputOutputMenu = new UpgradesInputOutputMenu(27, this.name + "'s Upgrades Input/Output", this);
+        configMenu = new BackpackConfigMenu(this);
+        upgradesMenu = new UpgradesMenu(this);
+        upgradesInputOutputMenu = new UpgradesInputOutputMenu(this);
     }
 
     public BackPack(String name, Inventory firstPage, int id, BackpackType type) {
@@ -71,12 +72,12 @@ public final class BackPack {
         this.firstPage = firstPage;
         this.id = id;
 
-        configMenu = new BackpackConfigMenu(54, this.name + " Config", this);
-        upgradesMenu = new UpgradesMenu(9, this.name + "'s Upgrades", this);
-        upgradesInputOutputMenu = new UpgradesInputOutputMenu(27, this.name + "'s Upgrades Input/Output", this);
+        configMenu = new BackpackConfigMenu(this);
+        upgradesMenu = new UpgradesMenu(this);
+        upgradesInputOutputMenu = new UpgradesInputOutputMenu(this);
 
         updateSizeOfPages();
-        setConfigOptionItems();
+        setConfigItems();
     }
 
     public BackPack() {
@@ -91,13 +92,14 @@ public final class BackPack {
         this.firstPage = firstPage;
         this.id = id;
 
-        configMenu = new BackpackConfigMenu(54, this.name + " Config", this);
-        upgradesMenu = new UpgradesMenu(9, this.name + "'s Upgrades", this);
-        upgradesInputOutputMenu = new UpgradesInputOutputMenu(27, this.name + "'s Upgrades Input/Output", this);
+        configMenu = new BackpackConfigMenu(this);
+        upgradesMenu = new UpgradesMenu(this);
+        upgradesInputOutputMenu = new UpgradesInputOutputMenu(this);
 
         updateSizeOfPages();
-        setConfigOptionItems();
+        setConfigItems();
     }
+
     public List<String> serialize() {
         List<String> data = new ArrayList<>();
         data.add(name);
@@ -162,17 +164,19 @@ public final class BackPack {
         if(config.isSet(id + ".loc")){
             setLocation(SerializationUtils.deserializeLocationAsList(config.getStringList(id + ".loc")));
             setIsBlock(true);
+
             if(config.isSet(id + ".shownameabove")){
                 setShowNameAbove(true);
             }
+
             Main.backPackManager.getBackpacksPlacedLocations().put(getLocation(), getId());
         }
 
-        configMenu = new BackpackConfigMenu(54, this.name + "'s Config", this);
-        upgradesMenu = new UpgradesMenu(9, this.name + "'s Upgrades", this);
-        upgradesInputOutputMenu = new UpgradesInputOutputMenu(27, this.name + "'s Upgrades Input/Output", this);
+        configMenu = new BackpackConfigMenu(this);
+        upgradesMenu = new UpgradesMenu(this);
+        upgradesInputOutputMenu = new UpgradesInputOutputMenu(this);
 
-        setConfigOptionItems();
+        setConfigItems();
         return this;
     }
 
@@ -337,7 +341,7 @@ public final class BackPack {
     }
 
 
-    public void setConfigOptionItems(){
+    public void setConfigItems(){
         ItemStack arrowLeft = new ItemCreator(Material.ARROW, "§aPrevious Page").build();
         ItemStack arrowRight = new ItemCreator(Material.ARROW, "§aNext Page").build();
         ItemStack config = new ItemCreator(Material.NETHER_STAR, "§6Config").build();
@@ -445,8 +449,13 @@ public final class BackPack {
         return upgradesInputOutputMenu;
     }
 
-    public void forceReloadConfigMenu(){
-        configMenu = new BackpackConfigMenu(54, name + "'s Config Menu", this);
+    /**
+     * Use only when the Menus have no viewers on it.
+     */
+    public void updateMenuTitles(){
+        configMenu = new BackpackConfigMenu(this);
+        upgradesMenu = new UpgradesMenu(this);
+        upgradesInputOutputMenu = new UpgradesInputOutputMenu(this);
     }
 
     public Menu getPlayerCurrentMenu(Player player){
@@ -472,14 +481,14 @@ public final class BackPack {
     }
 
     public List<Integer> getUpgradesIds() {
-        return backpackUpgrades;
+        return backpackUpgradesIds;
     }
 
     public List<Upgrade> getBackpackUpgrades() {
-        if(this.backpackUpgrades.isEmpty()) return new ArrayList<>();
+        if(this.backpackUpgradesIds.isEmpty()) return new ArrayList<>();
         List<Upgrade> upgrades1 = new ArrayList<>();
 
-        for (Integer upgradeId : backpackUpgrades) {
+        for (Integer upgradeId : backpackUpgradesIds) {
             upgrades1.add(UpgradeManager.getUpgradeFromId(upgradeId));
         }
 
@@ -487,8 +496,8 @@ public final class BackPack {
     }
 
     public void setUpgradesIds(List<Integer> list){
-        this.backpackUpgrades.clear();
-        this.backpackUpgrades.addAll(list);
+        this.backpackUpgradesIds.clear();
+        this.backpackUpgradesIds.addAll(list);
     }
 
     public Boolean containsUpgradeType(UpgradeType upgradeType) {

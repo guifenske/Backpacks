@@ -25,11 +25,6 @@ public class StorageManager {
         StorageManager.provider = provider;
     }
 
-    public enum StorageProviderType {
-        MYSQL,
-        YAML,
-    }
-
     public static void saveAll(boolean async) {
         if(provider == null || (Main.backPackManager.getBackpacks().isEmpty() && UpgradeManager.getUpgrades().isEmpty())){
 
@@ -59,7 +54,7 @@ public class StorageManager {
             return;
         }
 
-        Main.getMain().getTickManager().runComponentAsync(new TickComponent(-1) {
+        Main.getMain().getTickManager().runComponentAsync(new TickComponent(0) {
             @Override
             public void tick() {
                 try {

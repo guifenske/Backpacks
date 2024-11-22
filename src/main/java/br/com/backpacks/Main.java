@@ -24,7 +24,6 @@ import org.bukkit.block.Barrel;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -94,9 +93,14 @@ public final class Main extends JavaPlugin {
             StorageManager.setProvider(Config.getYamlProvider());
         }
 
-        StorageManager.loadAll();
-
         tickManager.startAsyncTicking();
+
+        tickManager.runComponentAsync(new TickComponent() {
+            @Override
+            public void tick() {
+                StorageManager.loadAll();
+            }
+        });
 
         tickManager.addAsyncComponent(new TickComponent(5) {
             @Override
@@ -127,7 +131,7 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new BackpackPlace(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new OnClickBackpack(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new RenameBackpack(), Main.getMain());
-        Bukkit.getPluginManager().registerEvents(new OpenBackpackOfTheBack(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new OpenEquippedBackpack(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new OnCloseBackpack(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new MenuListener(), Main.getMain());
 

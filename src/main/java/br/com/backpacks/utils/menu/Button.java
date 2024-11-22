@@ -18,6 +18,4 @@ public abstract class Button {
     public abstract ItemStack getItem();
 
     public abstract void onClick(Player player);
-
-
 }

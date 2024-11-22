@@ -19,6 +19,7 @@ public class RenameBackpack implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void onRename(AsyncChatEvent event){
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.RENAMING)) return;
+
         Player player = event.getPlayer();
         TextComponent component = (TextComponent) event.message();
 
@@ -35,23 +36,21 @@ public class RenameBackpack implements Listener {
         BackpackAction.clearPlayerAction(player);
         BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(player);
 
-        Bukkit.getScheduler().runTask(Main.getMain(), ()->{
-            for(UUID uuid : backPack.getViewersIds()){
-                Player player1 = Bukkit.getPlayer(uuid);
-                if(player1 == null) continue;
+        for(UUID uuid : backPack.getViewersIds()){
+            Player player1 = Bukkit.getPlayer(uuid);
+            if(player1 == null) continue;
 
-                BackpackAction.clearPlayerAction(player1);
-                BackpackAction.getSpectators().remove(player1.getUniqueId());
+            BackpackAction.clearPlayerAction(player1);
+            BackpackAction.getSpectators().remove(player1.getUniqueId());
 
-                player1.closeInventory();
-            }
-        });
+            player1.closeInventory();
+        }
 
         if(!backPack.isBlock() && backPack.getOwner() == null) {
             backPack.removeBackpackItem(player);
             backPack.setName(newName);
 
-            backPack.forceReloadConfigMenu();
+            backPack.updateMenuTitles();
 
             player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
             player.sendMessage(Main.getMain().PREFIX + "§aRenamed backpack to " + newName + ".");
@@ -67,8 +66,6 @@ public class RenameBackpack implements Listener {
                 }
             });
 
-
-
             return;
         }
 
@@ -80,7 +77,7 @@ public class RenameBackpack implements Listener {
 
         backPack.setName(newName);
 
-        backPack.forceReloadConfigMenu();
+        backPack.updateMenuTitles();
 
         Bukkit.getScheduler().runTask(Main.getMain(), ()->{
             for(UUID uuid : backPack.getViewersIds()){

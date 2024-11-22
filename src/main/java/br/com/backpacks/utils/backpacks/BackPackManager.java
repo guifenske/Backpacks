@@ -106,7 +106,7 @@ public class BackPackManager {
             newBackpack.getSecondPage().setStorageContents(backPack.getStorageContentsSecondPage());
         }
 
-        newBackpack.setConfigOptionItems();
+        newBackpack.setConfigItems();
 
         this.backpacks.put(newBackpack.getId(), newBackpack);
     }

@@ -21,7 +21,7 @@ public class MySQLProvider extends StorageProvider{
     private final String databaseName;
 
     public MySQLProvider(String url, String user, String password) {
-        super(StorageManager.StorageProviderType.MYSQL);
+        super(StorageProviderType.MYSQL);
         this.url = url;
         this.user = user;
         this.password = password;

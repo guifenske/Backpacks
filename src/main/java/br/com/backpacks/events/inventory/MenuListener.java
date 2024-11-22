@@ -28,7 +28,7 @@ public class MenuListener implements Listener {
         }
 
         if(slot > menu.getSize()){
-            menu.onClickBottomInventory(player, backPack, event);
+            menu.onClickBottomInventory(player, event);
             return;
         }
 
@@ -49,7 +49,7 @@ public class MenuListener implements Listener {
 
         if(menu == null) return;
 
-        menu.onClose((Player) event.getPlayer(), backPack);
+        menu.onClose((Player) event.getPlayer());
     }
 
 }

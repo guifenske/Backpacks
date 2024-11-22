@@ -4,19 +4,21 @@ import br.com.backpacks.Main;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
 import br.com.backpacks.utils.menu.Button;
-import br.com.backpacks.utils.menu.FixedMenu;
 import br.com.backpacks.utils.menu.ItemCreator;
+import br.com.backpacks.utils.menu.Menu;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class UpgradesInputOutputMenu extends FixedMenu {
+public class UpgradesInputOutputMenu extends Menu {
     private final UpgradesEditInputOutputMenu editInputOutputMenu;
 
-    public UpgradesInputOutputMenu(int size, String title, BackPack backPack) {
-        super(size, title);
-        this.editInputOutputMenu = new UpgradesEditInputOutputMenu(9, backPack.getName() + "'s Input/Output", backPack);
+    public UpgradesInputOutputMenu(BackPack backPack) {
+        super(27, "Input/Output Menu", backPack);
+
+        this.editInputOutputMenu = new UpgradesEditInputOutputMenu(9, "Edit", backPack);
 
         ItemStack resetDefault = new ItemCreator(Material.EMERALD_ORE, "Reset Input/Output configuration").build();
         ItemStack input = new ItemCreator(Material.HOPPER, "Set new input inventory").build();
@@ -69,11 +71,17 @@ public class UpgradesInputOutputMenu extends FixedMenu {
     }
 
     @Override
-    public void onClose(Player player, BackPack backPack) {
+    public void onClose(Player player) {
         BackpackAction.clearPlayerAction(player);
+
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
             backPack.open(player);
         }, 1L);
+    }
+
+    @Override
+    public void onClickBottomInventory(Player player, InventoryClickEvent event) {
+        event.setCancelled(true);
     }
 
     public UpgradesEditInputOutputMenu getEditInputOutputMenu(){

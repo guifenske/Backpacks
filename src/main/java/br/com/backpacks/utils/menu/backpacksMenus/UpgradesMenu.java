@@ -7,8 +7,8 @@ import br.com.backpacks.utils.UpgradeManager;
 import br.com.backpacks.utils.backpacks.BackPack;
 import br.com.backpacks.utils.backpacks.BackpackAction;
 import br.com.backpacks.utils.menu.Button;
-import br.com.backpacks.utils.menu.DynamicMenu;
 import br.com.backpacks.utils.menu.ItemCreator;
+import br.com.backpacks.utils.menu.Menu;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -19,12 +19,9 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpgradesMenu extends DynamicMenu {
-    private final BackPack backpack;
-
-    public UpgradesMenu(int size, String title, BackPack backPack) {
-        super(size, title);
-        this.backpack = backPack;
+public class UpgradesMenu extends Menu {
+    public UpgradesMenu(BackPack backPack) {
+        super(9, "Upgrades Menu", backPack);
 
         ItemStack blank = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").build();
 
@@ -41,8 +38,8 @@ public class UpgradesMenu extends DynamicMenu {
             });
         }
 
-        if(!backpack.getBackpackUpgrades().isEmpty()) {
-            List<Upgrade> upgrades = backpack.getBackpackUpgrades();
+        if(!backPack.getBackpackUpgrades().isEmpty()) {
+            List<Upgrade> upgrades = backPack.getBackpackUpgrades();
 
             int i = 0;
             for(Upgrade upgrade : upgrades) {
@@ -54,7 +51,7 @@ public class UpgradesMenu extends DynamicMenu {
     }
 
     @Override
-    public void onClose(Player player, BackPack backPack) {
+    public void onClose(Player player) {
         List<Integer> newUpgradesIds = new ArrayList<>();
 
         for(int i = 0; i < backPack.getType().getMaxUpgrades(); i++){
@@ -123,7 +120,7 @@ public class UpgradesMenu extends DynamicMenu {
         backPack.setUpgradesIds(newUpgradesIds);
         backPack.getConfigMenu().addUpgradesInView();
 
-        backpack.getUpgradesInputOutputMenu().getEditInputOutputMenu().refreshMenu();
+        backPack.getUpgradesInputOutputMenu().getEditInputOutputMenu().refreshMenu();
 
         BackpackAction.clearPlayerAction(player);
          BukkitTask task = new BukkitRunnable() {
@@ -135,8 +132,7 @@ public class UpgradesMenu extends DynamicMenu {
     }
 
     @Override
-    public void onClickBottomInventory(Player player, BackPack backPack, InventoryClickEvent event) {
-        super.onClickBottomInventory(player, backPack, event);
+    public void onClickBottomInventory(Player player, InventoryClickEvent event) {
         event.setCancelled(false);
     }
 }

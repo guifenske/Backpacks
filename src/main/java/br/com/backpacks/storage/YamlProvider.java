@@ -26,7 +26,7 @@ public final class YamlProvider extends StorageProvider {
     private final String upgradesPath;
 
     public YamlProvider(String backpacksPath, String upgradesPath) {
-        super(StorageManager.StorageProviderType.YAML);
+        super(StorageProviderType.YAML);
         this.backpacksPath = backpacksPath;
         this.upgradesPath = upgradesPath;
     }
@@ -63,7 +63,7 @@ public final class YamlProvider extends StorageProvider {
                 config.set(backPack.getId() + ".owner", backPack.getOwner().toString());
             }
 
-            if (backPack.getBackpackUpgrades() != null && !backPack.getBackpackUpgrades().isEmpty()) {
+            if (!backPack.getBackpackUpgrades().isEmpty()) {
                 serializeUpgrades(config, backPack);
             }
 
