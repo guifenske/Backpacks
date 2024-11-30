@@ -102,7 +102,7 @@ public class BackpackConfigMenu extends Menu {
                     if(backpack.isBlock())  return;
 
                     if (backpack.getOwner() != null && backpack.getOwner().equals(player.getUniqueId())){
-                        player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backpack));
+                        player.getInventory().addItem(backpack.getBackpackItem());
                         player.getPersistentDataContainer().remove(BackpackRecipes.HAS_BACKPACK);
 
                         if(backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX) != null){

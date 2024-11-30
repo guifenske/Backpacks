@@ -89,6 +89,8 @@ public class CraftBackpack implements Listener {
             Backpack backpack =  new Backpack(BackpackType.LEATHER, id);
             updateResult(event, id);
 
+            backpack.setBackpackItem(event.getInventory().getResult());
+
             Main.backpackManager.getBackpacks().put(id, backpack);
             Main.backpackManager.setLastBackpackID(Main.backpackManager.getLastBackpackID() + 1);
 
@@ -107,6 +109,8 @@ public class CraftBackpack implements Listener {
         if(canUpgradeBackpack(event, backpackInMatrix, desiredBackpack.getType())){
             updateResult(event, backpackInMatrix.getId());
             Main.backpackManager.upgradeBackpack(backpackInMatrix);
+
+            Main.backpackManager.getBackpackFromId(backpackInMatrix.getId()).setBackpackItem(event.getInventory().getResult());
         }
     }
 

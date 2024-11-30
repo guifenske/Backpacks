@@ -2,6 +2,7 @@ package br.com.backpacks.backpack;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
+import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.storage.SerializationUtils;
 import br.com.backpacks.upgrades.Upgrade;
 import br.com.backpacks.upgrades.UpgradeManager;
@@ -42,6 +43,7 @@ public final class Backpack {
     private UpgradesInputOutputMenu upgradesInputOutputMenu;
     private Integer inputUpgrade = -1;
     private Integer outputUpgrade = -1;
+    private ItemStack backpackItem;
     private final Set<UUID> viewersIds = new HashSet<>();
     private final List<Integer> backpackUpgradesIds = new ArrayList<>();
 
@@ -176,6 +178,8 @@ public final class Backpack {
         upgradesMenu = new UpgradesMenu(this);
         upgradesInputOutputMenu = new UpgradesInputOutputMenu(this);
 
+        setBackpackItem(RecipesUtils.getItemFromBackpack(this));
+
         setConfigItems();
         return this;
     }
@@ -266,6 +270,9 @@ public final class Backpack {
 
     public void setName(String name) {
         this.name = name;
+
+        setBackpackItem(RecipesUtils.getItemFromBackpack(this));
+
         Inventory newFirstPage = Bukkit.createInventory(null, firstPageSize, name);
         newFirstPage.setStorageContents(firstPage.getStorageContents());
         firstPage = newFirstPage;
@@ -543,4 +550,15 @@ public final class Backpack {
         this.outputUpgrade = outputUpgrade;
     }
 
+    public void setBackpackItem(ItemStack backpackItem) {
+        this.backpackItem = backpackItem;
+    }
+
+    public ItemStack getBackpackItem(){
+        if(backpackItem == null){
+            backpackItem = RecipesUtils.getItemFromBackpack(this);
+        }
+
+        return backpackItem;
+    }
 }

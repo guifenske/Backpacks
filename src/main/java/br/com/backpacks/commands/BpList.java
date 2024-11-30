@@ -68,7 +68,8 @@ public class BpList implements CommandExecutor, Listener {
         for(int i = 0; i < backpacksIds.size(); i++){
             if(i == 52 || backpacksIds.size() < page.get(player.getUniqueId()) * 52 + i) break;
             Backpack backpack = Main.backpackManager.getBackpackFromId(backpacksIds.get(page.get(player.getUniqueId()) * 52 + i));
-            ItemStack backpackItem = RecipesUtils.getItemFromBackpack(backpack);
+            ItemStack backpackItem = backpack.getBackpackItem();
+
             ItemMeta meta = backpackItem.getItemMeta();
             meta.setLore(List.of("Id: " + backpack.getId()));
 

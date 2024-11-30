@@ -176,8 +176,10 @@ public final class YamlProvider extends StorageProvider {
                         if(config.isSet(i + ".furnace.loc")){
                             Block block = SerializationUtils.deserializeLocationAsList(config.getStringList(i + ".furnace.loc")).getBlock();
 
-                            Furnace furnace = (Furnace) block.getState();
-                            upgrade.setFurnace(furnace);
+                            Bukkit.getScheduler().runTask(Main.getMain(), ()->{
+                                Furnace furnace = (Furnace) block.getState();
+                                upgrade.setFurnace(furnace);
+                            });
 
                             upgrade.setTickComponentId(Main.getMain().getTickManager().addAsyncComponent(new TickComponent(10) {
                                 @Override

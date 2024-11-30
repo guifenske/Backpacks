@@ -20,10 +20,11 @@ import java.util.zip.ZipOutputStream;
 public class ZipUtils {
     public static void zipAll(Path pathBackpacks, Path pathUpgrades, Path path) throws IOException {
         List<String> srcFiles = Arrays.asList(pathBackpacks.toString(), pathUpgrades.toString());
+
         long currentTimeMillis = System.currentTimeMillis();
         LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(currentTimeMillis), ZoneId.systemDefault());
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy-HHmmss");
         String formattedDateTime = dateTime.format(formatter);
 
         String fileOutputName = "backup-" + formattedDateTime + ".zip";
@@ -37,7 +38,6 @@ public class ZipUtils {
             ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
 
             zipOut.putNextEntry(zipEntry);
-            fileToZip.delete();
 
             byte[] bytes = new byte[4096];
             int length;
@@ -47,6 +47,7 @@ public class ZipUtils {
             }
 
             fis.close();
+            fileToZip.delete();
         }
 
         zipOut.close();

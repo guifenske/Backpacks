@@ -52,7 +52,7 @@ public class RenameBackpack implements Listener {
 
             backpack.updateMenuTitles();
 
-            player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backpack));
+            player.getInventory().addItem(backpack.getBackpackItem());
             player.sendMessage(Main.getMain().PREFIX + "§aRenamed backpack to " + newName + ".");
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 

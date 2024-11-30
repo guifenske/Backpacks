@@ -18,20 +18,10 @@ public class FurnaceEvents implements Listener {
     private void onSmelt(BlockCookEvent event){
         if(!event.getResult().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.NAMESPACE_DRIED_BACKPACK)) return;
 
-        ItemStack driedBackpack = new ItemStack(Material.BARREL);
-        ItemMeta meta = driedBackpack.getItemMeta();
-        meta.setDisplayName("Unknown Backpack");
-
-        meta.getPersistentDataContainer().set(BackpackRecipes.IS_BACKPACK, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER, Main.backpackManager.getLastBackpackID() + 1);
-
-        RandomBackpackBuilder randomBackpackBuilder = new RandomBackpackBuilder("Unknown Backpack", meta.getPersistentDataContainer().get(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER));
+        RandomBackpackBuilder randomBackpackBuilder = new RandomBackpackBuilder("Unknown Backpack", Main.backpackManager.getLastBackpackID() + 1);
         Backpack backpack = randomBackpackBuilder.generateBackpack();
 
-        meta.getPersistentDataContainer().set(backpack.getType().getKey(), PersistentDataType.INTEGER, 1);
-        driedBackpack.setItemMeta(meta);
         Main.backpackManager.setLastBackpackID(Main.backpackManager.getLastBackpackID() + 1);
-
-        event.setResult(driedBackpack);
+        event.setResult(backpack.getBackpackItem());
     }
 }

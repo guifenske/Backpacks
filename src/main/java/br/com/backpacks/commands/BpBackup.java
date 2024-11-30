@@ -51,7 +51,7 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                             sender.sendMessage("§cSomething went wrong or the backup option is disabled, please check the console for more information.");
                         }
                     }   catch (IOException | InvalidConfigurationException e) {
-                        sender.sendMessage("§cAn error occurred while creating the backup, please check the console for more information.");
+                        sender.sendMessage("§cAn exception occurred while making a backup, please contact the server owner.");
                         throw new RuntimeException(e);
                     }
                 });
@@ -75,15 +75,6 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                     BackpackAction.getSpectators().remove(uuid);
                     if(player == null) continue;
                     player.closeInventory();
-                }
-
-                for(Map.Entry<Location, Integer> entry : Main.backpackManager.getBackpacksPlacedLocations().entrySet()){
-                    Backpack backpack = Main.backpackManager.getBackpackFromId(entry.getValue());
-                    if(backpack.isShowingNameAbove()){
-                        backpack.getMarkerEntity().remove();
-                        backpack.setMarker(null);
-                    }
-                    entry.getKey().getBlock().setType(Material.AIR);
                 }
 
                 Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), ()->{
@@ -115,15 +106,6 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                 BackpackAction.getSpectators().remove(uuid);
                 if(player == null) continue;
                 player.closeInventory();
-            }
-
-            for(Map.Entry<Location, Integer> entry : Main.backpackManager.getBackpacksPlacedLocations().entrySet()){
-                Backpack backpack = Main.backpackManager.getBackpackFromId(entry.getValue());
-                if(backpack.isShowingNameAbove()){
-                    backpack.getMarkerEntity().remove();
-                    backpack.setMarker(null);
-                }
-                entry.getKey().getBlock().setType(Material.AIR);
             }
 
             Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), ()->{

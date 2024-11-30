@@ -61,9 +61,9 @@ public class BpGive implements CommandExecutor, TabCompleter {
         Main.backpackManager.getBackpacks().put(backpack.getId(), backpack);
         Main.backpackManager.setLastBackpackID(Main.backpackManager.getLastBackpackID() + 1);
 
-        if(!target.getInventory().addItem(RecipesUtils.getItemFromBackpack(backpack)).isEmpty()){
+        if(!target.getInventory().addItem(backpack.getBackpackItem()).isEmpty()){
             sender.sendMessage(Main.getMain().PREFIX + "§cPlayer inventory is full! Dropped item on the ground.");
-            target.getWorld().dropItem(target.getLocation(), RecipesUtils.getItemFromBackpack(backpack));
+            target.getWorld().dropItem(target.getLocation(), backpack.getBackpackItem());
             return true;
         }
 
