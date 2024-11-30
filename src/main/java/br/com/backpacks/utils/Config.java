@@ -1,5 +1,7 @@
-package br.com.backpacks;
+package br.com.backpacks.utils;
 
+import br.com.backpacks.AutoSaveManager;
+import br.com.backpacks.Main;
 import br.com.backpacks.backup.BackupHandler;
 import br.com.backpacks.backup.ScheduledBackupService;
 import br.com.backpacks.storage.MySQLProvider;

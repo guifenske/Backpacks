@@ -2,11 +2,11 @@ package br.com.backpacks.storage;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.upgrades.*;
-import br.com.backpacks.utils.Upgrade;
-import br.com.backpacks.utils.UpgradeManager;
-import br.com.backpacks.utils.UpgradeType;
-import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.backpacks.BackpackType;
+import br.com.backpacks.upgrades.Upgrade;
+import br.com.backpacks.upgrades.UpgradeManager;
+import br.com.backpacks.upgrades.UpgradeType;
+import br.com.backpacks.backpack.Backpack;
+import br.com.backpacks.backpack.BackpackType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -71,31 +71,31 @@ public class MySQLProvider extends StorageProvider{
            connection.prepareStatement("USE " + databaseName + ";").execute();
            connection.prepareStatement("DELETE FROM backpacks;").execute();
 
-           if(Main.backPackManager.getBackpacks().isEmpty()){
+           if(Main.backpackManager.getBackpacks().isEmpty()){
                connection.close();
                return;
            }
 
-           for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
+           for(Backpack backpack : Main.backpackManager.getBackpacks().values()){
                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO backpacks (id, bpType, loc, outputId, inputId, shownameabove, bpname, owner, firstPage, secondPage, upgradesIds) VALUES (?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?);");
 
-               preparedStatement.setInt(1, backPack.getId());
-               preparedStatement.setString(2, backPack.getType().name());
-               preparedStatement.setBlob(3, SerializationUtils.serializeLocationToStream(backPack.getLocation()));
-               preparedStatement.setInt(4, backPack.getOutputUpgrade());
-               preparedStatement.setInt(5, backPack.getInputUpgrade());
-               preparedStatement.setBoolean(6, backPack.isShowingNameAbove());
-               preparedStatement.setString(7, backPack.getName());
+               preparedStatement.setInt(1, backpack.getId());
+               preparedStatement.setString(2, backpack.getType().name());
+               preparedStatement.setBlob(3, SerializationUtils.serializeLocationToStream(backpack.getLocation()));
+               preparedStatement.setInt(4, backpack.getOutputUpgrade());
+               preparedStatement.setInt(5, backpack.getInputUpgrade());
+               preparedStatement.setBoolean(6, backpack.isShowingNameAbove());
+               preparedStatement.setString(7, backpack.getName());
 
-               if(backPack.getOwner() == null){
+               if(backpack.getOwner() == null){
                    preparedStatement.setNull(8, Types.VARCHAR);
                }    else{
-                   preparedStatement.setString(8, backPack.getOwner().toString());
+                   preparedStatement.setString(8, backpack.getOwner().toString());
                }
 
-               preparedStatement.setBlob(9, SerializationUtils.serializeBackpackInventory(backPack.getFirstPage()));
-               preparedStatement.setBlob(10, SerializationUtils.serializeBackpackInventory(backPack.getSecondPage()));
-               preparedStatement.setBlob(11, SerializationUtils.serializeUpgradesIds(backPack));
+               preparedStatement.setBlob(9, SerializationUtils.serializeBackpackInventory(backpack.getFirstPage()));
+               preparedStatement.setBlob(10, SerializationUtils.serializeBackpackInventory(backpack.getSecondPage()));
+               preparedStatement.setBlob(11, SerializationUtils.serializeUpgradesIds(backpack));
                preparedStatement.execute();
            }
            connection.close();
@@ -309,36 +309,36 @@ public class MySQLProvider extends StorageProvider{
            ResultSet backpackSet = statement.executeQuery("SELECT * FROM backpacks;");
 
            while(backpackSet.next()){
-               BackPack backPack = new BackPack(BackpackType.valueOf(backpackSet.getString("bpType")), backpackSet.getInt("id"));
+               Backpack backpack = new Backpack(BackpackType.valueOf(backpackSet.getString("bpType")), backpackSet.getInt("id"));
 
                if(SerializationUtils.deserializeLocationFromStream(backpackSet.getBlob("loc").getBinaryStream()) == null){
-                   backPack.setLocation(null);
+                   backpack.setLocation(null);
                }
 
                else{
-                   backPack.setLocation(SerializationUtils.deserializeLocationFromStream(backpackSet.getBlob("loc").getBinaryStream()));
-                   Main.backPackManager.getBackpacksPlacedLocations().put(backPack.getLocation(), backPack.getId());
+                   backpack.setLocation(SerializationUtils.deserializeLocationFromStream(backpackSet.getBlob("loc").getBinaryStream()));
+                   Main.backpackManager.getBackpacksPlacedLocations().put(backpack.getLocation(), backpack.getId());
                }
 
-               backPack.setOutputUpgrade(backpackSet.getInt("outputId"));
-               backPack.setInputUpgrade(backpackSet.getInt("inputId"));
-               backPack.setShowNameAbove(backpackSet.getBoolean("shownameabove"));
-               backPack.setName(backpackSet.getString("bpname"));
+               backpack.setOutputUpgrade(backpackSet.getInt("outputId"));
+               backpack.setInputUpgrade(backpackSet.getInt("inputId"));
+               backpack.setShowNameAbove(backpackSet.getBoolean("shownameabove"));
+               backpack.setName(backpackSet.getString("bpname"));
 
                if(backpackSet.getString("owner") != null){
-                   backPack.setOwner(UUID.fromString(backpackSet.getString("owner")));
+                   backpack.setOwner(UUID.fromString(backpackSet.getString("owner")));
                }
 
-               SerializationUtils.deserializeItemsToInventory(backpackSet.getBlob("firstPage").getBinaryStream(), backPack.getFirstPage());
-               SerializationUtils.deserializeItemsToInventory(backpackSet.getBlob("secondPage").getBinaryStream(), backPack.getSecondPage());
-               SerializationUtils.deserializeUpgradesIds(backpackSet.getBlob("upgradesIds").getBinaryStream(), backPack);
+               SerializationUtils.deserializeItemsToInventory(backpackSet.getBlob("firstPage").getBinaryStream(), backpack.getFirstPage());
+               SerializationUtils.deserializeItemsToInventory(backpackSet.getBlob("secondPage").getBinaryStream(), backpack.getSecondPage());
+               SerializationUtils.deserializeUpgradesIds(backpackSet.getBlob("upgradesIds").getBinaryStream(), backpack);
 
-               Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
+               Main.backpackManager.getBackpacks().put(backpack.getId(), backpack);
 
-               int id = backPack.getId();
-               if(Main.backPackManager.getLastBackpackID() == 0) Main.backPackManager.setLastBackpackID(id);
-               if(Main.backPackManager.getLastBackpackID() < id){
-                   Main.backPackManager.setLastBackpackID(id);
+               int id = backpack.getId();
+               if(Main.backpackManager.getLastBackpackID() == 0) Main.backpackManager.setLastBackpackID(id);
+               if(Main.backpackManager.getLastBackpackID() < id){
+                   Main.backpackManager.setLastBackpackID(id);
                }
 
                Main.debugMessage("loaded backpack " + id);

@@ -1,8 +1,6 @@
 package br.com.backpacks.upgrades;
 
-import br.com.backpacks.utils.Upgrade;
-import br.com.backpacks.utils.UpgradeType;
-import br.com.backpacks.utils.menu.ItemCreator;
+import br.com.backpacks.menu.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;

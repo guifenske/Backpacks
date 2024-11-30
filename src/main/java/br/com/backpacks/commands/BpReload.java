@@ -1,7 +1,7 @@
 package br.com.backpacks.commands;
 
 import br.com.backpacks.AutoSaveManager;
-import br.com.backpacks.Config;
+import br.com.backpacks.utils.Config;
 import br.com.backpacks.Main;
 import br.com.backpacks.backup.BackupHandler;
 import br.com.backpacks.storage.StorageManager;

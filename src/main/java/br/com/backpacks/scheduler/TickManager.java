@@ -1,4 +1,4 @@
-package br.com.backpacks.utils.scheduler;
+package br.com.backpacks.scheduler;
 
 import br.com.backpacks.Main;
 import org.bukkit.Bukkit;

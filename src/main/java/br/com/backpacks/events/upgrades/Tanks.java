@@ -2,9 +2,9 @@ package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.upgrades.TanksUpgrade;
-import br.com.backpacks.utils.UpgradeType;
-import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.upgrades.UpgradeType;
+import br.com.backpacks.backpack.Backpack;
+import br.com.backpacks.backpack.BackpackAction;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -23,9 +23,9 @@ public class Tanks implements Listener {
     private void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGTANKS)) return;
         BackpackAction.clearPlayerAction(event.getPlayer());
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
+        Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(event.getPlayer());
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
-            backPack.open((Player) event.getPlayer());
+            backpack.open((Player) event.getPlayer());
         }, 1L);
     }
 
@@ -33,8 +33,8 @@ public class Tanks implements Listener {
     private void onDrag(InventoryDragEvent event){
         if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGTANKS)) return;
         if(!event.getRawSlots().contains(12) && !event.getRawSlots().contains(14)) return;
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-        TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.LIQUID_TANK);
+        Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(event.getWhoClicked());
+        TanksUpgrade tanksUpgrade = (TanksUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.LIQUID_TANK);
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
             generalLogic(tanksUpgrade, 1);
             generalLogic(tanksUpgrade, 2);
@@ -49,15 +49,15 @@ public class Tanks implements Listener {
 
         switch (event.getRawSlot()){
             case 12 -> {
-                BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-                TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.LIQUID_TANK);
+                Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(event.getWhoClicked());
+                TanksUpgrade tanksUpgrade = (TanksUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.LIQUID_TANK);
                 Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
                     generalLogic(tanksUpgrade, 1);
                 }, 1L);
             }
             case 14 ->{
-                BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-                TanksUpgrade tanksUpgrade = (TanksUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.LIQUID_TANK);
+                Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(event.getWhoClicked());
+                TanksUpgrade tanksUpgrade = (TanksUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.LIQUID_TANK);
                 Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
                     generalLogic(tanksUpgrade, 2);
                 }, 1L);

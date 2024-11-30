@@ -2,7 +2,7 @@ package br.com.backpacks.events.backpacks;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
-import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.backpack.Backpack;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Barrel;
@@ -29,17 +29,17 @@ public class BackpackInteract implements Listener {
         }
 
         if(event.getAction().equals(RIGHT_CLICK_BLOCK) && event.getClickedBlock().getType().equals(Material.BARREL)){
-            if(Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
+            if(Main.backpackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
 
             event.setCancelled(true);
-            if(Main.backPackManager.canOpen()){
-                BackPack backPack = Main.backPackManager.getBackpackFromLocation(event.getClickedBlock().getLocation());
-                backPack.open(player);
+            if(Main.backpackManager.canOpen()){
+                Backpack backpack = Main.backpackManager.getBackpackFromLocation(event.getClickedBlock().getLocation());
+                backpack.open(player);
 
-                Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
+                Barrel barrel = (Barrel) backpack.getLocation().getBlock().getState();
                 barrel.open();
 
-                backPack.setIsBlock(true);
+                backpack.setIsBlock(true);
                 player.getWorld().playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
             }
             return;
@@ -56,12 +56,12 @@ public class BackpackInteract implements Listener {
         }
 
         event.setCancelled(true);
-        if(Main.backPackManager.canOpen()) {
-            BackPack backPack = Main.backPackManager.getBackpackFromId(event.getItem().getItemMeta().getPersistentDataContainer().get(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER));
-            if(backPack == null) return;
-            backPack.setIsBlock(false);
+        if(Main.backpackManager.canOpen()) {
+            Backpack backpack = Main.backpackManager.getBackpackFromId(event.getItem().getItemMeta().getPersistentDataContainer().get(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER));
+            if(backpack == null) return;
+            backpack.setIsBlock(false);
 
-            backPack.open(player);
+            backpack.open(player);
             player.getWorld().playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
         }
     }

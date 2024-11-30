@@ -1,13 +1,13 @@
-package br.com.backpacks.utils.menu.backpacksMenus;
+package br.com.backpacks.menu.backpacksMenus;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesUtils;
-import br.com.backpacks.utils.Upgrade;
-import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.backpacks.BackpackAction;
-import br.com.backpacks.utils.menu.Button;
-import br.com.backpacks.utils.menu.ItemCreator;
-import br.com.backpacks.utils.menu.Menu;
+import br.com.backpacks.upgrades.Upgrade;
+import br.com.backpacks.backpack.Backpack;
+import br.com.backpacks.backpack.BackpackAction;
+import br.com.backpacks.menu.Button;
+import br.com.backpacks.menu.ItemCreator;
+import br.com.backpacks.menu.Menu;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,15 +18,15 @@ import java.util.List;
 
 public class UpgradesEditInputOutputMenu extends Menu {
 
-    public UpgradesEditInputOutputMenu(int size, String title, BackPack backPack) {
-        super(size, title, backPack);
+    public UpgradesEditInputOutputMenu(int size, String title, Backpack backpack) {
+        super(size, title, backpack);
         refreshMenu();
     }
 
     public void refreshMenu(){
         ItemStack blankItem = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE, " ").build();
 
-        for(int i = 0; i < backPack.getType().getMaxUpgrades(); i++){
+        for(int i = 0; i < backpack.getType().getMaxUpgrades(); i++){
             addButton(new Button(i) {
                 @Override
                 public ItemStack getItem() {
@@ -40,7 +40,7 @@ public class UpgradesEditInputOutputMenu extends Menu {
             });
         }
 
-        for(int i = backPack.getType().getMaxUpgrades(); i < 9; i++){
+        for(int i = backpack.getType().getMaxUpgrades(); i < 9; i++){
             addButton(new Button(i) {
                 @Override
                 public ItemStack getItem() {
@@ -55,9 +55,9 @@ public class UpgradesEditInputOutputMenu extends Menu {
         }
 
         int i = 0;
-        List<Upgrade> upgrades = backPack.getBackpackUpgrades();
+        List<Upgrade> upgrades = backpack.getBackpackUpgrades();
 
-        if (backPack.getBackpackUpgrades().isEmpty()) {
+        if (backpack.getBackpackUpgrades().isEmpty()) {
             return;
         }
 
@@ -75,12 +75,12 @@ public class UpgradesEditInputOutputMenu extends Menu {
                 @Override
                 public void onClick(Player player) {
                     if(BackpackAction.getAction(player).equals(BackpackAction.Action.EDITOUTPUT)){
-                        backPack.setOutputUpgrade(upgrade.getId());
+                        backpack.setOutputUpgrade(upgrade.getId());
                         player.closeInventory();
                         return;
                     }
 
-                    backPack.setInputUpgrade(upgrade.getId());
+                    backpack.setInputUpgrade(upgrade.getId());
                     player.closeInventory();
                 }
             });
@@ -94,7 +94,7 @@ public class UpgradesEditInputOutputMenu extends Menu {
         BackpackAction.clearPlayerAction(player);
 
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
-            backPack.open(player);
+            backpack.open(player);
         }, 1L);
     }
 

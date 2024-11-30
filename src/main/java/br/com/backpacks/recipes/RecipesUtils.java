@@ -2,10 +2,10 @@ package br.com.backpacks.recipes;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.upgrades.*;
-import br.com.backpacks.utils.Upgrade;
-import br.com.backpacks.utils.UpgradeManager;
-import br.com.backpacks.utils.UpgradeType;
-import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.upgrades.Upgrade;
+import br.com.backpacks.upgrades.UpgradeManager;
+import br.com.backpacks.upgrades.UpgradeType;
+import br.com.backpacks.backpack.Backpack;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -16,21 +16,21 @@ import java.util.List;
 
 public class RecipesUtils {
 
-    public static BackPack getBackpackFromItem(ItemStack itemStack){
+    public static Backpack getBackpackFromItem(ItemStack itemStack){
         ItemMeta meta = itemStack.getItemMeta();
         if(!meta.getPersistentDataContainer().has(BackpackRecipes.IS_BACKPACK)) return null;
 
-        return Main.backPackManager.getBackpackFromId(meta.getPersistentDataContainer().get(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER));
+        return Main.backpackManager.getBackpackFromId(meta.getPersistentDataContainer().get(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER));
     }
 
-    public static ItemStack getItemFromBackpack(BackPack backPack) {
+    public static ItemStack getItemFromBackpack(Backpack backpack) {
         ItemStack itemStack = new ItemStack(Material.BARREL);
         ItemMeta meta = itemStack.getItemMeta();
         
-        meta.setDisplayName(backPack.getName());
+        meta.setDisplayName(backpack.getName());
         meta.getPersistentDataContainer().set(BackpackRecipes.IS_BACKPACK, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER, backPack.getId());
-        meta.getPersistentDataContainer().set(backPack.getType().getKey(), PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER, backpack.getId());
+        meta.getPersistentDataContainer().set(backpack.getType().getKey(), PersistentDataType.INTEGER, 1);
 
         itemStack.setItemMeta(meta);
         return itemStack;

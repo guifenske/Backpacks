@@ -1,13 +1,12 @@
 package br.com.backpacks.storage;
 
 import br.com.backpacks.recipes.BackpackRecipes;
-import br.com.backpacks.utils.UpgradeManager;
-import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.upgrades.UpgradeManager;
+import br.com.backpacks.backpack.Backpack;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
@@ -148,17 +147,17 @@ public class SerializationUtils {
         return itemStack;
     }
 
-    public static ByteArrayInputStream serializeUpgradesIds(BackPack backPack) throws IOException {
+    public static ByteArrayInputStream serializeUpgradesIds(Backpack backpack) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
-        if(backPack.getUpgradesIds().isEmpty()){
+        if(backpack.getUpgradesIds().isEmpty()){
             dataOutput.writeInt(0);
             dataOutput.close();
             return new ByteArrayInputStream(outputStream.toByteArray());
         }
 
-        dataOutput.writeInt(backPack.getUpgradesIds().size());
-        for(Integer upgrade : backPack.getUpgradesIds()){
+        dataOutput.writeInt(backpack.getUpgradesIds().size());
+        for(Integer upgrade : backpack.getUpgradesIds()){
             dataOutput.writeInt(upgrade);
         }
 
@@ -166,7 +165,7 @@ public class SerializationUtils {
         return new ByteArrayInputStream(outputStream.toByteArray());
     }
 
-    public static void deserializeUpgradesIds(InputStream inputStream, BackPack backPack) throws IOException, ClassNotFoundException {
+    public static void deserializeUpgradesIds(InputStream inputStream, Backpack backpack) throws IOException, ClassNotFoundException {
         if (inputStream == null || inputStream.available() == 0) return;
 
         BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
@@ -195,7 +194,7 @@ public class SerializationUtils {
             list.add(id);
         }
 
-        backPack.setUpgradesIds(list);
+        backpack.setUpgradesIds(list);
         dataInput.close();
     }
 

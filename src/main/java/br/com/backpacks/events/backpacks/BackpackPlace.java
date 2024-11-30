@@ -2,7 +2,7 @@ package br.com.backpacks.events.backpacks;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
-import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.backpack.Backpack;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -28,13 +28,13 @@ public class  BackpackPlace implements Listener {
             return;
         }
 
-        if(!Main.backPackManager.canOpen()){
+        if(!Main.backpackManager.canOpen()){
             event.setCancelled(true);
             return;
         }
 
-        BackPack backPack = Main.backPackManager.getBackpackFromId(itemData.get(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER));
-        if (backPack == null) return;
+        Backpack backpack = Main.backpackManager.getBackpackFromId(itemData.get(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER));
+        if (backpack == null) return;
 
         //enforce removal of the item from the player's inventory
         //for some reason, Inventory.remove() doesn't remove from offHand slot.
@@ -45,7 +45,7 @@ public class  BackpackPlace implements Listener {
             if(event.getPlayer().getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_BACKPACK, PersistentDataType.INTEGER)){
                 int id = event.getPlayer().getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().get(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER);
 
-                if(backPack.getId() == id){
+                if(backpack.getId() == id){
                     event.getPlayer().getInventory().setItemInOffHand(null);
                 }
             }
@@ -53,16 +53,16 @@ public class  BackpackPlace implements Listener {
         }
 
         event.getPlayer().getInventory().remove(event.getItemInHand());
-        backPack.setIsBlock(true);
-        backPack.setOwner(null);
+        backpack.setIsBlock(true);
+        backpack.setOwner(null);
         Location backpackLocation = event.getBlockPlaced().getLocation();
-        backPack.setLocation(backpackLocation);
+        backpack.setLocation(backpackLocation);
 
         //we need to do this to trigger the hopper event
-        backPack.updateBarrelBlock();
+        backpack.updateBarrelBlock();
 
-        backPack.getConfigMenu().refreshMenu();
+        backpack.getConfigMenu().refreshMenu();
 
-        Main.backPackManager.getBackpacksPlacedLocations().put(backpackLocation, backPack.getId());
+        Main.backpackManager.getBackpacksPlacedLocations().put(backpackLocation, backpack.getId());
     }
 }

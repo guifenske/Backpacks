@@ -1,4 +1,4 @@
-package br.com.backpacks.utils.menu;
+package br.com.backpacks.menu;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

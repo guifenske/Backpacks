@@ -3,9 +3,9 @@ package br.com.backpacks.events.upgrades;
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.upgrades.AutoFeedUpgrade;
-import br.com.backpacks.utils.UpgradeType;
-import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.upgrades.UpgradeType;
+import br.com.backpacks.backpack.Backpack;
+import br.com.backpacks.backpack.BackpackAction;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -30,18 +30,18 @@ public class AutoFeed implements Listener {
     private static void tick(FoodLevelChangeEvent event){
         Player player = (Player) event.getEntity();
         if(!player.getPersistentDataContainer().has(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER)) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER));
+        Backpack backpack = Main.backpackManager.getBackpackFromId(player.getPersistentDataContainer().get(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER));
 
-        if(backPack.getFirstUpgradeFromType(UpgradeType.AUTOFEED) == null) return;
-        AutoFeedUpgrade upgrade = (AutoFeedUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.AUTOFEED);
+        if(backpack.getFirstUpgradeFromType(UpgradeType.AUTOFEED) == null) return;
+        AutoFeedUpgrade upgrade = (AutoFeedUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.AUTOFEED);
 
-        if(!upgrade.isEnabled() || backPack.getBackpackItems().isEmpty()) return;
+        if(!upgrade.isEnabled() || backpack.getBackpackItems().isEmpty()) return;
         int need = 20 - player.getFoodLevel();
 
         ItemStack lesserHungerPointsItem = null;
         ItemStack optionalFood = null;
 
-        for(ItemStack itemStack : backPack.getBackpackItems()){
+        for(ItemStack itemStack : backpack.getBackpackItems()){
             if(!checkFood(itemStack)) continue;
             int hungerPoints = hungerPointsPerFood(itemStack);
 
@@ -98,8 +98,8 @@ public class AutoFeed implements Listener {
         if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGAUTOFEED)) return;
         event.setCancelled(true);
         if(event.getRawSlot() == 13){
-            BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-            AutoFeedUpgrade upgrade = (AutoFeedUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.AUTOFEED);
+            Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(event.getWhoClicked());
+            AutoFeedUpgrade upgrade = (AutoFeedUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.AUTOFEED);
             upgrade.setEnabled(!upgrade.isEnabled());
             upgrade.updateInventory();
         }
@@ -108,12 +108,12 @@ public class AutoFeed implements Listener {
     @EventHandler
     private static void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGAUTOFEED)) return;
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
+        Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(event.getPlayer());
         BackpackAction.clearPlayerAction(event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
-                backPack.open((Player) event.getPlayer());
+                backpack.open((Player) event.getPlayer());
             }
         }.runTaskLater(Main.getMain(), 1L);
     }

@@ -2,9 +2,9 @@ package br.com.backpacks.commands;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesUtils;
-import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.backpacks.BackpackType;
-import br.com.backpacks.utils.backpacks.RandomBackpackBuilder;
+import br.com.backpacks.backpack.Backpack;
+import br.com.backpacks.backpack.BackpackType;
+import br.com.backpacks.backpack.RandomBackpackBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -44,26 +44,26 @@ public class BpGive implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        BackPack backPack;
+        Backpack backpack;
 
         if(!args[1].equalsIgnoreCase("RANDOM")){
             try{
                 BackpackType backpackType = BackpackType.valueOf(args[1]);
-                backPack = new BackPack(backpackType, Main.backPackManager.getLastBackpackID() + 1);
+                backpack = new Backpack(backpackType, Main.backpackManager.getLastBackpackID() + 1);
             }   catch (IllegalArgumentException e){
                 sender.sendMessage(Main.getMain().PREFIX + "§cBackpack type not found!");
                 return true;
             }
         }   else{
-            backPack = new RandomBackpackBuilder("Random Backpack", Main.backPackManager.getLastBackpackID() + 1).generateBackpack();
+            backpack = new RandomBackpackBuilder("Random Backpack", Main.backpackManager.getLastBackpackID() + 1).generateBackpack();
         }
 
-        Main.backPackManager.getBackpacks().put(backPack.getId(), backPack);
-        Main.backPackManager.setLastBackpackID(Main.backPackManager.getLastBackpackID() + 1);
+        Main.backpackManager.getBackpacks().put(backpack.getId(), backpack);
+        Main.backpackManager.setLastBackpackID(Main.backpackManager.getLastBackpackID() + 1);
 
-        if(!target.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack)).isEmpty()){
+        if(!target.getInventory().addItem(RecipesUtils.getItemFromBackpack(backpack)).isEmpty()){
             sender.sendMessage(Main.getMain().PREFIX + "§cPlayer inventory is full! Dropped item on the ground.");
-            target.getWorld().dropItem(target.getLocation(), RecipesUtils.getItemFromBackpack(backPack));
+            target.getWorld().dropItem(target.getLocation(), RecipesUtils.getItemFromBackpack(backpack));
             return true;
         }
 

@@ -1,4 +1,4 @@
-package br.com.backpacks.utils.backpacks;
+package br.com.backpacks.backpack;
 
 import br.com.backpacks.Main;
 import org.bukkit.Location;
@@ -9,12 +9,12 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BackPackManager {
+public class BackpackManager {
     private boolean canBeOpen = true;
 
     private int lastBackpackID = 0;
 
-    private ConcurrentHashMap<Integer, BackPack> backpacks = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Integer, Backpack> backpacks = new ConcurrentHashMap<>();
 
     private final HashMap<UUID, Integer> currentBackpackId = new HashMap<>();
 
@@ -34,7 +34,7 @@ public class BackPackManager {
         return backpacksPlacedLocations;
     }
 
-    public ConcurrentHashMap<Integer, BackPack> getBackpacks() {
+    public ConcurrentHashMap<Integer, Backpack> getBackpacks() {
         return backpacks;
     }
 
@@ -46,7 +46,7 @@ public class BackPackManager {
         this.lastBackpackID = lastBackpackID;
     }
 
-    public BackPack getBackpackFromLocation(Location location) {
+    public Backpack getBackpackFromLocation(Location location) {
         if(!getBackpacksPlacedLocations().containsKey(location)) return null;
         return getBackpackFromId(backpacksPlacedLocations.get(location));
     }
@@ -63,47 +63,47 @@ public class BackPackManager {
         currentPage.remove(player.getUniqueId());
     }
 
-    public void setPlayerCurrentBackpack(Player player, BackPack backPack){
-        currentBackpackId.put(player.getUniqueId(), backPack.getId());
+    public void setPlayerCurrentBackpack(Player player, Backpack backpack){
+        currentBackpackId.put(player.getUniqueId(), backpack.getId());
     }
 
     public void clearPlayerCurrentBackpack(Player player){
         currentBackpackId.remove(player.getUniqueId());
     }
 
-    public BackPack getPlayerCurrentBackpack(Player player){
+    public Backpack getPlayerCurrentBackpack(Player player){
         return backpacks.get(currentBackpackId.get(player.getUniqueId()));
     }
 
-    public BackPack getPlayerCurrentBackpack(HumanEntity player){
+    public Backpack getPlayerCurrentBackpack(HumanEntity player){
         return backpacks.get(currentBackpackId.get(player.getUniqueId()));
     }
 
-    public BackPack getBackpackFromId(int id) {
+    public Backpack getBackpackFromId(int id) {
         if(backpacks.containsKey(id)) return backpacks.get(id);
         Main.getMain().getLogger().severe("Backpack with id " + id + " not found!");
         return null;
     }
 
-    public void setBackpacks(ConcurrentHashMap<Integer, BackPack> backpacks) {
+    public void setBackpacks(ConcurrentHashMap<Integer, Backpack> backpacks) {
         this.backpacks = backpacks;
     }
 
-    public void upgradeBackpack(BackPack backPack) {
-        if(backPack == null) return;
-        backpacks.remove(backPack.getId());
+    public void upgradeBackpack(Backpack backpack) {
+        if(backpack == null) return;
+        backpacks.remove(backpack.getId());
 
-        BackPack newBackpack = new BackPack(BackpackType.values()[backPack.getType().ordinal() + 1], backPack.getId());
-        newBackpack.setName(backPack.getName());
+        Backpack newBackpack = new Backpack(BackpackType.values()[backpack.getType().ordinal() + 1], backpack.getId());
+        newBackpack.setName(backpack.getName());
 
-        newBackpack.setUpgradesIds(backPack.getUpgradesIds());
-        newBackpack.setInputUpgrade(backPack.getInputUpgrade());
-        newBackpack.setOutputUpgrade(backPack.getOutputUpgrade());
+        newBackpack.setUpgradesIds(backpack.getUpgradesIds());
+        newBackpack.setInputUpgrade(backpack.getInputUpgrade());
+        newBackpack.setOutputUpgrade(backpack.getOutputUpgrade());
 
-        newBackpack.getFirstPage().setStorageContents(backPack.getStorageContentsFirstPage());
+        newBackpack.getFirstPage().setStorageContents(backpack.getStorageContentsFirstPage());
 
-        if(backPack.getSecondPage() != null){
-            newBackpack.getSecondPage().setStorageContents(backPack.getStorageContentsSecondPage());
+        if(backpack.getSecondPage() != null){
+            newBackpack.getSecondPage().setStorageContents(backpack.getStorageContentsSecondPage());
         }
 
         newBackpack.setConfigItems();

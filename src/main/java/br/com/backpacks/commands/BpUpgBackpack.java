@@ -2,7 +2,7 @@ package br.com.backpacks.commands;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.RecipesUtils;
-import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.backpack.Backpack;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -40,14 +40,14 @@ public class BpUpgBackpack implements CommandExecutor {
             return true;
         }
 
-        BackPack backPack = RecipesUtils.getBackpackFromItem(player.getInventory().getItemInMainHand());
+        Backpack backpack = RecipesUtils.getBackpackFromItem(player.getInventory().getItemInMainHand());
 
-        if(backPack == null){
+        if(backpack == null){
             player.sendMessage(Main.getMain().PREFIX + "Item in main hand isn't a backpack");
             return true;
         }
 
-        Main.backPackManager.upgradeBackpack(backPack);
+        Main.backpackManager.upgradeBackpack(backpack);
         player.sendMessage(Main.getMain().PREFIX + "Backpack upgraded successfully!");
 
         player.playSound(player, org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1, 1);

@@ -2,9 +2,9 @@ package br.com.backpacks.events.inventory;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
-import br.com.backpacks.utils.UpgradeType;
-import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.upgrades.UpgradeType;
+import br.com.backpacks.backpack.Backpack;
+import br.com.backpacks.backpack.BackpackAction;
 import org.bukkit.block.Barrel;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,51 +21,51 @@ public class OnCloseBackpack implements Listener {
 
         Player player = (Player) event.getPlayer();
 
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
-        shouldRemoveBackpack(event, backPack);
+        Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(event.getPlayer());
+        shouldRemoveBackpack(event, backpack);
 
-        backPack.getViewersIds().remove(event.getPlayer().getUniqueId());
-        if(backPack.getViewersIds().isEmpty()){
-            if(backPack.getLocation() != null){
-                Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
+        backpack.getViewersIds().remove(event.getPlayer().getUniqueId());
+        if(backpack.getViewersIds().isEmpty()){
+            if(backpack.getLocation() != null){
+                Barrel barrel = (Barrel) backpack.getLocation().getBlock().getState();
                 barrel.close();
             }
         }
 
-        Main.backPackManager.clearPlayerCurrentPage(player);
-        Main.backPackManager.clearPlayerCurrentBackpack(player);
+        Main.backpackManager.clearPlayerCurrentPage(player);
+        Main.backpackManager.clearPlayerCurrentBackpack(player);
     }
 
-    private void shouldRemoveBackpack(InventoryCloseEvent event, BackPack backPack) {
-        for(ItemStack itemStack : backPack.getFirstPage()){
+    private void shouldRemoveBackpack(InventoryCloseEvent event, Backpack backpack) {
+        for(ItemStack itemStack : backpack.getFirstPage()){
             if(itemStack == null) continue;
             if(!itemStack.hasItemMeta()) continue;
 
-            if(itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_BACKPACK) && !backPack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
+            if(itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_BACKPACK) && !backpack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
 
                 if(!event.getPlayer().getInventory().addItem(itemStack).isEmpty()){
                     event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
                     event.getPlayer().sendMessage("§cYour inventory is full, the backpack was dropped on the ground.");
                 }
 
-                backPack.getFirstPage().remove(itemStack);
+                backpack.getFirstPage().remove(itemStack);
             }
         }
 
-        if(backPack.getSecondPage() != null){
-            for(ItemStack itemStack : backPack.getSecondPage()){
+        if(backpack.getSecondPage() != null){
+            for(ItemStack itemStack : backpack.getSecondPage()){
 
                 if(itemStack == null) continue;
                 if(!itemStack.hasItemMeta()) continue;
 
-                if(itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_BACKPACK) && !backPack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
+                if(itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_BACKPACK) && !backpack.containsUpgradeType(UpgradeType.ENCAPSULATE)){
 
                     if(!event.getPlayer().getInventory().addItem(itemStack).isEmpty()){
                         event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
                         event.getPlayer().sendMessage("§cYour inventory is full, the backpack was dropped on the ground.");
                     }
 
-                    backPack.getSecondPage().remove(itemStack);
+                    backpack.getSecondPage().remove(itemStack);
                 }
 
             }

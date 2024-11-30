@@ -13,12 +13,13 @@ import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.recipes.UpgradesRecipes;
 import br.com.backpacks.storage.MySQLProvider;
 import br.com.backpacks.storage.StorageManager;
+import br.com.backpacks.utils.Config;
 import br.com.backpacks.utils.Constants;
-import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.backpacks.BackPackManager;
-import br.com.backpacks.utils.backpacks.BackpackAction;
-import br.com.backpacks.utils.scheduler.TickComponent;
-import br.com.backpacks.utils.scheduler.TickManager;
+import br.com.backpacks.backpack.Backpack;
+import br.com.backpacks.backpack.BackpackManager;
+import br.com.backpacks.backpack.BackpackAction;
+import br.com.backpacks.scheduler.TickComponent;
+import br.com.backpacks.scheduler.TickManager;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Barrel;
 import org.bukkit.entity.Player;
@@ -35,7 +36,7 @@ public final class Main extends JavaPlugin {
     public Instant start;
     public final String PREFIX = "§8[§6BackPacks§8] ";
     public final Object lock = new Object();
-    public static final BackPackManager backPackManager = new BackPackManager();
+    public static final BackpackManager backpackManager = new BackpackManager();
     private final TickManager tickManager = new TickManager();
 
     public static Main getMain() {
@@ -99,12 +100,12 @@ public final class Main extends JavaPlugin {
         tickManager.addAsyncComponent(new TickComponent(5) {
             @Override
             public void tick() {
-                for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
-                    if(backPack.getOwner() != null){
-                        VillagerBait.tick(Bukkit.getPlayer(backPack.getOwner()));
-                        Magnet.tick(Bukkit.getPlayer(backPack.getOwner()));
-                    }   else if(backPack.getLocation() != null){
-                        Magnet.tick(backPack);
+                for(Backpack backpack : Main.backpackManager.getBackpacks().values()){
+                    if(backpack.getOwner() != null){
+                        VillagerBait.tick(Bukkit.getPlayer(backpack.getOwner()));
+                        Magnet.tick(Bukkit.getPlayer(backpack.getOwner()));
+                    }   else if(backpack.getLocation() != null){
+                        Magnet.tick(backpack);
                     }
                 }
             }
@@ -164,10 +165,10 @@ public final class Main extends JavaPlugin {
 
                 if(player == null) continue;
 
-                BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(player);
+                Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(player);
 
-                if(backPack.getLocation() != null){
-                    Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
+                if(backpack.getLocation() != null){
+                    Barrel barrel = (Barrel) backpack.getLocation().getBlock().getState();
                     barrel.close();
                 }
 

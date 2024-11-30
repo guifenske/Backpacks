@@ -2,8 +2,8 @@ package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
-import br.com.backpacks.utils.UpgradeType;
-import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.upgrades.UpgradeType;
+import br.com.backpacks.backpack.Backpack;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.*;
@@ -17,15 +17,15 @@ public class Magnet implements Listener {
         if(player == null) return;
 
         if(!player.getPersistentDataContainer().has(BackpackRecipes.HAS_BACKPACK)) return;
-        BackPack backPack = Main.backPackManager.getBackpackFromId(player.getPersistentDataContainer().get(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER));
-        if(backPack.getFirstUpgradeFromType(UpgradeType.MAGNET) == null) return;
+        Backpack backpack = Main.backpackManager.getBackpackFromId(player.getPersistentDataContainer().get(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER));
+        if(backpack.getFirstUpgradeFromType(UpgradeType.MAGNET) == null) return;
 
         pullItemsNearby(player, player.getLocation());
     }
 
-    public static void tick(BackPack backPack){
-        if(backPack.getFirstUpgradeFromType(UpgradeType.MAGNET) == null) return;
-        pullItemsNearby(null, backPack.getLocation().clone());
+    public static void tick(Backpack backpack){
+        if(backpack.getFirstUpgradeFromType(UpgradeType.MAGNET) == null) return;
+        pullItemsNearby(null, backpack.getLocation().clone());
     }
 
     private static void pullItemsNearby(Player player, Location location) {

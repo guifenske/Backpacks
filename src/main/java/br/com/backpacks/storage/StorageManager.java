@@ -1,18 +1,20 @@
 package br.com.backpacks.storage;
 
 import br.com.backpacks.AutoSaveManager;
-import br.com.backpacks.Config;
+import br.com.backpacks.utils.Config;
 import br.com.backpacks.Main;
 import br.com.backpacks.backup.BackupHandler;
-import br.com.backpacks.utils.UpgradeManager;
-import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.scheduler.TickComponent;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
+import br.com.backpacks.recipes.BackpackRecipes;
+import br.com.backpacks.upgrades.UpgradeManager;
+import br.com.backpacks.backpack.Backpack;
+import br.com.backpacks.scheduler.TickComponent;
+import org.bukkit.block.Barrel;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.UUID;
 
 public class StorageManager {
     private static StorageProvider provider;
@@ -26,7 +28,7 @@ public class StorageManager {
     }
 
     public static void saveAll(boolean async) {
-        if(provider == null || (Main.backPackManager.getBackpacks().isEmpty() && UpgradeManager.getUpgrades().isEmpty())){
+        if(provider == null || (Main.backpackManager.getBackpacks().isEmpty() && UpgradeManager.getUpgrades().isEmpty())){
 
             Main.getMain().saveComplete = true;
             synchronized (Main.getMain().lock){
@@ -94,16 +96,12 @@ public class StorageManager {
 
         Main.getMain().setAutoSaveManager(autoSaveManager);
 
-        for(BackPack backPack : Main.backPackManager.getBackpacks().values()){
-            if(backPack.isShowingNameAbove()){
-                for(Entity entity : backPack.getLocation().getChunk().getEntities()){
-                    if(entity instanceof ArmorStand){
-                        if(entity.getLocation().subtract(0, 1, 0).getBlock().getLocation().equals(backPack.getLocation())){
-                            backPack.setMarker(entity.getUniqueId());
-                            break;
-                        }
-                    }
-                }
+        for(Backpack backpack : Main.backpackManager.getBackpacks().values()){
+            if(backpack.isShowingNameAbove()){
+                Barrel backpackBlock = (Barrel) backpack.getLocation().getBlock().getState();
+                UUID markerId = UUID.fromString(backpackBlock.getPersistentDataContainer().get(BackpackRecipes.NAMESPACE_BACKPACK_MARKER_ID, PersistentDataType.STRING));
+
+                backpack.setMarker(markerId);
             }
         }
 

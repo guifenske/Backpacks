@@ -1,8 +1,8 @@
 package br.com.backpacks.events.inventory;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.backpack.Backpack;
+import br.com.backpacks.backpack.BackpackAction;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,38 +16,38 @@ public class OnClickBackpack implements Listener {
         if(event.getClickedInventory() == null) return;
         if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.OPENED)) return;
         Player player = (Player) event.getWhoClicked();
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(player);
-        if(backPack == null) return;
+        Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(player);
+        if(backpack == null) return;
 
         if(event.getRawSlot() == event.getInventory().getSize() - 1){
             event.setCancelled(true);
             BackpackAction.clearPlayerAction(player);
 
-            Main.backPackManager.clearPlayerCurrentPage(player);
+            Main.backpackManager.clearPlayerCurrentPage(player);
 
-            backPack.getConfigMenu().displayTo(player);
+            backpack.getConfigMenu().displayTo(player);
             Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> BackpackAction.setAction(player, BackpackAction.Action.CONFIGMENU), 1L);
         }
 
         else if(event.getRawSlot() == event.getInventory().getSize() - 2){
-            if(backPack.getSecondPageSize() == 0) return;
+            if(backpack.getSecondPageSize() == 0) return;
             event.setCancelled(true);
 
-            switch (Main.backPackManager.getPlayerCurrentPage(player)) {
+            switch (Main.backpackManager.getPlayerCurrentPage(player)) {
                 case 1 ->{
                     BackpackAction.clearPlayerAction(player);
-                    backPack.openSecondPage(player);
+                    backpack.openSecondPage(player);
                     event.setCancelled(true);
                 }
 
                 case 2 -> {
                     BackpackAction.clearPlayerAction(player);
-                    backPack.open(player);
+                    backpack.open(player);
                     event.setCancelled(true);
                 }
             }
         }   else{
-            Bukkit.getScheduler().runTaskLater(Main.getMain(), backPack::updateBarrelBlock, 1L);
+            Bukkit.getScheduler().runTaskLater(Main.getMain(), backpack::updateBarrelBlock, 1L);
         }
     }
 }

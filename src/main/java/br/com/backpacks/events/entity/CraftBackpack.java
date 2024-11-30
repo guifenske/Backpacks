@@ -4,10 +4,9 @@ import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.recipes.UpgradesRecipes;
-import br.com.backpacks.utils.UpgradeManager;
-import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.backpacks.BackpackType;
-import org.bukkit.Bukkit;
+import br.com.backpacks.upgrades.UpgradeManager;
+import br.com.backpacks.backpack.Backpack;
+import br.com.backpacks.backpack.BackpackType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -83,21 +82,21 @@ public class CraftBackpack implements Listener {
         if(!event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_BACKPACK)) return;
 
         if(event.getRecipe().getResult().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.NAMESPACE_LEATHER_BACKPACK, PersistentDataType.INTEGER)){
-            int id = Main.backPackManager.getLastBackpackID() + 1;
+            int id = Main.backpackManager.getLastBackpackID() + 1;
             player.discoverRecipe(BackpackRecipes.NAMESPACE_IRON_BACKPACK);
             player.discoverRecipe(UpgradesRecipes.CRAFTING_GRID);
 
-            BackPack backPack =  new BackPack(BackpackType.LEATHER, id);
+            Backpack backpack =  new Backpack(BackpackType.LEATHER, id);
             updateResult(event, id);
 
-            Main.backPackManager.getBackpacks().put(id, backPack);
-            Main.backPackManager.setLastBackpackID(Main.backPackManager.getLastBackpackID() + 1);
+            Main.backpackManager.getBackpacks().put(id, backpack);
+            Main.backpackManager.setLastBackpackID(Main.backpackManager.getLastBackpackID() + 1);
 
             return;
         }
 
-        BackPack backpackInMatrix = getBackpackInMatrix(event);
-        BackPack desiredBackpack = RecipesUtils.getBackpackFromItem(event.getInventory().getResult());
+        Backpack backpackInMatrix = getBackpackInMatrix(event);
+        Backpack desiredBackpack = RecipesUtils.getBackpackFromItem(event.getInventory().getResult());
 
         if(backpackInMatrix == null){
             player.sendMessage(DONTHAVEBACKPACKMSG);
@@ -107,14 +106,14 @@ public class CraftBackpack implements Listener {
 
         if(canUpgradeBackpack(event, backpackInMatrix, desiredBackpack.getType())){
             updateResult(event, backpackInMatrix.getId());
-            Main.backPackManager.upgradeBackpack(backpackInMatrix);
+            Main.backpackManager.upgradeBackpack(backpackInMatrix);
         }
     }
 
-    private static boolean canUpgradeBackpack(CraftItemEvent event, BackPack backPackInMatrix, BackpackType desiredType) {
+    private static boolean canUpgradeBackpack(CraftItemEvent event, Backpack backpackInMatrix, BackpackType desiredType) {
         switch (desiredType){
             case IRON -> {
-                if(!backPackInMatrix.getType().equals(BackpackType.LEATHER)){
+                if(!backpackInMatrix.getType().equals(BackpackType.LEATHER)){
                     event.getWhoClicked().sendMessage(NOTCORRECTTYPE);
                     event.setCancelled(true);
                     return false;
@@ -122,7 +121,7 @@ public class CraftBackpack implements Listener {
             }
 
             case GOLD -> {
-                if(!backPackInMatrix.getType().equals(BackpackType.IRON)){
+                if(!backpackInMatrix.getType().equals(BackpackType.IRON)){
                     event.getWhoClicked().sendMessage(NOTCORRECTTYPE);
                     event.setCancelled(true);
                     return false;
@@ -130,7 +129,7 @@ public class CraftBackpack implements Listener {
             }
 
             case LAPIS -> {
-                if(!backPackInMatrix.getType().equals(BackpackType.GOLD)){
+                if(!backpackInMatrix.getType().equals(BackpackType.GOLD)){
                     event.getWhoClicked().sendMessage(NOTCORRECTTYPE);
                     event.setCancelled(true);
                     return false;
@@ -138,7 +137,7 @@ public class CraftBackpack implements Listener {
             }
 
             case AMETHYST -> {
-                if(!backPackInMatrix.getType().equals(BackpackType.LAPIS)){
+                if(!backpackInMatrix.getType().equals(BackpackType.LAPIS)){
                     event.getWhoClicked().sendMessage(NOTCORRECTTYPE);
                     event.setCancelled(true);
                     return false;
@@ -146,7 +145,7 @@ public class CraftBackpack implements Listener {
             }
 
             case DIAMOND -> {
-                if(!backPackInMatrix.getType().equals(BackpackType.AMETHYST)){
+                if(!backpackInMatrix.getType().equals(BackpackType.AMETHYST)){
                     event.getWhoClicked().sendMessage(NOTCORRECTTYPE);
                     event.setCancelled(true);
                     return false;
@@ -154,7 +153,7 @@ public class CraftBackpack implements Listener {
             }
 
             case NETHERITE -> {
-                if(!backPackInMatrix.getType().equals(BackpackType.DIAMOND)){
+                if(!backpackInMatrix.getType().equals(BackpackType.DIAMOND)){
                     event.getWhoClicked().sendMessage(NOTCORRECTTYPE);
                     event.setCancelled(true);
                     return false;
@@ -165,13 +164,13 @@ public class CraftBackpack implements Listener {
         return true;
     }
 
-    private static BackPack getBackpackInMatrix(CraftItemEvent event){
+    private static Backpack getBackpackInMatrix(CraftItemEvent event){
         ItemStack backpack = event.getInventory().getItem(5);
         int id;
 
         if(backpack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_BACKPACK)){
             id = backpack.getItemMeta().getPersistentDataContainer().get(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER);
-            return Main.backPackManager.getBackpackFromId(id);
+            return Main.backpackManager.getBackpackFromId(id);
         }
 
         return null;

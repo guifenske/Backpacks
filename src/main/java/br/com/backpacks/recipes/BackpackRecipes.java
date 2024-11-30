@@ -10,19 +10,20 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Arrays;
 
 public class BackpackRecipes {
-    public static final NamespacedKey IS_BACKPACK = new NamespacedKey(Main.getMain(), "isbackpack");
-    public static final NamespacedKey BACKPACK_ID = new NamespacedKey(Main.getMain(), "backpackid");
-    public static final NamespacedKey HAS_BACKPACK = new NamespacedKey(Main.getMain(), "hasbackpack");
-    public static final NamespacedKey IS_CONFIG_ITEM = new NamespacedKey(Main.getMain(), "isconfigitem");
-    public static final NamespacedKey NAMESPACE_LEATHER_BACKPACK = new NamespacedKey(Main.getMain(), "leatherbackpack");
-    public static final NamespacedKey NAMESPACE_IRON_BACKPACK = new NamespacedKey(Main.getMain(), "ironbackpack");
-    public static final NamespacedKey NAMESPACE_GOLD_BACKPACK = new NamespacedKey(Main.getMain(), "goldbackpack");
-    public static final NamespacedKey NAMESPACE_LAPIS_BACKPACK = new NamespacedKey(Main.getMain(), "lapisbackpack");
-    public static final NamespacedKey NAMESPACE_AMETHYST_BACKPACK = new NamespacedKey(Main.getMain(), "amethystbackpack");
-    public static final NamespacedKey NAMESPACE_DRIED_BACKPACK = new NamespacedKey(Main.getMain(), "driedbackpack");
-    public static final NamespacedKey NAMESPACE_WET_BACKPACK = new NamespacedKey(Main.getMain(), "wetbackpack");
-    public static final NamespacedKey NAMESPACE_DIAMOND_BACKPACK = new NamespacedKey(Main.getMain(), "diamondbackpack");
-    public static final NamespacedKey NAMESPACE_NETHERITE_BACKPACK = new NamespacedKey(Main.getMain(), "netheritebackpack");
+    public static final NamespacedKey IS_BACKPACK = new NamespacedKey(Main.getMain(), "is_backpack");
+    public static final NamespacedKey BACKPACK_ID = new NamespacedKey(Main.getMain(), "backpack_id");
+    public static final NamespacedKey HAS_BACKPACK = new NamespacedKey(Main.getMain(), "has_backpack");
+    public static final NamespacedKey IS_CONFIG_ITEM = new NamespacedKey(Main.getMain(), "is_config_item");
+    public static final NamespacedKey NAMESPACE_LEATHER_BACKPACK = new NamespacedKey(Main.getMain(), "leather_backpack");
+    public static final NamespacedKey NAMESPACE_IRON_BACKPACK = new NamespacedKey(Main.getMain(), "iron_backpack");
+    public static final NamespacedKey NAMESPACE_GOLD_BACKPACK = new NamespacedKey(Main.getMain(), "gold_backpack");
+    public static final NamespacedKey NAMESPACE_LAPIS_BACKPACK = new NamespacedKey(Main.getMain(), "lapis_backpack");
+    public static final NamespacedKey NAMESPACE_AMETHYST_BACKPACK = new NamespacedKey(Main.getMain(), "amethyst_backpack");
+    public static final NamespacedKey NAMESPACE_DRIED_BACKPACK = new NamespacedKey(Main.getMain(), "dried_backpack");
+    public static final NamespacedKey NAMESPACE_WET_BACKPACK = new NamespacedKey(Main.getMain(), "wet_backpack");
+    public static final NamespacedKey NAMESPACE_DIAMOND_BACKPACK = new NamespacedKey(Main.getMain(), "diamond_backpack");
+    public static final NamespacedKey NAMESPACE_NETHERITE_BACKPACK = new NamespacedKey(Main.getMain(), "netherite_backpack");
+    public static final NamespacedKey NAMESPACE_BACKPACK_MARKER_ID = new NamespacedKey(Main.getMain(), "marker_id");
 
     public static Recipe leatherBackpackRecipe() {
         ItemStack backpack = new ItemStack(org.bukkit.Material.BARREL);

@@ -1,4 +1,4 @@
-package br.com.backpacks.utils.backpacks;
+package br.com.backpacks.backpack;
 
 import br.com.backpacks.recipes.BackpackRecipes;
 import org.bukkit.NamespacedKey;

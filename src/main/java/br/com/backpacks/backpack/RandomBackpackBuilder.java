@@ -1,22 +1,19 @@
-package br.com.backpacks.utils.backpacks;
+package br.com.backpacks.backpack;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.upgrades.*;
-import br.com.backpacks.utils.Upgrade;
-import br.com.backpacks.utils.UpgradeManager;
-import br.com.backpacks.utils.UpgradeType;
+import br.com.backpacks.upgrades.Upgrade;
+import br.com.backpacks.upgrades.UpgradeManager;
+import br.com.backpacks.upgrades.UpgradeType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.loot.LootContext;
 import org.bukkit.loot.LootTable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomBackpackBuilder {
@@ -30,30 +27,30 @@ public class RandomBackpackBuilder {
         this.id = id;
     }
 
-    public BackPack generateBackpack(){
+    public Backpack generateBackpack(){
         generateBackpackType();
 
         if(type.getSecondPageSize() == 0){
-            BackPack backPack = new BackPack(name, generateFistPage(), id, type);
-            backPack.setIsBlock(false);
+            Backpack backpack = new Backpack(name, generateFistPage(), id, type);
+            backpack.setIsBlock(false);
 
             if(shouldGenerateUpgrades()){
-                backPack.setUpgradesIds(generateUpgrades());
+                backpack.setUpgradesIds(generateUpgrades());
             }
 
-            Main.backPackManager.getBackpacks().put(id, backPack);
-            return backPack;
+            Main.backpackManager.getBackpacks().put(id, backpack);
+            return backpack;
         }
 
-        BackPack backPack = new BackPack(name, generateFistPage(), generateSecondPage(), id, type);
-        backPack.setIsBlock(false);
+        Backpack backpack = new Backpack(name, generateFistPage(), generateSecondPage(), id, type);
+        backpack.setIsBlock(false);
 
         if(shouldGenerateUpgrades()){
-            backPack.setUpgradesIds(generateUpgrades());
+            backpack.setUpgradesIds(generateUpgrades());
         }
 
-        Main.backPackManager.getBackpacks().put(id, backPack);
-        return backPack;
+        Main.backpackManager.getBackpacks().put(id, backpack);
+        return backpack;
     }
 
     private void generateBackpackType(){

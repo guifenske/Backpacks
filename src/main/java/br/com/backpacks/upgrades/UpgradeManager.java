@@ -1,4 +1,4 @@
-package br.com.backpacks.utils;
+package br.com.backpacks.upgrades;
 
 import java.util.concurrent.ConcurrentHashMap;
 

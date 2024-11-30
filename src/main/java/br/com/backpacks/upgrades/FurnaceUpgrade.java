@@ -1,9 +1,7 @@
 package br.com.backpacks.upgrades;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.utils.Upgrade;
-import br.com.backpacks.utils.UpgradeType;
-import br.com.backpacks.utils.scheduler.TickComponent;
+import br.com.backpacks.scheduler.TickComponent;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;

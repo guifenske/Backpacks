@@ -1,8 +1,8 @@
-package br.com.backpacks.utils;
+package br.com.backpacks.upgrades;
 
 
 import br.com.backpacks.recipes.UpgradesRecipes;
-import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.backpack.BackpackAction;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 

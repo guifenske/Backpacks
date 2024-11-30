@@ -1,11 +1,8 @@
 package br.com.backpacks;
 
 import br.com.backpacks.storage.StorageManager;
-import br.com.backpacks.utils.scheduler.TickComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitTask;
+import br.com.backpacks.scheduler.TickComponent;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class AutoSaveManager {

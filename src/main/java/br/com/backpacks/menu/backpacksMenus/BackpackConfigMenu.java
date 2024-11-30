@@ -1,4 +1,4 @@
-package br.com.backpacks.utils.menu.backpacksMenus;
+package br.com.backpacks.menu.backpacksMenus;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.events.upgrades.Furnace;
@@ -7,14 +7,14 @@ import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
-import br.com.backpacks.utils.Upgrade;
-import br.com.backpacks.utils.UpgradeManager;
-import br.com.backpacks.utils.UpgradeType;
-import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.backpacks.BackpackAction;
-import br.com.backpacks.utils.menu.Button;
-import br.com.backpacks.utils.menu.ItemCreator;
-import br.com.backpacks.utils.menu.Menu;
+import br.com.backpacks.upgrades.Upgrade;
+import br.com.backpacks.upgrades.UpgradeManager;
+import br.com.backpacks.upgrades.UpgradeType;
+import br.com.backpacks.backpack.Backpack;
+import br.com.backpacks.backpack.BackpackAction;
+import br.com.backpacks.menu.Button;
+import br.com.backpacks.menu.ItemCreator;
+import br.com.backpacks.menu.Menu;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Barrel;
@@ -31,8 +31,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BackpackConfigMenu extends Menu {
-    public BackpackConfigMenu(BackPack backPack){
-        super(54, "Config Menu", backPack);
+    public BackpackConfigMenu(Backpack backpack){
+        super(54, "Config Menu", backpack);
         refreshMenu();
     }
 
@@ -51,7 +51,7 @@ public class BackpackConfigMenu extends Menu {
 
         addUpgradesInView();
 
-        for(int i = backPack.getType().getMaxUpgrades(); i < inventory.getSize(); i++){
+        for(int i = backpack.getType().getMaxUpgrades(); i < inventory.getSize(); i++){
             addButton(new Button(i) {
                 @Override
                 public ItemStack getItem() {
@@ -64,14 +64,14 @@ public class BackpackConfigMenu extends Menu {
             });
         }
 
-        if(!backPack.isBlock()) {
+        if(!backpack.isBlock()) {
 
-            if(backPack.getOwner() != null){
+            if(backpack.getOwner() != null){
                 addButton(new Button(51) {
 
                     @Override
                     public ItemStack getItem() {
-                        if(backPack.isLocked()) {
+                        if(backpack.isLocked()) {
                             return unlock;
                         }
 
@@ -80,7 +80,7 @@ public class BackpackConfigMenu extends Menu {
 
                     @Override
                     public void onClick(Player player) {
-                        backPack.setLocked(!backPack.isLocked());
+                        backpack.setLocked(!backpack.isLocked());
                         refreshButton(this);
                     }
                 });
@@ -90,7 +90,7 @@ public class BackpackConfigMenu extends Menu {
                 @Override
                 public ItemStack getItem() {
 
-                    if (backPack.getOwner() != null) {
+                    if (backpack.getOwner() != null) {
                         return unequipBackpack;
                     }
 
@@ -99,29 +99,29 @@ public class BackpackConfigMenu extends Menu {
 
                 @Override
                 public void onClick(Player player) {
-                    if(backPack.isBlock())  return;
+                    if(backpack.isBlock())  return;
 
-                    if (backPack.getOwner() != null && backPack.getOwner().equals(player.getUniqueId())){
-                        player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backPack));
+                    if (backpack.getOwner() != null && backpack.getOwner().equals(player.getUniqueId())){
+                        player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backpack));
                         player.getPersistentDataContainer().remove(BackpackRecipes.HAS_BACKPACK);
 
-                        if(backPack.getFirstUpgradeFromType(UpgradeType.JUKEBOX) != null){
-                            JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
+                        if(backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX) != null){
+                            JukeboxUpgrade upgrade = (JukeboxUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
                             if(upgrade.getSound() != null){
                                 upgrade.clearLoopingTask();
                                 Jukebox.stopSound(player, upgrade);
                             }
                         }
 
-                        backPack.setOwner(null);
+                        backpack.setOwner(null);
                     }
 
-                    else if(backPack.getOwner() == null){
+                    else if(backpack.getOwner() == null){
                         if(player.getPersistentDataContainer().has(BackpackRecipes.HAS_BACKPACK)) return;
-                        backPack.removeBackpackItem(player);
+                        backpack.removeBackpackItem(player);
 
-                        player.getPersistentDataContainer().set(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER, backPack.getId());
-                        backPack.setOwner(player.getUniqueId());
+                        player.getPersistentDataContainer().set(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER, backpack.getId());
+                        backpack.setOwner(player.getUniqueId());
                     }
 
                     refreshMenu();
@@ -134,7 +134,7 @@ public class BackpackConfigMenu extends Menu {
                 @Override
                 public ItemStack getItem() {
 
-                    if(!backPack.isShowingNameAbove()){
+                    if(!backpack.isShowingNameAbove()){
                         return enableNameAbove;
                     }
 
@@ -143,27 +143,33 @@ public class BackpackConfigMenu extends Menu {
 
                 @Override
                 public void onClick(Player player) {
-                    if(!backPack.isShowingNameAbove()){
-                        ArmorStand marker = (ArmorStand) player.getWorld().spawnEntity(backPack.getLocation().clone().add(0.5, 1, 0.5), EntityType.ARMOR_STAND);
+                    if(!backpack.isShowingNameAbove()){
+                        ArmorStand marker = (ArmorStand) player.getWorld().spawnEntity(backpack.getLocation().clone().add(0.5, 1, 0.5), EntityType.ARMOR_STAND);
 
                         marker.setVisible(false);
                         marker.setSmall(true);
-                        marker.setCustomName(backPack.getName());
+                        marker.setCustomName(backpack.getName());
                         marker.setCustomNameVisible(true);
                         marker.setCollidable(false);
                         marker.setInvulnerable(true);
                         marker.setBasePlate(false);
                         marker.setMarker(true);
-                        marker.setPersistent(true);
+                        marker.setRemoveWhenFarAway(false);
 
-                        backPack.setMarker(marker.getUniqueId());
-                        backPack.setShowNameAbove(true);
+                        backpack.setMarker(marker.getUniqueId());
+                        backpack.setShowNameAbove(true);
+
+                        Barrel backpackBlock = (Barrel) backpack.getLocation().getBlock().getState();
+                        backpackBlock.getPersistentDataContainer().set(BackpackRecipes.NAMESPACE_BACKPACK_MARKER_ID, PersistentDataType.STRING, marker.getUniqueId().toString());
                     }
 
                     else{
-                        backPack.getMarkerEntity().remove();
-                        backPack.setMarker(null);
-                        backPack.setShowNameAbove(false);
+                        backpack.getMarkerEntity().remove();
+                        backpack.setMarker(null);
+                        backpack.setShowNameAbove(false);
+
+                        Barrel backpackBlock = (Barrel) backpack.getLocation().getBlock().getState();
+                        backpackBlock.getPersistentDataContainer().remove(BackpackRecipes.NAMESPACE_BACKPACK_MARKER_ID);
                     }
 
                     refreshButton(this);
@@ -180,7 +186,7 @@ public class BackpackConfigMenu extends Menu {
             @Override
             public void onClick(Player player) {
                 BackpackAction.clearPlayerAction(player);
-                backPack.getUpgradesMenu().displayTo(player);
+                backpack.getUpgradesMenu().displayTo(player);
                 BackpackAction.setAction(player, BackpackAction.Action.UPGMENU);
             }
         });
@@ -206,7 +212,7 @@ public class BackpackConfigMenu extends Menu {
             @Override
             public void onClick(Player player) {
                 BackpackAction.clearPlayerAction(player);
-                backPack.getUpgradesInputOutputMenu().displayTo(player);
+                backpack.getUpgradesInputOutputMenu().displayTo(player);
                 BackpackAction.setAction(player, BackpackAction.Action.IOMENU);
             }
         });
@@ -219,10 +225,10 @@ public class BackpackConfigMenu extends Menu {
 
             @Override
             public void onClick(Player player) {
-                backPack.getViewersIds().remove(player.getUniqueId());
+                backpack.getViewersIds().remove(player.getUniqueId());
 
-                if(backPack.getViewersIds().isEmpty() && backPack.isBlock()){
-                    Barrel barrel = (Barrel) backPack.getLocation().getBlock().getState();
+                if(backpack.getViewersIds().isEmpty() && backpack.isBlock()){
+                    Barrel barrel = (Barrel) backpack.getLocation().getBlock().getState();
                     barrel.close();
                 }
 
@@ -236,12 +242,12 @@ public class BackpackConfigMenu extends Menu {
     }
 
     public void addUpgradesInView(){
-        for(int i = 0; i < backPack.getType().getMaxUpgrades(); i++){
+        for(int i = 0; i < backpack.getType().getMaxUpgrades(); i++){
             inventory.setItem(i, null);
         }
 
-        if(!backPack.getBackpackUpgrades().isEmpty()) {
-            List<Upgrade> upgrades = backPack.getBackpackUpgrades();
+        if(!backpack.getBackpackUpgrades().isEmpty()) {
+            List<Upgrade> upgrades = backpack.getBackpackUpgrades();
 
             int i = 0;
             for(Upgrade upgrade : upgrades) {
@@ -308,7 +314,7 @@ public class BackpackConfigMenu extends Menu {
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
-                backPack.open(player);
+                backpack.open(player);
             }
         }.runTaskLater(Main.getMain(), 1L);
     }

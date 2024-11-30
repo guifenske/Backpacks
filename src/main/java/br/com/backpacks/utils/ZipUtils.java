@@ -1,4 +1,4 @@
-package br.com.backpacks.backup;
+package br.com.backpacks.utils;
 
 import br.com.backpacks.Main;
 
@@ -22,6 +22,7 @@ public class ZipUtils {
         List<String> srcFiles = Arrays.asList(pathBackpacks.toString(), pathUpgrades.toString());
         long currentTimeMillis = System.currentTimeMillis();
         LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(currentTimeMillis), ZoneId.systemDefault());
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH:mm:ss");
         String formattedDateTime = dateTime.format(formatter);
 
@@ -34,54 +35,65 @@ public class ZipUtils {
             File fileToZip = new File(srcFile);
             FileInputStream fis = new FileInputStream(fileToZip);
             ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+
             zipOut.putNextEntry(zipEntry);
             fileToZip.delete();
 
             byte[] bytes = new byte[4096];
             int length;
+
             while((length = fis.read(bytes)) >= 0) {
                 zipOut.write(bytes, 0, length);
             }
+
             fis.close();
         }
 
         zipOut.close();
         fos.close();
     }
+
     public static void unzipAll(String pathBackup) throws IOException {
         File destDir = new File(Main.getMain().getDataFolder().getAbsolutePath() + "/");
 
         if(!pathBackup.endsWith(".zip")) {
-            Main.backPackManager.setCanBeOpen(true);
+            Main.backpackManager.setCanBeOpen(true);
             throw new IOException("Invalid File: " + pathBackup);
         }
 
         byte[] buffer = new byte[4096];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(pathBackup));
         ZipEntry zipEntry = zis.getNextEntry();
+
         while (zipEntry != null) {
             File newFile = newFile(destDir, zipEntry);
+
             if (zipEntry.isDirectory()) {
                 if (!newFile.isDirectory() && !newFile.mkdirs()) {
-                    Main.backPackManager.setCanBeOpen(true);
+                    Main.backpackManager.setCanBeOpen(true);
                     throw new IOException("Failed to create directory " + newFile);
                 }
-            } else {
+            }
+
+            else {
                 // fix for Windows-created archives
                 File parent = newFile.getParentFile();
                 if (!parent.isDirectory() && !parent.mkdirs()) {
-                    Main.backPackManager.setCanBeOpen(true);
+                    Main.backpackManager.setCanBeOpen(true);
                     throw new IOException("Failed to create directory " + parent);
                 }
 
                 // write file content
                 FileOutputStream fos = new FileOutputStream(newFile);
                 int len;
+
                 while ((len = zis.read(buffer)) > 0) {
                     fos.write(buffer, 0, len);
                 }
+
                 fos.close();
             }
+
             zipEntry = zis.getNextEntry();
         }
 
@@ -96,7 +108,7 @@ public class ZipUtils {
         String destFilePath = destFile.getCanonicalPath();
 
         if (!destFilePath.startsWith(destDirPath + File.separator)) {
-            Main.backPackManager.setCanBeOpen(true);
+            Main.backpackManager.setCanBeOpen(true);
             throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
         }
 

@@ -1,9 +1,9 @@
 package br.com.backpacks.storage;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.utils.Upgrade;
-import br.com.backpacks.utils.UpgradeManager;
-import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.upgrades.Upgrade;
+import br.com.backpacks.upgrades.UpgradeManager;
+import br.com.backpacks.backpack.Backpack;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,24 +35,24 @@ public class StorageProvider {
 
     }
 
-    public void loadBackpacks(ConcurrentHashMap<Integer, BackPack> hashMap){
-        Main.backPackManager.setLastBackpackID(0);
-        Main.backPackManager.setBackpacks(hashMap);
-        Main.backPackManager.getBackpacksPlacedLocations().clear();
+    public void loadBackpacks(ConcurrentHashMap<Integer, Backpack> hashMap){
+        Main.backpackManager.setLastBackpackID(0);
+        Main.backpackManager.setBackpacks(hashMap);
+        Main.backpackManager.getBackpacksPlacedLocations().clear();
 
         if(hashMap.isEmpty()) return;
 
-        for(BackPack backPack : hashMap.values()){
+        for(Backpack backpack : hashMap.values()){
 
-            if(backPack.getLocation() != null){
-                Main.backPackManager.getBackpacksPlacedLocations().put(backPack.getLocation(), backPack.getId());
+            if(backpack.getLocation() != null){
+                Main.backpackManager.getBackpacksPlacedLocations().put(backpack.getLocation(), backpack.getId());
             }
 
-            int id = backPack.getId();
-            if(Main.backPackManager.getLastBackpackID() == 0) Main.backPackManager.setLastBackpackID(id);
+            int id = backpack.getId();
+            if(Main.backpackManager.getLastBackpackID() == 0) Main.backpackManager.setLastBackpackID(id);
 
-            if(Main.backPackManager.getLastBackpackID() < id){
-                Main.backPackManager.setLastBackpackID(id);
+            if(Main.backpackManager.getLastBackpackID() < id){
+                Main.backpackManager.setLastBackpackID(id);
             }
         }
     }

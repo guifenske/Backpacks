@@ -2,11 +2,11 @@ package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
-import br.com.backpacks.utils.Upgrade;
-import br.com.backpacks.utils.UpgradeManager;
-import br.com.backpacks.utils.UpgradeType;
-import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.upgrades.Upgrade;
+import br.com.backpacks.upgrades.UpgradeManager;
+import br.com.backpacks.upgrades.UpgradeType;
+import br.com.backpacks.backpack.Backpack;
+import br.com.backpacks.backpack.BackpackAction;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -59,7 +59,7 @@ public class Furnace implements Listener {
     @EventHandler
     private void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGFURNACE)) return;
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
+        Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(event.getPlayer());
         Player player = (Player) event.getPlayer();
 
         if(event.getInventory().getViewers().size() == 1){
@@ -76,7 +76,7 @@ public class Furnace implements Listener {
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
-                backPack.open((Player) event.getPlayer());
+                backpack.open((Player) event.getPlayer());
             }
         }.runTaskLater(Main.getMain(), 1L);
 

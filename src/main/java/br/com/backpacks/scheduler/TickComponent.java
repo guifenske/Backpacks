@@ -1,4 +1,4 @@
-package br.com.backpacks.utils.scheduler;
+package br.com.backpacks.scheduler;
 
 public abstract class TickComponent {
     private static int componentCount = 0;

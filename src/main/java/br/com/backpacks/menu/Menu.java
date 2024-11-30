@@ -1,8 +1,7 @@
-package br.com.backpacks.utils.menu;
+package br.com.backpacks.menu;
 
-import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.backpack.Backpack;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -10,14 +9,14 @@ import org.bukkit.inventory.Inventory;
 public abstract class Menu {
     private final Button[] buttons;
     private final int size;
-    protected final BackPack backPack;
+    protected final Backpack backpack;
     protected final Inventory inventory;
 
-    public Menu(int size, String title, BackPack backPack){
+    public Menu(int size, String title, Backpack backpack){
         this.buttons = new Button[size];
         this.size = size;
-        this.backPack = backPack;
-        this.inventory = Bukkit.createInventory(null, size, backPack.getName() + "'s " + title);
+        this.backpack = backpack;
+        this.inventory = Bukkit.createInventory(null, size, backpack.getName() + "'s " + title);
     }
 
     public int getSize(){

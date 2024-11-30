@@ -6,15 +6,14 @@ import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.recipes.UpgradesRecipes;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
-import br.com.backpacks.utils.UpgradeManager;
-import br.com.backpacks.utils.UpgradeType;
-import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.upgrades.UpgradeManager;
+import br.com.backpacks.upgrades.UpgradeType;
+import br.com.backpacks.backpack.Backpack;
+import br.com.backpacks.backpack.BackpackAction;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,53 +30,53 @@ public class BackpackBreak implements Listener {
     private void playerBreak(BlockBreakEvent event){
 
         if(!event.getBlock().getType().equals(Material.BARREL)) return;
-        if(!Main.backPackManager.canOpen()){
+        if(!Main.backpackManager.canOpen()){
             event.setCancelled(true);
             return;
         }
 
-        if(Main.backPackManager.getBackpackFromLocation(event.getBlock().getLocation()) == null) return;
+        if(Main.backpackManager.getBackpackFromLocation(event.getBlock().getLocation()) == null) return;
 
         event.setCancelled(true);
 
-        BackPack backPack = Main.backPackManager.getBackpackFromLocation(event.getBlock().getLocation());
-        ItemStack backpackItem = RecipesUtils.getItemFromBackpack(backPack);
+        Backpack backpack = Main.backpackManager.getBackpackFromLocation(event.getBlock().getLocation());
+        ItemStack backpackItem = RecipesUtils.getItemFromBackpack(backpack);
 
-        if(backPack.getFirstUpgradeFromType(UpgradeType.JUKEBOX) != null){
-            JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
+        if(backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX) != null){
+            JukeboxUpgrade upgrade = (JukeboxUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
 
             if(upgrade.getSound() != null){
                 upgrade.clearParticleTask();
                 upgrade.clearLoopingTask();
-                Jukebox.stopSound(backPack, upgrade);
+                Jukebox.stopSound(backpack, upgrade);
             }
         }
 
-        for(UUID uuid : backPack.getViewersIds()){
+        for(UUID uuid : backpack.getViewersIds()){
             Player player = Bukkit.getPlayer(uuid);
             if(player == null) continue;
 
             BackpackAction.clearPlayerAction(player);
             BackpackAction.getSpectators().remove(uuid);
 
-            Main.backPackManager.clearPlayerCurrentPage(player);
-            Main.backPackManager.clearPlayerCurrentBackpack(player);
+            Main.backpackManager.clearPlayerCurrentPage(player);
+            Main.backpackManager.clearPlayerCurrentBackpack(player);
 
-            backPack.getViewersIds().remove(uuid);
+            backpack.getViewersIds().remove(uuid);
             player.closeInventory();
         }
 
-        backPack.setShowNameAbove(false);
-        if(backPack.getMarker() != null) backPack.getMarkerEntity().remove();
-        backPack.setMarker(null);
-        backPack.setLocation(null);
-        backPack.setIsBlock(false);
-        backPack.setOwner(null);
+        backpack.setShowNameAbove(false);
+        if(backpack.getMarker() != null) backpack.getMarkerEntity().remove();
+        backpack.setMarker(null);
+        backpack.setLocation(null);
+        backpack.setIsBlock(false);
+        backpack.setOwner(null);
 
-        backPack.getConfigMenu().refreshMenu();
+        backpack.getConfigMenu().refreshMenu();
 
         Location location = event.getBlock().getLocation();
-        Main.backPackManager.getBackpacksPlacedLocations().remove(location);
+        Main.backpackManager.getBackpacksPlacedLocations().remove(location);
         event.getBlock().setType(Material.AIR, true);
         event.getPlayer().getWorld().dropItemNaturally(location, backpackItem);
     }
@@ -87,54 +86,54 @@ public class BackpackBreak implements Listener {
         for(Block block : event.blockList()){
             if(!block.getType().equals(Material.BARREL)) continue;
 
-            if(!Main.backPackManager.canOpen()){
+            if(!Main.backpackManager.canOpen()){
                 event.blockList().remove(block);
                 continue;
             }
 
-            if(Main.backPackManager.getBackpackFromLocation(block.getLocation()) == null) continue;
+            if(Main.backpackManager.getBackpackFromLocation(block.getLocation()) == null) continue;
 
             event.blockList().remove(block);
             block.setType(Material.AIR);
 
-            BackPack backPack = Main.backPackManager.getBackpackFromLocation(block.getLocation());
-            ItemStack backpackItem = RecipesUtils.getItemFromBackpack(backPack);
+            Backpack backpack = Main.backpackManager.getBackpackFromLocation(block.getLocation());
+            ItemStack backpackItem = RecipesUtils.getItemFromBackpack(backpack);
 
             Location location = block.getLocation();
-            if(backPack.getFirstUpgradeFromType(UpgradeType.JUKEBOX) != null){
-                JukeboxUpgrade upgrade = (JukeboxUpgrade) backPack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
+            if(backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX) != null){
+                JukeboxUpgrade upgrade = (JukeboxUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
                 if(upgrade.getSound() != null){
                     upgrade.clearParticleTask();
                     upgrade.clearLoopingTask();
-                    Jukebox.stopSound(backPack, upgrade);
+                    Jukebox.stopSound(backpack, upgrade);
                 }
             }
 
-            for(UUID uuid : backPack.getViewersIds()){
+            for(UUID uuid : backpack.getViewersIds()){
                 Player player = Bukkit.getPlayer(uuid);
                 if(player == null) continue;
 
                 BackpackAction.clearPlayerAction(player);
                 BackpackAction.getSpectators().remove(uuid);
 
-                Main.backPackManager.clearPlayerCurrentPage(player);
-                Main.backPackManager.clearPlayerCurrentBackpack(player);
+                Main.backpackManager.clearPlayerCurrentPage(player);
+                Main.backpackManager.clearPlayerCurrentBackpack(player);
 
-                backPack.getViewersIds().remove(uuid);
+                backpack.getViewersIds().remove(uuid);
                 player.closeInventory();
             }
 
-            backPack.setShowNameAbove(false);
-            if(backPack.getMarker() != null) backPack.getMarkerEntity().remove();
+            backpack.setShowNameAbove(false);
+            if(backpack.getMarker() != null) backpack.getMarkerEntity().remove();
 
-            backPack.setMarker(null);
-            backPack.setLocation(null);
-            backPack.setIsBlock(false);
-            backPack.setOwner(null);
+            backpack.setMarker(null);
+            backpack.setLocation(null);
+            backpack.setIsBlock(false);
+            backpack.setOwner(null);
 
-            backPack.getConfigMenu().refreshMenu();
+            backpack.getConfigMenu().refreshMenu();
 
-            Main.backPackManager.getBackpacksPlacedLocations().remove(location);
+            Main.backpackManager.getBackpacksPlacedLocations().remove(location);
             block.getWorld().dropItemNaturally(location, backpackItem);
             break;
        }
@@ -147,7 +146,7 @@ public class BackpackBreak implements Listener {
         if(!event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_BACKPACK)){
 
             if(event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.IS_UPGRADE)){
-                if(!Main.backPackManager.canOpen()){
+                if(!Main.backpackManager.canOpen()){
                     event.setCancelled(true);
                     return;
                 }
@@ -161,28 +160,28 @@ public class BackpackBreak implements Listener {
             return;
         }
 
-        if(!Main.backPackManager.canOpen()){
+        if(!Main.backpackManager.canOpen()){
             event.setCancelled(true);
             return;
         }
 
         int id = event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().get(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER);
-        if(!Main.backPackManager.getBackpacks().containsKey(id)) return;
-        BackPack backPack = Main.backPackManager.getBackpacks().get(id);
+        if(!Main.backpackManager.getBackpacks().containsKey(id)) return;
+        Backpack backpack = Main.backpackManager.getBackpacks().get(id);
 
-        if(backPack.getFirstUpgradeFromType(UpgradeType.UNBREAKABLE) != null){
+        if(backpack.getFirstUpgradeFromType(UpgradeType.UNBREAKABLE) != null){
             event.setCancelled(true);
             event.getEntity().setInvulnerable(true);
             return;
         }
 
-        if(!backPack.getUpgradesIds().isEmpty()){
-            for(int i : backPack.getUpgradesIds()){
+        if(!backpack.getUpgradesIds().isEmpty()){
+            for(int i : backpack.getUpgradesIds()){
                 UpgradeManager.getUpgradeFromId(i).stopTicking();
                 UpgradeManager.getUpgrades().remove(i);
             }
         }
 
-        Main.backPackManager.getBackpacks().remove(id);
+        Main.backpackManager.getBackpacks().remove(id);
     }
 }

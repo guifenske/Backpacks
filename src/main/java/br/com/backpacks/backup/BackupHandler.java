@@ -1,12 +1,14 @@
 package br.com.backpacks.backup;
 
-import br.com.backpacks.Config;
+import br.com.backpacks.utils.Config;
 import br.com.backpacks.Main;
+import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.storage.StorageManager;
 import br.com.backpacks.storage.YamlProvider;
-import br.com.backpacks.utils.Upgrade;
-import br.com.backpacks.utils.UpgradeManager;
-import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.upgrades.Upgrade;
+import br.com.backpacks.upgrades.UpgradeManager;
+import br.com.backpacks.utils.ZipUtils;
+import br.com.backpacks.backpack.Backpack;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,7 +16,7 @@ import org.bukkit.block.Barrel;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +32,7 @@ public class BackupHandler {
     private ScheduledBackupService scheduledBackupService;
     private int keepBackups;
     private final Path path = Path.of(Main.getMain().getDataFolder().getAbsolutePath() + "/Backups");
-    private ConcurrentHashMap<Integer, BackPack> rollbackBackpack;
+    private ConcurrentHashMap<Integer, Backpack> rollbackBackpack;
     private ConcurrentHashMap<Integer, Upgrade> rollbackUpgrade;
     public BackupHandler(int keepBackups) {
         this.keepBackups = keepBackups;
@@ -75,8 +77,14 @@ public class BackupHandler {
     public void removeLeftoverFiles(){
         while(getNumberOfFilesInPath(path) > keepBackups){
             File[] files = path.toFile().listFiles();
+
+            if(files == null){
+                return;
+            }
+
             int index = 0;
             long oldestDate = files[0].lastModified();
+
             //remove the oldest file
             for(int i = 0; i < files.length; i++){
                 long currentLastModified = files[i].lastModified();
@@ -85,7 +93,12 @@ public class BackupHandler {
                     index = i;
                 }
             }
-            files[index].delete();
+
+            try{
+                files[index].delete();
+            }   catch (SecurityException exception){
+                Main.getMain().getLogger().severe(exception.getMessage());
+            }
         }
     }
 
@@ -98,24 +111,29 @@ public class BackupHandler {
         StorageManager.getProvider().loadBackpacks(rollbackBackpack);
 
         Bukkit.getScheduler().runTask(Main.getMain(), ()->{
-            for(Map.Entry<Location, Integer> entry : Main.backPackManager.getBackpacksPlacedLocations().entrySet()){
-                BackPack backPack = Main.backPackManager.getBackpackFromId(entry.getValue());
-                if(backPack.isShowingNameAbove()){
-                    ArmorStand marker = (ArmorStand) entry.getKey().getWorld().spawnEntity(backPack.getLocation().clone().add(0, 1, 0), EntityType.ARMOR_STAND);
+            for(Map.Entry<Location, Integer> entry : Main.backpackManager.getBackpacksPlacedLocations().entrySet()){
+                Backpack backpack = Main.backpackManager.getBackpackFromId(entry.getValue());
+                if(backpack.isShowingNameAbove()){
+                    ArmorStand marker = (ArmorStand) entry.getKey().getWorld().spawnEntity(backpack.getLocation().clone().add(0, 1, 0), EntityType.ARMOR_STAND);
                     marker.setVisible(false);
                     marker.setSmall(true);
-                    marker.setCustomName(backPack.getName());
+                    marker.setCustomName(backpack.getName());
                     marker.setCustomNameVisible(true);
                     marker.setCollidable(false);
                     marker.setInvulnerable(true);
                     marker.setBasePlate(false);
                     marker.setMarker(true);
-                    backPack.setMarker(marker.getUniqueId());
+                    backpack.setMarker(marker.getUniqueId());
+                    marker.setRemoveWhenFarAway(false);
+
+                    backpack.setMarker(marker.getUniqueId());
+
+                    Barrel backpackBlock = (Barrel) backpack.getLocation().getBlock().getState();
+                    backpackBlock.getPersistentDataContainer().set(BackpackRecipes.NAMESPACE_BACKPACK_MARKER_ID, PersistentDataType.STRING, marker.getUniqueId().toString());
                 }
+
                 entry.getKey().getBlock().setType(Material.BARREL);
-                Barrel barrel = (Barrel) entry.getKey().getBlock().getState();
-                barrel.update();
-                barrel.getInventory().setItem(0, new ItemStack(Material.STICK));
+                backpack.updateBarrelBlock();
             }
         });
 
@@ -123,22 +141,22 @@ public class BackupHandler {
         rollbackUpgrade = null;
 
         Instant finish = Instant.now();
-        Main.backPackManager.setCanBeOpen(true);
+        Main.backpackManager.setCanBeOpen(true);
         return Duration.between(start, finish).toMillis();
     }
 
-    public long restoreBackup(String path) throws IOException {
+    public long rollback(String path) throws IOException {
         try{
             Path.of(path);
         }   catch (Exception e){
-            Main.backPackManager.setCanBeOpen(true);
+            Main.backpackManager.setCanBeOpen(true);
             Main.getMain().getLogger().severe("Cannot restore backup, invalid path or file not found.");
             Main.getMain().getLogger().severe("Aborting restore task...");
             return -1L;
         }
 
         Instant start = Instant.now();
-        rollbackBackpack = new ConcurrentHashMap<>(Main.backPackManager.getBackpacks());
+        rollbackBackpack = new ConcurrentHashMap<>(Main.backpackManager.getBackpacks());
         rollbackUpgrade = new ConcurrentHashMap<>(UpgradeManager.getUpgrades());
         YamlProvider yamlProvider = Config.getYamlProvider();
 
@@ -148,36 +166,40 @@ public class BackupHandler {
         upgradesOriginal.delete();
         ZipUtils.unzipAll(this.path + "/" + path);
 
-        Main.backPackManager.getBackpacksPlacedLocations().clear();
-        Main.backPackManager.getBackpacks().clear();
+        Main.backpackManager.getBackpacksPlacedLocations().clear();
+        Main.backpackManager.getBackpacks().clear();
         UpgradeManager.getUpgrades().clear();
 
         yamlProvider.loadUpgrades();
         yamlProvider.loadBackpacks();
 
         Bukkit.getScheduler().runTask(Main.getMain(), ()->{
-            for(Map.Entry<Location, Integer> entry : Main.backPackManager.getBackpacksPlacedLocations().entrySet()){
-                BackPack backPack = Main.backPackManager.getBackpackFromId(entry.getValue());
-                if(backPack.isShowingNameAbove()){
-                    ArmorStand marker = (ArmorStand) entry.getKey().getWorld().spawnEntity(backPack.getLocation().clone().add(0, 1, 0), EntityType.ARMOR_STAND);
+            for(Map.Entry<Location, Integer> entry : Main.backpackManager.getBackpacksPlacedLocations().entrySet()){
+                Backpack backpack = Main.backpackManager.getBackpackFromId(entry.getValue());
+                if(backpack.isShowingNameAbove()){
+                    ArmorStand marker = (ArmorStand) entry.getKey().getWorld().spawnEntity(backpack.getLocation().clone().add(0, 1, 0), EntityType.ARMOR_STAND);
                     marker.setVisible(false);
                     marker.setSmall(true);
-                    marker.setCustomName(backPack.getName());
+                    marker.setCustomName(backpack.getName());
                     marker.setCustomNameVisible(true);
                     marker.setCollidable(false);
                     marker.setInvulnerable(true);
                     marker.setBasePlate(false);
                     marker.setMarker(true);
-                    backPack.setMarker(marker.getUniqueId());
+                    marker.setRemoveWhenFarAway(false);
+
+                    backpack.setMarker(marker.getUniqueId());
+
+                    Barrel backpackBlock = (Barrel) backpack.getLocation().getBlock().getState();
+                    backpackBlock.getPersistentDataContainer().set(BackpackRecipes.NAMESPACE_BACKPACK_MARKER_ID, PersistentDataType.STRING, marker.getUniqueId().toString());
                 }
+
                 entry.getKey().getBlock().setType(Material.BARREL);
-                Barrel barrel = (Barrel) entry.getKey().getBlock().getState();
-                barrel.update();
-                barrel.getInventory().setItem(0, new ItemStack(Material.STICK));
+                backpack.updateBarrelBlock();
             }
         });
 
-        Main.backPackManager.setCanBeOpen(true);
+        Main.backpackManager.setCanBeOpen(true);
         Instant finish = Instant.now();
         return Duration.between(start, finish).toMillis();
     }

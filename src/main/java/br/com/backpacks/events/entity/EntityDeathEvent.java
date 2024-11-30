@@ -6,9 +6,9 @@ import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
 import br.com.backpacks.utils.Constants;
-import br.com.backpacks.utils.UpgradeType;
-import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.backpacks.RandomBackpackBuilder;
+import br.com.backpacks.upgrades.UpgradeType;
+import br.com.backpacks.backpack.Backpack;
+import br.com.backpacks.backpack.RandomBackpackBuilder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Monster;
@@ -26,7 +26,7 @@ public class EntityDeathEvent implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     private void onPlayerDeath(PlayerDeathEvent event){
         if(!event.getEntity().getPersistentDataContainer().has(BackpackRecipes.HAS_BACKPACK)) return;
-        BackPack backpack = Main.backPackManager.getBackpackFromId(event.getEntity().getPersistentDataContainer().get(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER));
+        Backpack backpack = Main.backpackManager.getBackpackFromId(event.getEntity().getPersistentDataContainer().get(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER));
 
         Player player = event.getEntity();
         Location location = safeLocation(player.getLocation().getBlock().getLocation());
@@ -51,7 +51,7 @@ public class EntityDeathEvent implements Listener {
         backpack.updateBarrelBlock();
 
         backpack.getConfigMenu().refreshMenu();
-        Main.backPackManager.getBackpacksPlacedLocations().put(backpack.getLocation(), backpack.getId());
+        Main.backpackManager.getBackpacksPlacedLocations().put(backpack.getLocation(), backpack.getId());
         player.getPersistentDataContainer().remove(BackpackRecipes.HAS_BACKPACK);
 
         player.sendMessage(Main.getMain().PREFIX + "§cYou died and your backpack was placed on: " + backpack.getLocation().getX() + ", " + backpack.getLocation().getY() + ", " + backpack.getLocation().getZ());
@@ -62,11 +62,11 @@ public class EntityDeathEvent implements Listener {
         if(!(event.getEntity() instanceof Monster)) return;
         if(event.getEntity().getKiller() == null) return;
         if(Constants.MONSTER_DROPS_BACKPACK && ThreadLocalRandom.current().nextInt(830) == 69) {
-            RandomBackpackBuilder randomBackpackBuilder = new RandomBackpackBuilder("Unknown Backpack", Main.backPackManager.getLastBackpackID() + 1);
-            BackPack backPack = randomBackpackBuilder.generateBackpack();
-            Main.backPackManager.setLastBackpackID(Main.backPackManager.getLastBackpackID() + 1);
+            RandomBackpackBuilder randomBackpackBuilder = new RandomBackpackBuilder("Unknown Backpack", Main.backpackManager.getLastBackpackID() + 1);
+            Backpack backpack = randomBackpackBuilder.generateBackpack();
+            Main.backpackManager.setLastBackpackID(Main.backpackManager.getLastBackpackID() + 1);
 
-            event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), RecipesUtils.getItemFromBackpack(backPack));
+            event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), RecipesUtils.getItemFromBackpack(backpack));
         }
     }
 

@@ -1,15 +1,15 @@
-package br.com.backpacks.utils.backpacks;
+package br.com.backpacks.backpack;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.storage.SerializationUtils;
-import br.com.backpacks.utils.Upgrade;
-import br.com.backpacks.utils.UpgradeManager;
-import br.com.backpacks.utils.UpgradeType;
-import br.com.backpacks.utils.menu.*;
-import br.com.backpacks.utils.menu.backpacksMenus.BackpackConfigMenu;
-import br.com.backpacks.utils.menu.backpacksMenus.UpgradesInputOutputMenu;
-import br.com.backpacks.utils.menu.backpacksMenus.UpgradesMenu;
+import br.com.backpacks.upgrades.Upgrade;
+import br.com.backpacks.upgrades.UpgradeManager;
+import br.com.backpacks.upgrades.UpgradeType;
+import br.com.backpacks.menu.*;
+import br.com.backpacks.menu.backpacksMenus.BackpackConfigMenu;
+import br.com.backpacks.menu.backpacksMenus.UpgradesInputOutputMenu;
+import br.com.backpacks.menu.backpacksMenus.UpgradesMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,7 +23,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
-public final class BackPack {
+public final class Backpack {
     private int id;
     private Inventory firstPage;
     private Inventory secondPage;
@@ -45,7 +45,7 @@ public final class BackPack {
     private final Set<UUID> viewersIds = new HashSet<>();
     private final List<Integer> backpackUpgradesIds = new ArrayList<>();
 
-    public BackPack(BackpackType type, int id) {
+    public Backpack(BackpackType type, int id) {
         this.backpackType = type;
         this.id = id;
         this.name = type.getName();
@@ -65,7 +65,7 @@ public final class BackPack {
         upgradesInputOutputMenu = new UpgradesInputOutputMenu(this);
     }
 
-    public BackPack(String name, Inventory firstPage, int id, BackpackType type) {
+    public Backpack(String name, Inventory firstPage, int id, BackpackType type) {
         this.backpackType = type;
         this.firstPageSize = firstPage.getSize();
         this.name = name;
@@ -80,10 +80,10 @@ public final class BackPack {
         setConfigItems();
     }
 
-    public BackPack() {
+    public Backpack() {
     }
 
-    public BackPack(String name, Inventory firstPage, Inventory secondPage, int id, BackpackType type) {
+    public Backpack(String name, Inventory firstPage, Inventory secondPage, int id, BackpackType type) {
         this.backpackType = type;
         this.firstPageSize = firstPage.getSize();
         this.secondPageSize = secondPage.getSize();
@@ -107,7 +107,7 @@ public final class BackPack {
         return data;
     }
 
-    public BackPack deserialize(YamlConfiguration config, String id) {
+    public Backpack deserialize(YamlConfiguration config, String id) {
         if(!config.isSet(id + ".i")){
             Main.debugMessage("Backpack with id " + id + " not found!");
             return null;
@@ -169,7 +169,7 @@ public final class BackPack {
                 setShowNameAbove(true);
             }
 
-            Main.backPackManager.getBackpacksPlacedLocations().put(getLocation(), getId());
+            Main.backpackManager.getBackpacksPlacedLocations().put(getLocation(), getId());
         }
 
         configMenu = new BackpackConfigMenu(this);
@@ -284,16 +284,16 @@ public final class BackPack {
 
     public void open(Player player){
         getViewersIds().add(player.getUniqueId());
-        Main.backPackManager.setPlayerCurrentPage(player, 1);
-        Main.backPackManager.setPlayerCurrentBackpack(player, this);
+        Main.backpackManager.setPlayerCurrentPage(player, 1);
+        Main.backpackManager.setPlayerCurrentBackpack(player, this);
         player.openInventory(firstPage);
         BackpackAction.setAction(player, BackpackAction.Action.OPENED);
     }
 
     public void openSecondPage(Player player){
         getViewersIds().add(player.getUniqueId());
-        Main.backPackManager.setPlayerCurrentPage(player, 2);
-        Main.backPackManager.setPlayerCurrentBackpack(player, this);
+        Main.backpackManager.setPlayerCurrentPage(player, 2);
+        Main.backpackManager.setPlayerCurrentBackpack(player, this);
         player.openInventory(secondPage);
         BackpackAction.setAction(player, BackpackAction.Action.OPENED);
     }
@@ -414,12 +414,12 @@ public final class BackPack {
         Barrel barrel = (Barrel) location.getBlock().getState();
         List<ItemStack> bpItems = getBackpackItems();
 
+        barrel.getInventory().clear();
+
         if(bpItems.isEmpty()){
-            barrel.getInventory().clear();
             return;
         }
 
-        barrel.getInventory().clear();
         for(int i = 0 ; i < bpItems.size() ; i++){
             barrel.getInventory().setItem(i, bpItems.get(i));
         }

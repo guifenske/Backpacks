@@ -1,8 +1,8 @@
 package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.backpack.Backpack;
+import br.com.backpacks.backpack.BackpackAction;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,14 +15,14 @@ public class CraftingTable implements Listener {
     @EventHandler
     private void onClose(InventoryCloseEvent event){
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGCRAFTINGGRID)) return;
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
-        if(backPack == null) return;
+        Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(event.getPlayer());
+        if(backpack == null) return;
 
         BackpackAction.clearPlayerAction(event.getPlayer());
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
-                backPack.open((Player) event.getPlayer());
+                backpack.open((Player) event.getPlayer());
             }
         }.runTaskLater(Main.getMain(), 1L);
     }

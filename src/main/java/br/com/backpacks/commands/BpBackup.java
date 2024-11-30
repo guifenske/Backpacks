@@ -1,8 +1,8 @@
 package br.com.backpacks.commands;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.backpacks.BackpackAction;
+import br.com.backpacks.backpack.Backpack;
+import br.com.backpacks.backpack.BackpackAction;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -68,7 +68,7 @@ public class BpBackup implements CommandExecutor, TabCompleter {
 
         if(args[0].equalsIgnoreCase("rollback")){
             if(args[1].equalsIgnoreCase("undo")){
-                Main.backPackManager.setCanBeOpen(false);
+                Main.backpackManager.setCanBeOpen(false);
                 for(UUID uuid : BackpackAction.getHashMap().keySet()){
                     Player player = Bukkit.getPlayer(uuid);
                     BackpackAction.getHashMap().remove(uuid);
@@ -77,11 +77,11 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                     player.closeInventory();
                 }
 
-                for(Map.Entry<Location, Integer> entry : Main.backPackManager.getBackpacksPlacedLocations().entrySet()){
-                    BackPack backPack = Main.backPackManager.getBackpackFromId(entry.getValue());
-                    if(backPack.isShowingNameAbove()){
-                        backPack.getMarkerEntity().remove();
-                        backPack.setMarker(null);
+                for(Map.Entry<Location, Integer> entry : Main.backpackManager.getBackpacksPlacedLocations().entrySet()){
+                    Backpack backpack = Main.backpackManager.getBackpackFromId(entry.getValue());
+                    if(backpack.isShowingNameAbove()){
+                        backpack.getMarkerEntity().remove();
+                        backpack.setMarker(null);
                     }
                     entry.getKey().getBlock().setType(Material.AIR);
                 }
@@ -95,7 +95,7 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                             sender.sendMessage("§cYou never did a rollback to undo it.");
                         }
                     }   catch (IOException e){
-                        Main.backPackManager.setCanBeOpen(true);
+                        Main.backpackManager.setCanBeOpen(true);
                         sender.sendMessage("§cAn error occurred while restoring the backup, please check the console for more information.");
                         throw new RuntimeException(e);
                     }
@@ -108,7 +108,7 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            Main.backPackManager.setCanBeOpen(false);
+            Main.backpackManager.setCanBeOpen(false);
             for(UUID uuid : BackpackAction.getHashMap().keySet()){
                 Player player = Bukkit.getPlayer(uuid);
                 BackpackAction.getHashMap().remove(uuid);
@@ -117,25 +117,25 @@ public class BpBackup implements CommandExecutor, TabCompleter {
                 player.closeInventory();
             }
 
-            for(Map.Entry<Location, Integer> entry : Main.backPackManager.getBackpacksPlacedLocations().entrySet()){
-                BackPack backPack = Main.backPackManager.getBackpackFromId(entry.getValue());
-                if(backPack.isShowingNameAbove()){
-                    backPack.getMarkerEntity().remove();
-                    backPack.setMarker(null);
+            for(Map.Entry<Location, Integer> entry : Main.backpackManager.getBackpacksPlacedLocations().entrySet()){
+                Backpack backpack = Main.backpackManager.getBackpackFromId(entry.getValue());
+                if(backpack.isShowingNameAbove()){
+                    backpack.getMarkerEntity().remove();
+                    backpack.setMarker(null);
                 }
                 entry.getKey().getBlock().setType(Material.AIR);
             }
 
             Bukkit.getScheduler().runTaskAsynchronously(Main.getMain(), ()->{
                 try{
-                    long time = Main.getMain().getBackupHandler().restoreBackup(args[1]);
+                    long time = Main.getMain().getBackupHandler().rollback(args[1]);
                     if(time != -1L){
                         sender.sendMessage("§aBackup restored successfully in " + time + " ms!");
                     }   else{
                         sender.sendMessage("§cSomething went wrong, please check the console for more information.");
                     }
                 }   catch (IOException e){
-                    Main.backPackManager.setCanBeOpen(true);
+                    Main.backpackManager.setCanBeOpen(true);
                     sender.sendMessage("§cAn error occurred while restoring the backup, please check the console for more information.");
                     throw new RuntimeException(e);
                 }

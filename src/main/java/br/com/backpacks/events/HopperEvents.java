@@ -2,9 +2,9 @@ package br.com.backpacks.events;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.upgrades.FurnaceUpgrade;
-import br.com.backpacks.utils.Upgrade;
-import br.com.backpacks.utils.UpgradeManager;
-import br.com.backpacks.utils.backpacks.BackPack;
+import br.com.backpacks.upgrades.Upgrade;
+import br.com.backpacks.upgrades.UpgradeManager;
+import br.com.backpacks.backpack.Backpack;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
@@ -26,13 +26,13 @@ public class HopperEvents implements Listener {
         if(sideOfInput == null) return;
 
         //input
-        if (Main.backPackManager.getBackpackFromLocation(destinationLocation) != null) {
-            BackPack backPack = Main.backPackManager.getBackpackFromLocation(destinationLocation);
-            if(backPack.getInputUpgrade() != -1){
-                Upgrade upgrade = UpgradeManager.getUpgradeFromId(backPack.getInputUpgrade());
+        if (Main.backpackManager.getBackpackFromLocation(destinationLocation) != null) {
+            Backpack backpack = Main.backpackManager.getBackpackFromLocation(destinationLocation);
+            if(backpack.getInputUpgrade() != -1){
+                Upgrade upgrade = UpgradeManager.getUpgradeFromId(backpack.getInputUpgrade());
 
-                if(!backPack.getUpgradesIds().contains(backPack.getInputUpgrade()) || upgrade == null){
-                    backPack.setInputUpgrade(-1);
+                if(!backpack.getUpgradesIds().contains(backpack.getInputUpgrade()) || upgrade == null){
+                    backpack.setInputUpgrade(-1);
                     event.setCancelled(true);
                     return;
                 }
@@ -74,25 +74,25 @@ public class HopperEvents implements Listener {
 
             ItemStack itemStack = event.getItem().clone();
             itemStack.setAmount(1);
-            List<ItemStack> list = backPack.tryAddItem(itemStack);
+            List<ItemStack> list = backpack.tryAddItem(itemStack);
 
             if (!list.isEmpty()) {
                 event.setCancelled(true);
                 return;
             }
 
-            backPack.updateBarrelBlock();
+            backpack.updateBarrelBlock();
         }
 
         //output
-        else if (Main.backPackManager.getBackpackFromLocation(sourceLocation) != null) {
-            BackPack backPack = Main.backPackManager.getBackpackFromLocation(sourceLocation);
+        else if (Main.backpackManager.getBackpackFromLocation(sourceLocation) != null) {
+            Backpack backpack = Main.backpackManager.getBackpackFromLocation(sourceLocation);
             event.setCancelled(true);
 
-            if(backPack.getOutputUpgrade() != -1){
-                Upgrade upgrade = UpgradeManager.getUpgradeFromId(backPack.getOutputUpgrade());
-                if(!backPack.getUpgradesIds().contains(backPack.getInputUpgrade()) || upgrade == null){
-                    backPack.setOutputUpgrade(-1);
+            if(backpack.getOutputUpgrade() != -1){
+                Upgrade upgrade = UpgradeManager.getUpgradeFromId(backpack.getOutputUpgrade());
+                if(!backpack.getUpgradesIds().contains(backpack.getInputUpgrade()) || upgrade == null){
+                    backpack.setOutputUpgrade(-1);
                     event.setCancelled(true);
                     return;
                 }
@@ -112,17 +112,17 @@ public class HopperEvents implements Listener {
                 return;
             }
 
-            if (backPack.getFirstItem() == null){
+            if (backpack.getFirstItem() == null){
                 return;
             }
 
-            ItemStack outputItem = backPack.getFirstItem().clone();
+            ItemStack outputItem = backpack.getFirstItem().clone();
             int amount = outputItem.getAmount();
             outputItem.setAmount(1);
 
             if (event.getDestination().addItem(outputItem).isEmpty()) {
-                backPack.getFirstItem().setAmount(amount - 1);
-                backPack.updateBarrelBlock();
+                backpack.getFirstItem().setAmount(amount - 1);
+                backpack.updateBarrelBlock();
             }
         }
     }

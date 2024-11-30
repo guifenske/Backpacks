@@ -1,4 +1,4 @@
-package br.com.backpacks.utils;
+package br.com.backpacks.upgrades;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

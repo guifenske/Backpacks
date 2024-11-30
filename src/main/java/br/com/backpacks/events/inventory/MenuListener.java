@@ -1,9 +1,9 @@
 package br.com.backpacks.events.inventory;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.utils.backpacks.BackPack;
-import br.com.backpacks.utils.backpacks.BackpackAction;
-import br.com.backpacks.utils.menu.Menu;
+import br.com.backpacks.backpack.Backpack;
+import br.com.backpacks.backpack.BackpackAction;
+import br.com.backpacks.menu.Menu;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,9 +19,9 @@ public class MenuListener implements Listener {
         if(BackpackAction.getAction(player).equals(BackpackAction.Action.NOTHING) || BackpackAction.getAction(player).equals(BackpackAction.Action.OPENED)) return;
 
         int slot = event.getRawSlot();
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(player);
+        Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(player);
 
-        Menu menu = backPack.getPlayerCurrentMenu(player);
+        Menu menu = backpack.getPlayerCurrentMenu(player);
         if(menu == null){
             //may cancel the event when the process of migrating the upgrades inventories to menus is completed
             return;
@@ -42,10 +42,10 @@ public class MenuListener implements Listener {
     private void onClose(InventoryCloseEvent event){
         if(BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.NOTHING) || BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.OPENED)) return;
 
-        BackPack backPack = Main.backPackManager.getPlayerCurrentBackpack(event.getPlayer());
-        if(backPack == null) return;
+        Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(event.getPlayer());
+        if(backpack == null) return;
 
-        Menu menu = backPack.getPlayerCurrentMenu((Player) event.getPlayer());
+        Menu menu = backpack.getPlayerCurrentMenu((Player) event.getPlayer());
 
         if(menu == null) return;
 
