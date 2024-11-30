@@ -1,7 +1,7 @@
 # Default ignored files
 /shelf/
 /.idea/
-/target
+/target/
 /build.xml
 # Editor-based HTTP Client requests
 /httpRequests/
