@@ -174,8 +174,12 @@ public class BackpackRecipes {
 
         ItemStack wetBackpack = new ItemStack(Material.BARREL);
         ItemMeta wetBackpackMeta = wetBackpack.getItemMeta();
+
+        wetBackpackMeta.setRarity(ItemRarity.EPIC);
+
         wetBackpackMeta.setDisplayName("Wet Backpack");
-        wetBackpackMeta.setLore(Arrays.asList("Uhh, it looks really WET and unusable..", "Humm, what i could do with it?"));
+        wetBackpackMeta.setLore(Arrays.asList("Uhh, it looks really WET and unusable..", "Humm, what could I do with it?"));
+
         wetBackpackMeta.getPersistentDataContainer().set(IS_BACKPACK, PersistentDataType.INTEGER, -1);
         wetBackpackMeta.getPersistentDataContainer().set(NAMESPACE_WET_BACKPACK, PersistentDataType.INTEGER, 1);
         wetBackpack.setItemMeta(wetBackpackMeta);

@@ -81,6 +81,7 @@ public final class YamlProvider extends StorageProvider {
         for(Upgrade upgrade : UpgradeManager.getUpgrades().values()){
             config.set(upgrade.getId() + ".type", upgrade.getType().toString());
             UpgradeType type = upgrade.getType();
+
             switch (type){
                 case FURNACE -> {
                     FurnaceUpgrade furnaceUpgrade = (FurnaceUpgrade) upgrade;
@@ -177,16 +178,16 @@ public final class YamlProvider extends StorageProvider {
 
                             Furnace furnace = (Furnace) block.getState();
                             upgrade.setFurnace(furnace);
-                        }
 
-                        upgrade.setTickComponentId(Main.getMain().getTickManager().addAsyncComponent(new TickComponent(10) {
-                            @Override
-                            public void tick() {
-                                for(Player player : Bukkit.getOnlinePlayers()){
-                                    player.sendBlockChange(upgrade.getFurnace().getLocation(), Material.AIR.createBlockData());
+                            upgrade.setTickComponentId(Main.getMain().getTickManager().addAsyncComponent(new TickComponent(10) {
+                                @Override
+                                public void tick() {
+                                    for(Player player : Bukkit.getOnlinePlayers()){
+                                        player.sendBlockChange(upgrade.getFurnace().getLocation(), Material.AIR.createBlockData());
+                                    }
                                 }
-                            }
-                        }, 10).getId());
+                            }, 10).getId());
+                        }
 
                         UpgradeManager.getUpgrades().put(id, upgrade);
                     }
@@ -279,8 +280,8 @@ public final class YamlProvider extends StorageProvider {
                 }
 
                 Main.debugMessage("Loading " + type.getName() + " upgrade: " + i);
-            }   catch (Exception ignored){
-
+            }   catch (Exception exception){
+                Main.debugMessage(exception.getMessage());
             }
 
         }

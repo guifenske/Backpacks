@@ -67,7 +67,6 @@ br\com\backpacks\AutoSaveManager$2.class
 br\com\backpacks\upgrades\FurnaceUpgrade$1.class
 br\com\backpacks\utils\menu\backpacksMenus\BackpackConfigMenu$7.class
 br\com\backpacks\events\backpacks\OpenEquippedBackpack.class
-br\com\backpacks\Main$2.class
 br\com\backpacks\events\inventory\OnClickBackpack.class
 br\com\backpacks\commands\BpBackup.class
 br\com\backpacks\utils\backpacks\BackpackAction$Action.class

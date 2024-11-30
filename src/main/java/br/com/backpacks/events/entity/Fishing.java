@@ -7,6 +7,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -19,12 +20,14 @@ public class Fishing implements Listener {
     @EventHandler
     private void onFishing(PlayerFishEvent event){
        if(event.getCaught() instanceof Item){
-           if(Constants.CATCH_BACKPACK && ThreadLocalRandom.current().nextInt(1, 100) == 69){
+           if(Constants.CATCH_BACKPACK && ThreadLocalRandom.current().nextInt(1, 200) == 77){
                event.setExpToDrop(20);
                Item item = (Item) event.getCaught();
                ItemStack wetBackpack = new ItemStack(Material.BARREL);
 
                ItemMeta meta = wetBackpack.getItemMeta();
+               meta.setRarity(ItemRarity.EPIC);
+
                meta.setDisplayName("Wet Backpack");
                meta.setLore(Arrays.asList("Uhh, it looks really WET and unusable..", "Humm, what could I do with it?"));
 

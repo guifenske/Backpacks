@@ -9,6 +9,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -61,7 +63,7 @@ public class FurnaceUpgrade extends Upgrade {
         Location location = new Location(Bukkit.getWorld(NamespacedKey.fromString("minecraft:overworld")), 0, 0, 0);
         World world = location.getWorld();
 
-        while(true){
+        while(true) {
             for (int chX = -chunkRadius; chX <= chunkRadius; chX++) {
                 for (int chZ = -chunkRadius; chZ <= chunkRadius; chZ++) {
                     Chunk chunk = new Location(location.getWorld(), location.x() + (chX * 16), 0, location.z() + (chZ * 16)).getChunk();
@@ -73,7 +75,7 @@ public class FurnaceUpgrade extends Upgrade {
 
                     int maxY = world.getHighestBlockYAt(block.getX(), block.getZ());
 
-                    if(!chunk.getBlock(block.getX(), maxY, block.getZ()).getType().isOccluding()){
+                    if (!chunk.getBlock(randomX, maxY, randomZ).getType().isOccluding()) {
                         continue;
                     }
 
@@ -81,24 +83,23 @@ public class FurnaceUpgrade extends Upgrade {
 
                     block = chunk.getBlock(randomX, randomY, randomZ);
 
-                    if (!block.getType().isAir()) {
+                    if (!block.isEmpty()) {
                         continue;
                     }
 
                     block.setType(Material.FURNACE);
 
-                    final Location finalBlockLocation = block.getLocation();
+                    final Location location1 = block.getLocation();
                     this.tickComponentId = Main.getMain().getTickManager().addAsyncComponent(new TickComponent(10) {
                         @Override
                         public void tick() {
-                            for(Player player : Bukkit.getOnlinePlayers()){
-                                player.sendBlockChange(finalBlockLocation, Material.AIR.createBlockData());
+                            for (Player player : Bukkit.getOnlinePlayers()) {
+                                player.sendBlockChange(location1, Material.AIR.createBlockData());
                             }
                         }
-                    }, 10).getId();
+                    }, 0).getId();
 
                     return (org.bukkit.block.Furnace) block.getState();
-
                 }
             }
         }
@@ -106,8 +107,11 @@ public class FurnaceUpgrade extends Upgrade {
 
     public Inventory getInventory(){
         if(this.furnace == null){
+            Instant start = Instant.now();
             this.furnace = createFurnace();
-            Main.debugMessage("Virtual furnace created at " + furnace.getLocation());
+
+            Instant finish = Instant.now();
+            Main.debugMessage("Virtual furnace created at " + furnace.getLocation() + " in " + Duration.between(start, finish).toMillis() + "ms");
         }
 
         return furnace.getInventory();

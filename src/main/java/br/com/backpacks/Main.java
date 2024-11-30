@@ -94,13 +94,7 @@ public final class Main extends JavaPlugin {
         }
 
         tickManager.startAsyncTicking();
-
-        tickManager.runComponentAsync(new TickComponent() {
-            @Override
-            public void tick() {
-                StorageManager.loadAll();
-            }
-        });
+        StorageManager.loadAll();
 
         tickManager.addAsyncComponent(new TickComponent(5) {
             @Override

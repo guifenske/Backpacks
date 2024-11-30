@@ -59,12 +59,13 @@ public class RandomBackpackBuilder {
     private void generateBackpackType(){
         List<BackpackType> types = new ArrayList<>(List.of(BackpackType.values()));
         types.remove(BackpackType.NETHERITE);
+        types.remove(BackpackType.DIAMOND);
+        types.remove(BackpackType.AMETHYST);
         int randomIndex = ThreadLocalRandom.current().nextInt(types.size() - 1);
         type = types.get(randomIndex);
     }
 
     private Inventory generateFistPage() {
-        //generate first page with random loot
         Inventory firstPage = Bukkit.createInventory(null, type.getFirstPageSize(), name);
 
         // Get the default loot table
@@ -72,37 +73,14 @@ public class RandomBackpackBuilder {
 
         // Generate random loot
         LootContext lootContext = new LootContext.Builder(new Location(Bukkit.getWorld("world"), 0, 0, 0)).build();
-        ItemStack[] loot = lootTable.populateLoot(new Random(), lootContext).toArray(new ItemStack[0]);
 
-        // Add the loot to the first page inventory
-        firstPage.setStorageContents(applyRandomOrderToLoot(Arrays.asList(loot), firstPage));
+        lootTable.fillInventory(firstPage, ThreadLocalRandom.current(), lootContext);
 
         return firstPage;
     }
 
     private Inventory generateSecondPage() {
         return Bukkit.createInventory(null, type.getSecondPageSize(), name);
-    }
-
-
-    private ItemStack[] applyRandomOrderToLoot(List<ItemStack> loot, Inventory inventory){
-        List<ItemStack> newLoot = new ArrayList<>();
-
-        for(int i = 0; i < inventory.getSize() - 3; i++){
-            newLoot.add(null);
-        }
-
-        for(ItemStack item : loot){
-            int randomIndex = ThreadLocalRandom.current().nextInt(inventory.getSize() - 3);
-
-            while(newLoot.get(randomIndex) != null){
-                randomIndex = ThreadLocalRandom.current().nextInt(inventory.getSize() - 3);
-            }
-
-            newLoot.set(randomIndex, item);
-        }
-
-        return newLoot.toArray(new ItemStack[0]);
     }
 
     private boolean shouldGenerateUpgrades(){
@@ -112,7 +90,10 @@ public class RandomBackpackBuilder {
     }
 
     private List<Integer> generateUpgrades(){
-        List<UpgradeType> types = List.of(UpgradeType.values());
+        List<UpgradeType> types = new ArrayList<>(List.of(UpgradeType.values()));
+
+        types.remove(UpgradeType.AUTOFILL);
+
         int bound = type.getMaxUpgrades();
 
         List<Integer> upgradesIds = new ArrayList<>();
