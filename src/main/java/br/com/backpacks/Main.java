@@ -1,6 +1,5 @@
 package br.com.backpacks;
 
-import br.com.backpacks.backup.BackupHandler;
 import br.com.backpacks.commands.*;
 import br.com.backpacks.events.ConfigItemsEvents;
 import br.com.backpacks.events.HopperEvents;
@@ -30,7 +29,6 @@ import java.util.UUID;
 
 public final class Main extends JavaPlugin {
     private AutoSaveManager autoSaveManager;
-    private BackupHandler backupHandler;
     public boolean saveComplete = false;
     private static Main main;
     public Instant start;
@@ -41,14 +39,6 @@ public final class Main extends JavaPlugin {
 
     public static Main getMain() {
         return main;
-    }
-
-    public BackupHandler getBackupHandler() {
-        return backupHandler;
-    }
-
-    public void setBackupHandler(BackupHandler backupHandler) {
-        this.backupHandler = backupHandler;
     }
 
     public AutoSaveManager getAutoSaveManager() {
@@ -148,7 +138,6 @@ public final class Main extends JavaPlugin {
 
         Main.getMain().getCommand("bpgive").setExecutor(new BpGive());
         Main.getMain().getCommand("bplist").setExecutor(new BpList());
-        Main.getMain().getCommand("bpbackup").setExecutor(new BpBackup());
         Main.getMain().getCommand("bpreload").setExecutor(new BpReload());
         Main.getMain().getCommand("bpupgbackpack").setExecutor(new BpUpgBackpack());
         Main.getMain().getCommand("bpupgive").setExecutor(new BpUpGive());

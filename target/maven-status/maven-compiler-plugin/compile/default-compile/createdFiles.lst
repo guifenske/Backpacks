@@ -16,7 +16,6 @@ br\com\backpacks\AutoSaveManager$1.class
 br\com\backpacks\backpack\RandomBackpackBuilder.class
 br\com\backpacks\commands\BpReload.class
 br\com\backpacks\menu\backpacksMenus\BackpackConfigMenu$1.class
-br\com\backpacks\backup\BackupHandler.class
 br\com\backpacks\storage\SerializationUtils.class
 br\com\backpacks\events\upgrades\CraftingTable$1.class
 br\com\backpacks\events\entity\FurnaceEvents.class
@@ -68,10 +67,8 @@ br\com\backpacks\utils\Config.class
 br\com\backpacks\upgrades\FurnaceUpgrade$1.class
 br\com\backpacks\events\backpacks\OpenEquippedBackpack.class
 br\com\backpacks\events\inventory\OnClickBackpack.class
-br\com\backpacks\utils\ZipUtils.class
 br\com\backpacks\menu\backpacksMenus\UpgradesMenu$1.class
 br\com\backpacks\menu\backpacksMenus\UpgradesInputOutputMenu.class
-br\com\backpacks\commands\BpBackup.class
 br\com\backpacks\menu\ItemCreator.class
 br\com\backpacks\upgrades\JukeboxUpgrade$1.class
 br\com\backpacks\commands\BpUpGive$1.class
@@ -84,7 +81,6 @@ br\com\backpacks\upgrades\TanksUpgrade.class
 br\com\backpacks\menu\backpacksMenus\UpgradesEditInputOutputMenu$1.class
 br\com\backpacks\menu\backpacksMenus\UpgradesMenu$2.class
 br\com\backpacks\menu\backpacksMenus\BackpackConfigMenu$7.class
-br\com\backpacks\backup\ScheduledBackupService.class
 br\com\backpacks\recipes\BackpackRecipes.class
 br\com\backpacks\upgrades\VillagerBaitUpgrade.class
 br\com\backpacks\storage\MySQLProvider$1.class
@@ -99,8 +95,8 @@ br\com\backpacks\upgrades\AutoFeedUpgrade.class
 br\com\backpacks\events\upgrades\Jukebox$1.class
 br\com\backpacks\backpack\Backpack.class
 br\com\backpacks\events\upgrades\Collector.class
+br\com\backpacks\storage\MySQLProvider$2.class
 br\com\backpacks\menu\backpacksMenus\BackpackConfigMenu$6.class
-br\com\backpacks\backup\ScheduledBackupService$1.class
 br\com\backpacks\menu\backpacksMenus\UpgradesEditInputOutputMenu$2.class
 br\com\backpacks\events\inventory\OnCloseBackpack.class
 br\com\backpacks\backpack\RandomBackpackBuilder$1.class

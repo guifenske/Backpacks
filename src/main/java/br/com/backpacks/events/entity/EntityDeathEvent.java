@@ -66,7 +66,7 @@ public class EntityDeathEvent implements Listener {
             Backpack backpack = randomBackpackBuilder.generateBackpack();
             Main.backpackManager.setLastBackpackID(Main.backpackManager.getLastBackpackID() + 1);
 
-            event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), backpack.getBackpackItem());
+            event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), RecipesUtils.getItemFromBackpack(backpack));
         }
     }
 

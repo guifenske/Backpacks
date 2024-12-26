@@ -16,9 +16,12 @@ import br.com.backpacks.menu.Button;
 import br.com.backpacks.menu.ItemCreator;
 import br.com.backpacks.menu.Menu;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Barrel;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -26,6 +29,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Transformation;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.Arrays;
 import java.util.List;
@@ -102,11 +108,11 @@ public class BackpackConfigMenu extends Menu {
                     if(backpack.isBlock())  return;
 
                     if (backpack.getOwner() != null && backpack.getOwner().equals(player.getUniqueId())){
-                        player.getInventory().addItem(backpack.getBackpackItem());
+                        player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backpack));
                         player.getPersistentDataContainer().remove(BackpackRecipes.HAS_BACKPACK);
 
                         if(backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX) != null){
-                            JukeboxUpgrade upgrade = (JukeboxUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
+                            JukeboxUpgrade upgrade = backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
                             if(upgrade.getSound() != null){
                                 upgrade.clearLoopingTask();
                                 Jukebox.stopSound(player, upgrade);

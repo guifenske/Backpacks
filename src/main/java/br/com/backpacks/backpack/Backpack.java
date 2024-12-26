@@ -34,7 +34,6 @@ public final class Backpack {
     private Location location;
     private boolean locked;
     private boolean isBlock = false;
-    private UUID owner;
     private boolean showNameAbove = false;
     private UUID marker;
     private String name;
@@ -43,7 +42,7 @@ public final class Backpack {
     private UpgradesInputOutputMenu upgradesInputOutputMenu;
     private Integer inputUpgrade = -1;
     private Integer outputUpgrade = -1;
-    private ItemStack backpackItem;
+    private UUID owner;
     private final Set<UUID> viewersIds = new HashSet<>();
     private final List<Integer> backpackUpgradesIds = new ArrayList<>();
 
@@ -116,13 +115,10 @@ public final class Backpack {
         }
 
         List<String> components = config.getStringList(id + ".i");
+        List<Integer> upgradesIds = config.getIntegerList(id + ".u");
 
-        if(config.isSet(id + ".u")){
-            List<Integer> upgradesIds = config.getIntegerList(id + ".u");
-
-            upgradesIds.removeIf(upgradeId -> !UpgradeManager.getUpgrades().containsKey(upgradeId));
-            setUpgradesIds(upgradesIds);
-        }
+        upgradesIds.removeIf(upgradeId -> !UpgradeManager.getUpgrades().containsKey(upgradeId));
+        setUpgradesIds(upgradesIds);
 
         if(config.isSet(id + ".out")){
             setOutputUpgrade(config.getInt(id + ".out"));
@@ -133,7 +129,7 @@ public final class Backpack {
         }
 
         if(config.isSet(id + ".owner")){
-            setOwner(UUID.fromString(config.getString(id + ".owner")));
+            owner = UUID.fromString(config.getString(id + ".owner"));
         }
 
         name = components.get(0);
@@ -167,9 +163,7 @@ public final class Backpack {
             setLocation(SerializationUtils.deserializeLocationAsList(config.getStringList(id + ".loc")));
             setIsBlock(true);
 
-            if(config.isSet(id + ".shownameabove")){
-                setShowNameAbove(true);
-            }
+            setShowNameAbove(config.isSet(id + ".shownameabove"));
 
             Main.backpackManager.getBackpacksPlacedLocations().put(getLocation(), getId());
         }
@@ -177,8 +171,6 @@ public final class Backpack {
         configMenu = new BackpackConfigMenu(this);
         upgradesMenu = new UpgradesMenu(this);
         upgradesInputOutputMenu = new UpgradesInputOutputMenu(this);
-
-        setBackpackItem(RecipesUtils.getItemFromBackpack(this));
 
         setConfigItems();
         return this;
@@ -208,7 +200,7 @@ public final class Backpack {
         return locked;
     }
 
-    public Boolean isBlock() {
+    public boolean isBlock() {
         return isBlock;
     }
 
@@ -240,14 +232,6 @@ public final class Backpack {
         return name;
     }
 
-    public void setOwner(UUID owner) {
-        this.owner = owner;
-    }
-
-    public UUID getOwner() {
-        return owner;
-    }
-
     public boolean isShowingNameAbove() {
         return showNameAbove;
     }
@@ -270,8 +254,6 @@ public final class Backpack {
 
     public void setName(String name) {
         this.name = name;
-
-        setBackpackItem(RecipesUtils.getItemFromBackpack(this));
 
         Inventory newFirstPage = Bukkit.createInventory(null, firstPageSize, name);
         newFirstPage.setStorageContents(firstPage.getStorageContents());
@@ -307,15 +289,19 @@ public final class Backpack {
 
     public ItemStack getFirstItem(){
         for(ItemStack itemStack : firstPage){
-            if(itemStack == null) continue;
-            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_CONFIG_ITEM, PersistentDataType.INTEGER)) continue;
+            if(itemStack == null || (itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_CONFIG_ITEM))){
+                continue;
+            }
+
             return itemStack;
         }
 
         if(getSecondPage() != null){
             for(ItemStack itemStack : secondPage){
-                if(itemStack == null) continue;
-                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_CONFIG_ITEM, PersistentDataType.INTEGER)) continue;
+                if(itemStack == null || (itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_CONFIG_ITEM))){
+                    continue;
+                }
+
                 return itemStack;
             }
         }
@@ -376,6 +362,7 @@ public final class Backpack {
         }
         return false;
     }
+
     public List<ItemStack> tryAddItem(ItemStack itemStack){
         List<ItemStack> list = new ArrayList<>();
         if(itemStack == null) return list;
@@ -400,15 +387,21 @@ public final class Backpack {
         List<ItemStack> list = new ArrayList<>();
 
         for(ItemStack itemStack : firstPage){
-            if(itemStack == null) continue;
-            if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_CONFIG_ITEM, PersistentDataType.INTEGER)) continue;
+
+            if(itemStack == null || (itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_CONFIG_ITEM))){
+                continue;
+            }
+
             list.add(itemStack);
         }
 
         if(secondPage != null){
             for(ItemStack itemStack : secondPage){
-                if(itemStack == null) continue;
-                if(itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_CONFIG_ITEM, PersistentDataType.INTEGER)) continue;
+
+                if(itemStack == null || (itemStack.hasItemMeta() && itemStack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_CONFIG_ITEM))){
+                    continue;
+                }
+
                 list.add(itemStack);
             }
         }
@@ -434,9 +427,7 @@ public final class Backpack {
 
     public void removeBackpackItem(Player player){
         for(ItemStack stack : player.getInventory().getContents()){
-            if(stack == null) continue;
-            if(!stack.getType().equals(Material.BARREL)) continue;
-            if(!stack.hasItemMeta()) continue;
+            if(stack == null || !stack.getType().equals(Material.BARREL) || !stack.hasItemMeta()) continue;
             if(!stack.getItemMeta().getPersistentDataContainer().has(BackpackRecipes.BACKPACK_ID)) continue;
             if(stack.getItemMeta().getPersistentDataContainer().get(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER).equals(id)){
                 player.getInventory().removeItem(stack);
@@ -516,11 +507,11 @@ public final class Backpack {
         return false;
     }
 
-    public Upgrade getFirstUpgradeFromType(UpgradeType type){
+    public <T extends Upgrade> T getFirstUpgradeFromType(UpgradeType type){
         for(Upgrade upgrade : getBackpackUpgrades()) {
 
             if(upgrade.getType() == type) {
-                return upgrade;
+                return (T) upgrade;
             }
 
         }
@@ -550,15 +541,11 @@ public final class Backpack {
         this.outputUpgrade = outputUpgrade;
     }
 
-    public void setBackpackItem(ItemStack backpackItem) {
-        this.backpackItem = backpackItem;
+    public UUID getOwner() {
+        return owner;
     }
 
-    public ItemStack getBackpackItem(){
-        if(backpackItem == null){
-            backpackItem = RecipesUtils.getItemFromBackpack(this);
-        }
-
-        return backpackItem;
+    public void setOwner(UUID owner) {
+        this.owner = owner;
     }
 }

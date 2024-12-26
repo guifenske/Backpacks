@@ -35,7 +35,7 @@ public class AutoSaveManager {
         switch (type){
             case SECONDS -> time = interval * 20;
             case MINUTES -> time = interval * 20 * 60;
-            case HOURS -> time = interval * 20 * 60 * 60;
+            default -> time = interval * 20 * 60 * 60;
         }
 
         tickComponentId = Main.getMain().getTickManager().addAsyncComponent(new TickComponent(time) {

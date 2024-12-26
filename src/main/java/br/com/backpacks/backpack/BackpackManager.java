@@ -1,6 +1,7 @@
 package br.com.backpacks.backpack;
 
 import br.com.backpacks.Main;
+import com.google.common.base.Preconditions;
 import org.bukkit.Location;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -8,17 +9,18 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class BackpackManager {
     private boolean canBeOpen = true;
 
     private int lastBackpackID = 0;
 
-    private ConcurrentHashMap<Integer, Backpack> backpacks = new ConcurrentHashMap<>();
+    private ConcurrentMap<Integer, Backpack> backpacks = new ConcurrentHashMap<>();
 
     private final HashMap<UUID, Integer> currentBackpackId = new HashMap<>();
 
-    private final ConcurrentHashMap<Location, Integer> backpacksPlacedLocations = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Location, Integer> backpacksPlacedLocations = new ConcurrentHashMap<>();
 
     private final HashMap<UUID, Integer> currentPage = new HashMap<>();
 
@@ -30,11 +32,11 @@ public class BackpackManager {
         this.canBeOpen = canBeOpen;
     }
 
-    public ConcurrentHashMap<Location, Integer> getBackpacksPlacedLocations() {
+    public ConcurrentMap<Location, Integer> getBackpacksPlacedLocations() {
         return backpacksPlacedLocations;
     }
 
-    public ConcurrentHashMap<Integer, Backpack> getBackpacks() {
+    public ConcurrentMap<Integer, Backpack> getBackpacks() {
         return backpacks;
     }
 
@@ -85,7 +87,7 @@ public class BackpackManager {
         return null;
     }
 
-    public void setBackpacks(ConcurrentHashMap<Integer, Backpack> backpacks) {
+    public void setBackpacks(ConcurrentMap<Integer, Backpack> backpacks) {
         this.backpacks = backpacks;
     }
 

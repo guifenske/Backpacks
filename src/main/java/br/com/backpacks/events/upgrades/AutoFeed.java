@@ -33,7 +33,7 @@ public class AutoFeed implements Listener {
         Backpack backpack = Main.backpackManager.getBackpackFromId(player.getPersistentDataContainer().get(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER));
 
         if(backpack.getFirstUpgradeFromType(UpgradeType.AUTOFEED) == null) return;
-        AutoFeedUpgrade upgrade = (AutoFeedUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.AUTOFEED);
+        AutoFeedUpgrade upgrade = backpack.getFirstUpgradeFromType(UpgradeType.AUTOFEED);
 
         if(!upgrade.isEnabled() || backpack.getBackpackItems().isEmpty()) return;
         int need = 20 - player.getFoodLevel();
@@ -69,7 +69,7 @@ public class AutoFeed implements Listener {
         }
 
         if(lesserHungerPointsItem == null){
-            if(player.getHealth() < player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() - 1 && optionalFood != null){
+            if(player.getHealth() < player.getAttribute(Attribute.MAX_HEALTH).getValue() - 1 && optionalFood != null){
                 if(optionalFood.getAmount() == 1) optionalFood.setType(Material.AIR);
                 else optionalFood.setAmount(optionalFood.getAmount() - 1);
                 event.setCancelled(true);
@@ -77,7 +77,6 @@ public class AutoFeed implements Listener {
                 player.setSaturation(player.getSaturation() + saturationPointsPerFood(optionalFood));
                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1, 1);
                 applyEffectPerFood(player, optionalFood);
-                return;
             }
             return;
         }
@@ -99,7 +98,7 @@ public class AutoFeed implements Listener {
         event.setCancelled(true);
         if(event.getRawSlot() == 13){
             Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-            AutoFeedUpgrade upgrade = (AutoFeedUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.AUTOFEED);
+            AutoFeedUpgrade upgrade = backpack.getFirstUpgradeFromType(UpgradeType.AUTOFEED);
             upgrade.setEnabled(!upgrade.isEnabled());
             upgrade.updateInventory();
         }
@@ -123,8 +122,11 @@ public class AutoFeed implements Listener {
             case BREAD, SUSPICIOUS_STEW, ROTTEN_FLESH, SWEET_BERRIES, SPIDER_EYE, POISONOUS_POTATO, GLOW_BERRIES, POTATO, PUFFERFISH, TROPICAL_FISH, APPLE, COOKIE, DRIED_KELP, ENCHANTED_GOLDEN_APPLE, GOLDEN_APPLE, GOLDEN_CARROT, HONEY_BOTTLE, MELON_SLICE, MUSHROOM_STEW, PUMPKIN_PIE, RABBIT_STEW, BAKED_POTATO, BEETROOT_SOUP, BEETROOT, CARROT, CHORUS_FRUIT, COOKED_BEEF, COOKED_CHICKEN, COOKED_COD, COOKED_MUTTON, COOKED_PORKCHOP, COOKED_RABBIT, COOKED_SALMON, BEEF, CHICKEN, COD, MUTTON, PORKCHOP, RABBIT, SALMON -> {
                 return true;
             }
+
+            default -> {
+                return false;
+            }
         }
-        return false;
     }
 
     //according to minecraft wiki
@@ -161,9 +163,11 @@ public class AutoFeed implements Listener {
             case RABBIT_STEW -> {
                 return 10;
             }
-        }
 
-        return 0;
+            default -> {
+                return 0;
+            }
+        }
 
     }
 
@@ -276,7 +280,7 @@ public class AutoFeed implements Listener {
 
             case CHORUS_FRUIT -> {
                 Location location = player.getLocation().add(ThreadLocalRandom.current().nextInt(-8, 8), 0, ThreadLocalRandom.current().nextInt(-8, 8));
-                player.teleport(player.getWorld().getHighestBlockAt(location).getLocation());
+                player.teleportAsync(player.getWorld().getHighestBlockAt(location).getLocation());
                 player.getWorld().playSound(player.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1,1);
             }
         }

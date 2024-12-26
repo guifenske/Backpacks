@@ -7,7 +7,7 @@ public abstract class TickComponent {
     private int maxTickCount;
     private int currentTick = 0;
 
-    public TickComponent(int tickDelay){
+    protected TickComponent(int tickDelay){
         this.maxTickCount = tickDelay;
         this.id = componentCount;
         componentCount++;

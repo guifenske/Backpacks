@@ -3,7 +3,6 @@ package br.com.backpacks.commands;
 import br.com.backpacks.AutoSaveManager;
 import br.com.backpacks.utils.Config;
 import br.com.backpacks.Main;
-import br.com.backpacks.backup.BackupHandler;
 import br.com.backpacks.storage.StorageManager;
 import br.com.backpacks.utils.Constants;
 import org.bukkit.command.Command;
@@ -38,20 +37,6 @@ public class BpReload implements CommandExecutor {
             }   else{
                 StorageManager.setProvider(Config.getYamlProvider());
             }
-        }
-
-        BackupHandler backupHandler = Config.getBackupHandler();
-        if(backupHandler == null && Main.getMain().getBackupHandler() != null){
-            Main.getMain().getBackupHandler().getScheduledBackupService().cancel();
-            Main.getMain().setBackupHandler(null);
-        }   else if(backupHandler != null && Main.getMain().getBackupHandler() == null){
-            backupHandler.getScheduledBackupService().start();
-            Main.getMain().setBackupHandler(backupHandler);
-        }
-        if(backupHandler != null && Main.getMain().getBackupHandler() != null){
-            Main.getMain().getBackupHandler().getScheduledBackupService().cancel();
-            backupHandler.getScheduledBackupService().start();
-            Main.getMain().setBackupHandler(backupHandler);
         }
 
         AutoSaveManager autoSaveManager = Config.getAutoSaveManager();

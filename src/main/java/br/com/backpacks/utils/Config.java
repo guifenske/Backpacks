@@ -2,8 +2,6 @@ package br.com.backpacks.utils;
 
 import br.com.backpacks.AutoSaveManager;
 import br.com.backpacks.Main;
-import br.com.backpacks.backup.BackupHandler;
-import br.com.backpacks.backup.ScheduledBackupService;
 import br.com.backpacks.storage.MySQLProvider;
 import br.com.backpacks.storage.YamlProvider;
 
@@ -20,44 +18,6 @@ public class Config {
 
     public static String getString(String path){
         return Main.getMain().getConfig().getString(path);
-    }
-
-    public static BackupHandler getBackupHandler(){
-        if(!Config.getBoolean("autobackup.enabled")) return null;
-
-        ScheduledBackupService scheduledBackupService = new ScheduledBackupService();
-        if(Config.getInt("autobackup.interval") > 0){
-            scheduledBackupService.setInterval(Config.getInt("autobackup.interval"));
-        }
-
-        else{
-            scheduledBackupService.setInterval(-1);
-            Main.getMain().getLogger().warning("Invalid interval for autobackup, please use a number greater than 0.");
-        }
-
-        if(Config.getString("autobackup.type") != null){
-            try{
-                scheduledBackupService.setType(TimeUnit.valueOf(Config.getString("autobackup.type")));
-            }   catch (IllegalArgumentException e){
-                Main.getMain().getLogger().warning("Invalid type for autobackup, please use MINUTES | HOURS | SECONDS.");
-            }
-        }
-
-        else{
-            Main.getMain().getLogger().warning("Invalid type for autobackup, please use MINUTES | HOURS | SECONDS.");
-        }
-
-        int keep = 0;
-
-        if(Config.getInt("autobackup.keep") > 0){
-            keep = Config.getInt("autobackup.keep");
-        }   else{
-            Main.getMain().getLogger().warning("Invalid keep for autobackup, please use a number greater than 0.");
-        }
-
-        BackupHandler backupHandler = new BackupHandler(keep);
-        backupHandler.setScheduledBackupService(scheduledBackupService);
-        return backupHandler;
     }
 
     public static AutoSaveManager getAutoSaveManager(){

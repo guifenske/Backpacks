@@ -3,7 +3,6 @@ package br.com.backpacks.storage;
 import br.com.backpacks.AutoSaveManager;
 import br.com.backpacks.utils.Config;
 import br.com.backpacks.Main;
-import br.com.backpacks.backup.BackupHandler;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.upgrades.UpgradeManager;
 import br.com.backpacks.backpack.Backpack;
@@ -80,14 +79,6 @@ public class StorageManager {
     public static void loadAll() {
         provider.loadUpgrades();
         provider.loadBackpacks();
-
-        BackupHandler backupHandler = Config.getBackupHandler();
-
-        if(backupHandler != null){
-            backupHandler.getScheduledBackupService().start();
-        }
-
-        Main.getMain().setBackupHandler(backupHandler);
 
         AutoSaveManager autoSaveManager = Config.getAutoSaveManager();
         if(autoSaveManager != null){

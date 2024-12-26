@@ -24,9 +24,7 @@ public class Tanks implements Listener {
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGTANKS)) return;
         BackpackAction.clearPlayerAction(event.getPlayer());
         Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(event.getPlayer());
-        Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
-            backpack.open((Player) event.getPlayer());
-        }, 1L);
+        Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> backpack.open((Player) event.getPlayer()), 1L);
     }
 
     @EventHandler
@@ -34,7 +32,7 @@ public class Tanks implements Listener {
         if(!BackpackAction.getAction(event.getWhoClicked()).equals(BackpackAction.Action.UPGTANKS)) return;
         if(!event.getRawSlots().contains(12) && !event.getRawSlots().contains(14)) return;
         Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-        TanksUpgrade tanksUpgrade = (TanksUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.LIQUID_TANK);
+        TanksUpgrade tanksUpgrade = backpack.getFirstUpgradeFromType(UpgradeType.LIQUID_TANK);
         Bukkit.getScheduler().runTaskLater(Main.getMain(), () ->{
             generalLogic(tanksUpgrade, 1);
             generalLogic(tanksUpgrade, 2);
@@ -55,6 +53,7 @@ public class Tanks implements Listener {
                     generalLogic(tanksUpgrade, 1);
                 }, 1L);
             }
+
             case 14 ->{
                 Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(event.getWhoClicked());
                 TanksUpgrade tanksUpgrade = (TanksUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.LIQUID_TANK);
@@ -73,14 +72,16 @@ public class Tanks implements Listener {
         if (currentItem == null) return;
         if (!currentItem.getType().toString().contains("BUCKET")) return;
         if (currentItem.getAmount() > 1) return;
-        if (currentItem.hasItemMeta()) {
-            if (!currentItem.getItemMeta().getDisplayName().equals(currentItem.getType().name()) || !currentItem.getItemMeta().getPersistentDataContainer().isEmpty())
-                return;
+
+        if (currentItem.hasItemMeta() && (!currentItem.getItemMeta().getDisplayName().equals(currentItem.getType().name()) || !currentItem.getItemMeta().getPersistentDataContainer().isEmpty())){
+            return;
         }
+
         if (currentItem.getType().equals(Material.BUCKET)) {
             tanksUpgrade.removeFirstLiquidFromTank(tank);
             return;
         }
+
         if (!tanksUpgrade.canFillTank(tank)) return;
         tanksUpgrade.addLiquidToTank(currentItem, tank);
         currentItem.setType(Material.BUCKET);

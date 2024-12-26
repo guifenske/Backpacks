@@ -4,13 +4,10 @@ import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.backpack.Backpack;
 import br.com.backpacks.backpack.RandomBackpackBuilder;
-import org.bukkit.Material;
+import br.com.backpacks.recipes.RecipesUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockCookEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 
 public class FurnaceEvents implements Listener {
 
@@ -22,6 +19,6 @@ public class FurnaceEvents implements Listener {
         Backpack backpack = randomBackpackBuilder.generateBackpack();
 
         Main.backpackManager.setLastBackpackID(Main.backpackManager.getLastBackpackID() + 1);
-        event.setResult(backpack.getBackpackItem());
+        event.setResult(RecipesUtils.getItemFromBackpack(backpack));
     }
 }

@@ -185,7 +185,7 @@ public final class YamlProvider extends StorageProvider {
                                 @Override
                                 public void tick() {
                                     for(Player player : Bukkit.getOnlinePlayers()){
-                                        player.sendBlockChange(upgrade.getFurnace().getLocation(), Material.AIR.createBlockData());
+                                        player.sendBlockChange(block.getLocation(), Material.AIR.createBlockData());
                                     }
                                 }
                             }, 10).getId());

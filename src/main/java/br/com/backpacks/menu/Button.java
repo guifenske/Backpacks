@@ -7,7 +7,7 @@ public abstract class Button {
 
     private final int slot;
 
-    public Button(int slot){
+    protected Button(int slot){
         this.slot = slot;
     }
 

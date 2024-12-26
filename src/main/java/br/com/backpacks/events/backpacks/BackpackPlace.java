@@ -63,8 +63,6 @@ public class  BackpackPlace implements Listener {
 
         backpack.getConfigMenu().refreshMenu();
 
-        backpack.setBackpackItem(event.getItemInHand());
-
         Main.backpackManager.getBackpacksPlacedLocations().put(backpackLocation, backpack.getId());
     }
 }

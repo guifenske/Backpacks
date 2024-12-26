@@ -12,7 +12,7 @@ public abstract class Menu {
     protected final Backpack backpack;
     protected final Inventory inventory;
 
-    public Menu(int size, String title, Backpack backpack){
+    protected Menu(int size, String title, Backpack backpack){
         this.buttons = new Button[size];
         this.size = size;
         this.backpack = backpack;

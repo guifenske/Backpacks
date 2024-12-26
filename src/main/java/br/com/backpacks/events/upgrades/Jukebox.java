@@ -25,7 +25,7 @@ public class Jukebox implements Listener {
     public static List<Integer> blankSlots = List.of(0,1,2,3,4,5,12,14,18,19,20,21,22,23);
     public static List<Integer> discsSlots = List.of(6,7,8,15,16,17,24,25,26);
 
-    public static Boolean checkDisk(@NotNull ItemStack itemStack){
+    public static boolean checkDisk(@NotNull ItemStack itemStack){
         return itemStack.getType().toString().contains("_DISC_");
     }
 
@@ -67,7 +67,7 @@ public class Jukebox implements Listener {
         }
 
         Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(event.getWhoClicked());
-        JukeboxUpgrade upgrade = (JukeboxUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
+        JukeboxUpgrade upgrade = backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
         boolean canUse = event.getWhoClicked().getPersistentDataContainer().has(BackpackRecipes.HAS_BACKPACK) || backpack.isBlock();
 
         switch (event.getRawSlot()){
@@ -135,7 +135,7 @@ public class Jukebox implements Listener {
         if(!BackpackAction.getAction(event.getPlayer()).equals(BackpackAction.Action.UPGJUKEBOX)) return;
 
         Backpack backpack = Main.backpackManager.getPlayerCurrentBackpack(event.getPlayer());
-        JukeboxUpgrade upgrade = (JukeboxUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
+        JukeboxUpgrade upgrade = backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
 
         for(int i : discsSlots){
             if(event.getInventory().getItem(i) == null) continue;

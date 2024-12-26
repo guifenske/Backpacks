@@ -19,10 +19,9 @@ public class Fishing implements Listener {
 
     @EventHandler
     private void onFishing(PlayerFishEvent event){
-       if(event.getCaught() instanceof Item){
+       if(event.getCaught() instanceof Item item){
            if(Constants.CATCH_BACKPACK && ThreadLocalRandom.current().nextInt(1, 200) == 77){
                event.setExpToDrop(20);
-               Item item = (Item) event.getCaught();
                ItemStack wetBackpack = new ItemStack(Material.BARREL);
 
                ItemMeta meta = wetBackpack.getItemMeta();

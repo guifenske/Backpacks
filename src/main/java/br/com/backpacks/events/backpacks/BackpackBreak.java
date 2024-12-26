@@ -40,7 +40,6 @@ public class BackpackBreak implements Listener {
         event.setCancelled(true);
 
         Backpack backpack = Main.backpackManager.getBackpackFromLocation(event.getBlock().getLocation());
-        ItemStack backpackItem = backpack.getBackpackItem();
 
         if(backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX) != null){
             JukeboxUpgrade upgrade = (JukeboxUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
@@ -78,7 +77,7 @@ public class BackpackBreak implements Listener {
         Location location = event.getBlock().getLocation();
         Main.backpackManager.getBackpacksPlacedLocations().remove(location);
         event.getBlock().setType(Material.AIR, true);
-        event.getPlayer().getWorld().dropItemNaturally(location, backpackItem).setThrower(event.getPlayer().getUniqueId());
+        event.getPlayer().getWorld().dropItemNaturally(location, RecipesUtils.getItemFromBackpack(backpack)).setThrower(event.getPlayer().getUniqueId());
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -97,7 +96,6 @@ public class BackpackBreak implements Listener {
             block.setType(Material.AIR);
 
             Backpack backpack = Main.backpackManager.getBackpackFromLocation(block.getLocation());
-            ItemStack backpackItem = backpack.getBackpackItem();
 
             Location location = block.getLocation();
             if(backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX) != null){
@@ -134,7 +132,7 @@ public class BackpackBreak implements Listener {
             backpack.getConfigMenu().refreshMenu();
 
             Main.backpackManager.getBackpacksPlacedLocations().remove(location);
-            block.getWorld().dropItemNaturally(location, backpackItem);
+            block.getWorld().dropItemNaturally(location, RecipesUtils.getItemFromBackpack(backpack));
             break;
        }
     }

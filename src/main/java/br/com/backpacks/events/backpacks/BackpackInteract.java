@@ -61,8 +61,6 @@ public class BackpackInteract implements Listener {
             if(backpack == null) return;
             backpack.setIsBlock(false);
 
-            backpack.setBackpackItem(event.getItem());
-
             backpack.open(player);
             player.getWorld().playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
         }

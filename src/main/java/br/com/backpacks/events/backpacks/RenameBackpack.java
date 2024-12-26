@@ -1,9 +1,9 @@
 package br.com.backpacks.events.backpacks;
 
 import br.com.backpacks.Main;
-import br.com.backpacks.recipes.RecipesUtils;
 import br.com.backpacks.backpack.Backpack;
 import br.com.backpacks.backpack.BackpackAction;
+import br.com.backpacks.recipes.RecipesUtils;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
@@ -52,7 +52,7 @@ public class RenameBackpack implements Listener {
 
             backpack.updateMenuTitles();
 
-            player.getInventory().addItem(backpack.getBackpackItem());
+            player.getInventory().addItem(RecipesUtils.getItemFromBackpack(backpack));
             player.sendMessage(Main.getMain().PREFIX + "§aRenamed backpack to " + newName + ".");
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 
