@@ -2,10 +2,15 @@ package br.com.backpacks.events.upgrades;
 
 import br.com.backpacks.Main;
 import br.com.backpacks.recipes.BackpackRecipes;
+import br.com.backpacks.scheduler.TickComponent;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
 import br.com.backpacks.upgrades.UpgradeType;
 import br.com.backpacks.backpack.Backpack;
 import br.com.backpacks.backpack.BackpackAction;
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.protocol.sound.StaticSound;
+import com.github.retrooper.packetevents.resources.ResourceLocation;
+import com.github.retrooper.packetevents.wrapper.play.server.*;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.*;
 import org.bukkit.Bukkit;
@@ -20,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Jukebox implements Listener {
     public static List<Integer> blankSlots = List.of(0,1,2,3,4,5,12,14,18,19,20,21,22,23);
@@ -33,15 +39,25 @@ public class Jukebox implements Listener {
         return Sound.sound(Key.key(itemStack.getType().toString().toLowerCase().replace("disc_", "disc.")), Sound.Source.RECORD, 1, 1);
     }
 
-    public static void playSound(JukeboxUpgrade upgrade, Player entity) {
+    public static void playSoundOnPlayer(JukeboxUpgrade upgrade, Player player) {
         if(upgrade.isLooping()){
-            upgrade.setOwner(entity);
-            upgrade.startLoopingTask(entity);
+            upgrade.setOwner(player);
+            upgrade.startLoopingTask(player);
             return;
         }
 
-        upgrade.setOwner(entity);
-        entity.playSound(upgrade.getSound(), Sound.Emitter.self());
+        upgrade.setOwner(player);
+        Main.getMain().getTickManager().runComponentAsync(new TickComponent(()-> sendMusicPacketOfPlayer(player, upgrade.getInventory().getItem(13))));
+    }
+
+    private static void sendMusicPacketOfPlayer(Player player, ItemStack disc){
+        com.github.retrooper.packetevents.protocol.sound.Sound sound = new StaticSound(new ResourceLocation(disc.getType().toString().toLowerCase().replace("disc_", "disc.")), 8.0f);
+
+        WrapperPlayServerEntitySoundEffect packet = new WrapperPlayServerEntitySoundEffect(sound, com.github.retrooper.packetevents.protocol.sound.SoundCategory.RECORD, player.getEntityId(), 1.0f, 1.0f);
+
+        for(Player player1 : Bukkit.getOnlinePlayers()){
+            PacketEvents.getAPI().getPlayerManager().sendPacket(player1, packet);
+        }
     }
 
     public static void playSound(JukeboxUpgrade upgrade, Backpack backpack) {
@@ -100,7 +116,7 @@ public class Jukebox implements Listener {
                 upgrade.setSound(sound);
 
                 if(backpack.getOwner() == null) playSound(upgrade, backpack);
-                else playSound(upgrade, (Player) event.getWhoClicked());
+                else playSoundOnPlayer(upgrade, (Player) event.getWhoClicked());
             }
 
             case 11 -> {
@@ -119,7 +135,7 @@ public class Jukebox implements Listener {
     public static void stopSound(Backpack backpack, JukeboxUpgrade upgrade){
         upgrade.clearParticleTask();
         upgrade.clearLoopingTask();
-        backpack.getLocation().getWorld().stopSound(SoundStop.named(upgrade.getSound().name()));
+        backpack.getLocation().getWorld().stopSound(upgrade.getSound().asStop());
         upgrade.setSound(null);
     }
 

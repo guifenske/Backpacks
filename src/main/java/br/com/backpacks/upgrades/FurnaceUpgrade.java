@@ -49,58 +49,56 @@ public class FurnaceUpgrade extends Upgrade {
     }
 
     public org.bukkit.block.Furnace createFurnace(){
-        Block block;
-
-        int randomX;
-        int randomY;
-        int randomZ;
-
         int minY = -64;
         int chunkRadius = 1;
 
         Location location = new Location(Bukkit.getWorld(NamespacedKey.fromString("minecraft:overworld")), 0, 0, 0);
+
+        Location location1 = findFreeLocation(minY, chunkRadius, location);
+
+        this.tickComponentId = Main.getMain().getTickManager().addAsyncComponent(new TickComponent(10, ()->{
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.sendBlockChange(location1, Material.AIR.createBlockData());
+            }
+        }), 0).getId();
+
+        return (org.bukkit.block.Furnace) location1.getBlock().getState();
+    }
+
+    private Location findFreeLocation(int minY, int chunkRadius, Location location) {
+        Block block;
+        int randomX, randomY, randomZ;
+
         World world = location.getWorld();
 
-        while(true) {
-            for (int chX = -chunkRadius; chX <= chunkRadius; chX++) {
-                for (int chZ = -chunkRadius; chZ <= chunkRadius; chZ++) {
-                    Chunk chunk = new Location(location.getWorld(), location.x() + (chX * 16), 0, location.z() + (chZ * 16)).getChunk();
+        for (int chX = -chunkRadius; chX <= chunkRadius; chX++) {
+            for (int chZ = -chunkRadius; chZ <= chunkRadius; chZ++) {
+                Chunk chunk = new Location(location.getWorld(), location.x() + (chX * 16), 0, location.z() + (chZ * 16)).getChunk();
 
-                    randomX = ThreadLocalRandom.current().nextInt(0, 15);
-                    randomZ = ThreadLocalRandom.current().nextInt(0, 15);
+                randomX = ThreadLocalRandom.current().nextInt(0, 15);
+                randomZ = ThreadLocalRandom.current().nextInt(0, 15);
 
-                    block = chunk.getBlock(randomX, 0, randomZ);
+                block = chunk.getBlock(randomX, 0, randomZ);
 
-                    int maxY = world.getHighestBlockYAt(block.getX(), block.getZ());
+                int maxY = world.getHighestBlockYAt(block.getX(), block.getZ());
 
-                    if (!chunk.getBlock(randomX, maxY, randomZ).getType().isOccluding()) {
-                        continue;
-                    }
-
-                    randomY = ThreadLocalRandom.current().nextInt(minY, maxY);
-
-                    block = chunk.getBlock(randomX, randomY, randomZ);
-
-                    if (!block.isEmpty()) {
-                        continue;
-                    }
-
-                    block.setType(Material.FURNACE);
-
-                    final Location location1 = block.getLocation();
-                    this.tickComponentId = Main.getMain().getTickManager().addAsyncComponent(new TickComponent(10) {
-                        @Override
-                        public void tick() {
-                            for (Player player : Bukkit.getOnlinePlayers()) {
-                                player.sendBlockChange(location1, Material.AIR.createBlockData());
-                            }
-                        }
-                    }, 0).getId();
-
-                    return (org.bukkit.block.Furnace) block.getState();
+                if (!chunk.getBlock(randomX, maxY, randomZ).getType().isOccluding()) {
+                    continue;
                 }
+
+                randomY = ThreadLocalRandom.current().nextInt(minY, maxY);
+
+                block = chunk.getBlock(randomX, randomY, randomZ);
+
+                if (!block.isEmpty()) {
+                    continue;
+                }
+
+                return block.getLocation();
             }
         }
+
+        return findFreeLocation(minY, chunkRadius, location);
     }
 
     public Inventory getInventory(){

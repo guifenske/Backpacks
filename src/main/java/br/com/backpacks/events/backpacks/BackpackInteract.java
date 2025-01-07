@@ -32,16 +32,16 @@ public class BackpackInteract implements Listener {
             if(Main.backpackManager.getBackpackFromLocation(event.getClickedBlock().getLocation()) == null) return;
 
             event.setCancelled(true);
-            if(Main.backpackManager.canOpen()){
-                Backpack backpack = Main.backpackManager.getBackpackFromLocation(event.getClickedBlock().getLocation());
-                backpack.open(player);
 
-                Barrel barrel = (Barrel) backpack.getLocation().getBlock().getState();
-                barrel.open();
+            Backpack backpack = Main.backpackManager.getBackpackFromLocation(event.getClickedBlock().getLocation());
+            backpack.open(player);
 
-                backpack.setIsBlock(true);
-                player.getWorld().playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
-            }
+            Barrel barrel = (Barrel) backpack.getLocation().getBlock().getState();
+            barrel.open();
+
+            backpack.setIsBlock(true);
+            player.getWorld().playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
+
             return;
         }
 
@@ -56,13 +56,13 @@ public class BackpackInteract implements Listener {
         }
 
         event.setCancelled(true);
-        if(Main.backpackManager.canOpen()) {
-            Backpack backpack = Main.backpackManager.getBackpackFromId(event.getItem().getItemMeta().getPersistentDataContainer().get(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER));
-            if(backpack == null) return;
-            backpack.setIsBlock(false);
 
-            backpack.open(player);
-            player.getWorld().playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
-        }
+        Backpack backpack = Main.backpackManager.getBackpackFromId(event.getItem().getItemMeta().getPersistentDataContainer().get(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER));
+        if(backpack == null) return;
+
+        backpack.setIsBlock(false);
+        backpack.open(player);
+
+        player.getWorld().playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
     }
 }

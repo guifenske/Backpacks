@@ -43,6 +43,7 @@ public final class Backpack {
     private Integer inputUpgrade = -1;
     private Integer outputUpgrade = -1;
     private UUID owner;
+    private BackpackEntity backpackEntity;
     private final Set<UUID> viewersIds = new HashSet<>();
     private final List<Integer> backpackUpgradesIds = new ArrayList<>();
 
@@ -547,5 +548,13 @@ public final class Backpack {
 
     public void setOwner(UUID owner) {
         this.owner = owner;
+    }
+
+    public void setBackpackEntity(BackpackEntity backpackEntity){
+        this.backpackEntity = backpackEntity;
+    }
+
+    public BackpackEntity getBackpackEntity() {
+        return backpackEntity;
     }
 }

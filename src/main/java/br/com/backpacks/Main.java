@@ -4,6 +4,7 @@ import br.com.backpacks.commands.*;
 import br.com.backpacks.events.ConfigItemsEvents;
 import br.com.backpacks.events.HopperEvents;
 import br.com.backpacks.events.OnDimensionSwitch;
+import br.com.backpacks.events.OutgoingPacketListener;
 import br.com.backpacks.events.backpacks.*;
 import br.com.backpacks.events.entity.*;
 import br.com.backpacks.events.inventory.*;
@@ -19,6 +20,12 @@ import br.com.backpacks.backpack.BackpackManager;
 import br.com.backpacks.backpack.BackpackAction;
 import br.com.backpacks.scheduler.TickComponent;
 import br.com.backpacks.scheduler.TickManager;
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.event.PacketListenerPriority;
+import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
+import me.tofaa.entitylib.APIConfig;
+import me.tofaa.entitylib.EntityLib;
+import me.tofaa.entitylib.spigot.SpigotEntityLibPlatform;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Barrel;
 import org.bukkit.entity.Player;
@@ -54,6 +61,13 @@ public final class Main extends JavaPlugin {
     }
 
     @Override
+    public void onLoad() {
+        PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
+        PacketEvents.getAPI().load();
+    }
+
+
+    @Override
     public void onEnable() {
         main = this;
         saveDefaultConfig();
@@ -65,6 +79,15 @@ public final class Main extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+
+        PacketEvents.getAPI().init();
+        SpigotEntityLibPlatform platform = new SpigotEntityLibPlatform(this);
+        APIConfig settings = new APIConfig(PacketEvents.getAPI()).useBstats().checkForUpdates();
+
+        EntityLib.init(platform, settings);
+
+        PacketEvents.getAPI().getEventManager().registerListener(
+                new OutgoingPacketListener(), PacketListenerPriority.NORMAL);
 
         main.start = Instant.now();
 
@@ -87,19 +110,16 @@ public final class Main extends JavaPlugin {
         tickManager.startAsyncTicking();
         StorageManager.loadAll();
 
-        tickManager.addAsyncComponent(new TickComponent(5) {
-            @Override
-            public void tick() {
-                for(Backpack backpack : Main.backpackManager.getBackpacks().values()){
-                    if(backpack.getOwner() != null){
-                        VillagerBait.tick(Bukkit.getPlayer(backpack.getOwner()));
-                        Magnet.tick(Bukkit.getPlayer(backpack.getOwner()));
-                    }   else if(backpack.getLocation() != null){
-                        Magnet.tick(backpack);
-                    }
+        tickManager.addAsyncComponent(new TickComponent(5, ()->{
+            for(Backpack backpack : Main.backpackManager.getBackpacks().values()){
+                if(backpack.getOwner() != null){
+                    VillagerBait.tick(Bukkit.getPlayer(backpack.getOwner()));
+                    Magnet.tick(Bukkit.getPlayer(backpack.getOwner()));
+                }   else if(backpack.getLocation() != null){
+                    Magnet.tick(backpack);
                 }
             }
-        }, 0);
+        }), 0);
 
         UpdateChecker.checkForUpdates();
 
@@ -109,6 +129,7 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new FurnaceEvents(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new InteractOtherPlayerBackpack(), Main.getMain());
         Bukkit.getPluginManager().registerEvents(new AnvilRenameBackpack(), Main.getMain());
+        Bukkit.getPluginManager().registerEvents(new PlayerJoinLeaveEvent(), Main.getMain());
 
         //backpack
         Bukkit.getPluginManager().registerEvents(new BackpackInteract(), Main.getMain());
@@ -167,6 +188,8 @@ public final class Main extends JavaPlugin {
                 player.closeInventory();
             }
         }
+
+        PacketEvents.getAPI().terminate();
 
         Main.getMain().getLogger().info("[Backpacks] Saving backpacks..");
         saveConfig();

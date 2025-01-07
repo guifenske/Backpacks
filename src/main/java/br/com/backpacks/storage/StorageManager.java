@@ -55,25 +55,22 @@ public class StorageManager {
             return;
         }
 
-        Main.getMain().getTickManager().runComponentAsync(new TickComponent(0) {
-            @Override
-            public void tick() {
-                try {
-                    provider.saveBackpacks();
-                    provider.saveUpgrades();
+        Main.getMain().getTickManager().runComponentAsync(new TickComponent(()->{
+            try {
+                provider.saveBackpacks();
+                provider.saveUpgrades();
 
-                    Main.getMain().saveConfig();
+                Main.getMain().saveConfig();
 
-                    Main.getMain().saveComplete = true;
-                    synchronized (Main.getMain().lock){
-                        Main.getMain().lock.notifyAll();
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
+                Main.getMain().saveComplete = true;
+                synchronized (Main.getMain().lock){
+                    Main.getMain().lock.notifyAll();
                 }
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        });
+        }));
     }
 
     public static void loadAll() {

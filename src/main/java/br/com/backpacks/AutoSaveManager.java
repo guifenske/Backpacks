@@ -38,12 +38,8 @@ public class AutoSaveManager {
             default -> time = interval * 20 * 60 * 60;
         }
 
-        tickComponentId = Main.getMain().getTickManager().addAsyncComponent(new TickComponent(time) {
-            @Override
-            public void tick() {
-                StorageManager.saveAll(false);
-            }
-        }, time).getId();
+        TickComponent component = new TickComponent(time, ()-> StorageManager.saveAll(false));
+        tickComponentId = component.getId();
     }
 
     public void cancel(){

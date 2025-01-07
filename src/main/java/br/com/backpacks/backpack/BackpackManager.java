@@ -1,10 +1,13 @@
 package br.com.backpacks.backpack;
 
 import br.com.backpacks.Main;
-import com.google.common.base.Preconditions;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -12,25 +15,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class BackpackManager {
-    private boolean canBeOpen = true;
-
     private int lastBackpackID = 0;
 
     private ConcurrentMap<Integer, Backpack> backpacks = new ConcurrentHashMap<>();
+
+    private final @NotNull ConcurrentHashMap<UUID, BackpackEntity> entityMap = new ConcurrentHashMap<>();
 
     private final HashMap<UUID, Integer> currentBackpackId = new HashMap<>();
 
     private final ConcurrentMap<Location, Integer> backpacksPlacedLocations = new ConcurrentHashMap<>();
 
     private final HashMap<UUID, Integer> currentPage = new HashMap<>();
-
-    public boolean canOpen() {
-        return canBeOpen;
-    }
-
-    public void setCanBeOpen(boolean canBeOpen) {
-        this.canBeOpen = canBeOpen;
-    }
 
     public ConcurrentMap<Location, Integer> getBackpacksPlacedLocations() {
         return backpacksPlacedLocations;
@@ -46,6 +41,38 @@ public class BackpackManager {
 
     public void setLastBackpackID(int lastBackpackID) {
         this.lastBackpackID = lastBackpackID;
+    }
+
+    public void removeBackpackEntity(@NotNull UUID playerID) {
+        entityMap.remove(playerID);
+    }
+
+    public @Nullable BackpackEntity getBackpackEntityByUUID(UUID uuid) {
+        return entityMap.get(uuid);
+    }
+
+    public @Nullable BackpackEntity getBackpackEntityByOwnerId(int id){
+        for(BackpackEntity backpackEntity : entityMap.values()){
+             if(backpackEntity.getPlayer().getEntityId() == id){
+                 return backpackEntity;
+             }
+        }
+
+        return null;
+    }
+
+    public @Nullable BackpackEntity getBackpackEntityByEntityId(int id){
+        for(BackpackEntity backpackEntity : entityMap.values()){
+            if(backpackEntity.getBackpackEntity().getEntityId() == id){
+                return backpackEntity;
+            }
+        }
+
+        return null;
+    }
+
+    public void addBackpackEntity(BackpackEntity backpackEntity){
+        entityMap.put(backpackEntity.getPlayer().getUniqueId(), backpackEntity);
     }
 
     public Backpack getBackpackFromLocation(Location location) {

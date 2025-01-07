@@ -3,10 +3,11 @@ package br.com.backpacks.scheduler;
 import br.com.backpacks.Main;
 import org.bukkit.Bukkit;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class TickManager {
-    private final HashMap<Integer, TickComponent> asyncComponents = new HashMap<>();
+    private final ConcurrentMap<Integer, TickComponent> asyncComponents = new ConcurrentHashMap<>();
 
     public void startAsyncTicking(){
         Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getMain(), ()->{
@@ -23,11 +24,6 @@ public class TickManager {
     }
 
     public TickComponent addAsyncComponent(TickComponent component, int delay){
-        if(delay == 0) {
-            this.asyncComponents.put(component.getId(), component);
-            return component;
-        }
-
         Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getMain(), ()->{
             this.asyncComponents.put(component.getId(), component);
         }, delay);

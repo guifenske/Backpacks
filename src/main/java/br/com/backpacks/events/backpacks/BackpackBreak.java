@@ -30,10 +30,6 @@ public class BackpackBreak implements Listener {
     private void playerBreak(BlockBreakEvent event){
 
         if(!event.getBlock().getType().equals(Material.BARREL)) return;
-        if(!Main.backpackManager.canOpen()){
-            event.setCancelled(true);
-            return;
-        }
 
         if(Main.backpackManager.getBackpackFromLocation(event.getBlock().getLocation()) == null) return;
 
@@ -84,11 +80,6 @@ public class BackpackBreak implements Listener {
     private void explosionBreak(EntityExplodeEvent event){
         for(Block block : event.blockList()){
             if(!block.getType().equals(Material.BARREL)) continue;
-
-            if(!Main.backpackManager.canOpen()){
-                event.blockList().remove(block);
-                continue;
-            }
 
             if(Main.backpackManager.getBackpackFromLocation(block.getLocation()) == null) continue;
 
@@ -144,10 +135,6 @@ public class BackpackBreak implements Listener {
         if(!event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(BackpackRecipes.IS_BACKPACK)){
 
             if(event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().has(UpgradesRecipes.IS_UPGRADE)){
-                if(!Main.backpackManager.canOpen()){
-                    event.setCancelled(true);
-                    return;
-                }
 
                 int id = event.getEntity().getItemStack().getItemMeta().getPersistentDataContainer().get(UpgradesRecipes.UPGRADE_ID, PersistentDataType.INTEGER);
 
@@ -155,11 +142,6 @@ public class BackpackBreak implements Listener {
                 UpgradeManager.getUpgrades().remove(id);
             }
 
-            return;
-        }
-
-        if(!Main.backpackManager.canOpen()){
-            event.setCancelled(true);
             return;
         }
 

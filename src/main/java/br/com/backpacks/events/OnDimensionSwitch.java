@@ -1,6 +1,7 @@
 package br.com.backpacks.events;
 
 import br.com.backpacks.Main;
+import br.com.backpacks.backpack.BackpackEntity;
 import br.com.backpacks.events.upgrades.Jukebox;
 import br.com.backpacks.recipes.BackpackRecipes;
 import br.com.backpacks.upgrades.JukeboxUpgrade;
@@ -23,7 +24,15 @@ public class OnDimensionSwitch implements Listener {
         Backpack backpack = Main.backpackManager.getBackpackFromId(id);
         if(backpack == null) return;
 
-        JukeboxUpgrade upgrade = (JukeboxUpgrade) backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
+        if(backpack.getBackpackEntity() != null){
+            backpack.getBackpackEntity().clear();
+        }
+
+        Main.backpackManager.addBackpackEntity(new BackpackEntity(event.getPlayer()));
+
+        backpack.setBackpackEntity(Main.backpackManager.getBackpackEntityByUUID(event.getPlayer().getUniqueId()));
+
+        JukeboxUpgrade upgrade = backpack.getFirstUpgradeFromType(UpgradeType.JUKEBOX);
         if(upgrade == null) return;
 
         if(upgrade.getSound() == null) return;
@@ -37,6 +46,6 @@ public class OnDimensionSwitch implements Listener {
             return;
         }
 
-        Jukebox.playSound(upgrade, player);
+        Jukebox.playSoundOnPlayer(upgrade, player);
     }
 }

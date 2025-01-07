@@ -1,20 +1,23 @@
 package br.com.backpacks.scheduler;
 
-public abstract class TickComponent {
+public class TickComponent {
     private static int componentCount = 0;
 
     private final int id;
+    private final Runnable runnable;
     private int maxTickCount;
     private int currentTick = 0;
 
-    protected TickComponent(int tickDelay){
-        this.maxTickCount = tickDelay;
+    public TickComponent(int interval, Runnable runnable) {
+        this.maxTickCount = interval;
         this.id = componentCount;
+        this.runnable = runnable;
         componentCount++;
     }
 
-    public TickComponent(){
+    public TickComponent(Runnable runnable){
         this.id = componentCount;
+        this.runnable = runnable;
         componentCount++;
     }
 
@@ -34,5 +37,7 @@ public abstract class TickComponent {
         return id;
     }
 
-    public abstract void tick();
+    public void tick(){
+        runnable.run();
+    }
 }

@@ -219,14 +219,11 @@ public class MySQLProvider extends StorageProvider{
                                 upgrade.setFurnace(furnace);
                             });
 
-                            upgrade.setTickComponentId(Main.getMain().getTickManager().addAsyncComponent(new TickComponent(10) {
-                                @Override
-                                public void tick() {
-                                    for(Player player : Bukkit.getOnlinePlayers()){
-                                        player.sendBlockChange(location, Material.AIR.createBlockData());
-                                    }
+                            upgrade.setTickComponentId(Main.getMain().getTickManager().addAsyncComponent(new TickComponent(10, ()->{
+                                for(Player player : Bukkit.getOnlinePlayers()){
+                                    player.sendBlockChange(location, Material.AIR.createBlockData());
                                 }
-                            }, 10).getId());
+                            }), 10).getId());
                         }
 
                         UpgradeManager.getUpgrades().put(id, upgrade);

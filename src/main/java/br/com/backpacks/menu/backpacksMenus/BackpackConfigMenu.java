@@ -1,6 +1,7 @@
 package br.com.backpacks.menu.backpacksMenus;
 
 import br.com.backpacks.Main;
+import br.com.backpacks.backpack.BackpackEntity;
 import br.com.backpacks.events.upgrades.Furnace;
 import br.com.backpacks.events.upgrades.Jukebox;
 import br.com.backpacks.recipes.BackpackRecipes;
@@ -16,22 +17,14 @@ import br.com.backpacks.menu.Button;
 import br.com.backpacks.menu.ItemCreator;
 import br.com.backpacks.menu.Menu;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Barrel;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.BlockDisplay;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Transformation;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 import java.util.Arrays;
 import java.util.List;
@@ -119,6 +112,13 @@ public class BackpackConfigMenu extends Menu {
                             }
                         }
 
+                        if(backpack.getBackpackEntity() != null){
+                            backpack.getBackpackEntity().clear();
+
+                            Main.backpackManager.removeBackpackEntity(backpack.getOwner());
+                            backpack.setBackpackEntity(null);
+                        }
+
                         backpack.setOwner(null);
                     }
 
@@ -128,6 +128,10 @@ public class BackpackConfigMenu extends Menu {
 
                         player.getPersistentDataContainer().set(BackpackRecipes.HAS_BACKPACK, PersistentDataType.INTEGER, backpack.getId());
                         backpack.setOwner(player.getUniqueId());
+
+                        Main.backpackManager.addBackpackEntity(new BackpackEntity(player));
+
+                        backpack.setBackpackEntity(Main.backpackManager.getBackpackEntityByUUID(player.getUniqueId()));
                     }
 
                     refreshMenu();

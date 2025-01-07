@@ -28,11 +28,6 @@ public class  BackpackPlace implements Listener {
             return;
         }
 
-        if(!Main.backpackManager.canOpen()){
-            event.setCancelled(true);
-            return;
-        }
-
         Backpack backpack = Main.backpackManager.getBackpackFromId(itemData.get(BackpackRecipes.BACKPACK_ID, PersistentDataType.INTEGER));
         if (backpack == null) return;
 

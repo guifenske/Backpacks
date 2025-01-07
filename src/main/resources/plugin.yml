@@ -2,6 +2,8 @@ name: Backpacks
 version: '${project.version}'
 main: br.com.backpacks.Main
 api-version: '1.21.3'
+depend:
+  - packetevents
 
 commands:
   bpgive:
